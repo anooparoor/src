@@ -145,8 +145,11 @@ namespace Menge {
    			ROS_INFO("I heard: y :[%f]", msg.angular.y);
    			ROS_INFO("I heard: z :[%f]", msg.angular.z);
 
-			prefVelMsg.setSpeed(msg.linear.x);
-			prefVelMsg.turn((-1)*msg.angular.z);
+			float speed = msg.linear.x;
+			if(speed == 0) speed = 0.0001;
+
+			prefVelMsg.setSpeed(speed);
+			prefVelMsg.turn(msg.angular.z);
 		}
 
 		void FSM::computePrefVelocity( Agents::BaseAgent * agent ) {
@@ -379,12 +382,12 @@ namespace Menge {
 					broadcaster1.sendTransform(
       						tf::StampedTransform(
         					tf::Transform(tf::createIdentityQuaternion(), tf::Vector3(0.0, 0.0, 0.0)),
-        					current_time,"map", "pose"));
+        					current_time + ros::Duration(0.0),"map", "pose"));
 					broadcaster2.sendTransform(
       						tf::StampedTransform(
         					tf::Transform(tf::createQuaternionFromRPY(0.0, 0.0, atan2(agt->_orient._y, 							agt->_orient._x)), 
 						tf::Vector3(pose.position.x, pose.position.y, 0.0)),
-        					current_time,"pose", "laser_scan"));
+        					current_time + ros::Duration(0.0),"pose", "laser_scan"));
 
 					//std::cout << "Robot position : (" << pose.position.x << "," << pose.position.y << ")" << std::endl;  
 					//std::cout << "Robot orientation : (" << agt->_orient._x << "," << agt->_orient._y << ")" << std::endl;  

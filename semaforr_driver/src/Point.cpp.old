@@ -1,0 +1,102 @@
+/*
+ * Implementation of Point structure.
+ * Used to store coordinates in our system. 
+ *
+ * Created: August 20, 2013 
+ * Last modified: October 27, 2013
+ *
+ * created by: Slavisa Djukic <sdjukic@hunter.cuny.edu>
+ */
+
+// need it for acos and sqrt functions
+#include <cmath>
+#include <iostream>
+
+struct Point{
+  // No need for accessors and mutators; everything is public
+  // Default constructor
+  Point(): xCoo(0), yCoo(0) {};
+
+  Point(double x, double y): xCoo(x), yCoo(y) {};
+
+  // Copy constructor
+  Point(const Point& other): xCoo(other.xCoo), yCoo(other.yCoo) {};
+
+  // overloaded equality operator
+  bool operator ==(const Point& other){
+    if(this->xCoo == other.xCoo && this->yCoo == other.yCoo)
+      return true;
+    else
+      return false;
+  }
+  
+  // overloaded assignment operator
+  Point& operator =(const Point& other){
+    if((*this) == other)
+      return *this;
+    xCoo = other.xCoo;
+    yCoo = other.yCoo;
+    return *this;
+  }
+
+
+  // since vectors will have the same representation
+  // I decided to define dot product here
+  double dot(const Point other) const {
+    return (xCoo * other.xCoo + yCoo * other.yCoo);
+  }
+
+  // Another helper function I will need for angle
+  // this is plain vector magnitude function
+  // square root of dot product of vector with itself
+  double magnitude() const{ return sqrt(this->dot(*this));}
+
+  // NOTE: THIS CODE IS NOT USED IN IMPLEMENTATIONS OF
+  // FAKEDESCRIPTIVE AND ADVISORS I FOUND EASIER WAY
+  // TO PRODUCE COMMENTS FOR CLOSEIN ADVISOR (which is the 
+  // main reason I implemented this functionality)
+  // Then we can define angle between two vectors as
+  // dot product between two vectors -> projection of first
+  // to the second 
+  // over the length of the first -> dot with itself
+  // and that gives cosine of the angle between them
+  // to get the angle we take acosine of that value
+  double angleBetween(const Point other) const{
+    // this variable will determine the sign of the angle
+    // aka if it is to the right or to the left
+    short sign;
+
+    if(other.yCoo > 0)
+      sign = 1;
+    else
+      sign = -1;
+
+    return sign *  acos(this->dot(other)/(other.magnitude()));
+  }
+
+  // overload stream operators for displaying the values on the screen
+  friend std::ostream& operator <<(std::ostream& outputStream, const Point& pt){
+
+    outputStream << pt.xCoo << " " << pt.yCoo << "\n";
+
+    return outputStream;
+  }
+  
+  // overloaded input stream operator
+  friend std::istream& operator >>(std::istream& inputStream, Point& pt){
+
+    inputStream >> pt.xCoo;
+    inputStream >> pt.yCoo;
+
+    return inputStream;
+  }
+
+  /* 
+   * What we can do now is just add value of the rotations to this angle.
+   * The higher absolute value the further away we are from the target.
+  */
+
+  // member variables that denote values of x and y coordinates
+  double xCoo;
+  double yCoo;
+};
