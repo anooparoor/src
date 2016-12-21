@@ -1,0 +1,314 @@
+\hypertarget{classmetrobotics_1_1PosixSerial}{\section{metrobotics\-:\-:\-Posix\-Serial \-Class \-Reference}
+\label{classmetrobotics_1_1PosixSerial}\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}}
+}
+
+
+\-P\-O\-S\-I\-X implementation of the \hyperlink{classmetrobotics_1_1Serial}{\-Serial} interface.  
+
+
+
+
+{\ttfamily \#include $<$\-Posix\-Serial.\-h$>$}
+
+
+
+\-Inheritance diagram for metrobotics\-:\-:\-Posix\-Serial\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=342pt]{classmetrobotics_1_1PosixSerial__inherit__graph}
+\end{center}
+\end{figure}
+
+
+\-Collaboration diagram for metrobotics\-:\-:\-Posix\-Serial\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=342pt]{classmetrobotics_1_1PosixSerial__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmetrobotics_1_1PosixSerial_ac44cdb1af876e80ddfdbeb042d65debc}{\-Posix\-Serial} (const char $\ast$dev\-Name, unsigned int baud\-Rate)
+\item 
+\hyperlink{classmetrobotics_1_1PosixSerial_a46a1dca8714afcf0b5ec9498b02dd5a8}{$\sim$\-Posix\-Serial} ()
+\item 
+void \hyperlink{classmetrobotics_1_1PosixSerial_aa0a3298fc067b03e62154ccbe6bd276e}{flush\-Input} ()
+\item 
+unsigned char \hyperlink{classmetrobotics_1_1PosixSerial_aeeacb8383b543a5354b8663254205727}{get\-Byte} ()
+\item 
+void \hyperlink{classmetrobotics_1_1PosixSerial_a3174f9e2382efbbc53795565314e6030}{get\-Block} (unsigned char $\ast$buf, unsigned long n\-Bytes)
+\item 
+void \hyperlink{classmetrobotics_1_1PosixSerial_a44eb4e702e0c08f3f354e9c19e9cef8a}{flush\-Output} ()
+\item 
+void \hyperlink{classmetrobotics_1_1PosixSerial_ac77d22c91d44f80782e8c6f2a5070f52}{put\-Byte} (const unsigned char)
+\item 
+void \hyperlink{classmetrobotics_1_1PosixSerial_abc2a8fd6b268ea5993590d099ad6ba80}{put\-Block} (const unsigned char $\ast$buf, unsigned long n\-Bytes)
+\item 
+void \hyperlink{classmetrobotics_1_1PosixSerial_a7650234ceea8ddb92e35be4f4811bd63}{timeout} (unsigned int ms=0)
+\begin{DoxyCompactList}\small\item\em \-Set a timeout (in milliseconds) for all \-I/\-O operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Static \-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{classmetrobotics_1_1PosixSerial_a6a790d35488736c052dc580baf2a6391}{debugging} (bool)
+\begin{DoxyCompactList}\small\item\em \-Toggle class-\/wide debugging. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Private \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmetrobotics_1_1PosixSerial_ac4e722078a8f8a9a435bddc1a025aa0b}{\-Posix\-Serial} (const \hyperlink{classmetrobotics_1_1PosixSerial}{\-Posix\-Serial} \&)
+\item 
+\hyperlink{classmetrobotics_1_1PosixSerial}{\-Posix\-Serial} \& \hyperlink{classmetrobotics_1_1PosixSerial_aeffe5604a844c22e5a128a90852b91e3}{operator=} (const \hyperlink{classmetrobotics_1_1PosixSerial}{\-Posix\-Serial} \&)
+\item 
+void \hyperlink{classmetrobotics_1_1PosixSerial_a79115a02df3f543d40ae91d15d7b90c6}{connect} ()
+\end{DoxyCompactItemize}
+\subsection*{\-Private \-Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{classmetrobotics_1_1PosixSerial_a68e19a9a6ed15bd9d0e2a0579a3630a1}{m\-Functional}
+\item 
+std\-::string \hyperlink{classmetrobotics_1_1PosixSerial_a647c305dbdff7155b9f70503a5a4142b}{m\-Dev\-Name}
+\item 
+int \hyperlink{classmetrobotics_1_1PosixSerial_a96adceb87053360189a26efb47656750}{m\-Dev\-F\-D}
+\item 
+unsigned int \hyperlink{classmetrobotics_1_1PosixSerial_acffca69e71f5ced685bb28f185cdc5b1}{m\-Line\-Speed}
+\item 
+unsigned int \hyperlink{classmetrobotics_1_1PosixSerial_a1e7511b3cf4f30f28285ff7a63036a27}{m\-Time\-Out}
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-P\-O\-S\-I\-X implementation of the \hyperlink{classmetrobotics_1_1Serial}{\-Serial} interface. 
+
+\-A class of objects that simulate serial communication in a \-Posix-\/compliant environment. \begin{DoxyAuthor}{\-Author}
+\-John \-Cummins 
+
+\-Mark \-Manashirov 
+\end{DoxyAuthor}
+
+
+\-Definition at line 30 of file \-Posix\-Serial.\-h.
+
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classmetrobotics_1_1PosixSerial_ac44cdb1af876e80ddfdbeb042d65debc}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!\-Posix\-Serial@{\-Posix\-Serial}}
+\index{\-Posix\-Serial@{\-Posix\-Serial}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{\-Posix\-Serial}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Posix\-Serial\-::\-Posix\-Serial} (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{dev\-Name, }
+\item[{unsigned int}]{baud\-Rate}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1PosixSerial_ac44cdb1af876e80ddfdbeb042d65debc}
+
+
+\-Definition at line 104 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a46a1dca8714afcf0b5ec9498b02dd5a8}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!$\sim$\-Posix\-Serial@{$\sim$\-Posix\-Serial}}
+\index{$\sim$\-Posix\-Serial@{$\sim$\-Posix\-Serial}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{$\sim$\-Posix\-Serial}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Posix\-Serial\-::$\sim$\-Posix\-Serial} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1PosixSerial_a46a1dca8714afcf0b5ec9498b02dd5a8}
+
+
+\-Definition at line 118 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_ac4e722078a8f8a9a435bddc1a025aa0b}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!\-Posix\-Serial@{\-Posix\-Serial}}
+\index{\-Posix\-Serial@{\-Posix\-Serial}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{\-Posix\-Serial}]{\setlength{\rightskip}{0pt plus 5cm}{\bf metrobotics\-::\-Posix\-Serial\-::\-Posix\-Serial} (
+\begin{DoxyParamCaption}
+\item[{const {\bf \-Posix\-Serial} \&}]{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_ac4e722078a8f8a9a435bddc1a025aa0b}
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classmetrobotics_1_1PosixSerial_a79115a02df3f543d40ae91d15d7b90c6}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!connect@{connect}}
+\index{connect@{connect}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{connect}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::connect} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a79115a02df3f543d40ae91d15d7b90c6}
+
+
+\-Definition at line 125 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a6a790d35488736c052dc580baf2a6391}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!debugging@{debugging}}
+\index{debugging@{debugging}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{debugging}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::debugging} (
+\begin{DoxyParamCaption}
+\item[{bool}]{flag}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a6a790d35488736c052dc580baf2a6391}
+
+
+\-Toggle class-\/wide debugging. 
+
+
+
+\-Definition at line 39 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_aa0a3298fc067b03e62154ccbe6bd276e}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!flush\-Input@{flush\-Input}}
+\index{flush\-Input@{flush\-Input}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{flush\-Input}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::flush\-Input} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_aa0a3298fc067b03e62154ccbe6bd276e}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1Serial_a7946553df09777c6db4afbcde2e318c2}{metrobotics\-::\-Serial}.
+
+
+
+\-Definition at line 225 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a44eb4e702e0c08f3f354e9c19e9cef8a}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!flush\-Output@{flush\-Output}}
+\index{flush\-Output@{flush\-Output}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{flush\-Output}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::flush\-Output} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a44eb4e702e0c08f3f354e9c19e9cef8a}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1Serial_afe9e31faf7359119772ca1b5790f9a83}{metrobotics\-::\-Serial}.
+
+
+
+\-Definition at line 215 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a3174f9e2382efbbc53795565314e6030}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!get\-Block@{get\-Block}}
+\index{get\-Block@{get\-Block}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{get\-Block}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::get\-Block} (
+\begin{DoxyParamCaption}
+\item[{unsigned char $\ast$}]{buf, }
+\item[{unsigned long}]{n\-Bytes}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a3174f9e2382efbbc53795565314e6030}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1Serial_a2c54f800173e4e9c07337d92d8d4fb3b}{metrobotics\-::\-Serial}.
+
+
+
+\-Definition at line 204 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_aeeacb8383b543a5354b8663254205727}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!get\-Byte@{get\-Byte}}
+\index{get\-Byte@{get\-Byte}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{get\-Byte}]{\setlength{\rightskip}{0pt plus 5cm}unsigned char {\bf \-Posix\-Serial\-::get\-Byte} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_aeeacb8383b543a5354b8663254205727}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1Serial_af9d195d4c2982d49e99e9eef25f439f1}{metrobotics\-::\-Serial}.
+
+
+
+\-Definition at line 197 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_aeffe5604a844c22e5a128a90852b91e3}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!operator=@{operator=}}
+\index{operator=@{operator=}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Posix\-Serial}\& metrobotics\-::\-Posix\-Serial\-::operator= (
+\begin{DoxyParamCaption}
+\item[{const {\bf \-Posix\-Serial} \&}]{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_aeffe5604a844c22e5a128a90852b91e3}
+\hypertarget{classmetrobotics_1_1PosixSerial_abc2a8fd6b268ea5993590d099ad6ba80}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!put\-Block@{put\-Block}}
+\index{put\-Block@{put\-Block}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{put\-Block}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::put\-Block} (
+\begin{DoxyParamCaption}
+\item[{const unsigned char $\ast$}]{buf, }
+\item[{unsigned long}]{n\-Bytes}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_abc2a8fd6b268ea5993590d099ad6ba80}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1Serial_af68a49b11d256035d651107781a1112c}{metrobotics\-::\-Serial}.
+
+
+
+\-Definition at line 186 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_ac77d22c91d44f80782e8c6f2a5070f52}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!put\-Byte@{put\-Byte}}
+\index{put\-Byte@{put\-Byte}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{put\-Byte}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::put\-Byte} (
+\begin{DoxyParamCaption}
+\item[{const unsigned char}]{b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_ac77d22c91d44f80782e8c6f2a5070f52}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1Serial_a0188471ec0f240d4b4ec180eaf95fc4a}{metrobotics\-::\-Serial}.
+
+
+
+\-Definition at line 181 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a7650234ceea8ddb92e35be4f4811bd63}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!timeout@{timeout}}
+\index{timeout@{timeout}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{timeout}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Serial\-::timeout} (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{ms = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1PosixSerial_a7650234ceea8ddb92e35be4f4811bd63}
+
+
+\-Set a timeout (in milliseconds) for all \-I/\-O operations. 
+
+\-A timeout of 0 (the default) may block \-I/\-O indefinitely. 
+
+\-Definition at line 235 of file \-Posix\-Serial.\-cpp.
+
+
+
+\subsection{\-Member \-Data \-Documentation}
+\hypertarget{classmetrobotics_1_1PosixSerial_a96adceb87053360189a26efb47656750}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!m\-Dev\-F\-D@{m\-Dev\-F\-D}}
+\index{m\-Dev\-F\-D@{m\-Dev\-F\-D}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{m\-Dev\-F\-D}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf metrobotics\-::\-Posix\-Serial\-::m\-Dev\-F\-D}\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a96adceb87053360189a26efb47656750}
+
+
+\-Definition at line 72 of file \-Posix\-Serial.\-h.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a647c305dbdff7155b9f70503a5a4142b}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!m\-Dev\-Name@{m\-Dev\-Name}}
+\index{m\-Dev\-Name@{m\-Dev\-Name}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{m\-Dev\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf metrobotics\-::\-Posix\-Serial\-::m\-Dev\-Name}\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a647c305dbdff7155b9f70503a5a4142b}
+
+
+\-Definition at line 71 of file \-Posix\-Serial.\-h.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a68e19a9a6ed15bd9d0e2a0579a3630a1}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!m\-Functional@{m\-Functional}}
+\index{m\-Functional@{m\-Functional}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{m\-Functional}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf metrobotics\-::\-Posix\-Serial\-::m\-Functional}\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a68e19a9a6ed15bd9d0e2a0579a3630a1}
+
+
+\-Definition at line 70 of file \-Posix\-Serial.\-h.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_acffca69e71f5ced685bb28f185cdc5b1}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!m\-Line\-Speed@{m\-Line\-Speed}}
+\index{m\-Line\-Speed@{m\-Line\-Speed}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{m\-Line\-Speed}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf metrobotics\-::\-Posix\-Serial\-::m\-Line\-Speed}\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_acffca69e71f5ced685bb28f185cdc5b1}
+
+
+\-Definition at line 73 of file \-Posix\-Serial.\-h.
+
+\hypertarget{classmetrobotics_1_1PosixSerial_a1e7511b3cf4f30f28285ff7a63036a27}{\index{metrobotics\-::\-Posix\-Serial@{metrobotics\-::\-Posix\-Serial}!m\-Time\-Out@{m\-Time\-Out}}
+\index{m\-Time\-Out@{m\-Time\-Out}!metrobotics::PosixSerial@{metrobotics\-::\-Posix\-Serial}}
+\subsubsection[{m\-Time\-Out}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int {\bf metrobotics\-::\-Posix\-Serial\-::m\-Time\-Out}\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1PosixSerial_a1e7511b3cf4f30f28285ff7a63036a27}
+
+
+\-Definition at line 74 of file \-Posix\-Serial.\-h.
+
+
+
+\-The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+include/\-Communication/\hyperlink{PosixSerial_8h}{\-Posix\-Serial.\-h}\item 
+src/\-Communication/\hyperlink{PosixSerial_8cpp}{\-Posix\-Serial.\-cpp}\end{DoxyCompactItemize}

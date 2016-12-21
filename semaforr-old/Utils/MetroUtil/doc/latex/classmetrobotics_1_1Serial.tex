@@ -1,0 +1,234 @@
+\hypertarget{classmetrobotics_1_1Serial}{\section{metrobotics\-:\-:\-Serial \-Class \-Reference}
+\label{classmetrobotics_1_1Serial}\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}}
+}
+
+
+\-A virtual serial device capable of sequential input and output.  
+
+
+
+
+{\ttfamily \#include $<$\-Serial.\-h$>$}
+
+
+
+\-Inheritance diagram for metrobotics\-:\-:\-Serial\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=342pt]{classmetrobotics_1_1Serial__inherit__graph}
+\end{center}
+\end{figure}
+
+
+\-Collaboration diagram for metrobotics\-:\-:\-Serial\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=342pt]{classmetrobotics_1_1Serial__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classmetrobotics_1_1Serial_1_1ConnectionFailure}{\-Connection\-Failure}
+\item 
+class \hyperlink{classmetrobotics_1_1Serial_1_1InvalidDeviceName}{\-Invalid\-Device\-Name}
+\item 
+class \hyperlink{classmetrobotics_1_1Serial_1_1NullPointer}{\-Null\-Pointer}
+\item 
+class \hyperlink{classmetrobotics_1_1Serial_1_1ReadFailure}{\-Read\-Failure}
+\item 
+class \hyperlink{classmetrobotics_1_1Serial_1_1ReadTimeout}{\-Read\-Timeout}
+\item 
+class \hyperlink{classmetrobotics_1_1Serial_1_1WriteFailure}{\-Write\-Failure}
+\item 
+class \hyperlink{classmetrobotics_1_1Serial_1_1WriteTimeout}{\-Write\-Timeout}
+\end{DoxyCompactItemize}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmetrobotics_1_1Serial_a3f15b64bdd4d3e3a87fb35be2b0c0bb3}{\-Serial} ()
+\item 
+virtual \hyperlink{classmetrobotics_1_1Serial_a962c1b0903cb3d2f4bd08228ae517492}{$\sim$\-Serial} ()
+\item 
+virtual void \hyperlink{classmetrobotics_1_1Serial_a7946553df09777c6db4afbcde2e318c2}{flush\-Input} ()=0
+\item 
+virtual unsigned char \hyperlink{classmetrobotics_1_1Serial_af9d195d4c2982d49e99e9eef25f439f1}{get\-Byte} ()=0
+\item 
+virtual void \hyperlink{classmetrobotics_1_1Serial_a2c54f800173e4e9c07337d92d8d4fb3b}{get\-Block} (unsigned char $\ast$buf, unsigned long n\-Bytes)=0
+\item 
+virtual void \hyperlink{classmetrobotics_1_1Serial_afe9e31faf7359119772ca1b5790f9a83}{flush\-Output} ()=0
+\item 
+virtual void \hyperlink{classmetrobotics_1_1Serial_a0188471ec0f240d4b4ec180eaf95fc4a}{put\-Byte} (const unsigned char)=0
+\item 
+virtual void \hyperlink{classmetrobotics_1_1Serial_af68a49b11d256035d651107781a1112c}{put\-Block} (const unsigned char $\ast$buf, unsigned long n\-Bytes)=0
+\item 
+void \hyperlink{classmetrobotics_1_1Serial_a63b7abf172cad25bfc998b3b1f98310f}{flush} ()
+\begin{DoxyCompactList}\small\item\em \-Flush both input and output. \end{DoxyCompactList}\item 
+std\-::string \hyperlink{classmetrobotics_1_1Serial_a5a22b8c2ecb89449c3d32353fdab5391}{get\-Line} (char delimiter= '$\backslash$n')
+\begin{DoxyCompactList}\small\item\em \-Get a whole line of input from the serial device. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-A virtual serial device capable of sequential input and output. 
+
+\-A purely abstract class of objects that simulate serial communication; observe that \hyperlink{classmetrobotics_1_1Serial}{\-Serial} is both a \hyperlink{classmetrobotics_1_1DataSource}{\-Data\-Source} and a \hyperlink{classmetrobotics_1_1DataSink}{\-Data\-Sink}. \begin{DoxyAuthor}{\-Author}
+\-John \-Cummins 
+
+\-Mark \-Manashirov 
+\end{DoxyAuthor}
+
+
+\-Definition at line 72 of file \-Serial.\-h.
+
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classmetrobotics_1_1Serial_a3f15b64bdd4d3e3a87fb35be2b0c0bb3}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!\-Serial@{\-Serial}}
+\index{\-Serial@{\-Serial}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{\-Serial}]{\setlength{\rightskip}{0pt plus 5cm}{\bf metrobotics\-::\-Serial\-::\-Serial} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Serial_a3f15b64bdd4d3e3a87fb35be2b0c0bb3}
+
+
+\-Definition at line 75 of file \-Serial.\-h.
+
+\hypertarget{classmetrobotics_1_1Serial_a962c1b0903cb3d2f4bd08228ae517492}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!$\sim$\-Serial@{$\sim$\-Serial}}
+\index{$\sim$\-Serial@{$\sim$\-Serial}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{$\sim$\-Serial}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf metrobotics\-::\-Serial\-::$\sim$\-Serial} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, virtual\mbox{]}}}}\label{classmetrobotics_1_1Serial_a962c1b0903cb3d2f4bd08228ae517492}
+
+
+\-Definition at line 76 of file \-Serial.\-h.
+
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classmetrobotics_1_1Serial_a63b7abf172cad25bfc998b3b1f98310f}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!flush@{flush}}
+\index{flush@{flush}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{flush}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Serial\-::flush} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1Serial_a63b7abf172cad25bfc998b3b1f98310f}
+
+
+\-Flush both input and output. 
+
+
+
+\-Definition at line 20 of file \-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1Serial_a7946553df09777c6db4afbcde2e318c2}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!flush\-Input@{flush\-Input}}
+\index{flush\-Input@{flush\-Input}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{flush\-Input}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf metrobotics\-::\-Serial\-::flush\-Input} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Serial_a7946553df09777c6db4afbcde2e318c2}
+
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixSerial_aa0a3298fc067b03e62154ccbe6bd276e}{metrobotics\-::\-Posix\-Serial}.
+
+\hypertarget{classmetrobotics_1_1Serial_afe9e31faf7359119772ca1b5790f9a83}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!flush\-Output@{flush\-Output}}
+\index{flush\-Output@{flush\-Output}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{flush\-Output}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf metrobotics\-::\-Serial\-::flush\-Output} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Serial_afe9e31faf7359119772ca1b5790f9a83}
+
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixSerial_a44eb4e702e0c08f3f354e9c19e9cef8a}{metrobotics\-::\-Posix\-Serial}.
+
+\hypertarget{classmetrobotics_1_1Serial_a2c54f800173e4e9c07337d92d8d4fb3b}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!get\-Block@{get\-Block}}
+\index{get\-Block@{get\-Block}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{get\-Block}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf metrobotics\-::\-Serial\-::get\-Block} (
+\begin{DoxyParamCaption}
+\item[{unsigned char $\ast$}]{buf, }
+\item[{unsigned long}]{n\-Bytes}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Serial_a2c54f800173e4e9c07337d92d8d4fb3b}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1DataSource_a6bb6b185d3995cac7a74d5c82cd54d6b}{metrobotics\-::\-Data\-Source}.
+
+
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixSerial_a3174f9e2382efbbc53795565314e6030}{metrobotics\-::\-Posix\-Serial}.
+
+\hypertarget{classmetrobotics_1_1Serial_af9d195d4c2982d49e99e9eef25f439f1}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!get\-Byte@{get\-Byte}}
+\index{get\-Byte@{get\-Byte}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{get\-Byte}]{\setlength{\rightskip}{0pt plus 5cm}virtual unsigned char {\bf metrobotics\-::\-Serial\-::get\-Byte} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Serial_af9d195d4c2982d49e99e9eef25f439f1}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1DataSource_afffac0648e7674e381f961eab00a5982}{metrobotics\-::\-Data\-Source}.
+
+
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixSerial_aeeacb8383b543a5354b8663254205727}{metrobotics\-::\-Posix\-Serial}.
+
+\hypertarget{classmetrobotics_1_1Serial_a5a22b8c2ecb89449c3d32353fdab5391}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!get\-Line@{get\-Line}}
+\index{get\-Line@{get\-Line}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{get\-Line}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf \-Serial\-::get\-Line} (
+\begin{DoxyParamCaption}
+\item[{char}]{delimiter = {\ttfamily '$\backslash$n'}}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1Serial_a5a22b8c2ecb89449c3d32353fdab5391}
+
+
+\-Get a whole line of input from the serial device. 
+
+\-We define a line as a sequence of characters whose last character is the first occurrence of the character specified by the delimiter argument. \-For example, if the delimiter is the newline character itself, then that will be the last character in the line; in other words the delimiter is included as part of the line. 
+
+\-Definition at line 26 of file \-Serial.\-cpp.
+
+\hypertarget{classmetrobotics_1_1Serial_af68a49b11d256035d651107781a1112c}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!put\-Block@{put\-Block}}
+\index{put\-Block@{put\-Block}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{put\-Block}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf metrobotics\-::\-Serial\-::put\-Block} (
+\begin{DoxyParamCaption}
+\item[{const unsigned char $\ast$}]{buf, }
+\item[{unsigned long}]{n\-Bytes}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Serial_af68a49b11d256035d651107781a1112c}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1DataSink_a4b6fc8b1b32aabbd969fa1ceae11c037}{metrobotics\-::\-Data\-Sink}.
+
+
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixSerial_abc2a8fd6b268ea5993590d099ad6ba80}{metrobotics\-::\-Posix\-Serial}.
+
+\hypertarget{classmetrobotics_1_1Serial_a0188471ec0f240d4b4ec180eaf95fc4a}{\index{metrobotics\-::\-Serial@{metrobotics\-::\-Serial}!put\-Byte@{put\-Byte}}
+\index{put\-Byte@{put\-Byte}!metrobotics::Serial@{metrobotics\-::\-Serial}}
+\subsubsection[{put\-Byte}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf metrobotics\-::\-Serial\-::put\-Byte} (
+\begin{DoxyParamCaption}
+\item[{const unsigned}]{char}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Serial_a0188471ec0f240d4b4ec180eaf95fc4a}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1DataSink_a2b828ff4ef667925f9b35dd01238141c}{metrobotics\-::\-Data\-Sink}.
+
+
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixSerial_ac77d22c91d44f80782e8c6f2a5070f52}{metrobotics\-::\-Posix\-Serial}.
+
+
+
+\-The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+include/\-Communication/\hyperlink{Serial_8h}{\-Serial.\-h}\item 
+src/\-Communication/\hyperlink{Serial_8cpp}{\-Serial.\-cpp}\end{DoxyCompactItemize}

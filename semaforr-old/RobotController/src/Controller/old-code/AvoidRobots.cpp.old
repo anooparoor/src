@@ -1,0 +1,257 @@
+// Implementation file which contains the functions of the class AvoidRobots.h
+// Tier 1 advisor which vetoes actions which will cause collision with other robots..
+// anoop.a.rao@gmail.com
+// date : 3rd april 2014
+
+#include "FORRGeometry.h"
+#include <math.h>
+#include "FORRAction.h"
+#include "FakeDescriptive.h"
+#include "Position.h"
+#include "AvoidRobots.h"
+
+void AvoidRobots::avoid_robots(set<FORRAction> *vetoed_actions, FakeDescriptive *fd){
+  // Algorithm::::
+  // Step 6: Find a maximal independent set S in the graph such that f(C,S) is minimum. C is the set of robots in collision set. 
+  // S represents set of robots which are chosen to be free, while other C-S robot's all moves which would lead to the robot being on other robot's range
+  // vetoed.
+  // f(C,S) represents a function which returns the waiting time for C-S when only S can move
+  // , which is why we are trying to find a set S such that expected waiting time of C-S is minimized.
+  // f = max(cost(S)) * |C-S| (f = maximum time or average time taken by the robot to move out of collision * number of robots waiting = total weight time)
+  // A simpler but suboptimal version would be to look at just one maximal independent set and pick that as robots which are free to move
+  vector<Position> team_pose = fd->teamPose;
+  
+  // data structure to represent the collision graph is adjacency list
+  list<Vertex> *collision_graph;
+  
+  generate_collision_graph(team_pose, collision_graph);
+  
+  // This function checks for inline collision and if the current robot is involved in such a collision, it vetoes its forward / backward moves
+  veto_inline_collisions(collision_graph, vetoed_actions, team_pose[0]);
+  
+  // This function takes in the vetoed_actions collision set and uses the collision set to find the best possible subset to get the vetoed actions, if 
+  // my robot id is one of the choose ones to make collision work then, actions are vetoed and updated.
+  veto_angular_collisions(collision_graph, vetoed_actions, team_pose[0]);
+}
+
+bool AvoidRobots::generate_collision_graph(vector<Position> team_pose, list<Vertex> *collision_graph){
+  //check 
+  Position my_robot_pose = team_pose[0];
+  list<Position> to_be_tested;
+  to_be_tested.push_back(my_robot_pose);
+  list<Position> already_tested;
+  while(to_be_tested.size() != 0){
+    Position test_robot = (to_be_tested.front());
+    to_be_tested.pop_front();
+    std::list<Position>::iterator findIter = std::find(already_tested.begin(), already_tested.end(), test_robot);
+    if(findIter == already_tested.end()){
+      double weight = 0;
+      for(int i = 0; i < team_pose.size(); i++){
+	double temp_weight = check_for_collision(test_robot, team_pose[i]);
+        // if check_for_collision returns 1000 , implies no collision between the 2 robots in question
+	if(temp_weight != 1000){
+          // update the weight if its better
+          if(temp_weight > weight){
+	    weight = temp_weight;
+	  }
+          // add the colliding robot into the to_be_tested list and add the collision info into the collision_graph
+	  to_be_tested.push_back(team_pose[i]);
+          add_collision_info(collision_graph, test_robot, team_pose[i]);
+	}
+      }
+      add_weight_info(collision_graph, test_robot, weight);
+      already_tested.push_back(test_robot);
+    }
+  }
+}
+
+// use slavisa new FORRGeometry compute collision 
+double AvoidRobots::check_for_collision(Position robot1, Position robot2){
+  double robot_size = 10;
+  double max_move_len = 10;
+  double weight = 1000;
+  // get a right and left vector for robot1 and robot2
+  double xlr1 = robot1.getX() + (robot_size/2)* cos (robot1.getTheta() + (3.14 / 2));
+  double ylr1 = robot1.getY() + (robot_size/2)* cos (robot1.getTheta() + (3.14 / 2));
+  Vector lr1 (xlr1, ylr1, robot1.getTheta(), max_move_len); 
+  
+  double xrr1 = robot1.getX() + (robot_size/2)* cos (robot1.getTheta() - (3.14 / 2));
+  double yrr1 = robot1.getY() + (robot_size/2)* cos (robot1.getTheta() - (3.14 / 2));
+  Vector rr1 (xrr1, yrr1, robot1.getTheta(), max_move_len);
+  
+  double xlr2 = robot2.getX() + (robot_size/2)* cos (robot2.getTheta() + (3.14 / 2));
+  double ylr2 = robot2.getY() + (robot_size/2)* cos (robot2.getTheta() + (3.14 / 2));
+  Vector lr2 (xlr2, ylr2, robot2.getTheta(), max_move_len); 
+  
+  double xrr2 = robot2.getX() + (robot_size/2)* cos (robot2.getTheta() + (3.14 / 2));
+  double yrr2 = robot2.getY() + (robot_size/2)* cos (robot2.getTheta() + (3.14 / 2));
+  Vector rr2 (xrr2, yrr2, robot2.getTheta(), max_move_len);
+  CartesianPoint intersection_point;
+  if(do_intersect(lr1, lr2, intersection_point) || do_intersect(lr1, rr2, intersection_point) || do_intersect(rr1, lr2, intersection_point) || do_intersect(rr1, rr2, intersection_point)){
+    cout << "possible collision dectected" << endl;
+    CartesianPoint robot1_pos (robot1.getX(), robot2.getY());
+    weight = distance(intersection_point, robot1_pos);
+  }
+  return weight;
+}
+
+void AvoidRobots::add_collision_info(list<Vertex> *collision_graph ,Position robot1,Position robot2){
+  list<Vertex>::iterator iter = collision_graph->begin();
+  bool already_in_graph;
+  for(iter = collision_graph->begin(); iter != collision_graph->end(); iter++){
+    if(!checkequal(iter->robot, robot1)){
+      already_in_graph = true;
+      break;
+    }
+  }
+  if(already_in_graph == false){
+    Vertex new_vertex;
+    new_vertex.robot = robot1;
+    new_vertex.adj.push_back(robot2); 
+    collision_graph->push_back(new_vertex);
+  }
+  else if(already_in_graph == true){
+    list<Position>::iterator posIter;
+    std::list<Position>::iterator findIter = std::find(iter->adj.begin(), iter->adj.end(), robot2);
+    if(findIter == iter->adj.end()){
+      iter->adj.push_back(robot2);
+    }
+  }
+}
+
+
+bool AvoidRobots::checkequal(Position position1, Position position2){
+  bool isEqual;
+  if(position1.getX() == position2.getX() && position1.getY() == position2.getY() && position1.getTheta() == position2.getTheta())
+    isEqual == true;
+  else
+    isEqual == false;
+  return isEqual;
+}
+
+void AvoidRobots::add_weight_info(list<Vertex> *collision_graph ,Position robot, double weight){
+  list<Vertex>::iterator iter = collision_graph->begin();
+  for(iter = collision_graph->begin(); iter != collision_graph->end(); iter++){
+    if(checkequal(iter->robot, robot)){
+      iter->weight = weight;
+      break;
+    }
+  }
+}
+
+
+bool AvoidRobots::veto_inline_collisions(list<Vertex> *collision_graph, set<FORRAction> *vetoed_actions ,Position robot){
+  list<Vertex>::iterator vertexIter = collision_graph->begin();
+  list<Position> adj = vertexIter->adj;
+  list<Position>::iterator adjIter;
+  for(adjIter = adj.begin(); adjIter != adj.end(); adjIter++){
+    if(adjIter->getTheta() == robot.getTheta()){
+      cout<< "inline collision between " << adjIter->getX() << "," << adjIter->getY() << " and " << robot.getX() << "," << robot.getY() <<endl;
+      if(robot.getX() < adjIter->getX()){
+	for(int i = 1; i < 6; ++i){  
+	  vetoed_actions->insert(FORRAction(FORWARD, i));
+	}
+	cout << "All forward moves are banned due to inline collision are banned." << endl;
+      }
+    }
+  }
+}
+
+bool AvoidRobots::veto_angular_collisions(list<Vertex> *collision_graph, set<FORRAction> *vetoed_actions ,Position robot){
+  // convert the list of vertices in the collision graph into set
+  vector<Vertex> collision_vector;
+  list<Vertex>::iterator iter;
+  for(iter = collision_graph->begin(); iter != collision_graph->end(); iter++){
+    collision_vector.push_back(*iter);
+  }
+  set< set <Vertex> > pSet;
+  // generates all possible subsets of collision_set vertices and saves it into pSet
+  generatePowerSet(collision_vector, &pSet);
+  set< set <Vertex> >::iterator ind_iter;
+  set<Vertex> maximal_independent_set;
+  double maximal_weight = 0; 
+  for(ind_iter = pSet.begin(); ind_iter != pSet.end(); ind_iter++){
+    if(is_independent(*ind_iter)){
+      double temp_total_weight = compute_weight(*ind_iter);
+      if(temp_total_weight > maximal_weight){
+	maximal_weight = temp_total_weight;
+        maximal_independent_set = (*ind_iter);
+      }
+    }
+  }
+ 
+  bool vetoActions = false;
+  // if robot belongs to the choosen independent set
+  if(in_maximal_set(maximal_independent_set, robot)){
+    // veto forward actions
+    for(int i = 1; i < 6; ++i)  
+      vetoed_actions->insert(FORRAction(FORWARD, i));
+    cout << "All forward moves are banned due to inline collision are banned." << endl;	
+  }
+}
+
+bool AvoidRobots::in_maximal_set(set<Vertex> maximal_independent_set, Position robot){
+  set<Vertex>::iterator setIter;
+  bool in_set = false;
+  for(setIter = maximal_independent_set.begin();setIter != maximal_independent_set.end(); setIter++){
+    if(checkequal(setIter->robot, robot)){
+      in_set = true;
+    }
+  }
+  return in_set;
+}
+
+double AvoidRobots::compute_weight(set<Vertex> independent_set){
+  set<Vertex>::iterator setIter;
+  double weight = 0;
+  for(setIter = independent_set.begin();setIter != independent_set.end(); setIter++){
+    weight = weight + setIter->weight;
+  }
+  return weight;
+}
+
+bool AvoidRobots::is_independent(set<Vertex> test_set){
+  set< Vertex > ::iterator setIter;
+  set< Vertex >::iterator setIter2;
+  bool is_independent = true;
+  for(setIter = test_set.begin(); setIter != test_set.end(); setIter++){
+    Position mypose = (*setIter).robot;
+    for(setIter2 = test_set.begin(); setIter2 != test_set.end(); setIter2++){
+      list<Position> vertices = setIter->adj;
+      std::list<Position>::iterator findIter = std::find(vertices.begin(), vertices.end(), mypose);
+      if(findIter == vertices.end()){
+	is_independent = false;
+        return is_independent;
+      }
+    }
+  }
+  return is_independent;
+}
+
+void AvoidRobots::generatePowerSet(vector<Vertex> inputSet, set< set<Vertex> > *pSet )
+{
+ int i = 0;
+ int n = inputSet.size();
+ //There will be 2^n subsets; generate them
+ while ( i < (2 << n) )
+ {  
+  set<Vertex> subSet;
+    
+  int j = 0; 
+  int k = i;
+  
+  while( k&(k-1) ) //Until k contains at-least one set bit
+  {
+   //If jth bit is set, add the jth element to the subset
+   if( k & 1)
+   {
+      subSet.insert(inputSet[j]);
+   }
+   k = k >> 1;
+   j++;
+  }
+  //Add the subset to the powerset
+  pSet->insert(subSet);
+  i++;
+ }
+}

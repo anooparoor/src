@@ -1,0 +1,12 @@
+// main file to test the code
+#include <iostream>
+#include "rswl.h"
+using namespace std;
+ 
+int main()
+{
+    RSWL rswl;
+    rswl.learnWeights();
+    cout << "END of program!!!!!!!!! Hurray!!!!!!!" << endl;   
+    return 0;
+}

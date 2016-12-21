@@ -1,0 +1,182 @@
+\hypertarget{classmetrobotics_1_1RealVectorN}{\section{metrobotics\-:\-:\-Real\-Vector\-N$<$ \-N $>$ \-Class \-Template \-Reference}
+\label{classmetrobotics_1_1RealVectorN}\index{metrobotics\-::\-Real\-Vector\-N$<$ N $>$@{metrobotics\-::\-Real\-Vector\-N$<$ N $>$}}
+}
+
+
+\-A generic vector implementation over the real numbers.  
+
+
+
+
+{\ttfamily \#include $<$\-Real\-Vector\-N.\-h$>$}
+
+
+
+\-Inheritance diagram for metrobotics\-:\-:\-Real\-Vector\-N$<$ \-N $>$\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{classmetrobotics_1_1RealVectorN__inherit__graph}
+\end{center}
+\end{figure}
+
+
+\-Collaboration diagram for metrobotics\-:\-:\-Real\-Vector\-N$<$ \-N $>$\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{classmetrobotics_1_1RealVectorN__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmetrobotics_1_1RealVectorN_a54bb8a300c85354940f5712952d4fc03}{\-Real\-Vector\-N} ()
+\begin{DoxyCompactList}\small\item\em \-Construct a new empty vector. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1RealVectorN_aa4b10a33e9331bd34ab6d230cd3b6dcc}{\-Real\-Vector\-N} (const \hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N} \&v)
+\begin{DoxyCompactList}\small\item\em \-Copy constructor. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1RealVectorN_a4c559f7cf9d6db280ec33a0c16b65b90}{\-Real\-Vector\-N} (const \hyperlink{classmetrobotics_1_1VectorN}{\-Vector\-N}$<$ double, \-N $>$ \&v)
+\begin{DoxyCompactList}\small\item\em \-Copy constructor for {\itshape upcasting\/} from the base class. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N} \& \hyperlink{classmetrobotics_1_1RealVectorN_aac6a7d96a211e6110013908c42ba96b8}{operator=} (const \hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N} \&v)
+\begin{DoxyCompactList}\small\item\em \-Assignment operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Static \-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{classmetrobotics_1_1RealVectorN_a3c5ccee2ad0e7f40a7f99dcf8c4c7837}{margin\-Of\-Error} (double epsilon)
+\begin{DoxyCompactList}\small\item\em \-Set/change the acceptable margin of error. \end{DoxyCompactList}\item 
+static double \hyperlink{classmetrobotics_1_1RealVectorN_a75f4405dc254c9481776818506ad6817}{margin\-Of\-Error} ()
+\begin{DoxyCompactList}\small\item\em \-Get the acceptable margin of error. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\subsubsection*{template$<$size\-\_\-t \-N$>$class metrobotics\-::\-Real\-Vector\-N$<$ N $>$}
+
+\-A generic vector implementation over the real numbers. 
+
+\-This class is capable of representing vectors of any dimension (size) over the real numbers, that is values represented by type {\ttfamily double}.
+
+
+\begin{DoxyTemplParams}{\-Template Parameters}
+{\em \-N} & is an unsigned integral value that represents the dimension (size) of the vector\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyAuthor}{\-Author}
+\-Mark \-Manashirov $<$\href{mailto:mark.manashirov@gmail.com}{\tt mark.\-manashirov@gmail.\-com}$>$ 
+\end{DoxyAuthor}
+
+
+\-Definition at line 22 of file \-Real\-Vector\-N.\-h.
+
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classmetrobotics_1_1RealVectorN_a54bb8a300c85354940f5712952d4fc03}{\index{metrobotics\-::\-Real\-Vector\-N@{metrobotics\-::\-Real\-Vector\-N}!\-Real\-Vector\-N@{\-Real\-Vector\-N}}
+\index{\-Real\-Vector\-N@{\-Real\-Vector\-N}!metrobotics::RealVectorN@{metrobotics\-::\-Real\-Vector\-N}}
+\subsubsection[{\-Real\-Vector\-N}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-N$>$ {\bf metrobotics\-::\-Real\-Vector\-N}$<$ \-N $>$\-::{\bf \-Real\-Vector\-N} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1RealVectorN_a54bb8a300c85354940f5712952d4fc03}
+
+
+\-Construct a new empty vector. 
+
+\-All new vectors are initialized to zero by default. 
+
+\-Definition at line 60 of file \-Real\-Vector\-N.\-h.
+
+\hypertarget{classmetrobotics_1_1RealVectorN_aa4b10a33e9331bd34ab6d230cd3b6dcc}{\index{metrobotics\-::\-Real\-Vector\-N@{metrobotics\-::\-Real\-Vector\-N}!\-Real\-Vector\-N@{\-Real\-Vector\-N}}
+\index{\-Real\-Vector\-N@{\-Real\-Vector\-N}!metrobotics::RealVectorN@{metrobotics\-::\-Real\-Vector\-N}}
+\subsubsection[{\-Real\-Vector\-N}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-N$>$ {\bf metrobotics\-::\-Real\-Vector\-N}$<$ \-N $>$\-::{\bf \-Real\-Vector\-N} (
+\begin{DoxyParamCaption}
+\item[{const {\bf \-Real\-Vector\-N}$<$ \-N $>$ \&}]{v}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1RealVectorN_aa4b10a33e9331bd34ab6d230cd3b6dcc}
+
+
+\-Copy constructor. 
+
+
+
+\-Definition at line 71 of file \-Real\-Vector\-N.\-h.
+
+\hypertarget{classmetrobotics_1_1RealVectorN_a4c559f7cf9d6db280ec33a0c16b65b90}{\index{metrobotics\-::\-Real\-Vector\-N@{metrobotics\-::\-Real\-Vector\-N}!\-Real\-Vector\-N@{\-Real\-Vector\-N}}
+\index{\-Real\-Vector\-N@{\-Real\-Vector\-N}!metrobotics::RealVectorN@{metrobotics\-::\-Real\-Vector\-N}}
+\subsubsection[{\-Real\-Vector\-N}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-N$>$ {\bf metrobotics\-::\-Real\-Vector\-N}$<$ \-N $>$\-::{\bf \-Real\-Vector\-N} (
+\begin{DoxyParamCaption}
+\item[{const {\bf \-Vector\-N}$<$ double, \-N $>$ \&}]{v}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1RealVectorN_a4c559f7cf9d6db280ec33a0c16b65b90}
+
+
+\-Copy constructor for {\itshape upcasting\/} from the base class. 
+
+
+
+\-Definition at line 80 of file \-Real\-Vector\-N.\-h.
+
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classmetrobotics_1_1RealVectorN_a3c5ccee2ad0e7f40a7f99dcf8c4c7837}{\index{metrobotics\-::\-Real\-Vector\-N@{metrobotics\-::\-Real\-Vector\-N}!margin\-Of\-Error@{margin\-Of\-Error}}
+\index{margin\-Of\-Error@{margin\-Of\-Error}!metrobotics::RealVectorN@{metrobotics\-::\-Real\-Vector\-N}}
+\subsubsection[{margin\-Of\-Error}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-N$>$ static void {\bf metrobotics\-::\-Real\-Vector\-N}$<$ \-N $>$\-::{\bf margin\-Of\-Error} (
+\begin{DoxyParamCaption}
+\item[{double}]{epsilon}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, static\mbox{]}}}}\label{classmetrobotics_1_1RealVectorN_a3c5ccee2ad0e7f40a7f99dcf8c4c7837}
+
+
+\-Set/change the acceptable margin of error. 
+
+\-The acceptable margin of error is used in relational operations involving vectors. \-For example, when determining whether two vectors are equal to each other, the acceptable margin of error will determine the maximum variance of equal numbers and the minimum variance of unequal numbers. \-See \hyperlink{classmetrobotics_1_1VectorN_equality}{equality} for more details.
+
+\begin{DoxyItemize}
+\item epsilon is the acceptable margin of error\end{DoxyItemize}
+\begin{DoxyRemark}{\-Remarks}
+\-The acceptable margin of error applies to the entire vector space, that is to all vectors of the same dimension. \-The acceptable margin of error is initialized to zero by default. 
+\end{DoxyRemark}
+
+
+\-Definition at line 40 of file \-Real\-Vector\-N.\-h.
+
+\hypertarget{classmetrobotics_1_1RealVectorN_a75f4405dc254c9481776818506ad6817}{\index{metrobotics\-::\-Real\-Vector\-N@{metrobotics\-::\-Real\-Vector\-N}!margin\-Of\-Error@{margin\-Of\-Error}}
+\index{margin\-Of\-Error@{margin\-Of\-Error}!metrobotics::RealVectorN@{metrobotics\-::\-Real\-Vector\-N}}
+\subsubsection[{margin\-Of\-Error}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-N$>$ static double {\bf metrobotics\-::\-Real\-Vector\-N}$<$ \-N $>$\-::{\bf margin\-Of\-Error} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, static\mbox{]}}}}\label{classmetrobotics_1_1RealVectorN_a75f4405dc254c9481776818506ad6817}
+
+
+\-Get the acceptable margin of error. 
+
+\begin{DoxyReturn}{\-Returns}
+the acceptable margin of error 
+\end{DoxyReturn}
+
+
+\-Definition at line 50 of file \-Real\-Vector\-N.\-h.
+
+\hypertarget{classmetrobotics_1_1RealVectorN_aac6a7d96a211e6110013908c42ba96b8}{\index{metrobotics\-::\-Real\-Vector\-N@{metrobotics\-::\-Real\-Vector\-N}!operator=@{operator=}}
+\index{operator=@{operator=}!metrobotics::RealVectorN@{metrobotics\-::\-Real\-Vector\-N}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-N$>$ {\bf \-Real\-Vector\-N}\& {\bf metrobotics\-::\-Real\-Vector\-N}$<$ \-N $>$\-::operator= (
+\begin{DoxyParamCaption}
+\item[{const {\bf \-Real\-Vector\-N}$<$ \-N $>$ \&}]{v}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1RealVectorN_aac6a7d96a211e6110013908c42ba96b8}
+
+
+\-Assignment operator. 
+
+
+
+\-Definition at line 91 of file \-Real\-Vector\-N.\-h.
+
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+include/\-Math/\hyperlink{RealVectorN_8h}{\-Real\-Vector\-N.\-h}\end{DoxyCompactItemize}

@@ -1,0 +1,125 @@
+\hypertarget{classmetrobotics_1_1PosixTimer}{\section{metrobotics\-:\-:\-Posix\-Timer \-Class \-Reference}
+\label{classmetrobotics_1_1PosixTimer}\index{metrobotics\-::\-Posix\-Timer@{metrobotics\-::\-Posix\-Timer}}
+}
+
+
+\-P\-O\-S\-I\-X implementation of the \hyperlink{classmetrobotics_1_1Timer}{\-Timer} interface.  
+
+
+
+
+{\ttfamily \#include $<$\-Posix\-Timer.\-h$>$}
+
+
+
+\-Inheritance diagram for metrobotics\-:\-:\-Posix\-Timer\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=206pt]{classmetrobotics_1_1PosixTimer__inherit__graph}
+\end{center}
+\end{figure}
+
+
+\-Collaboration diagram for metrobotics\-:\-:\-Posix\-Timer\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=206pt]{classmetrobotics_1_1PosixTimer__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmetrobotics_1_1PosixTimer_a1d22f132117e1ab7fb188f5105d51a83}{\-Posix\-Timer} ()
+\begin{DoxyCompactList}\small\item\em \-Default constructor. \end{DoxyCompactList}\item 
+void \hyperlink{classmetrobotics_1_1PosixTimer_a83d8da5bbf3f0969af38e4519cb4b92b}{start} ()
+\begin{DoxyCompactList}\small\item\em \-Start the timer. \end{DoxyCompactList}\item 
+double \hyperlink{classmetrobotics_1_1PosixTimer_a68072093dc61a9a33f1c5f970ca0fbd2}{elapsed} () const 
+\begin{DoxyCompactList}\small\item\em \-Time that has elapsed since the last start (or reset) of the timer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-P\-O\-S\-I\-X implementation of the \hyperlink{classmetrobotics_1_1Timer}{\-Timer} interface. 
+
+\-This implementation of the high resolution timer is able to count one-\/second intervals of time precise to the microsecond.
+
+\begin{DoxyAuthor}{\-Author}
+\-Mark \-Manashirov $<$\href{mailto:mark.manashirov@gmail.com}{\tt mark.\-manashirov@gmail.\-com}$>$ 
+\end{DoxyAuthor}
+
+
+\-Definition at line 18 of file \-Posix\-Timer.\-h.
+
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classmetrobotics_1_1PosixTimer_a1d22f132117e1ab7fb188f5105d51a83}{\index{metrobotics\-::\-Posix\-Timer@{metrobotics\-::\-Posix\-Timer}!\-Posix\-Timer@{\-Posix\-Timer}}
+\index{\-Posix\-Timer@{\-Posix\-Timer}!metrobotics::PosixTimer@{metrobotics\-::\-Posix\-Timer}}
+\subsubsection[{\-Posix\-Timer}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Posix\-Timer\-::\-Posix\-Timer} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1PosixTimer_a1d22f132117e1ab7fb188f5105d51a83}
+
+
+\-Default constructor. 
+
+\-Initializes the reference point to the time of object creation. 
+
+\-Definition at line 14 of file \-Posix\-Timer.\-cpp.
+
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classmetrobotics_1_1PosixTimer_a68072093dc61a9a33f1c5f970ca0fbd2}{\index{metrobotics\-::\-Posix\-Timer@{metrobotics\-::\-Posix\-Timer}!elapsed@{elapsed}}
+\index{elapsed@{elapsed}!metrobotics::PosixTimer@{metrobotics\-::\-Posix\-Timer}}
+\subsubsection[{elapsed}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf \-Posix\-Timer\-::elapsed} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixTimer_a68072093dc61a9a33f1c5f970ca0fbd2}
+
+
+\-Time that has elapsed since the last start (or reset) of the timer. 
+
+\-Returns the time (in seconds) that has elapsed from the reference point.
+
+\begin{DoxyReturn}{\-Returns}
+time in seconds since the last start (or reset) of the timer 
+\end{DoxyReturn}
+
+
+\-Implements \hyperlink{classmetrobotics_1_1Timer_ac199bd3a173404eac505e2ed978d7169}{metrobotics\-::\-Timer}.
+
+
+
+\-Definition at line 29 of file \-Posix\-Timer.\-cpp.
+
+\hypertarget{classmetrobotics_1_1PosixTimer_a83d8da5bbf3f0969af38e4519cb4b92b}{\index{metrobotics\-::\-Posix\-Timer@{metrobotics\-::\-Posix\-Timer}!start@{start}}
+\index{start@{start}!metrobotics::PosixTimer@{metrobotics\-::\-Posix\-Timer}}
+\subsubsection[{start}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Posix\-Timer\-::start} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{classmetrobotics_1_1PosixTimer_a83d8da5bbf3f0969af38e4519cb4b92b}
+
+
+\-Start the timer. 
+
+\-Sets (or resets) the reference point to the current time. 
+
+\-Implements \hyperlink{classmetrobotics_1_1Timer_afac918d950d5760a630913791b33fa9a}{metrobotics\-::\-Timer}.
+
+
+
+\-Definition at line 20 of file \-Posix\-Timer.\-cpp.
+
+
+
+\-The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+include/\-Timer/\hyperlink{PosixTimer_8h}{\-Posix\-Timer.\-h}\item 
+src/\-Timer/\hyperlink{PosixTimer_8cpp}{\-Posix\-Timer.\-cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,4 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classmetrobotics_1_1DataSource.html" title="Sequential input device (source of input)" alt="" coords="5,6,176,37"/>
+<area shape="rect" id="node4" href="$classmetrobotics_1_1DataSink.html" title="Sequential output device (destination of output)" alt="" coords="200,6,355,37"/>
+</map>

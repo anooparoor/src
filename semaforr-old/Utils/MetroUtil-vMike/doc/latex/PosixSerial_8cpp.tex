@@ -1,0 +1,115 @@
+\hypertarget{PosixSerial_8cpp}{\section{src/\-Communication/\-Posix\-Serial.cpp \-File \-Reference}
+\label{PosixSerial_8cpp}\index{src/\-Communication/\-Posix\-Serial.\-cpp@{src/\-Communication/\-Posix\-Serial.\-cpp}}
+}
+{\ttfamily \#include \char`\"{}\-Posix\-Serial.\-h\char`\"{}}\*
+{\ttfamily \#include \char`\"{}\-Timer/\-Posix\-Timer.\-h\char`\"{}}\*
+{\ttfamily \#include $<$iostream$>$}\*
+{\ttfamily \#include $<$string$>$}\*
+{\ttfamily \#include $<$cstdio$>$}\*
+{\ttfamily \#include $<$cstdlib$>$}\*
+{\ttfamily \#include $<$cstring$>$}\*
+{\ttfamily \#include $<$cerrno$>$}\*
+{\ttfamily \#include $<$fcntl.\-h$>$}\*
+{\ttfamily \#include $<$unistd.\-h$>$}\*
+{\ttfamily \#include $<$termios.\-h$>$}\*
+{\ttfamily \#include $<$signal.\-h$>$}\*
+\-Include dependency graph for \-Posix\-Serial.\-cpp\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{PosixSerial_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{PosixSerial_8cpp_aee04a630a36175d86478ec019db5c1cc}{\-\_\-\-\_\-dbg} (const string \&msg)
+\item 
+static void \hyperlink{PosixSerial_8cpp_a2594ecb949ca2d537c32ccab417b2576}{\-\_\-\-\_\-sighandler} (int sig)
+\item 
+static void \hyperlink{PosixSerial_8cpp_abb3ce117af1ca30bbfd99bb6fcc67568}{useless} ()
+\item 
+static ssize\-\_\-t \hyperlink{PosixSerial_8cpp_acf627d0f3bf62679c7dfc53a7355e156}{write\-\_\-r} (int sock, const void $\ast$buf, size\-\_\-t count, size\-\_\-t ms)
+\item 
+static ssize\-\_\-t \hyperlink{PosixSerial_8cpp_aefacd4fa4e979c2e3d13e83db3a34c73}{read\-\_\-r} (int sock, void $\ast$buf, size\-\_\-t count, size\-\_\-t ms)
+\end{DoxyCompactItemize}
+\subsection*{\-Variables}
+\begin{DoxyCompactItemize}
+\item 
+static bool \hyperlink{PosixSerial_8cpp_a2512092696371e488db5a4688d7c04e8}{f\-Debug\-Posix\-Serial} = false
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{PosixSerial_8cpp_aee04a630a36175d86478ec019db5c1cc}{\index{\-Posix\-Serial.\-cpp@{\-Posix\-Serial.\-cpp}!\-\_\-\-\_\-dbg@{\-\_\-\-\_\-dbg}}
+\index{\-\_\-\-\_\-dbg@{\-\_\-\-\_\-dbg}!PosixSerial.cpp@{\-Posix\-Serial.\-cpp}}
+\subsubsection[{\-\_\-\-\_\-dbg}]{\setlength{\rightskip}{0pt plus 5cm}static void {\bf \-\_\-\-\_\-dbg} (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{msg}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{PosixSerial_8cpp_aee04a630a36175d86478ec019db5c1cc}
+
+
+\-Definition at line 36 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{PosixSerial_8cpp_a2594ecb949ca2d537c32ccab417b2576}{\index{\-Posix\-Serial.\-cpp@{\-Posix\-Serial.\-cpp}!\-\_\-\-\_\-sighandler@{\-\_\-\-\_\-sighandler}}
+\index{\-\_\-\-\_\-sighandler@{\-\_\-\-\_\-sighandler}!PosixSerial.cpp@{\-Posix\-Serial.\-cpp}}
+\subsubsection[{\-\_\-\-\_\-sighandler}]{\setlength{\rightskip}{0pt plus 5cm}static void {\bf \-\_\-\-\_\-sighandler} (
+\begin{DoxyParamCaption}
+\item[{int}]{sig}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{PosixSerial_8cpp_a2594ecb949ca2d537c32ccab417b2576}
+
+
+\-Definition at line 50 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{PosixSerial_8cpp_aefacd4fa4e979c2e3d13e83db3a34c73}{\index{\-Posix\-Serial.\-cpp@{\-Posix\-Serial.\-cpp}!read\-\_\-r@{read\-\_\-r}}
+\index{read\-\_\-r@{read\-\_\-r}!PosixSerial.cpp@{\-Posix\-Serial.\-cpp}}
+\subsubsection[{read\-\_\-r}]{\setlength{\rightskip}{0pt plus 5cm}static ssize\-\_\-t {\bf read\-\_\-r} (
+\begin{DoxyParamCaption}
+\item[{int}]{sock, }
+\item[{void $\ast$}]{buf, }
+\item[{size\-\_\-t}]{count, }
+\item[{size\-\_\-t}]{ms}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{PosixSerial_8cpp_aefacd4fa4e979c2e3d13e83db3a34c73}
+
+
+\-Definition at line 93 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{PosixSerial_8cpp_abb3ce117af1ca30bbfd99bb6fcc67568}{\index{\-Posix\-Serial.\-cpp@{\-Posix\-Serial.\-cpp}!useless@{useless}}
+\index{useless@{useless}!PosixSerial.cpp@{\-Posix\-Serial.\-cpp}}
+\subsubsection[{useless}]{\setlength{\rightskip}{0pt plus 5cm}static void {\bf useless} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{PosixSerial_8cpp_abb3ce117af1ca30bbfd99bb6fcc67568}
+
+
+\-Definition at line 57 of file \-Posix\-Serial.\-cpp.
+
+\hypertarget{PosixSerial_8cpp_acf627d0f3bf62679c7dfc53a7355e156}{\index{\-Posix\-Serial.\-cpp@{\-Posix\-Serial.\-cpp}!write\-\_\-r@{write\-\_\-r}}
+\index{write\-\_\-r@{write\-\_\-r}!PosixSerial.cpp@{\-Posix\-Serial.\-cpp}}
+\subsubsection[{write\-\_\-r}]{\setlength{\rightskip}{0pt plus 5cm}static ssize\-\_\-t {\bf write\-\_\-r} (
+\begin{DoxyParamCaption}
+\item[{int}]{sock, }
+\item[{const void $\ast$}]{buf, }
+\item[{size\-\_\-t}]{count, }
+\item[{size\-\_\-t}]{ms}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{PosixSerial_8cpp_acf627d0f3bf62679c7dfc53a7355e156}
+
+
+\-Definition at line 65 of file \-Posix\-Serial.\-cpp.
+
+
+
+\subsection{\-Variable \-Documentation}
+\hypertarget{PosixSerial_8cpp_a2512092696371e488db5a4688d7c04e8}{\index{\-Posix\-Serial.\-cpp@{\-Posix\-Serial.\-cpp}!f\-Debug\-Posix\-Serial@{f\-Debug\-Posix\-Serial}}
+\index{f\-Debug\-Posix\-Serial@{f\-Debug\-Posix\-Serial}!PosixSerial.cpp@{\-Posix\-Serial.\-cpp}}
+\subsubsection[{f\-Debug\-Posix\-Serial}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf f\-Debug\-Posix\-Serial} = false\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{PosixSerial_8cpp_a2512092696371e488db5a4688d7c04e8}
+
+
+\-Definition at line 34 of file \-Posix\-Serial.\-cpp.
+

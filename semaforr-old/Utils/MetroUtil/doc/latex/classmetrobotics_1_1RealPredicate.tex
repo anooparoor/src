@@ -1,0 +1,151 @@
+\hypertarget{classmetrobotics_1_1RealPredicate}{\section{metrobotics\-:\-:\-Real\-Predicate \-Class \-Reference}
+\label{classmetrobotics_1_1RealPredicate}\index{metrobotics\-::\-Real\-Predicate@{metrobotics\-::\-Real\-Predicate}}
+}
+
+
+\-A function object that compares two real numbers using some relation.  
+
+
+
+
+{\ttfamily \#include $<$\-Real\-Predicate.\-h$>$}
+
+
+
+\-Inheritance diagram for metrobotics\-:\-:\-Real\-Predicate\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classmetrobotics_1_1RealPredicate__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmetrobotics_1_1RealPredicate_a56f52c6bee2c9bfdc83e5ea1cc6aec9f}{\-Real\-Predicate} (double epsilon=0.\-0)
+\begin{DoxyCompactList}\small\item\em \-Construct a new predicate for comparing two real numbers. \end{DoxyCompactList}\item 
+void \hyperlink{classmetrobotics_1_1RealPredicate_a09d002e141d2f679026358bd5db14335}{margin\-Of\-Error} (double epsilon)
+\begin{DoxyCompactList}\small\item\em \-Set/change the acceptable margin of error. \end{DoxyCompactList}\item 
+double \hyperlink{classmetrobotics_1_1RealPredicate_ae0a006ff2060f415223c28be23e1cfa7}{margin\-Of\-Error} () const 
+\begin{DoxyCompactList}\small\item\em \-Get the acceptable margin of error. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classmetrobotics_1_1RealPredicate_aff9d2e8629a14fcf743ff36c221e08bd}{operator()} (const double \&lhs, const double \&rhs) const =0
+\begin{DoxyCompactList}\small\item\em \-Function call operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Private \-Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{classmetrobotics_1_1RealPredicate_ac7eba7d852b56056478f69bca3ce5cf3}{\-\_\-epsilon}
+\begin{DoxyCompactList}\small\item\em \-The acceptable margin of error. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-A function object that compares two real numbers using some relation. 
+
+\-This comparison takes into account the limited precision of floating point values by using an arbitrarily chosen acceptable margin of error.
+
+\begin{DoxyNote}{\-Note}
+\-This is just an abstract class that doesn't correspond to any actual relation.
+\end{DoxyNote}
+\begin{DoxyAuthor}{\-Author}
+\-Mark \-Manashirov $<$\href{mailto:mark.manashirov@gmail.com}{\tt mark.\-manashirov@gmail.\-com}$>$ 
+\end{DoxyAuthor}
+
+
+\-Definition at line 20 of file \-Real\-Predicate.\-h.
+
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classmetrobotics_1_1RealPredicate_a56f52c6bee2c9bfdc83e5ea1cc6aec9f}{\index{metrobotics\-::\-Real\-Predicate@{metrobotics\-::\-Real\-Predicate}!\-Real\-Predicate@{\-Real\-Predicate}}
+\index{\-Real\-Predicate@{\-Real\-Predicate}!metrobotics::RealPredicate@{metrobotics\-::\-Real\-Predicate}}
+\subsubsection[{\-Real\-Predicate}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Real\-Predicate\-::\-Real\-Predicate} (
+\begin{DoxyParamCaption}
+\item[{double}]{epsilon = {\ttfamily 0.0}}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1RealPredicate_a56f52c6bee2c9bfdc83e5ea1cc6aec9f}
+
+
+\-Construct a new predicate for comparing two real numbers. 
+
+\-Optionally provide an acceptable margin of error to be used in comparisons; if no acceptable margin of error is specified then it is assumed that there is no acceptable margin of error, that is that the margin of error is zero, which is no different than using the built-\/in comparison for floating point values.
+
+\begin{DoxyItemize}
+\item epsilon is the acceptable margin of error \end{DoxyItemize}
+
+
+\-Definition at line 4 of file \-Real\-Predicate.\-cpp.
+
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classmetrobotics_1_1RealPredicate_a09d002e141d2f679026358bd5db14335}{\index{metrobotics\-::\-Real\-Predicate@{metrobotics\-::\-Real\-Predicate}!margin\-Of\-Error@{margin\-Of\-Error}}
+\index{margin\-Of\-Error@{margin\-Of\-Error}!metrobotics::RealPredicate@{metrobotics\-::\-Real\-Predicate}}
+\subsubsection[{margin\-Of\-Error}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf \-Real\-Predicate\-::margin\-Of\-Error} (
+\begin{DoxyParamCaption}
+\item[{double}]{epsilon}
+\end{DoxyParamCaption}
+)}}\label{classmetrobotics_1_1RealPredicate_a09d002e141d2f679026358bd5db14335}
+
+
+\-Set/change the acceptable margin of error. 
+
+\begin{DoxyItemize}
+\item epsilon is the acceptable margin of error \end{DoxyItemize}
+
+
+\-Definition at line 9 of file \-Real\-Predicate.\-cpp.
+
+\hypertarget{classmetrobotics_1_1RealPredicate_ae0a006ff2060f415223c28be23e1cfa7}{\index{metrobotics\-::\-Real\-Predicate@{metrobotics\-::\-Real\-Predicate}!margin\-Of\-Error@{margin\-Of\-Error}}
+\index{margin\-Of\-Error@{margin\-Of\-Error}!metrobotics::RealPredicate@{metrobotics\-::\-Real\-Predicate}}
+\subsubsection[{margin\-Of\-Error}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf \-Real\-Predicate\-::margin\-Of\-Error} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classmetrobotics_1_1RealPredicate_ae0a006ff2060f415223c28be23e1cfa7}
+
+
+\-Get the acceptable margin of error. 
+
+\begin{DoxyReturn}{\-Returns}
+the acceptable margin of error 
+\end{DoxyReturn}
+
+
+\-Definition at line 14 of file \-Real\-Predicate.\-cpp.
+
+\hypertarget{classmetrobotics_1_1RealPredicate_aff9d2e8629a14fcf743ff36c221e08bd}{\index{metrobotics\-::\-Real\-Predicate@{metrobotics\-::\-Real\-Predicate}!operator()@{operator()}}
+\index{operator()@{operator()}!metrobotics::RealPredicate@{metrobotics\-::\-Real\-Predicate}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool metrobotics\-::\-Real\-Predicate\-::operator() (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{lhs, }
+\item[{const double \&}]{rhs}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1RealPredicate_aff9d2e8629a14fcf743ff36c221e08bd}
+
+
+\-Function call operator. 
+
+\-Treats the predicate as a binary function that takes two real numbers and returns the result of their comparison, whatever it may be, and taking into account the acceptable margin of error. 
+
+\-Implemented in \hyperlink{classmetrobotics_1_1RealEquality_a6387b30bc3035e954421133ddb3a2268}{metrobotics\-::\-Real\-Equality}, and \hyperlink{classmetrobotics_1_1RealLessThan_a29b8bb8ab4ac0576d1472af259885382}{metrobotics\-::\-Real\-Less\-Than}.
+
+
+
+\subsection{\-Member \-Data \-Documentation}
+\hypertarget{classmetrobotics_1_1RealPredicate_ac7eba7d852b56056478f69bca3ce5cf3}{\index{metrobotics\-::\-Real\-Predicate@{metrobotics\-::\-Real\-Predicate}!\-\_\-epsilon@{\-\_\-epsilon}}
+\index{\-\_\-epsilon@{\-\_\-epsilon}!metrobotics::RealPredicate@{metrobotics\-::\-Real\-Predicate}}
+\subsubsection[{\-\_\-epsilon}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf metrobotics\-::\-Real\-Predicate\-::\-\_\-epsilon}\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}\label{classmetrobotics_1_1RealPredicate_ac7eba7d852b56056478f69bca3ce5cf3}
+
+
+\-The acceptable margin of error. 
+
+
+
+\-Definition at line 63 of file \-Real\-Predicate.\-h.
+
+
+
+\-The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+include/\-Math/\hyperlink{RealPredicate_8h}{\-Real\-Predicate.\-h}\item 
+src/\-Math/\hyperlink{RealPredicate_8cpp}{\-Real\-Predicate.\-cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,2052 @@
+/*
+ * Controller.cpp
+ *
+ */
+          
+#include "Controller.h"
+#include "RobotControllerMessageHandler.h"
+#include "FORRGeometry.h"
+#include <unistd.h>
+
+#include <deque>
+#include <iostream> 
+#include <fstream>
+#include <math.h>
+#include <time.h>
+
+using namespace std;
+
+#define CTRL_DEBUG true
+
+// For 02-2012 experiments
+#define COOLDOWN_TIME 5
+#define REST_SECONDS  5
+#define UNIT_MOVE 10
+ 
+// This is not so intuitive. A halt/wait takes a paremeter that indicates
+// how long the robot stop for. For the most part we can't predict how long
+// that should be; for example, a collision avoidance could take 2 seconds
+// or 10 seconds to resolve. For now we'll make this parameter large enough
+// that it indicates a "stop forever", until some future resume command
+// overrides it.
+#define STOP_SECONDS  1000
+
+    
+// Slavisa added 
+double previousX;
+double previousY;
+double previousTheta;
+bool auctionHappened = false;
+
+//unsigned int Task::next_task_id = 0;
+
+Controller::Controller(string player_host, int player_port, Map *map,
+                       int rbt_size, string rbt_type, string robot_name, int prox,
+                       RobotControllerMessageHandler *message_handler)
+  : localMap(map), robot_size(rbt_size), robot_type(rbt_type), name(robot_name), proximity(prox),
+    message_handler(message_handler) {
+
+        if(this->proximity == 0) {
+            this->proximity = 23;
+        }
+
+        try {
+            pCli = new PlayerClient(player_host, player_port);
+
+            usingStage = false;
+            if ( robot_type == "surveyor" ) {
+                itl = new Surveyor(localMap);
+                itl->setBlobFinderProxy(pCli);
+                itl->setCameraProxy(pCli);
+            }
+            else if ( robot_type == "Blackfin" ) {
+                itl = new Surveyor(localMap);
+                //itl->setBlobFinderProxy(pCli);
+                //itl->setCameraProxy(pCli);
+            }
+            else if ( robot_type == "stage" ){
+                itl = new Surveyor(localMap);
+                itl->setPosition2dProxy(pCli);
+                itl->setLocalizeProxy(pCli);
+                usingStage = true;
+            }
+            else if ( robot_type == "roomba" ) {
+                //itl = new Roomba(localMap);
+            }
+            itl->setPosition2dProxy(pCli);
+
+            itl->setPlayerClient(pCli);
+            // parameters
+
+            destErrorThreshold = 7;
+
+            replanThreshold = proximity * 2.5;
+
+            navGraph = new Graph(localMap, proximity);
+
+            // initialize path planner with the navgraph.
+            Node n;
+            planner = new PathPlanner(navGraph, *localMap, n,n);
+            waypoint = n;
+
+            keyboardCommand = false;
+
+            make_way_ = false;
+
+            /***************************************************************************
+             * Ariadne/FORR initialization
+             **************************************************************************/
+
+            // Initialize the agent's 'beliefs' of the world state with the map and nav
+            // graph
+            beliefs = new Beliefs(localMap, navGraph);
+
+	    // create and initialize a new fdesc is used to process the data received
+	    fDesc = new FakeDescriptive();
+	    fDesc->initVectors();
+    	    fDesc->hasMoreTargets = true;
+            fDesc->create_locations();
+            //cout << "after initalization hasMoreTarget " << fDesc->hasTargets() << endl;
+            received_reply = false;
+
+            // Declare the sequence of Tier 1/2 advisors
+            declareAdvisors();
+
+            // Declare descriptives
+            //dummyDescriptive = new DummyDescriptive();
+	    srand(time(NULL));
+	    
+	    //collitions mananger and A* code
+            //coll_mgr_ = new CollisionManager(beliefs);
+            //coll_mgr_->setPlanner(planner);
+            //coll_mgr_->setEnabled(true);
+            //coll_mgr_->setSessionID(message_handler->get_session_id());
+
+            cycleCounter = 0;
+        }
+        catch (PlayerError) {
+            cerr << "Failed to establish a connection to the Player Server.\n"
+                << "Robot: " << robot_name << ", type:" << robot_type  << "\n"
+                << "Player Server hostname: " << player_host << "\n"
+                << "Player Server port: " << player_port << endl;
+            exit(1);
+        }
+}
+         
+void Controller::operator()() {
+    // enter main loop
+    while (true) {
+
+        // Update the robot. This is the stage where it updates sensor input and
+        // receive central server messages.
+
+        /*
+           cout << "New Controller Cycle : ";
+           Utils::printCurrentTime();
+           cout << endl;
+           */
+        cycleCounter++;
+
+        pCli->ReadIfWaiting();
+        itl->update();
+
+        if ( usingStage )
+            itl->updateStagePosition();
+
+        
+	updateBehavior();
+        message_handler->check_inbox();
+
+        // Take a quick breath (don't hog the CPU!).
+        usleep(1000);
+    }
+}
+
+void Controller::updateBehavior() {
+    currPos = itl->getPosition();
+
+    // Update the robot's current position in its Beliefs structure
+    beliefs->setCurrentPosition(currPos);
+
+    // The new, FORR-based action-decision function
+    // -ES 11/25
+    
+    FORRDecision();
+}
+
+
+
+/*******************************************************************************
+ * FORR/Ariadne functions
+ ******************************************************************************/
+
+void Controller::initialize_FORRAdvisors(){
+  // cannot send message because Controller was not yet created
+  cout << "Message supposed to be sent to DM " << endl;  
+  // instantiate Tier3Advisors there are 25 total
+  for(int i = 0; i < 27; ++i){
+    message_handler->send_get_advisor_data();
+    wait_for_response();
+  }
+
+  cout << tier3Advisors.size() << " advisors registered." << endl;
+  for(unsigned i = 0; i < tier3Advisors.size(); ++i)
+    cout << "Created advisor " << tier3Advisors[i]->get_name() << " with weight: " << tier3Advisors[i]->get_weight() << endl;
+}
+
+
+void Controller::add_advisor(Tier3Advisor* advisor){
+  tier3Advisors.push_back(advisor);
+}
+
+void Controller::declareAdvisors() {
+
+    // Populate the list of advisors. See docs in Controller.h.
+    advisors.push_back(&Controller::advisorHResume);
+
+    advisors.push_back(&Controller::advisorHHalt);
+
+    advisors.push_back(&Controller::advisorVictory);
+
+    //advisors.push_back(&Controller::advisorHWait);
+
+    //advisors.push_back(&Controller::advisorRest);
+
+    //advisors.push_back(&Controller::advisorAvoidCollision);
+
+    //advisors.push_back(&Controller::advisorCollisionTieBreaker);
+
+    //advisors.push_back(&Controller::advisorMakeWay);
+
+    //advisors.push_back(&Controller::advisorIssueMove);
+
+    //advisors.push_back(&Controller::advisorEnforcer);
+
+    //advisors.push_back(&Controller::advisorGetNextPosition);
+
+    //advisors.push_back(&Controller::advisorGetPlan);
+
+    //advisors.push_back(&Controller::advisorGetNextTask);
+    // Slavisa: this is postponed till I figure out how to do this as Tier1
+    // advisor that is defined like this.
+    //advisors.push_back(&Controller::advisor_avoid_walls);
+
+    cout << advisors.size() << "Tier 1 advisors registered." << endl;
+}
+  
+/* Below two functions are not being used
+void Controller::collectVetoes(vector<FORRComment> &comments,
+                               set<FORRActionType> &vetoedActions) {
+
+    // If any comment indicates a veto of an action, add that action to the set
+    // of vetoedActions
+    for (vector<FORRComment>::iterator it = comments.begin(); it != comments.end(); ++it) {
+        FORRComment fc = *it;
+        if(fc.vetoed) {
+            vetoedActions.insert(fc.action.type);
+        }
+    }
+}
+*/
+
+/*
+// decision - a reference to a FORRAction (i.e., an output parameter) whose
+//            value will be set if this function evaluates as true.
+bool Controller::doCommentsRecommendDecision(vector<FORRComment> &comments,
+                                             set<FORRActionType> &vetoedActions,
+                                             FORRAction &decision) {
+
+    // The first positive strength, non-vetoed action in the list of comments
+    // counts as a decision
+    for (vector<FORRComment>::iterator it = comments.begin(); it != comments.end(); ++it) {
+        FORRComment fc = *it;
+
+        //    if(fc.strength > 0 &&
+        //         vetoedActions.find(fc.action.type) != vetoedActions.end())
+        if(fc.strength > 0) {
+            decision = fc.action;
+            return true;
+        }
+    }
+
+    return false;
+}
+*/
+
+void Controller::executeDecision(FORRAction decision) {
+
+    char param_char = '0' + decision.parameter;
+    switch ( decision.type ) {
+        case NOOP:
+            break;
+        case FORWARD:
+            itl->motion('F', param_char);
+            break;
+        case BACKWARD:
+            itl->motion('B', param_char);
+            break;
+        case RIGHT_TURN:
+            itl->motion('c',  param_char);
+            break;
+        case LEFT_TURN:
+            itl->motion('a',  param_char);
+            break;
+        case WIDE_RIGHT_TURN:
+            itl->motion('C',  param_char);
+            break;
+        case WIDE_LEFT_TURN:
+            itl->motion('A', param_char);
+            break;
+        case PAUSE:
+            itl->motion('H', '0');
+            break;
+        case HALT:
+            // Kill the path plan, if any
+            planner->resetPath();
+
+            // Reset destination
+            resetDestination();
+
+            // Finally, stop the robot
+            itl->motion('H', '0');
+
+            break;
+    }
+}
+
+void Controller::FORRDecision()
+{
+  Position position;
+  CartesianPoint new_point;
+  // ******************************wait for the robot to complete executing the previous action *********************
+  if(itl->isMoveCompleted()){
+    // trying to solve problem of reported position (0, 0)
+    // before the first move
+    
+    position = itl->getPosition();
+    new_point = CartesianPoint(position.getX(), position.getY());
+    cout << "move completed. current position :" << position.getX() << "  " << position.getY() << " " << position.getTheta() << endl; 
+    fDesc->update(new_point, position.getTheta());
+  }   
+  else
+    return;
+  // *********************************** end ***************************************************
+  
+  //bool decisionMade = false;
+  //FORRAction decision;
+  //************************************** initialization of variable and the log files **********************************************
+  
+  
+  std::ofstream rswl_log;
+  std::ofstream results_log;
+  
+  int robot_id = (int)message_handler->get_session_id();
+  stringstream ss;
+  ss << robot_id;
+  string robot_id_str = ss.str();
+  const char *path = robot_id_str.c_str();
+  rswl_log.open(path,std::ofstream::out | std::ofstream::app);
+  
+  // count the number of decisions made
+  static long decisionCount = 0;
+  static long totalDecisionCount = 0;
+  
+  // time taken to complete a task
+  static double timeTaken = 0;
+  static double totalTimeTaken = 0;
+  static std::clock_t start;
+  
+  // Distance travelled during the completion of a task
+  static double distanceTravelled = 0;
+  static double totalDistanceTravelled = 0;
+  
+  bool decisionMade = false;
+  FORRAction decision;
+  
+  // Actions that have been vetoed by some advisor
+  set<FORRAction> *vetoedActions = new set<FORRAction>();
+  
+  // ************************************************** end initialization ******************************************************
+  
+
+  // ***************** Get a new goal if there is none ***********************************/
+  
+  
+  list<Task*> agenda = beliefs->getAgenda();
+  if(agenda.size() == 0 && auctionHappened == false){
+    //cout << "nothing in the task list, waiting for an auction" << endl;
+    return;
+  }
+  if(agenda.size() == 0){
+    exit(0);
+  }
+  else{
+    auctionHappened = true;
+    if(beliefs->getCurrentTask() == NULL){
+      beliefs->setCurrentTask(beliefs->getNextTask());
+      
+      cout << "Begining a new task" << endl;
+      start = std::clock();
+      cout << "Initializing FORRAction to default halt, and saving the target point in the DM" << endl;
+      
+      message_handler->send_set_last_action(FORRAction(HALT,0));
+      CartesianPoint target_point = CartesianPoint(beliefs->getCurrentTask()->getX(), beliefs->getCurrentTask()->getY());
+      cout << target_point.get_x() << " " << target_point.get_y() << endl;
+      message_handler->send_set_current_target(target_point);
+      fDesc->current_target = target_point;
+    }
+  }
+  
+  //************************************** end *********************************************************
+
+  
+  // ********************************************* sense from DM or get local values ****************************************
+  message_handler->send_get_distance_to_target();
+  wait_for_response();
+  message_handler->send_get_distance_from_walls();
+  wait_for_response();
+  message_handler->send_get_last_action(); 
+  wait_for_response();
+  message_handler->send_get_team_pose();
+  wait_for_response();
+  
+  if(decisionCount > 0){
+    distanceTravelled = distanceTravelled + sqrt((previousX - position.getX())*(previousX - position.getX()) + (previousY - position.getY())*(previousY - position.getY()));
+  }
+  previousX = position.getX();
+  previousY = position.getY();
+  previousTheta = position.getTheta();
+  //*********************************************************end ***************************************
+  
+
+  //********************************** record the position in the log*********************************
+
+  ++decisionCount;
+  rswl_log << "<decision>" << endl;
+  rswl_log << "decisionId : " << decisionCount << endl;
+  rswl_log << "decisionTier : 3" << endl;
+  CartesianPoint targetPoint = fDesc->current_target;
+  rswl_log << "targetX : " << targetPoint.get_x() << endl;
+  rswl_log << "targetY : " << targetPoint.get_y() << endl;
+  rswl_log << "RobotLocationX : " << previousX << endl;
+  rswl_log << "RobotLocationY : " << previousY << endl;
+  //rswl_log << " Th: " << previousTheta << endl;
+
+  //******************************************** end logging ***************************************  
+
+
+  if(decisionCount > 250){
+    beliefs->finishTask();
+    rswl_log.open(path,std::ofstream::out | std::ofstream::trunc);
+    rswl_log.close();
+    decisionCount = 0;
+    distanceTravelled = 0;
+    timeTaken = 0;
+    cout << "Time out !! giving up on the target point" << endl;
+    return;
+  }
+  
+  //***************************  goal test , logging and learning weights ********************************
+  
+  if (fDesc->distance_to_target() < 7){
+    
+    beliefs->finishTask();
+
+    cout << "target point reached" << endl;
+    
+    // ***************************** weight learning ************
+    rswl_log << "goalState : TRUE " << endl;
+    rswl_log << "</decision>" << endl;
+    fDesc->create_locations();
+    rswl_log.close();
+    
+    // learn weights
+    //RSWL rswl;
+    //rswl.learnWeights(robot_id);
+    // send weights to the descriptive manager
+    //message_handler->send-set_advisor_weight();
+    
+    message_handler->send_get_advisor_weight();
+    wait_for_response();
+    // learn weights
+    // update new weights and send it to the descriptive manager 
+    results_log.open((name + "-results.csv").c_str(), std::ofstream::out | std::ofstream::app);
+    int counter = 0; 
+    for(advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
+      Tier3Advisor *advisor = *it;
+      if(advisor->is_active() == true){
+	results_log << (fDesc->advisorWeight).at(counter) << ",";
+	advisor->set_weight((fDesc->advisorWeight).at(counter));
+	counter++;
+      }
+    }
+    rswl_log.open(path,std::ofstream::out | std::ofstream::trunc);
+    rswl_log.close();
+    // *********************** end of weight learning *********
+
+    // *********************** save results of the run in "results.csv" *********
+    timeTaken = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    cout << "duration of the task in sec: " <<  timeTaken << endl;
+    totalDecisionCount = totalDecisionCount + decisionCount;
+    totalTimeTaken = totalTimeTaken + timeTaken;
+    totalDistanceTravelled = totalDistanceTravelled + distanceTravelled;
+    results_log << targetPoint.get_x() << "," << targetPoint.get_y() << ","  <<  decisionCount << "," << timeTaken << "," << distanceTravelled << endl; 
+    results_log.close();
+    cout << "Finished reaching a target point: Total decision taken in the run upto now : " << totalDecisionCount << endl;
+    decisionCount = 0;
+    timeTaken = 0;
+    distanceTravelled = 0;
+    //exit(0);
+    return;
+  }
+  else
+    rswl_log << "goalState : FALSE" << endl; 
+  // *****************************************************  end goal test ************************************
+        
+  
+
+  // ************************************************** decide and act **************************************************
+  // Consult Tier 1 advisors which knows which moves are wrong and takes them out of consideration
+  //cout << "Begin consulting tier 1 advisors : wall and robot avoid" << endl;
+  advisor_avoid_walls(vetoedActions);
+
+  for(int i = 2; i < 6; ++i)
+      vetoedActions->insert(FORRAction(PAUSE, i));
+  vetoedActions->insert(FORRAction(LEFT_TURN, 1));
+  vetoedActions->insert(FORRAction(RIGHT_TURN, 1));
+  AvoidRobots avoidRobot;
+  avoidRobot.avoid_robots(vetoedActions, fDesc);
+  cout << "After invoking avoid robots." << endl;
+  beliefs->setVetoedActions(*vetoedActions);
+  
+  
+  // Consult Tier-1 advisors in sequence************************
+  cout << "Calling Tier 1 advisors .  Number of tier 1 advisors registered : " << advisors.size() << endl; 
+  for (advisorFuncIt it = advisors.begin(); it != advisors.end(); ++it) {
+    AdvisorFunc advisor = *it;
+    // Weird syntax, but this actually calls the advisor function
+    decisionMade = (this->*advisor)(beliefs);
+    
+    // If any cleanup/post-processing is required, do it here. Otherwise
+    // just break.
+    if(decisionMade) {
+      decision = beliefs->getDecision();
+      cout << "Decision about to be executed: " << decision.type << " , " << decision.parameter << endl;
+      executeDecision(decision);
+      return;
+    }
+    else {
+      //if(CTRL_DEBUG) cout << "Advisor did NOT handle the condition." << endl;
+    }
+  }
+  
+  // End of tier 1 consultation ********************************
+
+
+  // Consult Tier 3 advisors in sequence***********************
+  // This map will store comments of individual adviser
+  
+  std::map<FORRAction, double> comments;
+  // This map will aggregate value of all advisers
+  std::map<FORRAction, double> allComments;
+
+  // typedef to make for declaration that iterates over map shorter
+  typedef map<FORRAction, double>::iterator mapIt;
+
+  // vector of all the actions that got max comment strength in iteration
+  vector<FORRAction> best_decisions;
+
+  vetoedActions->insert(FORRAction(LEFT_TURN, 5));
+  vetoedActions->insert(FORRAction(RIGHT_TURN, 5));
+  // if decisionNo is even ban all forward moves and if counter if odd ban all rotation moves
+  if(decisionCount % 2 == 0){
+    for(int i = 1; i < 6; ++i)
+      vetoedActions->insert(FORRAction(FORWARD, i));
+  }
+  else{
+    for(int i = 1; i < 6; ++i)
+      vetoedActions->insert(FORRAction(RIGHT_TURN, i));
+    for(int i = 1; i < 6; ++i)
+      vetoedActions->insert(FORRAction(LEFT_TURN, i));
+  }
+  
+       
+  cout << "processing advisors::"<< endl;
+  for (advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
+    Tier3Advisor *advisor = *it;
+    fDesc->advisorMessage(advisor); 
+    // check if advisor should make a decision
+    advisor->set_commenting();
+    if(advisor->is_active() == false){
+      cout << "Advisor " << advisor->get_name() << " is inactive " << endl;
+      continue;
+    }
+    if(advisor->is_commenting() == false){
+      cout << "Advisor " << advisor->get_name() << " is not commenting " << endl;
+      rswl_log << "<"<< advisor->get_name() <<",1,1> : notcommenting" << endl;
+      continue;
+    }
+
+    comments = advisor->allAdvice(*vetoedActions);
+      
+    // aggregate all comments
+    for(mapIt iterator = comments.begin(); iterator != comments.end(); iterator++){
+      //cout << "comment : " << (iterator->first.type) << (iterator->first.parameter) << " " << (iterator->second) << endl;
+      // If this is first advisor we need to initialize our final map
+      float weight;
+      //if(agenda.size() > 35)
+      //weight = 0.05;
+      //else
+      weight = advisor->get_weight();// During the learing phase use default weights else using the weights learned
+      //if(weight < 0)
+      //weight = 0;
+      //cout << "Weight for this advisor : " << weight << endl;
+      if( allComments.find(iterator->first) == allComments.end()){
+	allComments[iterator->first] =  iterator->second * weight;
+      }
+      else{
+	allComments[iterator->first] += iterator->second * weight;
+      }
+      rswl_log << "<" << advisor->get_name() << "," << iterator->first.type << "," << iterator->first.parameter << "> : " << iterator->second * weight << endl;
+      //cout << "<" << advisor->get_name() << "," << iterator->first.type << "," << iterator->first.parameter << "> : " << iterator->second * weight << endl;
+      //cout << "Advisor name :" << advisor->get_name() << " Advisor weight used to compute comments : " << advisor->get_weight() << endl; 
+    }
+  } 
+  
+  //Slavisa comment: Tier 3 has to reach decision, I don't see a reason for this variable
+  decisionMade = true;
+  
+  
+  // Loop through map advisor created and find command with the highest vote
+  double maxAdviceStrength = -100;
+  for(mapIt iterator = allComments.begin(); iterator != allComments.end(); iterator++){
+    //cout << "Values are : " << iterator->first.type << " " << iterator->first.parameter << " with value: " << iterator->second << endl;
+    if(!(iterator->second < maxAdviceStrength)){
+      //if(abs(iterator->second -maxAdviceStrength) < ERROR)
+      //best_decisions.push_back(iterator->first);
+
+      //else{          
+      maxAdviceStrength = iterator->second;
+      if(!best_decisions.empty())
+	best_decisions.erase(best_decisions.begin(), best_decisions.begin() + best_decisions.size() -1); // delete all the values from the vector
+      best_decisions.push_back(iterator->first);
+    }
+  }
+  
+  // Slavisa: again this if is not necessary Tier3 has to make some kind of decision
+  if ( decisionMade )
+  {
+    cout << "There are " << best_decisions.size() << " decisions that got the highest grade " << endl;
+    for(unsigned i = 0; i < best_decisions.size(); ++i)
+      cout << "Action type: " << best_decisions.at(i).type << " parameter: " << best_decisions.at(i).parameter << endl;
+    //generate random number using system clock as seed
+    srand(time(NULL));
+    int random_number = rand() % (best_decisions.size());
+    
+    decision = best_decisions.at(random_number);
+    rswl_log << "ActionChosen : <" << decision.type << "," << decision.parameter << ">" << endl;
+    // store that decision in the fake descriptive list of decisions made
+    fDesc->addDecision(decision);
+    message_handler->send_set_last_action(decision);
+    rswl_log << "</decision>" << endl;
+
+    executeDecision(decision);
+
+    rswl_log.close();
+    return;
+  }
+  
+  //*********************************************************** end of decide and act ***********************************************
+}
+
+void Controller::wait_for_response(){
+  while(received_reply == false){
+    message_handler->check_inbox();
+  }
+}
+
+/******************************************************************************
+ * FORR/Ariadne advisors
+ *
+ * Tier-1 advisors can make a decision and then stop the other advisors
+ * from overriding their decisions. All advisors return a bool to state if they
+ * decided to take an action. If an advisor,
+ * returns true, all the advisors following it will be skipped and the decision
+ * loop will move on to the next iteration.
+ * returns false, the next advisor will be permitted to run
+ *****************************************************************************/
+
+bool Controller::advisorVictory(Beliefs *b) {
+  cout << "Begin victory advisor" << endl;
+  // if the robot is oriented towards the goal and the robot actions which are not vetoed allows the robot to reach the goal then take that action.
+  bool decisionMade = false;
+  set<FORRAction> vetoedActions = b->getVetoedActions();
+  
+  FORRAction max_forward_move = get_max_allowed_forward_move(vetoedActions);
+  Position curr_pos = b->getCurrentPosition();
+  Task *task = b->getCurrentTask();
+  
+  // Check if the current heading intersects with any of the walls
+  Map *map = b->getMap();
+  int buffer = 20;
+  bool targetNotInSight1 = map->isPathObstructed(curr_pos.getX() - buffer, curr_pos.getY(), task->getX() - buffer, task->getY());
+  bool targetNotInSight2 = map->isPathObstructed(curr_pos.getX() + buffer, curr_pos.getY(), task->getX() + buffer, task->getY());
+  bool targetNotInSight3 = map->isPathObstructed(curr_pos.getX(), curr_pos.getY() - buffer, task->getX(), task->getY() - buffer);
+  bool targetNotInSight4 = map->isPathObstructed(curr_pos.getX(), curr_pos.getY() + buffer, task->getX(), task->getY() + buffer);
+  //cout << targetNotInSight1 << targetNotInSight2 << targetNotInSight3 << targetNotInSight4 << endl;
+  bool targetNotInSight = targetNotInSight1 || targetNotInSight2 || targetNotInSight3 || targetNotInSight4;
+  //bool targetNotInSight = map->isPathObstructed(curr_pos.getX(), curr_pos.getY(), task->getX(), task->getY()) || map->isPathCrossesBuffer(curr_pos.getX(), curr_pos.getY(), task->getX(), task->getY());
+  //cout << targetNotInSight << endl;
+  if(targetNotInSight == true){
+    cout << "Target not in sight , skipping victory advisor" << endl;
+  }
+  else{
+    cout << "Target in sight , victory advisor active" << endl;
+    double distance_from_target = Utils::get_euclidian_distance(curr_pos.getX(), curr_pos.getY(), task->getX(), task->getY());
+    cout << "Distance from target : " << distance_from_target << endl;
+    // compute the angular difference between the direction to the target and the current robot direction
+    double robot_direction = curr_pos.getTheta();
+    double goal_direction = atan((task->getY() - curr_pos.getY()) / (task->getX() - curr_pos.getX()));
+    if(task->getX() >= curr_pos.getX())
+      goal_direction = goal_direction + 3.1415;
+    goal_direction = goal_direction - 3.1415;
+    double required_rotation = goal_direction - robot_direction;
+    if(required_rotation > 3.39)
+      required_rotation = required_rotation - 6.283;
+    if(required_rotation < -3.39)
+      required_rotation = required_rotation + 6.283;
+    cout << "Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation << endl;
+    // if the angular difference is greater than smallest turn possible 
+    // pick the right turn to allign itself to the target
+    
+    if(fabs(required_rotation) > 0.3048){
+      cout << "Rotation move made " << endl;
+      if( required_rotation > 0.1548 && required_rotation <= 0.3048)
+	b->setDecision(FORRAction(LEFT_TURN, 1));
+      else if( required_rotation > 0.3048 && required_rotation <= 0.65)
+	b->setDecision(FORRAction(LEFT_TURN, 2));
+      else if( required_rotation > 0.65 && required_rotation <= 1.3)
+	b->setDecision(FORRAction(LEFT_TURN, 3));
+      else if(required_rotation > 1.3 && required_rotation <= 3.39)
+	b->setDecision(FORRAction(LEFT_TURN, 4));
+      else if( required_rotation < -0.1548 && required_rotation >= -0.3048)
+	b->setDecision(FORRAction(RIGHT_TURN, 1));
+      else if( required_rotation < -0.3048 && required_rotation >= -0.65)
+	b->setDecision(FORRAction(RIGHT_TURN, 2));
+      else if( required_rotation < -0.65 && required_rotation >= -1.3)
+	b->setDecision(FORRAction(RIGHT_TURN, 3));
+      else if(required_rotation < -1.3 && required_rotation >= -3.39)
+	b->setDecision(FORRAction(RIGHT_TURN, 4));
+      decisionMade = true;
+    }
+    else if(max_forward_move.parameter == 5 || distance_from_target < get_move_length(get_max_allowed_forward_move(vetoedActions))){
+      int intensity;
+      cout << "Forward move made" << endl;
+      if(distance_from_target <= 3)
+	intensity = 0;
+      else if(distance_from_target <= 7 )
+	intensity = 1;
+      else if(distance_from_target <= 20)
+	intensity = 2;
+      else if(distance_from_target <= 25)
+	intensity = 3;
+      else if(distance_from_target <= 105)
+	intensity = 4;
+      else
+	intensity = 5;
+      b->setDecision(FORRAction(FORWARD,intensity));
+      decisionMade = true;
+      cout << "Intensity of the forward move : " << intensity << endl;
+    }
+  }
+  return decisionMade;
+}
+
+FORRAction Controller::get_max_allowed_forward_move(set<FORRAction> vetoedActions){
+  FORRAction max_forward(FORWARD, 5);
+  cout << " Number of vetoed actions : " << vetoedActions.size() << endl;
+  for(int intensity = 1; intensity <= 5 ; intensity++){
+    if(vetoedActions.find(FORRAction(FORWARD,intensity)) != vetoedActions.end()){
+      max_forward.type = FORWARD;
+      max_forward.parameter = intensity - 1;
+      break;
+    }
+  }
+  return max_forward;
+}
+/*
+// returns the forward action which approximately moves the robot a given distance
+int Controller::get_forward_move_intensity(double distance){
+  double intensity = distance/UNIT_MOVE;
+  return ceil(intensity);
+}
+*/
+
+double Controller::get_move_length(FORRAction forward_move){
+  switch(forward_move.parameter){
+  case 1:
+    return 3;
+  case 2:
+    return 7;
+  case 3:
+    return 20;
+  case 4:
+    return 25;
+  case 5: 
+    return 105;
+  default:
+    return 0;
+  }
+}
+
+/*
+   bool Controller::advisorRest(Beliefs *b)
+   {
+   time_t now = time(NULL);
+
+// If a cooldown time was set previously, do nothing until that time is
+// reached
+if ( b->getRestUntilTime() > now )
+{
+cout << "advisorRest: Robot is resting..." << endl;
+
+return true;
+}
+
+// When that time is reached, reset it
+else
+{
+if ( b->getRestUntilTime() > 0 )
+{
+cout << "advisorRest: Robot is rested, resuming..." << endl;
+
+itl->rested();
+b->setRestUntilTime(0);
+
+return true;
+}
+}
+
+// At this point, rest_until_time should == 0
+
+// If Localization says that the robot is tired, stop it and cool down
+// for a while
+if ( itl->isTired() )
+{
+cout << "advisorRest: Stopping robot to cool down." << endl;
+
+itl->resetDestinationInfo();
+itl->setSpeed(0,0,0);
+
+b->setRestUntilTime(now + COOLDOWN_TIME);
+
+return true;
+}
+
+return false;
+}
+*/
+
+bool Controller::advisorHResume(Beliefs *b) {
+    const string signature = "Controller::advisorHResume()> ";
+
+    if(b->getDoResume()) {
+        if(CTRL_DEBUG)
+            cout << signature << "HRESUME received" << endl;
+
+        b->setDoHalt(false);
+        b->setDoWait(false);
+        b->setStopUntilTime(0);
+
+        b->setDoResume(false);
+
+        return true;
+    }
+
+    return false;
+}
+
+
+bool Controller::advisorHHalt(Beliefs *b) {
+    const string signature = "Controller::advisorHHalt()> ";
+
+    if(!b->getDoHalt())
+        return false;
+
+    time_t now = time(NULL);
+
+    // This is the first time we are aware that the robot has been halted
+    if(b->getStopUntilTime() == 0) {
+        if(CTRL_DEBUG)
+            cout << signature << "HHALT received, stopping..." << endl;
+
+        // Stop the robot
+        stop();
+
+        // Kill the path plan, if any
+        planner->resetPath();
+
+        // Set the current position as the planner's source so that it can replan
+        Position currentPosition = b->getCurrentPosition();
+        Node s(1, currentPosition.getX(), currentPosition.getY());
+        planner->setSource(s);
+
+        // b->setStopUntilTime(now + STOP_SECONDS);
+        if(b->getStopSeconds() > 0) {
+            b->setStopUntilTime(now + b->getStopSeconds());
+            // reset stopSeconds
+            b->setStopSeconds(-1);
+        }
+        else {
+            b->setStopUntilTime(INT_MAX);
+        }
+    }
+    else if(b->getStopUntilTime() <= now) {
+        if(CTRL_DEBUG)
+            cout << signature << "Halt time expired, resuming..." << endl;
+
+        Position currentPosition = b->getCurrentPosition();
+
+        // Set the current position as the planner's source so that it can replan
+        Node s(1, currentPosition.getX(), currentPosition.getY());
+        planner->setSource(s);
+
+        b->setStopUntilTime(0);
+        b->setDoHalt(false);
+    }
+
+    return true;
+}
+
+bool Controller::advisorHWait(Beliefs *b) {
+    const string signature = "Controller::advisorHWait()> ";
+
+    if(!b->getDoWait())
+        return false;
+
+    time_t now = time(NULL);
+
+    // This is the first time we are aware that the robot has been halted
+    if(b->getStopUntilTime() == 0) {
+        if(CTRL_DEBUG)
+            cout << signature << "HWAIT received, pausing..." << endl;
+        cout <<"HWAIT received pausing ... " << endl;
+        // Stop the robot but do NOT kill the plan
+        stop();
+
+        //    b->setStopUntilTime(now + STOP_SECONDS);
+        if(b->getStopSeconds() > 0) {
+            b->setStopUntilTime(now + b->getStopSeconds());
+            // reset stopSeconds
+            b->setStopSeconds(-1);
+        }
+        else {
+            b->setStopUntilTime(INT_MAX);
+        }
+
+        //    b->setDoWait(false);
+    }
+    else if(b->getStopUntilTime() <= now) {
+        if(CTRL_DEBUG)
+            cout << signature << "Wait time expired, resuming..." << endl;
+
+        Position currentPosition = b->getCurrentPosition();
+
+        // Set the current position as the planner's source so that it can replan
+        //Node s(1, currentPosition.getX(), currentPosition.getY());
+        //planner->setSource(s);
+
+        b->setStopUntilTime(0);
+        b->setDoWait(false);
+    }
+
+    return true;
+}
+
+/*
+
+bool Controller::advisorRest(Beliefs *b) {
+    const string signature = "Controller::advisorRest()> ";
+
+    if(! itl->isTired())
+        return false;
+
+    time_t now = time(NULL);
+
+    // At this point, Localization has determined that the robot is (still) tired
+    if(b->getRestUntilTime() == 0) {
+        if(CTRL_DEBUG)
+            cout << signature << "Robot is tired. Resting for " << REST_SECONDS << " seconds." << endl;
+
+        // This is the first time we're aware that the robot is tired. Stop it and
+        // set a "rest until" time.
+        stop();
+
+        planner->resetPath();
+
+        b->setRestUntilTime(now + REST_SECONDS);
+
+    }
+    else if(b->getRestUntilTime() < now) {
+        if(CTRL_DEBUG)
+            cout << signature <<  "Rest time expired, resuming..." << endl;
+
+        Position currentPosition = b->getCurrentPosition();
+
+        // The robot should be cooled down now. Reset "rest until" time and the
+        // current source node so that the Planner can replan.
+        Node s(1, currentPosition.getX(), currentPosition.getY());
+        planner->setSource(s);
+
+        b->setRestUntilTime(0);
+        itl->rested();
+    }
+
+    // At this point the robot is resting
+    return true;
+}
+*/
+
+
+bool Controller::advisorAvoidCollision(Beliefs *b) {
+    const string signature = "Controller::advisorAvoidCollision>";
+
+    /* 
+    First check if we are in collision, if we are not, reset the flags and go to the next advisor,
+     * if we are then all our path planning and following has to be with caution
+     */
+    if(!coll_mgr_->isInCollision()) {
+        b->setIsPaused(false);
+        move_with_caution_ = false;
+        return false;
+    }
+    else {
+        move_with_caution_ = true;
+    }
+
+    std::vector<long> tmates_to_send_alt_cost = coll_mgr_->getTeammatesForAltCostMsg();
+
+    /* check if there are unresolved collisions, meaning we are still not sure weather to yield,
+     * got the right of way or tied with the teammate robot, or if we need to send alteration cost messages
+     */
+    if(!coll_mgr_->isAllResolved() || tmates_to_send_alt_cost.size() != 0) {
+        // if we did not pause, stop, set the paused flag to true and broadcast a delayed msg
+        if(!b->getIsPaused()) {
+            stop();
+            b->setIsPaused(true);
+
+            if ( b->getCurrentTask() != NULL ) {
+                message_handler->send_auction_pause(b->getCurrentTask()->get_coordinator_id(),
+                                                    b->getCurrentTask()->get_id());
+            }
+
+            // this is to inform TASC that the robot is paused for collision avoidance if it was assigned to a task
+            if(b->getCurrentTask() != NULL)
+                message_handler->send_delayed(b->getCurrentTask()->get_coordinator_id());
+
+            if(CTRL_DEBUG || COLLISION_DEBUG)
+                cout << signature << "Robot is paused to avoid a collision." << endl;
+        }
+
+        // send alteration msgs to teammates with ongoing unresolved collisions
+        std::vector<long>::iterator it;
+        for(it = tmates_to_send_alt_cost.begin(); it != tmates_to_send_alt_cost.end(); it++) {
+            double cost = coll_mgr_->getValForAlterCostMsg(*it);
+            message_handler->send_alteration_cost((*it), cost);
+            coll_mgr_->alterMsgSent(*it);
+
+            if(CTRL_DEBUG || COLLISION_DEBUG)
+                std::cout << signature << "Sent Alteration cost: " << cost << ", to teammate: " << (*it) << std::endl;
+
+            // if we are yielding, also send the yield reason
+            if(cost == Collision::max_dist_) {
+                if(CTRL_DEBUG || COLLISION_DEBUG)
+                    cout << signature << "Sending yield reason: " << Collision::getYRString(coll_mgr_->getYieldReason(*it)) << endl;
+                message_handler->send_yield_reason((*it), coll_mgr_->getYieldReason(*it));
+            }
+        }
+
+        // at this point we might still be waiting for teammates to send us alteration cost
+        // but we keep on to the next statement in order to send messages to teammates with tied collisions
+    }
+
+    // if we are tied with any teammate the decision has to be deferred to the next advisor
+    if(coll_mgr_->tiedWithAnyTeammate())
+        return false;
+
+    // if after all the messages are sent, there are still unresolved collisions break the control cycle
+    if(!coll_mgr_->isAllResolved())
+        return true;
+
+    if(!coll_mgr_->waitingForAnyTeammate()) {
+        // we should continue and replan only if we are still paused
+        if(b->getIsPaused()) {
+
+            if ( b->getCurrentTask() != NULL ) {
+                message_handler->send_auction_resume(b->getCurrentTask()->get_coordinator_id(),
+                                                     b->getCurrentTask()->get_id());
+            }
+
+            b->setIsPaused(false);
+
+            Position currentPosition = b->getCurrentPosition();
+            Node s(1, currentPosition.getX(), currentPosition.getY());
+            planner->setSource(s);
+            planner->resetPath();
+
+            // this is to inform TASC that the robot is resuming it's task if it was assigned to one
+            //if(b->getCurrentTask() != NULL)
+            //message_handler->send_moving(b->getCurrentTask()->get_coordinator_id());
+        }
+    }
+    // else if we are waiting for a teammate, but there is no one in front of us and our next waypoint is valid
+    // so we move cautiously towards it
+    else {
+        if(coll_mgr_->isFrontClear() && waypoint.getID() != Node::invalid_node_index && waypoint.isAccessible()) {
+            if(CTRL_DEBUG || COLLISION_DEBUG)
+                std::cout << signature << "We are waiting but we have a clear way to our waypoint. Moving" << endl;
+
+            if ( b->getIsPaused() && b->getCurrentTask() != NULL ) {
+                message_handler->send_auction_resume(b->getCurrentTask()->get_coordinator_id(),
+                                                     b->getCurrentTask()->get_id());
+            }
+
+            b->setIsPaused(false);
+        }
+        // else: we are waiting for a teammate and our path is blocked so we should stay paused and break the control loop
+        else {
+
+            if ( ! b->getIsPaused() && b->getCurrentTask() != NULL ) {
+                message_handler->send_auction_pause(b->getCurrentTask()->get_coordinator_id(),
+                                                    b->getCurrentTask()->get_id());
+            }
+
+            b->setIsPaused(true);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+
+bool Controller::advisorCollisionTieBreaker(Beliefs *b) {
+    const string signature = "Controller::advisorCollisionTieBreaker()> ";
+
+    // skip to the next advisor if there are no ties
+    if(!coll_mgr_->tiedWithAnyTeammate())
+        return false;
+
+    vector<long> tied_max_dist = coll_mgr_->getTiesMaxDist();
+    vector<long> tied_non_max_dist = coll_mgr_->getTiesNonMaxDist();
+
+    // handle tied collisions where both parties sent the same but non max_dist_ altertion cost: lowest session_id goes first
+    vector<long>::iterator iter;
+    for(iter = tied_non_max_dist.begin(); iter != tied_non_max_dist.end(); iter++) {
+        if(CTRL_DEBUG || COLLISION_DEBUG)
+            cout << signature << "Breaking non max dist tie with teammate: " << *iter << " by ID" << endl;
+        coll_mgr_->breakTieByID((*iter));
+    }
+
+    // handle tied collisions where both parties yielded to each other
+    if(tied_max_dist.size() != 0) {
+        vector<long>::iterator iter;
+
+        if(CTRL_DEBUG || COLLISION_DEBUG)
+            cout << signature << "Currently tied in a collision with max_dist_: " << endl;
+
+        /*
+        // send the teammate the reason for yielding for all max_dist_ ties
+        for(iter = tied_max_dist.begin(); iter != tied_max_dist.end(); iter++) {
+        if(CTRL_DEBUG || COLLISION_DEBUG)
+        cout << "\t" << *iter << endl;
+
+        if(coll_mgr_->isResendYieldReason(*iter)) {
+        if(CTRL_DEBUG || COLLISION_DEBUG)
+        cout << signature << "Sending yield reason: " << Collision::getYRString(coll_mgr_->getYieldReason(*iter)) << endl;
+        message_handler->send_yield_reason((*iter), coll_mgr_->getYieldReason(*iter));
+        }
+        }
+        */
+    }
+
+    // check if there were any unresolved collisions (still waiting for an alteration cost from the teammate)
+    // if so set skip the other advisors and move to the next control cycle
+    if(!coll_mgr_->isAllResolved())
+        return true;
+
+    // check if there are any ties unresolved or resulted in YIELD for us,
+    // if so set skip the other advisors and move to the next control cycle
+    if(!coll_mgr_->isDecisionMadeInFavor())
+        return true;
+
+    b->setIsPaused(false);
+
+    return false;
+}
+
+
+
+bool Controller::advisorMakeWay(Beliefs *b) {
+    const string signature = "Controller::advisorMakeWay()> ";
+
+    // if we are not moving away, check if we need to. if not go to the next advisor
+    std::vector<Position> positions = coll_mgr_->getMoveAwayList();
+    if(positions.size() == 0)
+        return false;
+
+    Position curr_pos = b->getCurrentPosition();
+
+    // if we already started moving away go to the next advisor but before doing so check if we reached the destination,
+    // if that is the case set the saved target, current position as source, replan and then go to the next advisor
+    if(make_way_) {
+
+        if(CTRL_DEBUG || COLLISION_DEBUG)
+            std::cout << signature << "We are in the process of making way to a teammate" << std::endl;
+
+        // This should never be true unless a temporary make_way target is reached
+        if(planner->getTarget() == Node::invalid_node_index) {
+
+            if(CTRL_DEBUG || COLLISION_DEBUG)
+                std::cout << signature << "We have reached our temporary target. Making way complete." << std::endl;
+
+            Node s(1, curr_pos.getX(), curr_pos.getY());
+            planner->setSource(s);
+            planner->setTarget(prev_target_);
+            planner->resetPath();
+
+            make_way_ = false;
+        }
+        return false;
+    }
+
+    if(CTRL_DEBUG || COLLISION_DEBUG)
+        std::cout << signature << "We need to make way to teammate(s)" << std::endl;
+
+    // save the current target
+    prev_target_ = planner->getTarget();
+
+    Position cand = getMoveAwayDestination();
+
+    if(cand.getX() == -1 && cand.getY() == -1) {
+        if(COLLISION_DEBUG)
+            cout << signature << "There is not valid candidate to move to. Failed to make way" << endl;
+        return true;
+    }
+
+    // set the make way process start flag to true
+    make_way_ = true;
+
+    // set the target to the candidate compass direction
+    Node s(1, curr_pos.getX(), curr_pos.getY());
+    planner->setSource(s);
+    Node t(1, cand.getX(), cand.getY());
+    planner->setTarget(t);
+    planner->resetPath();
+
+    return false;
+}
+
+
+/** Controller::advisorIssueMove
+ *
+ *  Issue a move if we need to. Based on updateManualBehavior().
+ *
+ */
+bool Controller::advisorIssueMove(Beliefs *b) {
+    const string signature = "Controller::advisorIssueMove()> ";
+
+    // if the robot is paused break the control loop and skip to next cycle
+    if(b->getIsPaused())
+        return true;
+
+    Position nextPosition = b->getNextPosition();
+
+    // If no "next" position has been set, we're not going anywhere
+    if(nextPosition == Position(0,0,0))
+        return false;
+
+    // The plan has no target
+    if(!isTargetSet())
+        return false;
+
+    // A destination has alrady been set (i.e., a move has already been issued)
+    if(itl->isDestinationSet())
+        return false;
+
+    // The plan is complete or hasn't been calculated yet.
+    if(planner->isPathCompleted() || !planner->isPathCalculated())
+        return false;
+
+    Position currentPosition = b->getCurrentPosition();
+
+    startPos = currentPosition;
+
+    if(CTRL_DEBUG)
+        cout << signature
+            << "Moving from: ("
+            << currentPosition.getX() << ","
+            << currentPosition.getY() << ") to next position: ("
+            << nextPosition.getX() << ","
+            << nextPosition.getY() << ")" << endl;
+
+
+    itl->moveToMapPosition(nextPosition.getX(), nextPosition.getY());
+
+    if(beliefs->getCurrentTask() != NULL) {
+        int coord_id = beliefs->getCurrentTask()->get_coordinator_id();
+        message_handler->send_moving(coord_id);
+    }
+
+    if(!planner->isObjectiveSet()) {
+        planner->waypointSet();
+
+        initDistToWaypoint = Utils::get_euclidian_distance(currentPosition.getX(),
+                                                           currentPosition.getY(),
+                                                           waypoint.getX(),
+                                                           waypoint.getY());
+
+        checkPos = currentPosition;
+    }
+
+    return true;
+}
+
+/** Controller::advisorEnforcer
+ *
+ *  Based on updateManualBehavior(). See Controller.h.
+ *
+ *  TODO: Movement plan execution is still tracked using state variables in the
+ *        PathPlanner, Localization and in this class. Relocate all of that
+ *        state into this advisor when it becomes its own class.
+ */
+
+bool Controller::advisorEnforcer(Beliefs *b) {
+    const string signature = "Controller::advisorEnforcer()> ";
+    
+    Position currentPosition = b->getCurrentPosition();
+    Position nextPosition = b->getNextPosition();
+
+    // If nextPosition is undefined, move on to the next advisor
+    if(nextPosition == Position(0,0,0))
+        return false;
+
+    // A move was not issued
+    if(!itl->isDestinationSet())
+        return false;
+
+    // Check if an obstacle has appeared
+    if(planner->isPathCalculated() && !planner->allWaypointsValid()) {
+        Node s(1, currentPosition.getX(), currentPosition.getY());
+        Node t = planner->getTarget();
+
+        if(planner->isAccessible(s, t)) {
+            planner->setSource(s);
+        }
+        return true;
+    }
+
+    // The robot is stopped, either because no move command has been issued
+    // yet or because it has completed a move command issued in a previous time
+    // step:
+    if(itl->isMoveCompleted() || isDestinationReached(destErrorThreshold)) {
+
+        if(CTRL_DEBUG)
+            cout << signature << "Move is completed (OR not issued)." << endl;
+	//decisionCount++;
+	//cout <<  "Decision taken"  << decisionCount << endl;
+
+        stop();
+
+        // The robot's current position is <= destErrorThreshold from the
+        // "next" position. Unset/reset the "next" position.
+        if(isDestinationReached(destErrorThreshold)) {
+            if(CTRL_DEBUG)
+                cout << signature << "Robot has reached its destination." << endl;
+
+            resetDestination();
+
+            // The destination was not part of a plan (e.g., was a keyboard move)
+            if(! isTargetSet())
+                return true;
+
+            planner->waypointReached();
+            message_handler->send_waypoints();
+            if(CTRL_DEBUG)
+                cout << signature << "waypoint reached, sent waypoint message" << endl;
+
+            initDistToWaypoint = 0;
+
+            // If we've reached the plan's target, we're done. Scrap the current plan.
+            if(waypoint == planner->getTarget()) {
+                resetPathInfo();
+
+                planner->resetPath();
+
+                if(CTRL_DEBUG)
+                    cout << signature << "Target reached" << endl;
+
+                Task *current_task = b->getCurrentTask();
+                if(current_task != NULL) {
+
+                    int coordinator_id = current_task->get_coordinator_id();
+
+                    if (CTRL_DEBUG)
+                        fprintf(stderr, "Auction %d complete\n", current_task->get_id());
+
+                    message_handler->send_auction_complete(current_task->get_id(),
+                                                           coordinator_id);
+
+                    b->finishTask();
+
+                    if ( b->getAgenda().empty() ) {
+                        message_handler->send_auction_finished(coordinator_id);
+                    }
+
+                    // TUNA: auction_complete message sending was replaced with the following checks
+
+                    // if the target is reached and it's message is not sent, send it.
+                    // in order for the task status to be changed to ready, the sent message
+                    // must be recieved by this robot. (a bad way to handle local info)
+                    if(!beliefs->isReachedMsgSent()) {
+                        if(CTRL_DEBUG)
+                            cout << signature << "sending task reached message" << endl;
+                        message_handler->send_task_reached(coordinator_id, current_task->get_id());
+                        b->setReachedMsgSent(true);
+                    }
+
+                }
+            }
+
+            return true;
+        }
+
+        // The robot's current position is > destErrorThreshold from the
+        // "next" position. Reset destination info so advisorIssueMove will issue
+        // a move in the next time step.
+        else {
+            if(CTRL_DEBUG)
+                cout << signature << "Robot is not close enough to its destination." << endl;
+
+            resetDestination();
+
+            return true;
+        }
+    }
+    // The robot is still moving:
+    else {
+        // The robot is farther away from its destination than it was when the move
+        // began. Something went wrong (e.g. physically). Stop and recalculate the
+        // plan.
+        // [See isReplanningRequired()]
+        if(!isReplanningRequired()) {
+            if(CTRL_DEBUG)
+                cout << signature << "Plan is no longer valid. Scrapping it..." << endl;
+            stop();
+
+            planner->resetPath();
+
+            Node tmpSource(1, currentPosition.getX(), currentPosition.getY());
+            Node source = tmpSource;
+            Move lastMove = itl->getLastMove();
+
+            // If the current position seems to be (0,0) AND the lastMove position
+            // is also (0,0), then pick an arbitrary (valid) position as the source
+            if(tmpSource.getX() == 0 && tmpSource.getY() == 0 &&
+               lastMove.getX() == 0 && lastMove.getY() == 0) {
+                source = Node(1, 1, 1);
+            }
+            else if(!planner->isNodeValid(tmpSource)) {
+                if(CTRL_DEBUG) {
+                    cout << signature << endl;
+
+                    cout << "\tSource node is invalid: ("
+                        << tmpSource.getX() << ", "
+                        << tmpSource.getY() << ")" << endl;
+
+                    cout << "\tlastMove was: ("
+                        << lastMove.getX() << ", "
+                        << lastMove.getY() << ")" << endl;
+                }
+
+                Position lastPos(lastMove.getX(), lastMove.getY(), lastMove.getTheta());
+                double distanceToLast = Utils::get_euclidian_distance(lastMove.getX(),
+                                                                      lastMove.getY(), currentPosition.getX(), currentPosition.getY());
+                double deltaX = lastMove.getX() - currentPosition.getX();
+                double deltaY = lastMove.getY() - currentPosition.getY();
+
+                double xStep = deltaX / distanceToLast;
+                double yStep = deltaY / distanceToLast;
+
+                if(CTRL_DEBUG) {
+                    cout << "\tdistanceToLast : " << distanceToLast << endl;
+                    cout << "\txStep: " << xStep << ", yStep: " << yStep << endl;
+
+                    cout << "\tisAccessible: " << localMap->isAccessible(tmpSource.getX(), tmpSource.getY()) << endl;
+                    cout << "\tisWithinBorders: " << localMap->isWithinBorders(tmpSource.getX(), tmpSource.getY()) << endl;
+                }
+
+                // While tmpSource is on a wall, move it toward the lastMove position
+                while (! localMap->isAccessible(tmpSource.getX(), tmpSource.getY()) &&
+                       localMap->isWithinBorders(tmpSource.getX(), tmpSource.getY()) &&
+                       Utils::get_euclidian_distance(currentPosition.getX(),
+                                                     currentPosition.getY(), tmpSource.getX(), tmpSource.getY()) <= distanceToLast) {
+                    double newX = tmpSource.getX() + round(xStep);
+                    double newY = tmpSource.getY() + round(yStep);
+
+                    if(CTRL_DEBUG)
+                        cout << "\t\tnewX: " << newX << ", newY: " << newY << endl;
+
+                    tmpSource.setX(newX);
+                    tmpSource.setY(newY);
+
+                    if(CTRL_DEBUG) cout << "\t\tSetting source to: (" << tmpSource.getX() << ", " << tmpSource.getY() << ")" << endl;
+                }
+                source = tmpSource;
+            }
+
+            if(CTRL_DEBUG)
+                cout << "\tPlanning path from ("
+                    << source.getX() << ", "
+                    << source.getY() << ")" << endl;
+
+            planner->setSource(source);
+            planner->calcPath(move_with_caution_);
+            message_handler->send_waypoints();
+
+            return true;
+        }
+
+        // The robot has overshot its destination but is closer to the _next_
+        // waypoint of a planned path than the move command's destination
+        // (the _current_ waypoint) is. The robot has taken an accidental
+        // shortcut. Consider the current destination (waypoint) reached. A
+        // downstream advisor (advisorGetNextPosition) will select the "next"
+        // waypoint as the "next" position.
+        if(!isWaypointRelevant()) {
+            if(CTRL_DEBUG) {
+                cout << signature << endl;
+                cout << "Robot has overshot its destination." << endl;
+            }
+
+            resetDestination();
+
+            planner->waypointReached();
+            if(CTRL_DEBUG)
+                cout << "\tthe waypoint is not relevant anymore therefore excluded from plan, send new waypoints message" << endl;
+            message_handler->send_waypoints();
+            initDistToWaypoint = 0;
+
+            return true;
+        }
+    }
+
+    // All cases should have been handled above. Make sure about this!
+    return true;
+}
+
+
+/** Controller::advisorGetNextPosition
+ *
+ *  Based on updateManualBehavior(). See Controller.h.
+ */
+bool Controller::advisorGetNextPosition(Beliefs *b) {
+    const string signature = "Controller::advisorGetNextPosition()> ";
+
+    // if no plan has been calculated, return false to fall through to the
+    // next advisor.
+    if(!planner->isPathCalculated()) {
+        return false;
+    }
+
+    // If a plan has been calculated but it's been completely executed, return
+    // false to fall through to the next advisor
+    if(planner->isPathCompleted()) {
+        cout << signature << "Plan completed." << endl;
+        return false;
+    }
+
+    waypoint = planner->getWaypoint();
+
+    Position nextPosition(waypoint.getX(), waypoint.getY(), 0);
+
+    b->setNextPosition(nextPosition);
+    if(CTRL_DEBUG)
+        cout << "Setting next position to ("
+            << nextPosition.getX() <<  ","
+            << nextPosition.getY() << ")" << endl;
+
+    return true;
+}
+
+/*! Controller::advisorGetPlan
+ *
+ *  \brief Responsible for calculating a path if a "next" task point has been set.
+ *  See Controller.h.
+ *
+ */
+bool Controller::advisorGetPlan(Beliefs *b) {
+    const string signature = "Controller::advisorGetPlan()> ";
+
+    // if the current task is reached but not complete, fall through to the next advisor
+    Task * current_task = b->getCurrentTask();
+
+    if(current_task != NULL) {
+
+        if(current_task->getStatus() != ENROUTE) {
+
+            if(CTRL_DEBUG)
+                cout << signature << "Current task is reached" << endl;
+
+            int coordinator_id = current_task->get_coordinator_id();
+
+            // if the task status is now READY, meaning its ready for execution, send the message
+            // start the clock and change the task's status to IN_PROGRESS
+            if(current_task->getStatus() == READY) {
+                if(CTRL_DEBUG)
+                    cout << signature << "Current task is ready for execution" << endl;
+
+                if(!beliefs->isStartedMsgSent()) {
+                    if(CTRL_DEBUG)
+                        cout << signature << "sending task started message" << endl;
+
+                    message_handler->send_task_started(coordinator_id, current_task->get_id());
+                    b->setStartedMsgSent(true);
+                }
+
+                task_timer.start();
+                current_task->setStatus(IN_PROGRESS);
+            }
+
+            // check if the task has been executed for the necessary duration, if so change the
+            // task status to COMPLETE
+            if(current_task->getStatus() == IN_PROGRESS) {
+                if(CTRL_DEBUG)
+                    cout << signature << "Current task is in progress: " << task_timer.elapsed() << endl;
+
+                if(task_timer.elapsed() > current_task->getDuration()) {
+                    if(CTRL_DEBUG)
+                        cout << signature << "elapsed time is longer than the duration" << endl;
+
+                    current_task->setStatus(COMPLETE);
+                }
+            }
+
+            // if the status is COMPLETE send the message if it hasn't been sent and
+            // finish the task which will set the current_task to NULL
+            if(current_task->getStatus() == COMPLETE) {
+                if(CTRL_DEBUG)
+                    cout << signature << "Current task is complete" << endl;
+
+                if(!beliefs->isCompletedMsgSent()) {
+                    if(CTRL_DEBUG)
+                        cout << signature << "sending task complete message" << endl;
+
+                    message_handler->send_task_complete(coordinator_id, current_task->get_id());
+                    b->setCompletedMsgSent(true);
+                }
+
+                b->finishTask();
+                resetPathInfo();
+            }
+
+            return false;
+        }
+    }
+
+    // If the plan's target has been set but the plan is not calculated, it can
+    // only mean that a plan was scrapped in advisorEnforceMovePhysical.
+    // Recalculate the plan here
+    if(isTargetSet() && ! planner->isPathCalculated()) {
+        if(CTRL_DEBUG)
+            cout << signature << "Target set but plan not calculated. Calculating..." << endl;
+        planner->calcPath(move_with_caution_);
+        if(CTRL_DEBUG)
+            planner->printPath();
+        message_handler->send_waypoints();
+        return true;
+    }
+
+    return false;
+}
+
+bool Controller::advisorGetNextTask(Beliefs *b) {
+
+    Position curr_pos = b->getCurrentPosition();
+
+    Task *curr_task = b->getCurrentTask();
+    list<Task*> agenda = b->getAgenda();
+
+    if ( agenda.empty() ) {
+        return false;
+    }
+
+    if ( curr_task == NULL ) {
+
+        // Find the nearest task in the agenda and pop it
+        double min_cost;
+
+        list<Task*>::iterator agenda_it = agenda.begin();
+        curr_task = *(agenda_it);
+        min_cost = planner->estimateCost(curr_pos.getX(), curr_pos.getY(),
+                                         curr_task->getX(), curr_task->getY());
+
+        for (; agenda_it != agenda.end(); ++agenda_it) {
+            Task *this_task = *(agenda_it);
+            double this_cost = planner->estimateCost(curr_pos.getX(), curr_pos.getY(),
+                                                     this_task->getX(), this_task->getY());
+
+            if (CTRL_DEBUG) {
+                fprintf(stderr, "this_task id: %d\n", this_task->get_id());
+                fprintf(stderr, "this distance: %f\n", this_cost);
+            }
+
+            if (this_cost < min_cost) {
+                min_cost = this_cost;
+                curr_task = this_task;
+            }
+
+            if (CTRL_DEBUG)
+                fprintf(stderr, "min task id is now: %d\n", curr_task->get_id());
+        }
+
+        /*
+        // Place the current task at the front of the agenda
+        agenda.remove(curr_task);
+
+        fprintf(stderr, "current task id: %d\n", curr_task->get_id());
+        agenda.push_front(curr_task);
+
+        fprintf(stderr, "agenda size: %d\n", agenda.size());
+        */
+        // If there is no next task
+        if (curr_task == NULL) {
+            return false;
+        }
+
+        b->setCurrentTask(curr_task);
+    }
+
+    // If there's no curent plan to a task/interest point and the
+    // destination is not set (e.g. via keyboard command), set up
+    // the planner for the current task.
+    if(planner->getTarget().getID() == Node::invalid_node_index &&
+       ! itl->isDestinationSet()) {
+
+        Node source(1, curr_pos.getX(), curr_pos.getY());
+        Node target(1, curr_task->getX(), curr_task->getY());
+
+        planner->setSource(source);
+        planner->setTarget(target);
+
+        return true;
+    }
+
+    return false;
+}
+
+// Slavisa added Jan. 2014
+/*
+ * This advisor has to do prevent all the actions that will result in robot hitting the wall.
+ * Straight forward thing is to check for collsion in the orientation.
+ * Slightly more complicated is to take into an account that robot takes up some space and 
+ * it can hit the wall although there is no visible collision near (almost parallel to the wall).
+ * Have to make it work and yet be simple computationally.
+ */
+bool Controller::advisor_avoid_walls(set<FORRAction>* vetoed_actions){
+
+  const int THRESHOLD1 = 30;
+  const int THRESHOLD2 = 40;
+  cout << "Avoid Walls called " << endl;
+  message_handler->send_get_veto_forward_moves_advisor_data();
+  wait_for_response();
+  cout << "Received distance from wall descriptive " << endl;
+  if(wall_distance - 3 < THRESHOLD1)
+    vetoed_actions->insert(FORRAction(FORWARD, 1));
+  if(wall_distance - 7 < THRESHOLD1)
+    vetoed_actions->insert(FORRAction(FORWARD, 2));
+  if(wall_distance - 20 < THRESHOLD1)
+    vetoed_actions->insert(FORRAction(FORWARD, 3));
+  if(wall_distance - 25 < THRESHOLD1)
+    vetoed_actions->insert(FORRAction(FORWARD, 4));
+  if(wall_distance - 105 < THRESHOLD2)
+    vetoed_actions->insert(FORRAction(FORWARD, 5));
+  
+  for(int i = 1; i < 6; ++i)
+    vetoed_actions->insert(FORRAction(BACKWARD, i));
+  // because it is annoying I have to do this manually
+  //vetoed_actions.insert(FORRAction(RIGHT_TURN, 5));
+  //vetoed_actions.insert(FORRAction(LEFT_TURN, 5));
+  cout << " return from wall advisor" << endl;
+  return false; 
+}
+
+Position Controller::get_position() {
+  return beliefs->getCurrentPosition();
+}
+
+double Controller::estimate_cost(int x1, int y1, int x2, int y2) {
+  return planner->PathPlanner::estimateCost(x1, y1, x2, y2);
+}
+
+
+double Controller::estimate_cost(Position p1, Position p2) {
+  return this->estimate_cost(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+}
+
+
+/********************************************************************
+ *
+ *                          UTIL functions
+ *
+ *********************************************************************/
+
+Position Controller::get_final_position() {
+
+    Position final_pos = beliefs->getCurrentPosition();
+
+    list<Task*> agenda = beliefs->getAgenda();
+
+    for (list<Task*>::iterator it = agenda.begin(); it != agenda.end(); ++it) {
+        Task *task = *it;
+
+        if(task != NULL) {
+            final_pos = Position(task->getX(), task->getY(), 0);
+        }
+    }
+
+    return final_pos;
+}
+
+
+double Controller::get_cumulative_cost() {
+
+    Position start_pos, end_pos;
+    double total_cost = 0;
+
+    start_pos = beliefs->getCurrentPosition();
+
+    list<Task*> agenda = beliefs->getAgenda();
+
+    for (list<Task*>::iterator it = agenda.begin(); it != agenda.end(); ++it) {
+        Task *task = *it;
+
+        if(task != NULL) {
+            end_pos = Position(task->getX(), task->getY(), 0);
+
+            total_cost += planner->estimateCost(start_pos.getX(), start_pos.getY(),
+                                                end_pos.getX(), end_pos.getY());
+
+            start_pos = end_pos;
+        }
+    }
+
+    return total_cost;
+}
+
+
+// deprecated: previously used in conjunction with collisionAvoider
+void Controller::auction_pause() {
+    Task *current_task = beliefs->getCurrentTask();
+
+    if(current_task != NULL) {
+        message_handler->send_auction_pause(current_task->get_coordinator_id(),
+                                            current_task->get_id());
+    }
+}
+
+
+// deprecated: previously used in conjunction with collisionAvoider
+void Controller::auction_resume() {
+    Task *current_task = beliefs->getCurrentTask();
+
+    if(current_task != NULL) {
+        message_handler->send_auction_resume(current_task->get_coordinator_id(),
+                                             current_task->get_id());
+    }
+}
+
+
+void Controller::resetPathInfo() {
+    Node n;
+    planner->setTarget(n);
+    planner->setSource(n);
+    planner->resetPath();
+    itl->resetDestinationInfo();
+    // this is added in order to get rid of the waypoint (blue dot) in the VisualDebugger after the path is complete.
+    waypoint = n;
+}
+
+
+// true if there is a plan and location info and the plan still makes sense.
+// false if plan is null and position estimate makes a sudden jump.
+// the threshold for jump is rather high, this is to compensate for localization errors
+// during motion
+bool Controller::isReplanningRequired() {
+    double d = Utils::get_euclidian_distance(currPos.getX(), currPos.getY(), waypoint.getX(), waypoint.getY()) ;
+
+    return (d < this->replanThreshold);
+}
+
+
+bool Controller::isTargetSet() {
+    return (planner->getTarget().getID() != Node::invalid_node_index) ;
+}
+
+
+bool Controller::isDestinationReached(int epsilon) {
+    Position cP = itl->getPosition();
+
+    int dest_x = waypoint.getX();
+    int dest_y = waypoint.getY();
+
+    if(Utils::get_euclidian_distance(dest_x, dest_y, cP.getX(), cP.getY()) < epsilon) {
+        return true;
+    }
+    return false;
+}
+
+
+bool Controller::isWaypointRelevant() {
+    // check if we are operating within a collision zone, if so return true
+    if(move_with_caution_)
+        return true;
+
+    Node next_wp = planner->getNextWaypoint();
+    if(next_wp.getID() != Node::invalid_node_index || next_wp == planner->getTarget()) {
+        if(!localMap->isPathObstructed(currPos.getX(), currPos.getY(), next_wp.getX(), next_wp.getY())) {
+            double dist_robot_wp = Utils::get_euclidian_distance(currPos.getX(), currPos.getY(),
+                                                                 waypoint.getX(), waypoint.getY());
+
+            double delta_x_wp = waypoint.getX() - currPos.getX();
+            double delta_y_wp = waypoint.getY() - currPos.getY();
+            double delta_x_nextwp = next_wp.getX() - currPos.getX();
+            double delta_y_nextwp = next_wp.getY() - currPos.getY();
+            double heading_robot_wp = Utils::calcHeading(delta_x_wp, delta_y_wp);
+            double heading_robot_nextwp = Utils::calcHeading(delta_x_nextwp, delta_y_nextwp);
+
+            double heading_difference = abs(Utils::calcAngleDifference(heading_robot_nextwp, heading_robot_wp));
+
+            //      if (CTRL_DEBUG)
+            //	fprintf(stderr, "dist_robot_wp: %f, heading_difference: %f\n", dist_robot_wp, heading_difference);
+
+            if (dist_robot_wp < proximity  && heading_difference > M_PI/4) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+bool Controller::isDeviatingFromPath() {
+    bool deviate = false;
+
+    Node next_wp = planner->getNextWaypoint();
+    double delta_x_dest = next_wp.getX() - startPos.getX();
+    double delta_y_dest = next_wp.getY() - startPos.getY();
+    double delta_x_travelled =  currPos.getX() - startPos.getX();
+    double delta_y_travelled = currPos.getY() - startPos.getY();
+
+    double destination_heading = Utils::calcHeading(delta_x_dest, delta_y_dest) ;
+
+    double deviation_angle = Utils::calcHeading(delta_x_travelled, delta_y_travelled);
+
+    double deviationErrorThreshold = atan(destErrorThreshold /
+                                          Utils::get_euclidian_distance(startPos.getX(), startPos.getY(),
+                                                                        next_wp.getX(), next_wp.getY()));
+
+    if(sqrt(pow(delta_x_travelled,2) + pow(delta_y_travelled,2)) > destErrorThreshold * 2)
+        if(deviation_angle > (destination_heading + deviationErrorThreshold) ||
+           deviation_angle < (destination_heading - deviationErrorThreshold)) {
+            deviate = true;
+        }
+    return deviate;
+}
+
+
+bool Controller::isTimeToCheckHeading() {
+    // if distance between currPos and checkpos = initDistToWaypoint/3
+    //    checkpos = currPos
+    bool timeToCheck = false;
+    if(Utils::get_euclidian_distance(currPos.getX(), currPos.getY(),
+                                     checkPos.getX(), checkPos.getY())
+       > initDistToWaypoint / 10) {
+        checkPos = currPos;
+        timeToCheck = true;
+    }
+    return timeToCheck;
+}
+
+
+void Controller::resetCollisions() {
+    stop();
+    coll_mgr_->resetCollisions();
+}
+
+
+Position Controller::getMoveAwayDestination() {
+    const string signature = "Controller::getMoveAwayDestination()> ";
+
+    std::vector<Position> positions = coll_mgr_->getMoveAwayList();
+
+    Position curr_pos = beliefs->getCurrentPosition();
+
+    double dist_to_travel = proximity * 1.25;
+
+    // compute points in 8 compass directions and dist_to_travel away from our robot
+    std::vector<Position> compass_directions;
+    compass_directions.push_back(Position(curr_pos.getX(), curr_pos.getY() + dist_to_travel, 0.0));    // N
+    compass_directions.push_back(Position(curr_pos.getX(), curr_pos.getY() - dist_to_travel, 0.0));    // S
+    compass_directions.push_back(Position(curr_pos.getX() + dist_to_travel, curr_pos.getY(), 0.0));    // E
+    compass_directions.push_back(Position(curr_pos.getX() - dist_to_travel, curr_pos.getY(), 0.0));    // W
+
+    compass_directions.push_back(Position(curr_pos.getX() + dist_to_travel, curr_pos.getY() + dist_to_travel, 0.0));    // NE
+    compass_directions.push_back(Position(curr_pos.getX() - dist_to_travel, curr_pos.getY() + dist_to_travel, 0.0));    // NW
+    compass_directions.push_back(Position(curr_pos.getX() + dist_to_travel, curr_pos.getY() - dist_to_travel, 0.0));    // SE
+    compass_directions.push_back(Position(curr_pos.getX() - dist_to_travel, curr_pos.getY() - dist_to_travel, 0.0));    // SW
+
+
+    std::vector<Position>::iterator it;
+
+    // check if the compass directions are accessible (there is a valid path) and in line of sight (no wall in between)
+    std::vector<Position> candidate_directions;
+    for(it = compass_directions.begin(); it != compass_directions.end(); it++) {
+        if(planner->isAccessible(Node(1, curr_pos.getX(), curr_pos.getY()), Node(1, it->getX(), it->getY())) &&
+           planner->isInLineOfSight(curr_pos.getX(), curr_pos.getY(), it->getX(), it->getY()))
+            candidate_directions.push_back(*it);
+    }
+
+    // check if there is a valid candidate, if not return true until the situation changes (?)
+    if(candidate_directions.size() == 0) {
+        if(CTRL_DEBUG || COLLISION_DEBUG)
+            cout << signature << "There is not valid candidate to move to. Failed to make way" << endl;
+        return Position(-1,-1,-1);
+    }
+
+    // calculate the average of the positions of every teammate that we need to make way for
+    Position avg;
+    for(it = positions.begin(); it != positions.end(); it++) {
+        avg.setX(avg.getX() + it->getX());
+        avg.setY(avg.getY() + it->getY());
+    }
+    avg.setX(avg.getX()/positions.size());
+    avg.setY(avg.getY()/positions.size());
+
+
+    // among points in 8 compass directions and dist_to_travel away from our robot, pick the one that has the max
+    // distance between itself and the average of positions of every teammate that we need to make way for
+    Position cand;
+    double maxValue = 0.0;
+    for(it = candidate_directions.begin(); it != candidate_directions.end(); it++) {
+        double v = Utils::get_euclidian_distance(it->getX(), it->getY(), avg.getX(), avg.getY());
+        if(v > maxValue) {
+            cand = (*it);
+            maxValue = v;
+        }
+    }
+
+    return cand;
+}
+

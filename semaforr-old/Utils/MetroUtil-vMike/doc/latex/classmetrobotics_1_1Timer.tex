@@ -1,0 +1,105 @@
+\hypertarget{classmetrobotics_1_1Timer}{\section{metrobotics\-:\-:\-Timer \-Class \-Reference}
+\label{classmetrobotics_1_1Timer}\index{metrobotics\-::\-Timer@{metrobotics\-::\-Timer}}
+}
+
+
+\-An abstract class for a general-\/purpose high resolution timer.  
+
+
+
+
+{\ttfamily \#include $<$\-Timer.\-h$>$}
+
+
+
+\-Inheritance diagram for metrobotics\-:\-:\-Timer\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=206pt]{classmetrobotics_1_1Timer__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classmetrobotics_1_1Timer_afac918d950d5760a630913791b33fa9a}{start} ()=0
+\begin{DoxyCompactList}\small\item\em \-Start the timer. \end{DoxyCompactList}\item 
+virtual double \hyperlink{classmetrobotics_1_1Timer_ac199bd3a173404eac505e2ed978d7169}{elapsed} () const =0
+\begin{DoxyCompactList}\small\item\em \-Time that has elapsed since the last start (or reset) of the timer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Protected \-Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{classmetrobotics_1_1Timer_a1ea6ff8c7abfac0ef8b828dd733b1a8a}{\-\_\-ref}
+\begin{DoxyCompactList}\small\item\em \-Reference point of timer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-An abstract class for a general-\/purpose high resolution timer. 
+
+\-The purpose of this abstract class is to provide an interface that allows the user to count intervals of time using floating point values to represent the length of the interval in seconds. \-Furthermore, the goal is to be able to represent this interval with a precision that is greater than just one second. \-However, because this is an abstract class, the precision of the timer will depend on the specific implementation.
+
+\begin{DoxyAuthor}{\-Author}
+\-Mark \-Manashirov $<$\href{mailto:mark.manashirov@gmail.com}{\tt mark.\-manashirov@gmail.\-com}$>$ 
+\end{DoxyAuthor}
+
+
+\-Definition at line 19 of file \-Timer.\-h.
+
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classmetrobotics_1_1Timer_ac199bd3a173404eac505e2ed978d7169}{\index{metrobotics\-::\-Timer@{metrobotics\-::\-Timer}!elapsed@{elapsed}}
+\index{elapsed@{elapsed}!metrobotics::Timer@{metrobotics\-::\-Timer}}
+\subsubsection[{elapsed}]{\setlength{\rightskip}{0pt plus 5cm}virtual double {\bf metrobotics\-::\-Timer\-::elapsed} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Timer_ac199bd3a173404eac505e2ed978d7169}
+
+
+\-Time that has elapsed since the last start (or reset) of the timer. 
+
+\-Returns the time (in seconds) that has elapsed from the reference point.
+
+\begin{DoxyReturn}{\-Returns}
+time in seconds since the last start (or reset) of the timer 
+\end{DoxyReturn}
+
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixTimer_a68072093dc61a9a33f1c5f970ca0fbd2}{metrobotics\-::\-Posix\-Timer}.
+
+\hypertarget{classmetrobotics_1_1Timer_afac918d950d5760a630913791b33fa9a}{\index{metrobotics\-::\-Timer@{metrobotics\-::\-Timer}!start@{start}}
+\index{start@{start}!metrobotics::Timer@{metrobotics\-::\-Timer}}
+\subsubsection[{start}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf metrobotics\-::\-Timer\-::start} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{classmetrobotics_1_1Timer_afac918d950d5760a630913791b33fa9a}
+
+
+\-Start the timer. 
+
+\-Sets (or resets) the reference point to the current time. 
+
+\-Implemented in \hyperlink{classmetrobotics_1_1PosixTimer_a83d8da5bbf3f0969af38e4519cb4b92b}{metrobotics\-::\-Posix\-Timer}.
+
+
+
+\subsection{\-Member \-Data \-Documentation}
+\hypertarget{classmetrobotics_1_1Timer_a1ea6ff8c7abfac0ef8b828dd733b1a8a}{\index{metrobotics\-::\-Timer@{metrobotics\-::\-Timer}!\-\_\-ref@{\-\_\-ref}}
+\index{\-\_\-ref@{\-\_\-ref}!metrobotics::Timer@{metrobotics\-::\-Timer}}
+\subsubsection[{\-\_\-ref}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf metrobotics\-::\-Timer\-::\-\_\-ref}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{classmetrobotics_1_1Timer_a1ea6ff8c7abfac0ef8b828dd733b1a8a}
+
+
+\-Reference point of timer. 
+
+\-Represents the time in seconds as a floating point number. 
+
+\-Definition at line 44 of file \-Timer.\-h.
+
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+include/\-Timer/\hyperlink{Timer_8h}{\-Timer.\-h}\end{DoxyCompactItemize}

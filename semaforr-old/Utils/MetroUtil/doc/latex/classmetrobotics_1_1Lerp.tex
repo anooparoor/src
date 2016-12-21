@@ -1,0 +1,477 @@
+\hypertarget{classmetrobotics_1_1Lerp}{\section{metrobotics\-:\-:\-Lerp$<$ dimension, position $>$ \-Class \-Template \-Reference}
+\label{classmetrobotics_1_1Lerp}\index{metrobotics\-::\-Lerp$<$ dimension, position $>$@{metrobotics\-::\-Lerp$<$ dimension, position $>$}}
+}
+
+
+\-A linear interpolation class for any \-N-\/dimensional vector space over the reals.  
+
+
+
+
+{\ttfamily \#include $<$\-Lerp.\-h$>$}
+
+\subsection*{\-Public \-Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef \hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N}$<$ dimension $>$\*
+\-::\hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \hyperlink{classmetrobotics_1_1Lerp_a3cd6f9215623083b5ed90f4c03ac6dc7}{key\-\_\-type}
+\begin{DoxyCompactList}\small\item\em \-The type of the individual entries (components) in the vector. \end{DoxyCompactList}\item 
+typedef \hyperlink{classmetrobotics_1_1RealLessThan}{\-Real\-Less\-Than} \hyperlink{classmetrobotics_1_1Lerp_af2461f16ba03ed44a4896aba2cea4d29}{key\-\_\-compare}
+\begin{DoxyCompactList}\small\item\em \-The function object that compares two keys (components) for ordering. \end{DoxyCompactList}\item 
+typedef \hyperlink{classmetrobotics_1_1RealEquality}{\-Real\-Equality} \hyperlink{classmetrobotics_1_1Lerp_ae164917b993d09546ee1dff125cc7847}{key\-\_\-equality}
+\begin{DoxyCompactList}\small\item\em \-The function object that compares two keys (components) for equality. \end{DoxyCompactList}\item 
+typedef \hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N}$<$ dimension $>$ \hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type}
+\begin{DoxyCompactList}\small\item\em \-The type of the elements (vectors) in the vector space. \end{DoxyCompactList}\item 
+typedef \hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N}$<$ dimension $>$ $\ast$ \hyperlink{classmetrobotics_1_1Lerp_a77fb99f54e951d0e63c43e3249719e97}{pointer}
+\item 
+typedef \hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N}$<$ dimension $>$ \& \hyperlink{classmetrobotics_1_1Lerp_ae64c70e9dc4c0c99af76b155f6786ec0}{reference}
+\item 
+typedef const \hyperlink{classmetrobotics_1_1RealVectorN}{\-Real\-Vector\-N}\*
+$<$ dimension $>$ \& \hyperlink{classmetrobotics_1_1Lerp_a815b15d3fb2de9989d053e9d17fac48f}{const\-\_\-reference}
+\item 
+typedef unsigned long \hyperlink{classmetrobotics_1_1Lerp_a10263c93dd1cabed5b5c06585f13c272}{size\-\_\-type}
+\begin{DoxyCompactList}\small\item\em \-An unsigned integral type. \end{DoxyCompactList}\item 
+typedef signed long \hyperlink{classmetrobotics_1_1Lerp_ab33debb53d79b253af93112e65630909}{difference\-\_\-type}
+\begin{DoxyCompactList}\small\item\em \-A signed integral type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmetrobotics_1_1Lerp_abb7f68c0aff8edfc1c40687106b6e6e4}{\-Lerp} ()
+\begin{DoxyCompactList}\small\item\em \-Construct a linear interpolation object with no data points (empty). \end{DoxyCompactList}\item 
+virtual \hyperlink{classmetrobotics_1_1Lerp_a84387168d70142028c4325f75fd272ab}{$\sim$\-Lerp} ()
+\begin{DoxyCompactList}\small\item\em \-Destructor. \end{DoxyCompactList}\item 
+void \hyperlink{classmetrobotics_1_1Lerp_a2b4ba90b90cf116b266d2e719b9804b2}{insert} (const \hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \&vec)
+\begin{DoxyCompactList}\small\item\em \-Insert a new data point (vector) into the set. \end{DoxyCompactList}\item 
+void \hyperlink{classmetrobotics_1_1Lerp_ade85e0e6f1cdcc1075d6faf601293963}{erase} (const \hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \&vec)
+\begin{DoxyCompactList}\small\item\em \-Erase a data point (vector) from the set. \end{DoxyCompactList}\item 
+void \hyperlink{classmetrobotics_1_1Lerp_a432a3ee5f26285d491f002f060d3c851}{erase} (const \hyperlink{classmetrobotics_1_1Lerp_a3cd6f9215623083b5ed90f4c03ac6dc7}{key\-\_\-type} \&key)
+\begin{DoxyCompactList}\small\item\em \-Erase a data point (vector) from the set using just its key (keys are \hyperlink{classmetrobotics_1_1Lerp_unique}{unique}). \end{DoxyCompactList}\item 
+void \hyperlink{classmetrobotics_1_1Lerp_af8b4b0527081cba4657b35d697cab1af}{clear} ()
+\begin{DoxyCompactList}\small\item\em \-Erase all data points from the set. \end{DoxyCompactList}\item 
+bool \hyperlink{classmetrobotics_1_1Lerp_aaa9cb47196fe501994cc0c86e5543f1b}{empty} () const 
+\begin{DoxyCompactList}\small\item\em \-Test whether the set contains any data points. \end{DoxyCompactList}\item 
+bool \hyperlink{classmetrobotics_1_1Lerp_aea3a0d4ffa69f810c42f90be809441e2}{exists} (const \hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \&vec) const 
+\begin{DoxyCompactList}\small\item\em \-Test whether a specific data point is contained within the set of data points. \end{DoxyCompactList}\item 
+bool \hyperlink{classmetrobotics_1_1Lerp_a37f9270ce1cdf3d2ed4ba12e1ae41fc9}{exists} (const \hyperlink{classmetrobotics_1_1Lerp_a3cd6f9215623083b5ed90f4c03ac6dc7}{key\-\_\-type} \&key) const 
+\begin{DoxyCompactList}\small\item\em \-Test whether a specific key exists within the set of data points. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \hyperlink{classmetrobotics_1_1Lerp_a846e1b0be29fff0a03eccda9e240db8a}{max} () const 
+\begin{DoxyCompactList}\small\item\em \-Retrieve the data point whose key is the greatest from the set of all points. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \hyperlink{classmetrobotics_1_1Lerp_ae2ec25f3e7dc72d6f03f99e84687865a}{min} () const 
+\begin{DoxyCompactList}\small\item\em \-Retrieve the data point whose key is the lowest from the set of all points. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1Lerp_a10263c93dd1cabed5b5c06585f13c272}{size\-\_\-type} \hyperlink{classmetrobotics_1_1Lerp_adca8a45e6771cb87b6db6146ac1d6a1c}{size} () const 
+\begin{DoxyCompactList}\small\item\em \-The number of recorded data points. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \hyperlink{classmetrobotics_1_1Lerp_ae99b7e367d931570c78b87816bfb6a83}{interpolate} (const \hyperlink{classmetrobotics_1_1Lerp_a3cd6f9215623083b5ed90f4c03ac6dc7}{key\-\_\-type} \&key) const 
+\begin{DoxyCompactList}\small\item\em \-Interpolate an \-N-\/dimensional vector. \end{DoxyCompactList}\item 
+\hyperlink{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{value\-\_\-type} \hyperlink{classmetrobotics_1_1Lerp_afff98461546c80fcb3fe0e3880a45a41}{truncate} (const \hyperlink{classmetrobotics_1_1Lerp_a3cd6f9215623083b5ed90f4c03ac6dc7}{key\-\_\-type} \&key) const 
+\begin{DoxyCompactList}\small\item\em \-Interpolate an \-N-\/dimensional vector with possible truncation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\subsubsection*{template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$class metrobotics\-::\-Lerp$<$ dimension, position $>$}
+
+\-A linear interpolation class for any \-N-\/dimensional vector space over the reals. 
+
+\-The purpose of this class is to provide an interface that allows the user to interpolate an \-N-\/dimensional point (represented by an \-N-\/dimensional vector) given one of its components (entries) such that there exists a pair of bounding data points in the set of all recorded data points. \-Put simply, this class can be used to interpolate (i.\-e. \char`\"{}fill in\char`\"{}) the empty points on a graph by using the set of points that are already known together with one component (key) from those unknown points.
+
+\label{classmetrobotics_1_1VectorN_dimension}%
+\hypertarget{classmetrobotics_1_1VectorN_dimension}{}%
+ 
+\begin{DoxyTemplParams}{\-Template Parameters}
+{\em dimension} & is the {\itshape dimension\/} of the vector space that we're working with; all points (vectors) in the set must be of the same dimension\\
+\hline
+\end{DoxyTemplParams}
+\label{classmetrobotics_1_1Lerp_position}%
+\hypertarget{classmetrobotics_1_1Lerp_position}{}%
+ 
+\begin{DoxyTemplParams}{\-Template Parameters}
+{\em position} & is the {\itshape position\/} of the key (component) within the vector that is used for interpolation; a value of zero (the default value) corresponds to the first entry in the vector\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyAuthor}{\-Author}
+\-Mark \-Manashirov $<$\href{mailto:mark.manashirov@gmail.com}{\tt mark.\-manashirov@gmail.\-com}$>$ 
+\end{DoxyAuthor}
+
+
+\-Definition at line 38 of file \-Lerp.\-h.
+
+
+
+\subsection{\-Member \-Typedef \-Documentation}
+\hypertarget{classmetrobotics_1_1Lerp_a815b15d3fb2de9989d053e9d17fac48f}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!const\-\_\-reference@{const\-\_\-reference}}
+\index{const\-\_\-reference@{const\-\_\-reference}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{const\-\_\-reference}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef const {\bf \-Real\-Vector\-N}$<$dimension$>$\& {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf const\-\_\-reference}}}\label{classmetrobotics_1_1Lerp_a815b15d3fb2de9989d053e9d17fac48f}
+
+
+\-Definition at line 70 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_ab33debb53d79b253af93112e65630909}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!difference\-\_\-type@{difference\-\_\-type}}
+\index{difference\-\_\-type@{difference\-\_\-type}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{difference\-\_\-type}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef signed long {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf difference\-\_\-type}}}\label{classmetrobotics_1_1Lerp_ab33debb53d79b253af93112e65630909}
+
+
+\-A signed integral type. 
+
+
+
+\-Definition at line 84 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_af2461f16ba03ed44a4896aba2cea4d29}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!key\-\_\-compare@{key\-\_\-compare}}
+\index{key\-\_\-compare@{key\-\_\-compare}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{key\-\_\-compare}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef {\bf \-Real\-Less\-Than} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf key\-\_\-compare}}}\label{classmetrobotics_1_1Lerp_af2461f16ba03ed44a4896aba2cea4d29}
+
+
+\-The function object that compares two keys (components) for ordering. 
+
+
+
+\-Definition at line 54 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_ae164917b993d09546ee1dff125cc7847}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!key\-\_\-equality@{key\-\_\-equality}}
+\index{key\-\_\-equality@{key\-\_\-equality}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{key\-\_\-equality}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef {\bf \-Real\-Equality} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf key\-\_\-equality}}}\label{classmetrobotics_1_1Lerp_ae164917b993d09546ee1dff125cc7847}
+
+
+\-The function object that compares two keys (components) for equality. 
+
+
+
+\-Definition at line 59 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a3cd6f9215623083b5ed90f4c03ac6dc7}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!key\-\_\-type@{key\-\_\-type}}
+\index{key\-\_\-type@{key\-\_\-type}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{key\-\_\-type}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef {\bf \-Real\-Vector\-N}$<$dimension$>$\-::{\bf value\-\_\-type} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf key\-\_\-type}}}\label{classmetrobotics_1_1Lerp_a3cd6f9215623083b5ed90f4c03ac6dc7}
+
+
+\-The type of the individual entries (components) in the vector. 
+
+\-This type represents the elements of the field that lie under our vector space; because our field is the set of real numbers, this type is equivalent to the built-\/in type {\ttfamily double}. 
+
+\-Definition at line 49 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a77fb99f54e951d0e63c43e3249719e97}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!pointer@{pointer}}
+\index{pointer@{pointer}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{pointer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef {\bf \-Real\-Vector\-N}$<$dimension$>$$\ast$ {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf pointer}}}\label{classmetrobotics_1_1Lerp_a77fb99f54e951d0e63c43e3249719e97}
+
+
+\-Definition at line 68 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_ae64c70e9dc4c0c99af76b155f6786ec0}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!reference@{reference}}
+\index{reference@{reference}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{reference}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef {\bf \-Real\-Vector\-N}$<$dimension$>$\& {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf reference}}}\label{classmetrobotics_1_1Lerp_ae64c70e9dc4c0c99af76b155f6786ec0}
+
+
+\-Definition at line 69 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a10263c93dd1cabed5b5c06585f13c272}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!size\-\_\-type@{size\-\_\-type}}
+\index{size\-\_\-type@{size\-\_\-type}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{size\-\_\-type}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef unsigned long {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf size\-\_\-type}}}\label{classmetrobotics_1_1Lerp_a10263c93dd1cabed5b5c06585f13c272}
+
+
+\-An unsigned integral type. 
+
+\-A type that is capable of representing the number of data points that are presently in the set as well as the maximum number of data points that the set may contain. 
+
+\-Definition at line 79 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!value\-\_\-type@{value\-\_\-type}}
+\index{value\-\_\-type@{value\-\_\-type}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{value\-\_\-type}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ typedef {\bf \-Real\-Vector\-N}$<$dimension$>$ {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf value\-\_\-type}}}\label{classmetrobotics_1_1Lerp_ab1be5a6a96856f10c5eadc416d630a40}
+
+
+\-The type of the elements (vectors) in the vector space. 
+
+\-This type represents the actual individual vectors of the \-N-\/dimensional vector space over the real numbers. 
+
+\-Definition at line 67 of file \-Lerp.\-h.
+
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classmetrobotics_1_1Lerp_abb7f68c0aff8edfc1c40687106b6e6e4}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!\-Lerp@{\-Lerp}}
+\index{\-Lerp@{\-Lerp}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{\-Lerp}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf \-Lerp} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_abb7f68c0aff8edfc1c40687106b6e6e4}
+
+
+\-Construct a linear interpolation object with no data points (empty). 
+
+\-The linear interpolation object behaves like a container\-: it keeps a record of all inserted data points (vectors). \-Once all of the data points have been recorded, the process of interpolation is done automatically using the information that is already stored in the object itself.
+
+\begin{DoxyWarning}{\-Warning}
+\-Because this linear interpolation class operates on an \-N-\/dimensional vector space over the real numbers it takes into account the limited precision that is inherent to representing real numbers on a computer. \-To that end, at object creation time, the value of \hyperlink{classmetrobotics_1_1RealVectorN_a75f4405dc254c9481776818506ad6817}{\-Real\-Vector\-N$<$\-N$>$\-::margin\-Of\-Error()} will determine the acceptable margin of error for {\itshape all\/} of the operations on {\itshape that\/} object. \-Once the object has been created, subsequent changes to \hyperlink{classmetrobotics_1_1RealVectorN_a75f4405dc254c9481776818506ad6817}{\-Real\-Vector\-N$<$\-N$>$\-::margin\-Of\-Error()} will have no effect on pre-\/existing linear interpolation objects. \-That said, make sure to set \hyperlink{classmetrobotics_1_1RealVectorN_a75f4405dc254c9481776818506ad6817}{\-Real\-Vector\-N$<$\-N$>$\-::margin\-Of\-Error()} accordingly {\itshape before\/} creating a new linear interpolation object. 
+\end{DoxyWarning}
+
+
+\-Definition at line 105 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a84387168d70142028c4325f75fd272ab}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!$\sim$\-Lerp@{$\sim$\-Lerp}}
+\index{$\sim$\-Lerp@{$\sim$\-Lerp}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{$\sim$\-Lerp}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ virtual {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::$\sim${\bf \-Lerp} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline, virtual\mbox{]}}}}\label{classmetrobotics_1_1Lerp_a84387168d70142028c4325f75fd272ab}
+
+
+\-Destructor. 
+
+
+
+\-Definition at line 115 of file \-Lerp.\-h.
+
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classmetrobotics_1_1Lerp_af8b4b0527081cba4657b35d697cab1af}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!clear@{clear}}
+\index{clear@{clear}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{clear}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ void {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf clear} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_af8b4b0527081cba4657b35d697cab1af}
+
+
+\-Erase all data points from the set. 
+
+
+
+\-Definition at line 176 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_aaa9cb47196fe501994cc0c86e5543f1b}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!empty@{empty}}
+\index{empty@{empty}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{empty}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ bool {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf empty} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_aaa9cb47196fe501994cc0c86e5543f1b}
+
+
+\-Test whether the set contains any data points. 
+
+\begin{DoxyReturn}{\-Returns}
+true if the set has no data points; false if the set contains at least one data point 
+\end{DoxyReturn}
+
+
+\-Definition at line 187 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_ade85e0e6f1cdcc1075d6faf601293963}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!erase@{erase}}
+\index{erase@{erase}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{erase}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ void {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf erase} (
+\begin{DoxyParamCaption}
+\item[{const {\bf value\-\_\-type} \&}]{vec}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_ade85e0e6f1cdcc1075d6faf601293963}
+
+
+\-Erase a data point (vector) from the set. 
+
+\-Attempting to erase a point that is not already in the set has no effect.
+
+\begin{DoxyItemize}
+\item vec is the \-N-\/dimensional vector that represents the \-N-\/dimensional point to be erased from the set of data points \end{DoxyItemize}
+
+
+\-Definition at line 146 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a432a3ee5f26285d491f002f060d3c851}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!erase@{erase}}
+\index{erase@{erase}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{erase}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ void {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf erase} (
+\begin{DoxyParamCaption}
+\item[{const {\bf key\-\_\-type} \&}]{key}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_a432a3ee5f26285d491f002f060d3c851}
+
+
+\-Erase a data point (vector) from the set using just its key (keys are \hyperlink{classmetrobotics_1_1Lerp_unique}{unique}). 
+
+\-Attempting to erase a point that is not already in the set has no effect.
+
+\begin{DoxyItemize}
+\item key is the value at entry \hyperlink{classmetrobotics_1_1Lerp_position}{position} of the point (vector) to be erased from the set of data points \end{DoxyItemize}
+
+
+\-Definition at line 164 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_aea3a0d4ffa69f810c42f90be809441e2}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!exists@{exists}}
+\index{exists@{exists}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{exists}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ bool {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf exists} (
+\begin{DoxyParamCaption}
+\item[{const {\bf value\-\_\-type} \&}]{vec}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_aea3a0d4ffa69f810c42f90be809441e2}
+
+
+\-Test whether a specific data point is contained within the set of data points. 
+
+\begin{DoxyItemize}
+\item vec is the \-N-\/dimensional vector that represents the \-N-\/dimensional point to find in the set of data points\end{DoxyItemize}
+\begin{DoxyReturn}{\-Returns}
+true if {\ttfamily vec} is found in the set of data points; false if {\ttfamily vec} is not in the set of data points 
+\end{DoxyReturn}
+
+
+\-Definition at line 202 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a37f9270ce1cdf3d2ed4ba12e1ae41fc9}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!exists@{exists}}
+\index{exists@{exists}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{exists}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ bool {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf exists} (
+\begin{DoxyParamCaption}
+\item[{const {\bf key\-\_\-type} \&}]{key}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_a37f9270ce1cdf3d2ed4ba12e1ae41fc9}
+
+
+\-Test whether a specific key exists within the set of data points. 
+
+\begin{DoxyItemize}
+\item key is the value at entry \hyperlink{classmetrobotics_1_1Lerp_position}{position} of the point (vector)\end{DoxyItemize}
+\begin{DoxyReturn}{\-Returns}
+true if {\ttfamily key} is found in the set of data points; false if {\ttfamily key} is not in the set of data points 
+\end{DoxyReturn}
+
+
+\-Definition at line 221 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a2b4ba90b90cf116b266d2e719b9804b2}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!insert@{insert}}
+\index{insert@{insert}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{insert}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ void {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf insert} (
+\begin{DoxyParamCaption}
+\item[{const {\bf value\-\_\-type} \&}]{vec}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_a2b4ba90b90cf116b266d2e719b9804b2}
+
+
+\-Insert a new data point (vector) into the set. 
+
+\begin{DoxyItemize}
+\item vec is the \-N-\/dimensional vector that represents the \-N-\/dimensional point to be added to the set of data points\end{DoxyItemize}
+\label{classmetrobotics_1_1Lerp_unique}%
+\hypertarget{classmetrobotics_1_1Lerp_unique}{}%
+ \begin{DoxyWarning}{\-Warning}
+\-Inserting the same data point twice has no effect, but the entry at \hyperlink{classmetrobotics_1_1Lerp_position}{position} must be \hyperlink{classmetrobotics_1_1Lerp_unique}{unique} so that for each possible value in that entry there can be only {\itshape one\/} correspending vector. \-That said, inserting a {\itshape new\/} vector containing a value at entry \hyperlink{classmetrobotics_1_1Lerp_position}{position} that already exists in the set of points will cause the old vector containing that same value at entry \hyperlink{classmetrobotics_1_1Lerp_position}{position} to be {\itshape completely\/} {\itshape overwritten\/}. 
+\end{DoxyWarning}
+
+
+\-Definition at line 133 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_ae99b7e367d931570c78b87816bfb6a83}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!interpolate@{interpolate}}
+\index{interpolate@{interpolate}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{interpolate}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ {\bf value\-\_\-type} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf interpolate} (
+\begin{DoxyParamCaption}
+\item[{const {\bf key\-\_\-type} \&}]{key}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_ae99b7e367d931570c78b87816bfb6a83}
+
+
+\-Interpolate an \-N-\/dimensional vector. 
+
+\-Interpolate an \-N-\/dimensional vector with respect to the key (component) at \hyperlink{classmetrobotics_1_1Lerp_position}{position} using the data points that already exist in the set.
+
+\begin{DoxyItemize}
+\item key is the entry (component) of the {\itshape unknown\/} vector (i.\-e. the vector that you're trying to find), which will be used to interpolate its remaining entries (components) with respect to the existing data points in the set\end{DoxyItemize}
+\begin{DoxyReturn}{\-Returns}
+an \-N-\/dimensional vector that contains the value of {\ttfamily key} at entry \hyperlink{classmetrobotics_1_1Lerp_position}{position}, and whose remaining entries have been interpolated using the data points in the set
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{\-Exceptions}
+{\em std\-::domain\-\_\-error} & is thrown when the component used for interpolation is either lower than all the existing data points in the set or it is greater than all the existing data points in the set; in other words, the component would represent a vector that is outside the interval of recorded data points \\
+\hline
+\end{DoxyExceptions}
+
+
+\-Definition at line 289 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_a846e1b0be29fff0a03eccda9e240db8a}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!max@{max}}
+\index{max@{max}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{max}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ {\bf value\-\_\-type} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf max} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_a846e1b0be29fff0a03eccda9e240db8a}
+
+
+\-Retrieve the data point whose key is the greatest from the set of all points. 
+
+
+\begin{DoxyExceptions}{\-Exceptions}
+{\em std\-::logic\-\_\-error} & is thrown when the set of points is empty \\
+\hline
+\end{DoxyExceptions}
+
+
+\-Definition at line 237 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_ae2ec25f3e7dc72d6f03f99e84687865a}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!min@{min}}
+\index{min@{min}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{min}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ {\bf value\-\_\-type} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf min} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_ae2ec25f3e7dc72d6f03f99e84687865a}
+
+
+\-Retrieve the data point whose key is the lowest from the set of all points. 
+
+
+\begin{DoxyExceptions}{\-Exceptions}
+{\em std\-::logic\-\_\-error} & is thrown when the set of points is empty \\
+\hline
+\end{DoxyExceptions}
+
+
+\-Definition at line 250 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_adca8a45e6771cb87b6db6146ac1d6a1c}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!size@{size}}
+\index{size@{size}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{size}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ {\bf size\-\_\-type} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf size} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_adca8a45e6771cb87b6db6146ac1d6a1c}
+
+
+\-The number of recorded data points. 
+
+\begin{DoxyReturn}{\-Returns}
+the number of data points that are currently in the set 
+\end{DoxyReturn}
+
+
+\-Definition at line 263 of file \-Lerp.\-h.
+
+\hypertarget{classmetrobotics_1_1Lerp_afff98461546c80fcb3fe0e3880a45a41}{\index{metrobotics\-::\-Lerp@{metrobotics\-::\-Lerp}!truncate@{truncate}}
+\index{truncate@{truncate}!metrobotics::Lerp@{metrobotics\-::\-Lerp}}
+\subsubsection[{truncate}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t dimension, size\-\_\-t position = 0$>$ {\bf value\-\_\-type} {\bf metrobotics\-::\-Lerp}$<$ dimension, position $>$\-::{\bf truncate} (
+\begin{DoxyParamCaption}
+\item[{const {\bf key\-\_\-type} \&}]{key}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classmetrobotics_1_1Lerp_afff98461546c80fcb3fe0e3880a45a41}
+
+
+\-Interpolate an \-N-\/dimensional vector with possible truncation. 
+
+\-Interpolate an \-N-\/dimensional vector with respect to the key (component) at \hyperlink{classmetrobotics_1_1Lerp_position}{position} using the data points that already exist in the set. \-If the given key is outside the interval specified by the points, then the key is truncated (clamped) to the nearest endpoint, which is subsequently returned to the caller.
+
+\begin{DoxyItemize}
+\item key is the entry (component) of the {\itshape unknown\/} vector (i.\-e. the vector that you're trying to find), which will be used to interpolate its remaining entries (components) with respect to the existing data points in the set; if key falls outside the interval specified by the points then it will be truncated to the nearest endpoint in the set\end{DoxyItemize}
+\begin{DoxyReturn}{\-Returns}
+an \-N-\/dimensional vector that contains the possibly truncated value of {\ttfamily key} at entry \hyperlink{classmetrobotics_1_1Lerp_position}{position}, and whose remaining entries have been interpolated using the data points in the set
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{\-Exceptions}
+{\em std\-::logic\-\_\-error} & is thrown when the set of points is empty \\
+\hline
+\end{DoxyExceptions}
+
+
+\-Definition at line 335 of file \-Lerp.\-h.
+
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+include/\-Math/\hyperlink{Lerp_8h}{\-Lerp.\-h}\end{DoxyCompactItemize}

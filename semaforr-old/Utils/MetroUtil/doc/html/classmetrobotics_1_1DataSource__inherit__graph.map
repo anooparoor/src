@@ -1,0 +1,4 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classmetrobotics_1_1Serial.html" title="A virtual serial device capable of sequential input and output." alt="" coords="24,86,157,117"/>
+<area shape="rect" id="node5" href="$classmetrobotics_1_1PosixSerial.html" title="POSIX implementation of the Serial interface." alt="" coords="8,166,173,197"/>
+</map>
