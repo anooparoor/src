@@ -41,6 +41,8 @@ long decisionCount = 0;
 //
 //
 Controller::Controller(ros::NodeHandle &nh){
+
+   	    // Initialize ROS handle and ROS publish and subscribe handles
 	    nh_ = nh;
 	    cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 100);
 	    sub_laser_ = nh_.subscribe("laser_scan", 1000, updateLaserScan);
@@ -51,38 +53,43 @@ Controller::Controller(ros::NodeHandle &nh){
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph
             beliefs = new Beliefs();
-	    beliefs->initVectors();
-	    beliefs->positionHistory = new vector<Position>;
-    	    beliefs->hasMoreTargets = true;
-	    beliefs->square_size = 60;
-	    cout << "before initializing create_locations() " << endl;
-            beliefs->create_locations();
-	    beliefs->set_moved_across_pipe(false);
-	    beliefs->positionHistory = new vector<Position>;
-	    beliefs->initializeTrace();
-	    //beliefs->abstractMap.readCirclesFromFile("circles.conf");
-            //cout << "after initalization hasMoreTarget " << beliefs->hasTargets() << endl;
-            received_reply = false;
 	    
-	    cout << "after initializing beliefs" << endl;
-
-            // Declare the sequence of Tier 1/2 advisors
+            // Initialize the sequence of Tier 1/2 advisors
             declareAdvisors();
 
-            CONVEYORS = isAdvisorActive("WaypointFinderLinear");
-            REGIONS = isAdvisorActive("ExitFinderLinear");
-            TRAILS = true;
+	    // Initialize the tasks
 
-  	    //initialize waypoint grid
-            beliefs->Waypoints.setGranularity(40);
-            beliefs->Waypoints.setGrid(map_width, map_height);
-  
-           //initialize Explorer grid
-           beliefs->set_visited_grid(map_width, map_height);
+
+
+	    // Initialize robot parameters
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Callback function for laser_scan message
+//
+//
+void Controller::updateLaserScan(){
 
 
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Callback function for pose message
+//
+//
+void Controller::updatePose(){
+
+
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Callback function for crowd_pose message
+//
+//
+void Controller::updateCrowdPose(){
+ 
+
+}
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,8 +103,6 @@ void Controller::decide() {
       cycleCounter++;
       
         //********************* Decision limit reached, skip task ***************************************  
-  
-
   	if(decisionCount > 250){
     		beliefs->finishTask();
     		wall_distance_vectors.clear();
@@ -108,7 +113,6 @@ void Controller::decide() {
   	}
   
   	//*********************** Goal reached, switch task and learn from previous task ********************************
-  
   	if (beliefs->getDistanceToTarget() < 7){
     		beliefs->finishTask();
     		beliefs->reset_visited_grid();
@@ -116,7 +120,6 @@ void Controller::decide() {
     		//beliefs->visited_points.clear();
     		beliefs->positionHistory = new vector<Position>;
     		cout << "target point reached" << endl;
-    		distances.push_back(distanceTravelled);
 	}
       
       // Make decision for the current task
@@ -128,7 +131,6 @@ void Controller::decide() {
 // Read from the config file and intialize advisor and weights
 //
 //
-
 void Controller::initialize_FORRAdvisors(string filename){
 
   // Populate the list of advisors. See docs in Controller.h.
@@ -140,11 +142,7 @@ void Controller::initialize_FORRAdvisors(string filename){
  
     //advisors.push_back(&Controller::advisor_avoid_walls);
 
-    cout << advisors.size() << "Tier 1 advisors registered." << endl;
-
-
     string fileLine;
-
     cout << "Inside file in read_advisor_file " << endl;
     while(!file.eof()){
        getline(file, fileLine);
@@ -184,6 +182,11 @@ void Controller::initialize_FORRAdvisors(string filename){
      cout << tier3Advisors.size() << " advisors registered." << endl;
      for(unsigned i = 0; i < tier3Advisors.size(); ++i)
       	cout << "Created advisor " << tier3Advisors[i]->get_name() << " with weight: " << tier3Advisors[i]->get_weight() << endl;
+
+     
+     CONVEYORS = isAdvisorActive("WaypointFinderLinear");
+     REGIONS = isAdvisorActive("ExitFinderLinear");
+     TRAILS = true;
 }
 
 

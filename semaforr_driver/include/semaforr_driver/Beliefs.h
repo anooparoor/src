@@ -61,6 +61,24 @@ public:
      * \param m A line segment map
      */
 
+    Beliefs(){
+	initVectors();
+	positionHistory = new vector<Position>;
+    	hasMoreTargets = true;
+	square_size = 60;
+	cout << "before initializing create_locations() " << endl;
+        create_locations();
+	set_moved_across_pipe(false);
+	positionHistory = new vector<Position>;
+	initializeTrace();
+	//initialize waypoint grid
+        Waypoints.setGranularity(40);
+        Waypoints.setGrid(map_width, map_height);
+  
+        //initialize Explorer grid
+        set_visited_grid(map_width, map_height);
+    }
+
     Beliefs(Map *m) : map(m) {
         cout << "In belief constructor" << endl;
         agentState = new AgentState();

@@ -55,33 +55,9 @@ void Beliefs::update(CartesianPoint newPosition, CartesianPoint oldPosition, dou
     //cout << "old y: "<< oldPosition.get_y();
     double grid_x = oldPosition.get_x() / square_size;
     double grid_y = oldPosition.get_y() / square_size;
-    //cout << "Grid x: "<<grid_x<<endl;
-    //cout << "Grid y: "<<grid_y<<endl;
-
-    
-    //if(square_x > locations_size || square_y > locations_size)
-    // exit(1); // this is error condition and should not happen
-    //visited_points.push_back(CartesianPoint(newPosition));
-
-
-    
-  
-
-
     
   // visited_locations[square_x][square_y] += 
-    visited_grid[grid_x][grid_y] += 1;
-  }
-  /*
-  else if(robotPosition.getTheta() != yw){ // if robot rotated it gets smaller e
-    int square_x = oldPosition.get_x() / square_size;
-    int square_y = oldPosition.get_y() / square_size;
-    if(square_x > locations_size || square_y > locations_size)
-      exit(1); // this is error condition and should not happen
-    visited_locations[square_x][square_y] += .4;
-  }
-  */
-
+  visited_grid[grid_x][grid_y] += 1;
   
   Position np = Position(newPosition.get_x(), newPosition.get_y(),yw);
   setCurrentPosition(np);
@@ -369,16 +345,9 @@ CartesianPoint Beliefs::get_target_gate(double wall_distance){
 	return point_to; // want to get to the other side of the gate first
       else if(distance_to_gate_from < wall_distance)
 	return point_from;
-      
-   
-	 
     }
   }
-  
-
-
-  //else
-    return CartesianPoint(-1,-1); // no gate exists within wall distance vectors
+  return CartesianPoint(-1,-1); // no gate exists within wall distance vectors
 
 }
 
