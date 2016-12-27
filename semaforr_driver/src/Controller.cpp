@@ -22,20 +22,7 @@ using namespace std;
 
 #define CTRL_DEBUG true
 
-// For 02-2012 experiment
-#define COOLDOWN_TIME 5
-#define REST_SECONDS  5
-#define UNIT_MOVE 10 
-#define STOP_SECONDS  1000
-
     
-// Slavisa added 
-double previousX;
-double previousY;
-double previousTheta;
-bool auctionHappened = false;
-long decisionCount = 0;
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Initialize the controller and setup messaging to ROS
 //
@@ -54,15 +41,102 @@ Controller::Controller(ros::NodeHandle &nh){
             // graph
             beliefs = new Beliefs();
 	    
-            // Initialize the sequence of Tier 1/2 advisors
-            declareAdvisors();
+            // Initialize advisors and weights
+            initilize_advisors();
 
 	    // Initialize the tasks
-
-
+	    initialize_tasks();
 
 	    // Initialize robot parameters
+	    initialize_robots();
 }
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Read from the config file and intialize advisors and weights and spatial learning modules based on the advisors
+//
+//
+void Controller::initialize_FORRAdvisors(string filename){
+
+    advisors.push_back(&Controller::advisorVictory);
+ 
+    string fileLine;
+    string advisor_name, advisor_description;
+    bool advisor_active;
+    double advisor_weight;
+    double parameters[4];
+    cout << "Inside file in read_advisor_file " << endl;
+    while(!file.eof()){
+       getline(file, fileLine);
+       if(fileLine[0] == '#')  // skip comment lines
+          continue;
+       else{
+          std::stringstream ss(fileLine);
+	  std::istream_iterator<std::string> begin(ss);
+	  std::istream_iterator<std::string> end;
+	  std::vector<std::string> vstrings(begin, end);
+	  advisor_name = vstrings[0];
+	  advisor_description = vstrings[1];
+	  if(args[2] == "t")
+       		advisor_active = true;
+     	  else
+      		advisor_active = false;
+	  parameters[0]= atof(args[4].c_str());
+     	  parameters[1] = atof(args[5].c_str());
+          parameters[2] = atof(args[6].c_str());
+          parameters[3] = atof(args[7].c_str());
+	  controller->add_advisor(Tier3Advisor::makeAdvisor(beliefs, advisor_name, advisor_description, advisor_weight, parameters, advisor_active));
+       }
+     }
+     
+     cout << tier3Advisors.size() << " advisors registered." << endl;
+     for(unsigned i = 0; i < tier3Advisors.size(); ++i)
+      	cout << "Created advisor " << tier3Advisors[i]->get_name() << " with weight: " << tier3Advisors[i]->get_weight() << endl;
+
+     CONVEYORS = isAdvisorActive("WaypointFinderLinear");
+     REGIONS = isAdvisorActive("ExitFinderLinear");
+     TRAILS = isAdvisorActive("TrailLinear");
+}
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Read from the config file and intialize robot parameters
+//
+//
+void Controller::initialize_robots(){
+// robot intial position
+// robot laser sensor range, span and increment
+// robot action <-> semaFORR decision
+}
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Read from the config file and intialize tasks
+//
+//
+void Controller::initialize_tasks(){
+    string fileLine;
+    cout << "Inside file in tasks " << endl;
+    while(!file.eof()){
+       getline(file, fileLine);
+       if(fileLine[0] == '#')  // skip comment lines
+          continue;
+       else{
+          std::stringstream ss(fileLine);
+	  std::istream_iterator<std::string> begin(ss);
+	  std::istream_iterator<std::string> end;
+	  std::vector<std::string> vstrings(begin, end);
+	  double x = atof(args[0].c_str());
+     	  double y = atof(args[1].c_str());
+	  beliefs->
+       }
+     }
+}
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Callback function for laser_scan message
@@ -127,68 +201,6 @@ void Controller::decide() {
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Read from the config file and intialize advisor and weights
-//
-//
-void Controller::initialize_FORRAdvisors(string filename){
-
-  // Populate the list of advisors. See docs in Controller.h.
-    advisors.push_back(&Controller::advisorHResume);
-
-    advisors.push_back(&Controller::advisorHHalt);
-
-    advisors.push_back(&Controller::advisorVictory);
- 
-    //advisors.push_back(&Controller::advisor_avoid_walls);
-
-    string fileLine;
-    cout << "Inside file in read_advisor_file " << endl;
-    while(!file.eof()){
-       getline(file, fileLine);
-       if(fileLine[0] == '#')  // skip comment lines
-          continue;
-       else{
-          d_manager->add_new_description(fileLine);
-          cout << "Adding description " << fileLine << endl;
-       }
-     }
-     // cannot send message because Controller was not yet created
-     cout << "Message supposed to be sent to DM " << endl;  
-     std::vector<std::string> args = msg.get_args();
-     cout << "size of message: " << args.size() << endl; 
-     bool advisor_active;
-  
-     // check if there is no more data 
-     if(args.size() == 8){
-     // last one is bool
-     double auxiliary_array[4]; 
-     auxiliary_array[0]= atof(args[4].c_str());
-     auxiliary_array[1] = atof(args[5].c_str());
-     auxiliary_array[2] = atof(args[6].c_str());
-     auxiliary_array[3] = atof(args[7].c_str());
-     
-     std::string advisor_name = args[0]; 
-    
-     if(args[2] == "t")
-       advisor_active = true;
-     else
-      advisor_active = false;
-     cout << "In ROBOTCONTROLLERMESSAGE handler before calling add_advisor" << endl;;
-     vector<double> advisorWeight;
-     advisorWeight.push_back(atof(args[3].c_str()));
-     controller->add_advisor(Tier3Advisor::makeAdvisor(beliefs, args[0], args[1], advisorWeight, auxiliary_array, advisor_active));
-  
-     cout << tier3Advisors.size() << " advisors registered." << endl;
-     for(unsigned i = 0; i < tier3Advisors.size(); ++i)
-      	cout << "Created advisor " << tier3Advisors[i]->get_name() << " with weight: " << tier3Advisors[i]->get_weight() << endl;
-
-     
-     CONVEYORS = isAdvisorActive("WaypointFinderLinear");
-     REGIONS = isAdvisorActive("ExitFinderLinear");
-     TRAILS = true;
-}
-
 
 
 
@@ -203,15 +215,6 @@ void Controller::add_advisor(Tier3Advisor* advisor){
 
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Read from the config file and intialize robot parameters
-//
-//
-void Controller::initialize_robotparameters(){
-// robot intial position
-// robot laser sensor range, span and increment
-// robot action <-> semaFORR decision
-}
 
 
 
@@ -633,315 +636,6 @@ void Controller::wait_for_response(){
 
 
 
-/******************************************************************************
- * FORR/Ariadne advisors
- *
- * Tier-1 advisors can make a decision and then stop the other advisors
- * from overriding their decisions. All advisors return a bool to state if they
- * decided to take an action. If an advisor,
- * returns true, all the advisors following it will be skipped and the decision
- * loop will move on to the next iteration.
- * returns false, the next advisor will be permitted to run
- *****************************************************************************/
-
-
-/*******************************
- // This advisor check if the robot's is in rotation mode and if the previous position is same as the current position then 
-    ban all rotation moves which are not in the same direction as the rotation mode.  
- *******************************/
-void Controller::advisorNotOpposite(Beliefs *b){
-  cout << "COntroller::advisorNotOpposite > Entering function" << endl;
-  vector<FORRAction> actions = b->getPreviousDecisions();
-  int size = actions.size();
-  if(actions.size() < 2){
-    cout <<"actions list less than 2. Exiting not opposite" << endl;
-    return;
-  }
-  FORRAction lastAction = actions[size - 1];
-  FORRAction lastlastAction = actions[size - 2];
-  cout << "Controller::advisorNotOpposite > " << lastAction.type << " " << lastAction.parameter << ", " << lastlastAction.type << " " << lastlastAction.parameter << endl; 
-  if(lastlastAction.type == RIGHT_TURN or lastlastAction.type == LEFT_TURN){
-    if(lastAction.type == PAUSE){
-      cout << "Not opposite active "<< endl;
-      if(lastlastAction.type == RIGHT_TURN)    for(int i = 1; i < 6 ; i++)   (b->vetoedActions)->insert(FORRAction(LEFT_TURN, i));
-      else                                     for(int i = 1; i < 6 ; i++)   (b->vetoedActions)->insert(FORRAction(RIGHT_TURN, i));
-    }
-  }
-  cout << "leaving notOpposite"<<endl;
-  return;
-}
-
-
-// This advisor should ban all forward moves not in the direction of the exit unless all of the exits
-// are already blocked by other robots
-void Controller::advisorCircle(Beliefs *b){
-
-  // Initialize variables
-  vector<FORRCircle> circles = (b->abstractMap).getCircles();
-  Position curr_pos = b->getCurrentPosition();
-  Task *task = b->getCurrentTask();
-  CartesianPoint targetPoint (task->getX() , task->getY());
-  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
-  bool targetInCircle = false;
-  bool currPosInCircleWithExit = false;
-  int robotCircle=-1, targetCircle = -1;
-  //cout << "Controller::advisorCircle >> Initializing variables " << endl;
-  // check the preconditions for activating the advisor
-  for(int i = 0; i < circles.size() ; i++){
-    // check if the target point is in circle
-    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
-      targetInCircle = true;
-      targetCircle = i;
-    }
-    // check if the rob_pos is in a circle and the circle has atleast one exit
-    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and ((circles[i]).getExits().size() >= 1)){
-      currPosInCircleWithExit = true;
-      robotCircle = i;
-    }
-  }
-
-  // if preconditions are met, veto forward moves in the direction of non exits
-  if(targetInCircle == true and currPosInCircleWithExit == true and robotCircle != targetCircle){
-    //cout << "Controller::advisorCircle >> Activating tier 1 get out of circle advisor" << endl;
-    vector<FORRExit> exits = circles[robotCircle].getExits(); 
-    bool facingExit = false;
-    double forward_distance = beliefs->wallDistanceVector[0];
-    for(int i = 0; i< exits.size(); i++){
-      CartesianPoint exitPoint = exits[i].getExitPoint();
-      double exitDistance = Utils::get_euclidian_distance(exitPoint.get_x(), exitPoint.get_y(), curr_pos.getX() , curr_pos.getY());
-      if(!(beliefs->abstractMap).isExitToLeaf(exits[i]) || exits[i].getExitCircle() == targetCircle){
-	if( ( isFacing(curr_pos, exitPoint, circles[robotCircle].getRadius()) and forward_distance - exitDistance > 20 ) or exitDistance < 40 ){
-	  //cout << "Controller::advisorCircle >> Robot is facing exit " << exitPoint.get_x() << exitPoint.get_y() << endl;
-	  facingExit = true;
-	  break;
-	}
-      }
-    }
-    // Robot is not facing any of the exits ban all forward moves
-    if(facingExit == false){
-      //cout << "Controller::advisorCircle >> Vetoing all forward moves" << endl;
-      for(int i = 1; i < 6; ++i){
-	(b->vetoedActions)->insert(FORRAction(FORWARD, i));
-      }
-    }
-  }
-  return;
-}
-
-bool Controller::isFacing(Position robotPos , CartesianPoint point, double radius){
-  bool isFacing = false;
-  double robot_point_angle = atan2(point.get_y() - robotPos.getY(), point.get_x() - robotPos.getX());
-  double angleDiff = robotPos.getTheta() - robot_point_angle;
-  //cout << "In function isFacing " << endl;
-  //cout << "Robot angle " << robotPos.getTheta() << endl;
-  //cout << "Angle made by the robot and the position with x axis" << robot_point_angle << endl;
-  double ratio = Utils::get_euclidian_distance(robotPos.getX(), robotPos.getY() ,point.get_x(), point.get_y())/(2*radius);
-  double min_delta = 0.72; //30 degrees on each side
-  double max_delta = 3.14/(2); //60 degrees on each side
-  double delta = ratio*(min_delta) + (1-ratio)*(max_delta) ;
-
-  if(abs(angleDiff) < delta){
-    isFacing = true;
-  }
-  return isFacing;
-}
-
-
-
-bool Controller::advisorVictory(Beliefs *b) {
-  cout << "Begin victory advisor" << endl;
-  // if the robot is oriented towards the goal and the robot actions which are not vetoed allows the robot to reach the goal then take that action.
-  bool decisionMade = false;
-  set<FORRAction> *vetoedActions = b->vetoedActions;
-  
-  FORRAction max_forward_move = get_max_allowed_forward_move(*vetoedActions);
-  Position curr_pos = b->getCurrentPosition();
-  Task *task = b->getCurrentTask();
-  
-  // Check if the current heading intersects with any of the walls
-  Map *map = b->getMap();
-  int buffer = 30;
-  bool targetNotInSight1 = map->isPathObstructed(curr_pos.getX() - buffer, curr_pos.getY(), task->getX() - buffer, task->getY());
-  bool targetNotInSight2 = map->isPathObstructed(curr_pos.getX() + buffer, curr_pos.getY(), task->getX() + buffer, task->getY());
-  bool targetNotInSight3 = map->isPathObstructed(curr_pos.getX(), curr_pos.getY() - buffer, task->getX(), task->getY() - buffer);
-  bool targetNotInSight4 = map->isPathObstructed(curr_pos.getX(), curr_pos.getY() + buffer, task->getX(), task->getY() + buffer);
-  //cout << targetNotInSight1 << targetNotInSight2 << targetNotInSight3 << targetNotInSight4 << endl;
-  bool targetNotInSight = targetNotInSight1 || targetNotInSight2 || targetNotInSight3 || targetNotInSight4;
-  //bool targetNotInSight = map->isPathObstructed(curr_pos.getX(), curr_pos.getY(), task->getX(), task->getY()) || map->isPathCrossesBuffer(curr_pos.getX(), curr_pos.getY(), task->getX(), task->getY());
-  //cout << targetNotInSight << endl;
-  
-  if(targetNotInSight == true){
-    cout << "Target not in sight , skipping victory advisor" << endl;
-    
-  }
-  else if(beliefs->inCollisionMode == true){
-    cout << "In collision mode , hence skipping victory advisor" << endl;
-  }
-  else{
-    number_of_decisions_tier1_with_pauses++;
-    number_of_decisions_tier1_no_pauses++;
-    cout << "Target in sight , victory advisor active" << endl;
-    double distance_from_target = Utils::get_euclidian_distance(curr_pos.getX(), curr_pos.getY(), task->getX(), task->getY());
-    cout << "Distance from target : " << distance_from_target << endl;
-    // compute the angular difference between the direction to the target and the current robot direction
-    double robot_direction = curr_pos.getTheta();
-    double goal_direction = atan2((task->getY() - curr_pos.getY()), (task->getX() - curr_pos.getX()));
-    //if(task->getX() >= curr_pos.getX())
-    //goal_direction = goal_direction + 3.1415;
-    //goal_direction = goal_direction - 3.1415;
-    double required_rotation = goal_direction - robot_direction;
-    if(required_rotation > 3.39)
-      required_rotation = required_rotation - 6.283;
-    if(required_rotation < -3.39)
-      required_rotation = required_rotation + 6.283;
-    //cout << "Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation << endl;
-    // if the angular difference is greater than smallest turn possible 
-    // pick the right turn to allign itself to the target
-    
-    if(fabs(required_rotation) > 0.3048){
-      //cout << "Rotation move made " << endl;
-      if( required_rotation > 0.1548 && required_rotation <= 0.3048)
-	b->setDecision(FORRAction(LEFT_TURN, 1));
-      else if( required_rotation > 0.3048 && required_rotation <= 0.65)
-	b->setDecision(FORRAction(LEFT_TURN, 2));
-      else if( required_rotation > 0.65 && required_rotation <= 1.3)
-	b->setDecision(FORRAction(LEFT_TURN, 3));
-      else if(required_rotation > 1.3 && required_rotation <= 3.39)
-	b->setDecision(FORRAction(LEFT_TURN, 4));
-      else if( required_rotation < -0.1548 && required_rotation >= -0.3048)
-	b->setDecision(FORRAction(RIGHT_TURN, 1));
-      else if( required_rotation < -0.3048 && required_rotation >= -0.65)
-	b->setDecision(FORRAction(RIGHT_TURN, 2));
-      else if( required_rotation < -0.65 && required_rotation >= -1.3)
-	b->setDecision(FORRAction(RIGHT_TURN, 3));
-      else if(required_rotation < -1.3 && required_rotation >= -3.39)
-	b->setDecision(FORRAction(RIGHT_TURN, 4));
-      decisionMade = true;
-      decisionCount += 1;
-    }
-    else if(max_forward_move.parameter == 5 || distance_from_target < get_move_length(get_max_allowed_forward_move(*vetoedActions))){
-      int intensity;
-      //cout << "Forward move made" << endl;
-      if(distance_from_target <= 3)
-	intensity = 0;
-      else if(distance_from_target <= 7 )
-	intensity = 1;
-      else if(distance_from_target <= 20)
-	intensity = 2;
-      else if(distance_from_target <= 25)
-	intensity = 3;
-      else if(distance_from_target <= 105)
-	intensity = 4;
-      else
-	intensity = 5;
-      b->setDecision(FORRAction(FORWARD,intensity));
-      decisionMade = true;
-      cout << "Intensity of the forward move : " << intensity << endl;
-    }
-  }
-  return decisionMade;
-}
-
-FORRAction Controller::get_max_allowed_forward_move(set<FORRAction> vetoedActions){
-  FORRAction max_forward(FORWARD, 5);
-  cout << " Number of vetoed actions : " << vetoedActions.size() << endl;
-  for(int intensity = 1; intensity <= 5 ; intensity++){
-    if(vetoedActions.find(FORRAction(FORWARD,intensity)) != vetoedActions.end()){
-      max_forward.type = FORWARD;
-      max_forward.parameter = intensity - 1;
-      break;
-    }
-  }
-  return max_forward;
-}
-
-
-double Controller::get_move_length(FORRAction forward_move){
-  switch(forward_move.parameter){
-  case 1:
-    return 3;
-  case 2:
-    return 7;
-  case 3:
-    return 20;
-  case 4:
-    return 25;
-  case 5: 
-    return 105;
-  default:
-    return 0;
-  }
-}
-
-
-
-bool Controller::advisorHResume(Beliefs *b) {
-    const string signature = "Controller::advisorHResume()> ";
-
-    if(b->getDoResume()) {
-        if(CTRL_DEBUG)
-            cout << signature << "HRESUME received" << endl;
-
-        b->setDoHalt(false);
-        b->setDoWait(false);
-        b->setStopUntilTime(0);
-
-        b->setDoResume(false);
-
-        return true;
-    }
-    return false;
-}
-
-
-// Slavisa added Jan. 2014
-/*
- * This advisor has to do prevent all the actions that will result in robot hitting the wall.
- * Straight forward thing is to check for collsion in the orientation.
- * Slightly more complicated is to take into an account that robot takes up some space and 
- * it can hit the wall although there is no visible collision near (almost parallel to the wall).
- * Have to make it work and yet be simple computationally.
- */
-bool Controller::advisor_avoid_walls(Beliefs *beliefs){
-  const int THRESHOLD1 = 30;
-  const int THRESHOLD2 = 45;
-  //cout << "Avoid Walls called " << endl;
-  message_handler->send_get_veto_forward_moves_advisor_data();
-  wait_for_response();
-  double wall_distance = beliefs->wall_distance;
-  //cout << "avoid_walls_advisor:: Received distance from wall descriptive " << wall_distance << endl;
-  
-  //initialize vetoedActions
-  beliefs->vetoedActions = new set<FORRAction>; 
-  
-  if(wall_distance - 3 < THRESHOLD1){
-    (beliefs->vetoedActions)->insert(FORRAction(FORWARD, 1));
-    //cout << "Vetoed Forward move with intensity 1 :" << endl;
-  }
-  if(wall_distance - 7 < THRESHOLD1){
-    (beliefs->vetoedActions)->insert(FORRAction(FORWARD, 2));
-    //cout << "Vetoed Forward move with intensity 2"<< endl;
-  }
-  if(wall_distance - 20 < THRESHOLD1){
-    (beliefs->vetoedActions)->insert(FORRAction(FORWARD, 3));
-    //cout << "Vetoed Forward move with intensity 3"<< endl;
-  }
-  if(wall_distance - 25 < THRESHOLD2){
-    (beliefs->vetoedActions)->insert(FORRAction(FORWARD, 4));
-    //cout << "Vetoed Forward move with intensity 4"<< endl;
-  }
-  if(wall_distance - 105 < THRESHOLD2){
-    (beliefs->vetoedActions)->insert(FORRAction(FORWARD, 5));
-    //cout << "Vetoed Forward move with intensity 5"<< endl;
-  }
-  for(int i = 1; i < 6; ++i)
-    (beliefs->vetoedActions)->insert(FORRAction(BACKWARD, i));
-  // because it is annoying I have to do this manually
-  //vetoed_actions.insert(FORRAction(RIGHT_TURN, 5));
-  //vetoed_actions.insert(FORRAction(LEFT_TURN, 5));
-  //cout << " return from wall advisor" << endl;
-  return false; 
-}
 
 Position Controller::get_position() {
 
