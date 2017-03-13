@@ -1,0 +1,257 @@
+//Impementation of beliefs.h
+#include <Beliefs.h>
+  
+vector<double> Beliefs::get_angle_difference_vector(){
+  // create vector that goes from robot to target
+  double rotations[] = {0, .1548, -.1548, .3048, -.3048, .65, -.65, 1.3, -1.3};
+  double robot_target_x = getAgentState()->getCurrentTask()->getX() - (getAgentState()->getCurrentPosition().getX());
+  double robot_target_y = getAgentState()->getCurrentTask()->getY() - (getAgentState()->getCurrentPosition().getY());
+  double robot_yaw = getAgentState()->getCurrentPosition().getTheta(); 
+  double angle_difference; // difference between our robot-target and directional vector of movement
+  vector<double> angle_difference_vector;
+
+  //initialize angle_difference_vector
+  for(int j = 0; j < 18; j++)
+    angle_difference_vector.push_back(0);
+  
+  // all I need is angle of that vector with x axis in my system
+  double robot_target_angle = acos(robot_target_x/sqrt((robot_target_x*robot_target_x + robot_target_y * robot_target_y)));
+  // weird but this is how our HR coordinate system works
+  if(robot_target_y < 0)
+    robot_target_angle *= -1;
+  // cout << "Robot-target angle: " << robot_target_angle << endl;
+  for(int i = 0; i < 9; ++i){
+    // this is for forward
+    angle_difference = robot_target_angle - (robot_yaw + rotations[i]);
+    angle_difference = normalize_angle(angle_difference);
+    //cout << angle_difference << " ";
+    angle_difference_vector[i] = angle_difference;
+    // this is for going backwards along the same rotation
+    if(angle_difference > 0)
+      angle_difference = M_PI + robot_yaw - angle_difference;
+    else
+      angle_difference = M_PI + robot_yaw + angle_difference;
+    //cout << endl;
+    angle_difference = normalize_angle(angle_difference);
+    angle_difference_vector[17 - i] = angle_difference;
+  }
+  return angle_difference_vector;
+}
+
+double Beliefs::normalize_angle(double angle){
+  int quotient;
+  if(angle > 2*M_PI){
+    quotient = ceil(angle / (2*M_PI));
+    angle = angle - quotient * (2*M_PI);
+  }
+  else if(angle < -2 * M_PI){
+    quotient = floor(angle / (-2*M_PI));
+    angle = angle + quotient * (2*M_PI);
+  }
+  if(angle > M_PI)
+    angle = angle - 2 * M_PI;
+  if(angle < -M_PI)
+    angle = angle + 2 * M_PI;
+  return angle;
+}
+
+
+int Beliefs::times_at_location(CartesianPoint location){
+  int square_x = location.get_x() / square_size;
+  int square_y = location.get_y() / square_size;
+
+  if(square_x > locations_size || square_y > locations_size){
+    cout << "ERROR: out of map " << endl;
+    exit(1);
+  }
+  return visited_locations[square_x][square_y];
+}
+
+
+void Beliefs::create_locations(){
+  const int MAZE = 600; // this is magic number for maze
+  locations_size = MAZE / square_size;
+  visited_locations = new double*[locations_size];
+  for(int i = 0; i < locations_size; ++i)
+    visited_locations[i] = new double[locations_size];
+
+  // zero out all the values
+  for(int i = 0; i < locations_size; ++i)
+    for(int j = 0; j < locations_size; ++j)
+      visited_locations[i][j] = 0;
+}
+
+
+void Beliefs::display_visited_map(){
+  
+  for(int j = boxes_height-1; j >=0; j--){
+    
+    for(int i = 0; i < boxes_width; i++){
+      //cout << visited_grid[i][j] << " ";
+    }
+    //cout << endl;
+  }
+  
+  //cout << "Square size: " << square_size<<endl;
+  
+}
+
+
+void Beliefs::location_lookup(){
+  int movements[] = {3, 7, 20, 25, 105};
+  int newX, newY, square_x, square_y;
+  Position robot_position = getCurrentPosition();
+  double robot_yaw = robot_position.getTheta();
+  // determine where is the robot at the moment
+  square_x = robot_position.getX() / square_size;
+  square_y = robot_position.getY() / square_size;
+   // used for all rotations
+  targetDistanceVector[0] = visited_locations[square_x][square_y];
+  //cout << "In FD: for Explorer: 0 "  << targetDistances[0] << endl;
+       
+  for(int i = 1; i < 6; ++i){
+    // going forward
+    newX = robot_position.getX() + movements[i-1]  * cos(robot_yaw);  
+    newY = robot_position.getY() + movements[i-1]  * sin(robot_yaw);
+
+    if(newX < 600 && newX > 0 && newY < 600 && newY > 0){// make sure you are in the map
+      square_x = newX / square_size;
+      square_y = newY / square_size;
+      // reusing targetDistances vector
+      targetDistanceVector[i] = visited_locations[square_x][square_y];
+    }
+    else
+      // this line ultimately does not matter since this step will be commented by Tier1
+      targetDistanceVector[i] = 10; // if step is out of the map, magic value
+    // going backward
+    newX = robot_position.getX() - movements[i-1]  * cos(robot_yaw);
+    newY = robot_position.getY() - movements[i-1]  * sin(robot_yaw);
+    if(newX < 600 && newX > 0 && newY < 600 && newY > 0){
+      // determine where is the robot at the moment
+      square_x = newX / square_size;
+      square_y = newY / square_size;
+      targetDistanceVector[i+5] = visited_locations[square_x][square_y];
+    }
+    else
+      // this line ultimately does not matter since this step will be commented by Tier1
+      targetDistanceVector[i] = 10; // if step is out of the map, magic value
+    //cout << "In FD: for Explorer: " << i << "  " << targetDistances[i] << endl;
+  }
+}
+
+double Beliefs::get_visited_locations_value(Position expectedPosition){
+  double x = expectedPosition.getX();
+  double y = expectedPosition.getY();
+  int mapHeight = getMap()->getHeight();
+  int mapWidth = getMap()->getLength();
+  //cout << "In get_visited_locations_value: "<<endl;
+  //cout << "x before lowering: "<<x << endl;
+  //cout << "y before lowering: "<<y << endl;
+  
+  if(x > mapWidth) x = mapWidth-1;
+  if(y > mapHeight) y = mapHeight-1;
+  //cout << "x after lowering: "<<x << endl;
+  //cout << "y after lowering: "<<y << endl;
+
+  if((x > 0) && (x < mapWidth) && (y > 0) && (y < mapHeight)){
+    //cout << "Int x:" <<(int)(x/square_size)<<", Int y: "<< (int)(y/square_size) <<endl;
+    //cout << "Visited grid width: " << visited_grid.size()<<endl;
+    //cout << "Visited grid height: "<< visited_grid[0].size()<<endl;
+    return visited_grid[(int)(x/square_size)][(int)(y/square_size)];
+  }
+  else return 10;
+
+}
+
+
+
+void Beliefs::set_visited_grid(int width, int height){
+  //cout << "Entered set visited grid."<<endl;
+  //cout << "Square size: " << square_size<<endl;
+  boxes_width = ceil(width/square_size*1.0);
+  boxes_height = ceil(height/square_size*1.0);
+  
+  for(int i = 0; i < boxes_width; i++){
+    vector<int> row;
+    for(int j = 0; j < boxes_height; j++){
+      row.push_back(0);
+    }
+    visited_grid.push_back(row);
+  }
+  //cout << "Exit set visited grid."<<endl;
+
+}
+
+void Beliefs::reset_visited_grid(){
+  for(int i = 0; i < visited_grid.size(); i++){
+    for(int j = 0; j < visited_grid[i].size(); j++){
+      visited_grid[i][j] = 0;
+    }
+
+  }
+}
+
+
+
+
+
+
+//to be used by the rotation advisors.  takes in a rotation action and looks to see 
+//what the maximum following linear move could be (given the wall distance vectors and
+//how they match up to the rotations)
+int Beliefs::get_maximum_intensity_following_linear_move(FORRAction action){
+  //cout <<"In get_maximum_intensity_following_linear_move"<<endl;
+  //double rots[] = {0, .1548, -.1548, .3048, -.3048, .65, -.65, 1.3, -1.3, 3.39, -3.39};
+  int movements[] = {3,7,20,45,105};
+  FORRActionType type = action.type;
+  int parameter = action.parameter;
+  double distance;
+  
+  //get correct wallDistanceVector value corresponding to the action and intensity
+  if(type == LEFT_TURN) distance = wallDistanceVector[(parameter * 2) -1];
+  else if(type == RIGHT_TURN) distance = wallDistanceVector[parameter * 2];
+  
+  //cout << "Distance of current wall vector inside get_maximum_intensity_following<>:: "<<distance<<endl;
+  
+  if(distance > 105) return 5; //distance to wall is greater than max move, so return max move
+  else {
+    //loop through distances, starting with the greatest, to see which one is accessible
+    //check to see if the distance is in the interval between the distances, i.e.
+    //is greater than the lowest value (because we checked to see if it's greater than 105 already)
+    for(int i = 3; i >= 0; i--){
+      if(distance > movements[i]){
+	return i+1; // i+1 because movement[i] = intensity of i+1
+      }    
+    }
+  
+    //default, means that distance < 3, so return intensity 0 (note: this does not exist as an
+    //intensity, just to identify that it found no value);
+    return 0;
+  }
+}
+
+
+void Beliefs::turn_to_side(){
+  if(wallDistanceVector[0] > 120)
+    m_side = 'n'; // keep going forward
+  else{
+    double average_left = 0, average_right = 0;
+    // note that I am not using the whole array, I want to discard
+    // backward move and rotation with intensity 5
+    for(int i = 1; i < 9; ++i)
+      if(i % 2 == 1)
+	average_left += wallDistanceVector[i];
+      else
+	average_right += wallDistanceVector[i];
+
+    average_left /= 4;
+    average_right /= 4;
+    if(average_left >= average_right)
+      m_side = 'l';
+    else
+      m_side = 'r';
+  }
+}
+
+
+

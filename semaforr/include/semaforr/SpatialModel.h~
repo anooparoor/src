@@ -1,0 +1,35 @@
+/*!
+ * SpatialModel.h
+ *
+ * \brief Represents the current spatial model of the environment: Regions, exits, conveyors, etc
+ *
+ * \author Anoop Aroor
+ * \date 11/11/2016 Created
+ */
+
+#include <FORRAbstractMap.h>
+#include <FORRTrace.h>
+#include <FORRTrails.h>
+#include <FORRWaypoints.h>
+
+class SpatialModel{
+
+public:
+	SpatialModel(){
+		abstract_map = new FORRAbstractMap();
+		trace = new FORRTrace();
+		trails = new FORRTrails();
+		waypoints = new FORRWaypoints();
+	};
+
+        FORRAbstractMap* get_abstract_map(){return abstract_map;}
+	FORRTrace* get_trace(){return trace;}
+	FORRTrails* get_trails(){return trails;}
+	FORRWaypoints* get_waypoints(){return waypoints;}
+
+private:
+	FORRAbstractMap *abstract_map;
+        FORRTrace *trace;
+	FORRTrails *trails;
+	FORRWaypoints *waypoints;
+};
