@@ -8,6 +8,11 @@ Position AgentState::getExpectedPositionAfterAction(FORRAction action){
 }
   
 
+double AgentState::getForwardObstacleDistance(){
+   int scan_lines = currentLaserScan.ranges.size();	
+   return currentLaserScan.ranges[scan_lines/2];
+}
+
 Position AgentState::getExpectedPositionAfterActions(vector<FORRAction> actions){
 
   Position expectedPosition;
@@ -195,5 +200,75 @@ double AgentState::getDistanceToTarget(){
    return currentPosition.getDistance(currentTask->getX(), currentTask->getY());
 }
 
+//Sees if the laser scan intersects with a segment created by 2
+//trailpoints
+bool AgentState::canSeeSegment(CartesianPoint point1, CartesianPoint point2){
+  CartesianPoint curr(currentPosition.getX(),currentPosition.getY());
+  return canSeeSegment(laserEndpoints, curr, point1, point2);
+}
+
+//Sees if the laser scan intersects with a segment created by 2
+//trailpoints
+bool AgentState::canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point1, CartesianPoint point2){
+  CartesianPoint intersection_point(0,0);
+  for(int i = 0; i < givenLaserEndpoints.size(); i++){
+    //this can be cleaned up or put into one function, but need to convert the distance to a linesegment to calculate
+    //the distance from a point to a line
+    CartesianPoint endpoint = givenLaserEndpoints[i];
+    
+    LineSegment distance_vector_line = LineSegment(laserPos, endpoint);
+    LineSegment trail_segment = LineSegment(point1, point2);
+    if(do_intersect(distance_vector_line, trail_segment, intersection_point)){
+      return true;
+    }
+  }
+  //else, not visible
+  return false;
+}
+
+
+//returns true if there is a point that is "visible" by the wall distance vectors to some epsilon.  
+//A point is visible if the distance to a wall distance vector line is < epsilon.
+bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point, double epsilon){
+  for(int i = 0; i < givenLaserEndpoints.size(); i++){
+    //this can be cleaned up or put into one function, but need to convert the distance to a linesegment to calculate
+    //the distance from a point to a line
+    LineSegment l = LineSegment(laserPos, givenLaserEndpoints[i]);
+    double distance_to_point = distance(point, l);
+    if(distance_to_point < epsilon){
+      //cout << "Distance vector endpoint visible: ("<<laserEndpoints[i].get_x()<<","<< laserEndpoints[i].get_y()<<")"<<endl; 
+      //cout << "Distance: "<<distance_to_point<<endl;
+      return true;
+    }
+  }
+  //else, not visible
+  return false;
+}
+
+
+
+//returns true if there is a point that is "visible" by the wall distance vectors to some epsilon.  
+//A point is visible if the distance to a wall distance vector line is < epsilon.
+bool AgentState::canSeePoint(CartesianPoint point, double epsilon){
+  CartesianPoint curr(currentPosition.getX(),currentPosition.getY());
+  return canSeePoint(laserEndpoints, curr, point, epsilon);
+}
+
+void AgentState::transformToEndpoints(){
+    double start_angle = currentLaserScan.angle_min;
+    double increment = currentLaserScan.angle_increment;
+
+    double r_x = currentPosition.getX();
+    double r_y = currentPosition.getY();
+    double r_ang = currentPosition.getTheta();
+    CartesianPoint current_point(r_x,r_y);
+  
+    for(int i = 0 ; i < currentLaserScan.ranges.size(); i++){
+       Vector v = Vector(current_point, start_angle + r_ang, currentLaserScan.ranges[i]);
+       CartesianPoint endpoint = v.get_endpoint();
+       start_angle = start_angle + increment;
+       laserEndpoints.push_back(endpoint);
+    }    
+}
 
 

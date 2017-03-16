@@ -295,13 +295,16 @@ FORRAction Controller::FORRDecision()
 //
 bool Controller::tierOneDecision(FORRAction *decision){
   //decision making tier1 advisor
-  if(tier1->advisorVictory(decision)) 
-	return true;
-
-  // group of vetoing tier1 advisors which adds to the list of vetoed actions
-  tier1->advisorAvoidWalls();
-  tier1->advisorNotOpposite();
-  return false;
+  bool decisionMade = false;
+  if(tier1->advisorVictory(decision)){ 
+	decisionMade = true;	
+  }
+  else{
+  	// group of vetoing tier1 advisors which adds to the list of vetoed actions
+  	tier1->advisorAvoidWalls();
+  	//tier1->advisorNotOpposite();
+  }
+  return decisionMade;
 }
 
 
@@ -320,25 +323,6 @@ void Controller::tierThreeDecision(FORRAction *decision){
 
   // vector of all the actions that got max comment strength in iteration
   vector<FORRAction> best_decisions;
-
-  //returns the pointer to the vetoed actions
-  set<FORRAction> *vetoedActions = beliefs->getAgentState()->getVetoedActions();
-
-  vetoedActions->insert(FORRAction(LEFT_TURN, 5));
-  vetoedActions->insert(FORRAction(RIGHT_TURN, 5));
-  // if decisionNo is odd then rotate else move forward decisionCount = odd => rotate, first move is to rotate
-  if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() % 2 == 1){
-    for(int i = 1; i < 6; ++i){
-      vetoedActions->insert(FORRAction(FORWARD, i));
-      vetoedActions->insert(FORRAction(PAUSE, 0));
-    }
-  }
-  else{
-    for(int i = 1; i < 6; ++i)
-      vetoedActions->insert(FORRAction(RIGHT_TURN, i));
-    for(int i = 1; i < 6; ++i)
-      vetoedActions->insert(FORRAction(LEFT_TURN, i));
-  }
   
   double rotationBaseline, linearBaseline;
   for (advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
@@ -364,7 +348,7 @@ void Controller::tierThreeDecision(FORRAction *decision){
       continue;
     }
     //cout << "Before commenting " << endl;
-    comments = advisor->allAdvice(*vetoedActions);
+    comments = advisor->allAdvice();
     //cout << "after commenting " << endl;
     // aggregate all comments
 

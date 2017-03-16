@@ -1,4 +1,0 @@
-var searchData=
-[
-  ['lerp',['Lerp',['../classmetrobotics_1_1Lerp.html#abb7f68c0aff8edfc1c40687106b6e6e4',1,'metrobotics::Lerp']]]
-];

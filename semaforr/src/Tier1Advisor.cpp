@@ -102,7 +102,7 @@ bool Tier1Advisor::isFacing(Position robotPos , CartesianPoint point, double rad
 
 */
 
-bool Tier1Advisor::advisorVictory(FORRAction *decision, Beliefs *beliefs) {
+bool Tier1Advisor::advisorVictory(FORRAction *decision) {
   cout << "Begin victory advisor" << endl;
   // if the robot is oriented towards the goal and the robot actions which are not vetoed allows the robot to reach the goal then take that action.
   bool decisionMade = false;
@@ -132,7 +132,7 @@ bool Tier1Advisor::advisorVictory(FORRAction *decision, Beliefs *beliefs) {
  * it can hit the wall although there is no visible collision near (almost parallel to the wall).
  * Have to make it work and yet be simple computationally.
  */
-bool advisorAvoidWalls(Beliefs *beliefs){
+bool Tier1Advisor::advisorAvoidWalls(){
   const int THRESHOLD1 = 30;
   const int THRESHOLD2 = 45;
   //cout << "Avoid Walls called " << endl;

@@ -39,51 +39,35 @@ class FORRTrails{
  public:
   
   void readTrails(string filename); //populate the trails vector with new paths
-
-
-  //returns true if there is a visible path to a point given the distance vector distance and the point
-  bool canRobotSeeTrailSegment(vector<double> &distanceVectors, CartesianPoint trailpoint1, CartesianPoint trailpoint2,
-			      CartesianPoint current_point);
-
+  void setAgentState(AgentState *agent){agentState = agent;}
 
   //returns true if a point along the trail (indexed by trail_index) has wall vectors that come
   //close to target_point
   int doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index);
 
-
-  //returns true if there is a visible path to a point given the endpoints of distance vectors and the point
-  bool canTrailMarkerSeeTarget(vector<CartesianPoint> &distanceVectorEndpoints, CartesianPoint target_point, 
-			     CartesianPoint current_point, double epsilon);
-
-
   //assumes the trail file is trail.conf and the vectors file is corrected_wallvectors.conf
   void updateTrails();
   
-  CartesianPoint getFurthestVisiblePointOnChosenTrail(CartesianPoint current, vector<double> &currentDistanceVectors);
-
+  CartesianPoint getFurthestVisiblePointOnChosenTrail();
 
   //to be called by the Tier3 Advisor, which has access to the belief endDistances
   //returns an integer index to the top-level vector of trails
-  void findNearbyTrail(CartesianPoint target, CartesianPoint start, vector<double> &currentDistanceVectors);
+  void findNearbyTrail();
 
   void printTrails();
   
-  
- FORRTrails(): chosen_trail(-1) {}
-  
+ FORRTrails(): chosen_trail(-1) {}  
   
   void setDirection(DIRECTION d){dir = d;}
   
   vector<TrailMarker> getTrail(int i){ return trails[i]; }
   
   int getSize(){return trails.size();}
- 
   
   void setChosenTrail(int n){ chosen_trail = n;}
   
   int getChosenTrail(){ return chosen_trail; }
-  
-  
+   
   bool canSeeTrail() {return can_see_trail;}
 
   void resetChosenTrail(){ chosen_trail = -1;}
@@ -98,7 +82,7 @@ class FORRTrails{
   //stores the integer index to the trails vector where you have found a usable trail
   int chosen_trail;
   bool can_see_trail;
-
+  AgentState *agentState;
 
 };
 

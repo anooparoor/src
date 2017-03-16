@@ -14,6 +14,7 @@
 #include "FORRAction.h"
 #include "Position.h"
 #include "Utils.h"
+#include "FORRGeometry.h"
 
 #include <time.h>
 #include <unistd.h>
@@ -34,6 +35,16 @@ class AgentState
   AgentState() : currentTask(NULL) {
 	vetoedActions = new set<FORRAction>();
         pos_hist = new vector<Position>();
+        action_set = new set<FORRAction>();
+
+    	for(int i = 1; i < 6; i++){
+      		action_set->insert(FORRAction(LEFT_TURN, i));
+      		action_set->insert(FORRAction(RIGHT_TURN, i));
+    	}
+    	for(int i = 1; i < 6; i++){
+      		action_set->insert(FORRAction(FORWARD, i));
+    	}
+    	action_set->insert(FORRAction(PAUSE,0));
   }
   
   // Use the laser scan value to check if the target is in sight
@@ -41,6 +52,7 @@ class AgentState
   // Best possible move towards the target
   FORRAction singleMoveTowardsTarget();
 
+  set<FORRAction> *getActionSet(){return action_set;}
 
   vector<Position> *getPositionHistory(){return pos_hist;}
 
@@ -113,8 +125,16 @@ class AgentState
 
   double getDistanceToObstacle(FORRAction action);
   double getDistanceToObstacle();
-
   double getDistanceToTarget();
+
+  // Can a robot see a segment or a point using its laser scan data?
+  bool canSeeSegment(CartesianPoint point1, CartesianPoint point2);
+  bool canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point1, CartesianPoint point2);
+  bool canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point, double epsilon);
+  bool canSeePoint(CartesianPoint point, double epsilon);
+  
+  //Converts current laser range scanner to endpoints
+  void transformToEndpoints();
 
  private:
 
@@ -129,6 +149,9 @@ class AgentState
 
   // set of vetoed actions that the robot cant execute in its current state
   set<FORRAction> *vetoedActions;
+
+  // Set of all actions that the robot has in its action set
+  set<FORRAction> *action_set;
   
   // aggregate decision making statistics of the agent
   // Total travel time
@@ -154,6 +177,9 @@ class AgentState
 
   // Currrent laser scan reading at the current position
   sensor_msgs::LaserScan currentLaserScan;
+
+  // Current laser scan data as endpoints in the x-y coordinate frame
+  vector<CartesianPoint> laserEndpoints;
 
 };
 

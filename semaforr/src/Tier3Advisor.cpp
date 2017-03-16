@@ -22,43 +22,10 @@ using std::set;
 Tier3Advisor::Tier3Advisor(Beliefs *beliefs_para, string name, string description, double weight, double *magic_init, bool is_active)  { 
   //  cout << "In constructor of tier 3 advisor" << endl;
   beliefs = beliefs_para;
-
-
-  //  cout << "Initializing the allActions" << endl;
-
-  set<FORRAction> all_actions;
-
-  std::size_t found = (name).find("Rotation");
-  if (found!=std::string::npos){
-    for(int i = 1; i < 6; i++){
-      all_actions.insert(FORRAction(LEFT_TURN, i));
-      all_actions.insert(FORRAction(RIGHT_TURN, i));
-    }
-  }
-  else{
-    for(int i = 1; i< 6; i++){
-      all_actions.insert(FORRAction(FORWARD, i));
-    }
-    all_actions.insert(FORRAction(PAUSE,0));
-  }
-  
-  // cout << "End of initializing actions: size: " << all_actions.size() << endl;
-
-  agentActions = all_actions;
-  agent_name = name;
-  agentDescription = description;
-  advisorWeight = weight;
-  advisor_active = is_active;
-  //  cout << "before initializing movements and rotations" << endl;
-
-  int mmts[] = {3, 7, 20, 25, 105}; 
-  double rots[] =  {0, .1548, -.1548, .3048, -.3048, .65, -.65, 1.3, -1.3, 3.39, -3.39}; 
-
-  for( int i = 0 ; i < 5; i++)
-    movements[i] = mmts[i];
-  for(int i = 0; i < 11; i++)
-    rotations[i] = rots[i];
-
+  name = name;
+  description = description;
+  weight = weight;
+  active = is_active;
   cout << "before initializing auxilary constants" << endl;
   // load all magic numbers for this advisor
   for (int i = 0; i < 4; ++i)
@@ -74,18 +41,20 @@ Tier3Advisor::~Tier3Advisor() {};
 // No arguments are necessary because actions are stored as member variable
 // in advisor 
 // It returns map that maps action to comment strength
-std::map <FORRAction, double> Tier3Advisor::allAdvice(set<FORRAction> vetoed_actions){
+std::map <FORRAction, double> Tier3Advisor::allAdvice(){
+  set<FORRAction> *vetoed_actions = beliefs->getAgentState()->getVetoedActions();
+  set<FORRAction> *action_set = beliefs->getAgentState()->getActionSet();
   std::map <FORRAction, double> result;
   double adviceStrength;
   FORRAction forrAction;
   //std::cout << this->agent_name << ": in allAdvice function .. comments are as following:" << std::endl;
   set<FORRAction>::iterator actionIter;
-  for(actionIter = agentActions.begin(); actionIter != agentActions.end(); actionIter++){
+  for(actionIter = action_set->begin(); actionIter != action_set->end(); actionIter++){
     forrAction = *actionIter;
     std::size_t foundr = (this->get_name()).find("Rotation");
     if( ((forrAction.type == LEFT_TURN or forrAction.type == RIGHT_TURN ) and (foundr == std::string::npos)) or (forrAction.type == FORWARD and foundr != std::string::npos))
       break;
-    if(vetoed_actions.find(forrAction) != vetoed_actions.end())// is this action vetoed
+    if(vetoed_actions->find(forrAction) != vetoed_actions->end())// is this action vetoed
       continue;
     adviceStrength = this->actionComment(forrAction);
     //std::cout << "Advisor name :"  << this->get_name() << " Strength: " << adviceStrength << " Action Type:" << forrAction.type << " " << "Action intensity " << forrAction.parameter << std::endl;
@@ -165,8 +134,8 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
     return new Tier3CloseInRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BigStepRotation")
     return new Tier3BigStepRotation(beliefs, name, description, weight, magic_init, is_active);
-  else if(name == "GoAroundRotation")
-    return new Tier3GoAroundRotation(beliefs, name, description, weight, magic_init, is_active);
+  //else if(name == "GoAroundRotation")
+    //return new Tier3GoAroundRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ExplorerRotation")
     return new Tier3ExplorerRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BaseLineRotation")
@@ -210,7 +179,7 @@ Tier3GreedyRotation::Tier3GreedyRotation (Beliefs *beliefs, string name, string 
 Tier3AvoidObstacleRotation::Tier3AvoidObstacleRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3CloseInRotation::Tier3CloseInRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3BigStepRotation::Tier3BigStepRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
-Tier3GoAroundRotation::Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
+//Tier3GoAroundRotation::Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3AvoidLeafRotation::Tier3AvoidLeafRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3ExplorerRotation::Tier3ExplorerRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3BaseLineRotation::Tier3BaseLineRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
@@ -240,11 +209,12 @@ Tier3GreedyRotation::Tier3GreedyRotation(): Tier3Advisor() {};
 Tier3AvoidObstacleRotation::Tier3AvoidObstacleRotation(): Tier3Advisor() {};
 Tier3CloseInRotation::Tier3CloseInRotation(): Tier3Advisor() {};
 Tier3BigStepRotation::Tier3BigStepRotation(): Tier3Advisor() {};
-Tier3GoAroundRotation::Tier3GoAroundRotation(): Tier3Advisor() {};
+//Tier3GoAroundRotation::Tier3GoAroundRotation(): Tier3Advisor() {};
 Tier3AvoidLeafRotation::Tier3AvoidLeafRotation(): Tier3Advisor() {};
 Tier3ExplorerRotation::Tier3ExplorerRotation(): Tier3Advisor() {};
 //Tier3AvoidRobotRotation::Tier3AvoidRobotRotation(): Tier3Advisor() {};
 Tier3BaseLineRotation::Tier3BaseLineRotation(): Tier3Advisor() {};
+
 Tier3ExitFinderLinear::Tier3ExitFinderLinear(): Tier3Advisor() {};
 Tier3ExitFinderRotation::Tier3ExitFinderRotation(): Tier3Advisor() {};
 Tier3RegionFinderLinear::Tier3RegionFinderLinear(): Tier3Advisor() {};
@@ -966,7 +936,6 @@ double Tier3ExplorerRotation::actionComment(FORRAction action){
     totalForce += (1/distance);
   }
   return totalForce * (-1);
-
 }
 
 double Tier3BaseLineRotation::actionComment(FORRAction action){
@@ -1021,7 +990,6 @@ double Tier3WaypointFinderRotation::actionComment(FORRAction action){
   Position cur_pos = beliefs->getAgentState()->getCurrentPosition();
   double distance = cur_pos.getDistance(expectedPosition.getX(), expectedPosition.getY());  
   return distance * grid_value;
- 
 }
 
 void Tier3WaypointFinderRotation::set_commenting(){
@@ -1029,25 +997,21 @@ void Tier3WaypointFinderRotation::set_commenting(){
 }
 
 
-
 double Tier3TrailFinderLinear::actionComment(FORRAction action){
-
-   CartesianPoint curr = CartesianPoint(beliefs->getAgentState()->getCurrentPosition().getX(), beliefs->getAgentState()->getCurrentPosition().getY());
    CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail();
    //if out of line of sight of trail marker, vote the same value functionally turning off voting
-   if(!beliefs->getSpatialModel()->getTrails()->trail_vectors.canSeeTrail()){
+   if(!beliefs->getSpatialModel()->getTrails()->canSeeTrail()){
      return 0;
    }
 
-  Position expectedPosition = beliefs->getExpectedPositionAfterAction(action);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   double newDistance = expectedPosition.getDistance(beliefs->getAgentState()->getCurrentPosition());
   return newDistance *(-1); 
-
 }
 
 //only turn on if a trail is active
 void Tier3TrailFinderLinear::set_commenting(){
-  if(beliefs->getSpatialModel()->getTrails()->trail_vectors.getChosenTrail() == -1){
+  if(beliefs->getSpatialModel()->getTrails()->getChosenTrail() == -1){
     advisor_commenting = false;
   }
   else{
@@ -1056,19 +1020,11 @@ void Tier3TrailFinderLinear::set_commenting(){
 }
 
 double Tier3TrailFinderRotation::actionComment(FORRAction action){
-
-
   Position cur_pos = beliefs->getAgentState()->getCurrentPosition();
-  CartesianPoint curr_point;
-  curr_point.set_x(cur_pos.getX());
-  curr_point.set_y(cur_pos.getY());
-
-  sensor_msgs::LaserScan laserScan = beliefs->getAgentState()->getLaserCurrentScan();
-  CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail(curr_point,
-					laserScan);
+  CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail();
    //if out of line of sight of trail marker, vote the same value in effect turning off voting
   //can_see_trail is set in getFurthestVisiblePointOnChosenTrail
-   if(!beliefs->getSpatialModel()->getTrails()->trail_vectors.canSeeTrail()){
+   if(!beliefs->getSpatialModel()->getTrails()->canSeeTrail()){
      return 0;
    }
 
@@ -1076,7 +1032,7 @@ double Tier3TrailFinderRotation::actionComment(FORRAction action){
   actionList.push_back(action);
   actionList.push_back(FORRAction(FORWARD,5));
 
-  Position expectedPosition = beliefs->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
   double newDistance = expectedPosition.getDistance(cur_pos);
   return newDistance *(-1); 
 }
@@ -1084,7 +1040,7 @@ double Tier3TrailFinderRotation::actionComment(FORRAction action){
 
 //only turn on if a trail is active
 void Tier3TrailFinderRotation::set_commenting(){
-  if(beliefs->getSpatialModel()->getTrails()->trail_vectors.getChosenTrail() == -1){
+  if(beliefs->getSpatialModel()->getTrails()->getChosenTrail() == -1){
     advisor_commenting = false;
   }
   else{

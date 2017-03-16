@@ -9,7 +9,7 @@
 
 #include <FORRAbstractMap.h>
 #include <FORRTrace.h>
-#include <FORRTrails.h>
+//#include <FORRTrails.h>
 #include <FORRWaypoints.h>
 
 class SpatialModel{
@@ -22,10 +22,10 @@ public:
 		waypoints = new FORRWaypoints();
 	};
 
-        FORRAbstractMap* get_abstract_map(){return abstract_map;}
-	FORRTrace* get_trace(){return trace;}
-	FORRTrails* get_trails(){return trails;}
-	FORRWaypoints* get_waypoints(){return waypoints;}
+        FORRAbstractMap* getAbstractMap(){return abstract_map;}
+	FORRTrace* getTrace(){return trace;}
+	FORRTrails* getTrails(){return trails;}
+	FORRWaypoints* getWaypoints(){return waypoints;}
 
 private:
 	FORRAbstractMap *abstract_map;

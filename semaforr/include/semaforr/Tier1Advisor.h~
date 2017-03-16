@@ -13,12 +13,17 @@
 
 // A t1 advisor class contains a list of functions each of which returns a single action or vetoes a set of actions
 class Tier1Advisor{
-public:
 
+public:
+        Tier1Advisor(Beliefs *b){
+		beliefs = b;
+	}
         //void advisorNotOpposite(Beliefs *beliefs);
 	//void advisorCircle(Beliefs *beliefs);
-	bool advisorAvoidWalls(Beliefs *beliefs);
+	bool advisorAvoidWalls();
 
-	bool advisorVictory(FORRAction *decision, Beliefs *beliefs);
+	bool advisorVictory(FORRAction *decision);
 	
+private:
+	Beliefs *beliefs;
 };

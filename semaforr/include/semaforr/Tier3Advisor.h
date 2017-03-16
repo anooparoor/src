@@ -59,19 +59,19 @@ class Tier3Advisor {
     static Tier3Advisor* makeAdvisor(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool isActive);
 
     // This function will return advices on all proposed actions
-    std::map <FORRAction, double> allAdvice(std::set<FORRAction> vetoed_actions);
+    std::map <FORRAction, double> allAdvice();
 
     // method that returns advisor's name; it is used to print it out in the log
     // to see which advisor gave what advice strenght to which action
-    string get_name(){ return agent_name;}
+    string get_name(){ return name;}
     
     // method that returns the flag of whether advisor is active or not
-    bool is_active(){ return advisor_active; }
+    bool is_active(){ return active; }
     // accessor to advisor_active variable
-    void set_active(bool value) { advisor_active = value; }   
+    void set_active(bool value) { active = value; }   
 
-    double get_weight() { return advisorWeight;}  
-    void set_weight(double weight) {advisorWeight = weight;} 
+    double get_weight() { return weight;}  
+    void set_weight(double weight) {weight = weight;} 
     
     // setter and getter methods for isCommenting flag (whether advisor should comment current action)
     bool is_commenting() { return advisor_commenting; }
@@ -87,25 +87,10 @@ class Tier3Advisor {
 
     // this is array in which we store magic numbers for our advisors
     double auxiliary_constants[4];
-
-    // these are my estimates for move step sizes and rotations 
-    // for the robot. That I got from playing with visual debugger
-    int movements[5];
-    double rotations[11];
-  
-    // To make decision my advisors will need
-    std::set <FORRAction> agentActions;
-    string agent_name;
-    string agentDescription;
-    double advisorWeight;
+    string name;
+    string description;
+    double weight;
     Beliefs *beliefs;
-
-    // map that will store squares that robot visited during one run
-    // run means going from point A to point B
-    // experiment consists of multiple consecutive runs
-    // so once robot reaches target point this map will be reset
-    std::map<pair<int, int>, int> visitedSquares; 
-
     /* some advisers will not be active all the time this flag is showing whether adviser is active or not
      * this flag should be checked in the RobotController so we do not waste function call on it and also confuse the
      * return value from such (unnecessary) call !!!
@@ -113,9 +98,8 @@ class Tier3Advisor {
      * or not.
      */
     bool advisor_commenting;
-
     // this flag gets set by the configuration file and enables/disables advisor for the whole run
-    bool advisor_active;
+    bool active;
 };
 
 class Tier3Greedy : public Tier3Advisor{
@@ -306,7 +290,7 @@ class Tier3BigStepRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-
+/*
 class Tier3GoAroundRotation : public Tier3Advisor{
  public:
   Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
@@ -318,6 +302,8 @@ class Tier3GoAroundRotation : public Tier3Advisor{
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
+
+*/
 
 // Idea for this advisor
 // since it is fuzzy it should allow robot to go away from the target if it
