@@ -22,39 +22,6 @@ using namespace std;
 
 #define CTRL_DEBUG true
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Callback function for laser_scan message
-//
-//
-void Controller::updateLaserScan(const sensor_msgs::LaserScan & scan){
-	beliefs->getAgentState()->setCurrentLaserScan(scan);
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Callback function for pose message
-//
-//
-void Controller::updatePose(const geometry_msgs::PoseStamped & pose){
-        float x = pose.pose.position.x;
-  	float y = pose.pose.position.y;
-	tf::Quaternion q(pose.pose.orientation.x,pose.pose.orientation.y,pose.pose.orientation.z,pose.pose.orientation.w);
-	tf::Matrix3x3 m(q);
-	double roll, pitch, yaw;
-	m.getRPY(roll, pitch, yaw);
-	beliefs->getAgentState()->setCurrentPosition(Position(x,y,yaw));
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Callback function for crowd_pose message
-//
-//
-//void Controller::updateCrowdPose(){
- 
- 
-//}
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Read from the config file and intialize advisors and weights and spatial learning modules based on the advisors
 //
@@ -107,7 +74,7 @@ void Controller::initialize_advisors(string filename){
 // Read from the config file and intialize robot parameters
 //
 //
-void Controller::initialize_robot(string filename){
+void Controller::initialize_actions(string filename){
 // robot intial position
 // robot laser sensor range, span and increment
 // robot action <-> semaFORR decision
@@ -144,53 +111,63 @@ void Controller::initialize_tasks(string filename){
 // Initialize the controller and setup messaging to ROS
 //
 //
-Controller::Controller(ros::NodeHandle &nh, string advisor_config, string task_config, string robot_config){
-
-   	    // Initialize ROS handle and ROS publish and subscribe handles
-	    nh_ = nh;
-	    cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 100);
-	    sub_laser_ = nh_.subscribe("laser_scan", 1000, &Controller::updateLaserScan, this);
-  	    sub_pose_ = nh_.subscribe("pose", 1000, &Controller::updatePose, this);
-  	    //sub_crowd_pose_ = nh_.subscribe("crowd_pose", 1000, &Controller::updateCrowdPose, this);
+Controller::Controller(string advisor_config, string task_config, string action_config){
 
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
             beliefs = new Beliefs();
 
             // Initialize advisors and weights from config file
-            initialize_advisors(advisor_config);
+            //initialize_advisors(advisor_config);
 
 	    // Initialize the tasks from a config file
-	    initialize_tasks(task_config);
+	    //initialize_tasks(task_config);
 
 	    // Initialize robot parameters from a config file
-	    initialize_robot(robot_config);
+	    //initialize_actions(action_config);
+	    // create a dummy task for testing
+	    beliefs->getAgentState()->addTask(20,19);
+	    beliefs->getAgentState()->addTask(25,19);
+	    beliefs->getAgentState()->addTask(30,19);
+	    // Initialize currnent task
+	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
 	    
-	    Tier1Advisor *tier1 = new Tier1Advisor(beliefs);
+	    tier1 = new Tier1Advisor(beliefs);
+}
+
+
+// Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
+void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
+      beliefs->getAgentState()->setCurrentPosition(current);
+      beliefs->getAgentState()->setCurrentLaserScan(laser_scan);
+	//*********** Goal reached, switch task and learn spatial model from previous task ********************************
+  	if (beliefs->getAgentState()->getDistanceToTarget() < 0.3){
+		ROS_DEBUG("Target Achieved!!");
+    		beliefs->getAgentState()->finishTask();
+		return;
+	}
+	//********************* Decision limit reached, skip task ***************************************  
+  	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 250){
+		ROS_DEBUG("Controller.cpp decisionCount > 250 , skipping task");
+    		beliefs->getAgentState()->skipTask();
+		return;
+  	}
+}
+
+
+// Function which returns the mission status
+bool Controller::isMissionComplete(){
+ 	return beliefs->getAgentState()->isMissionComplete();
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Main robot control loop Sense -> decide -> return decision
-//
+// Main robot decision making engine, return decisions that would lead the robot to complete its mission
+// Manages switching tasks and stops if the robot is taking too long
 //
 FORRAction Controller::decide() {
-      // this will call the callback function associated with pose, laser scan and crowd_pose
-      ros::spinOnce();
- 
-        //********************* Decision limit reached, skip task ***************************************  
-  	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 250){
-    		beliefs->getAgentState()->skipTask();
-  	}
-  
-  	//*********** Goal reached, switch task and learn spatial model from previous task ********************************
-  	if (beliefs->getAgentState()->getDistanceToTarget() < 7){
-    		beliefs->getAgentState()->finishTask();
-		//learnSpatialModel();
-	}
-      // Make decision for the current task
-      FORRAction decision = FORRDecision();
-      return decision;
+        ROS_DEBUG("Entering decision loop");
+	return FORRDecision(); 
 }
 
 
@@ -279,11 +256,20 @@ void Controller::learnSpatialModel(){
 //
 FORRAction Controller::FORRDecision()
 {  
-  FORRAction *decision = new FORRAction();
-  // Basic semaFORR three tier decision making architecture 
-    if(!tierOneDecision(decision)){	
-	tierThreeDecision(decision);
+    ROS_DEBUG("In FORR decision");
+    FORRAction *decision = new FORRAction();
+    // Basic semaFORR three tier decision making architecture 
+    
+    if(!tierOneDecision(decision)){
+	ROS_DEBUG("Decision to be made by t3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	decision->type = FORWARD;
+	decision->parameter = 5;	
+	//tierThreeDecision(decision);
     }
+    
+    //decision->type = RIGHT_TURN;
+    //decision->parameter = 4;
+    beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();
     return *decision;
 }
 
@@ -297,10 +283,12 @@ bool Controller::tierOneDecision(FORRAction *decision){
   //decision making tier1 advisor
   bool decisionMade = false;
   if(tier1->advisorVictory(decision)){ 
+	ROS_INFO_STREAM("Advisor victory has made a decision " << decision->type << " " << decision->parameter);
 	decisionMade = true;	
   }
   else{
   	// group of vetoing tier1 advisors which adds to the list of vetoed actions
+	ROS_INFO("Advisor avoid wall will veto actions");
   	tier1->advisorAvoidWalls();
   	//tier1->advisorNotOpposite();
   }
@@ -401,7 +389,7 @@ void Controller::tierThreeDecision(FORRAction *decision){
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Checks if an advisor is active
+// Checks if an T3 advisor is active
 //
 //
 bool Controller::

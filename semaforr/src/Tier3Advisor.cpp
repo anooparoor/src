@@ -608,10 +608,10 @@ void Tier3AvoidRobotRotation::set_commenting(){
 
 //Wants to make moves that keep the robot as far as possible from the obstacles
 double Tier3AvoidObstacle::actionComment(FORRAction action){
-  
-  double distanceToObstacle = beliefs->getAgentState()->getDistanceToObstacle(action);
-  
-  return distanceToObstacle;
+
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  double distanceToObstacle = beliefs->getAgentState()->getDistanceToNearestObstacle(expectedPosition);
+  return distanceToObstacle * (-1);
 }
 
 // always on
@@ -621,10 +621,13 @@ void Tier3AvoidObstacle::set_commenting(){
 
 double Tier3AvoidObstacleRotation::actionComment(FORRAction action){
 
-
-  double obstacleDistance = beliefs->getAgentState()->getDistanceToObstacle(action);
+  vector<FORRAction> actionList;
+  actionList.push_back(action);
+  actionList.push_back(FORRAction(FORWARD,5));
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  double obstacleDistance = beliefs->getAgentState()->getDistanceToNearestObstacle(expectedPosition);
   
-  return obstacleDistance;
+  return obstacleDistance * (-1);
 }
 
 void Tier3AvoidObstacleRotation::set_commenting(){

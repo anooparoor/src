@@ -19,10 +19,10 @@
 
 #include <fstream>
 #include <ros/ros.h>
+#include <ros/console.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/LaserScan.h>
-#include <tf/transform_datatypes.h>
 
 
 // Forward-declare Controller so the typedef below can reference it
@@ -33,12 +33,19 @@ typedef std::vector<Tier3Advisor*>::iterator advisor3It;
 class Controller {
 public:
 
-  Controller(ros::NodeHandle &nh, string, string, string);
-  Beliefs *getBeliefs() { return beliefs; }
+  Controller(string, string, string);
   
   //main sense decide loop, receives the input messages and calls the FORRDecision function
   FORRAction decide();
 
+  //Update state of the agent using sensor readings
+  void updateState(Position current, sensor_msgs::LaserScan laserscan);
+
+  //Returns the state of the robots mission (True 
+  bool isMissionComplete();
+
+  // getter for beliefs
+  Beliefs *getBeliefs() { return beliefs; }
 
 private:
 
@@ -55,9 +62,9 @@ private:
   // learns the spatial model and updates the beliefs
   //void learnSpatialModel();
 
-  void initialize_advisors(string);
-  void initialize_tasks(string);
-  void initialize_robot(string);
+  void initialize_advisors(std::string);
+  void initialize_tasks(std::string);
+  void initialize_actions(std::string);
   
   // Knowledge component of robot
   Beliefs *beliefs;
@@ -68,20 +75,6 @@ private:
   
   // Checks if a given advisor is active
   bool isAdvisorActive(string advisorName);
-
-  
-  //! The ROS node handle 
-  ros::NodeHandle nh_;
-  //! We will be publishing to the "/cmd_vel" topic to issue commands
-  ros::Publisher cmd_vel_pub_;
-  ros::Subscriber sub_laser_;
-  ros::Subscriber sub_pose_;
-  ros::Subscriber sub_crowd_pose_;
-
-  // Message handler functions in controller  
-  void updateLaserScan(const sensor_msgs::LaserScan &scan);
-  //void updateCrowdPose();
-  void updatePose(const geometry_msgs::PoseStamped &pose);
 
 };
   

@@ -13,7 +13,6 @@ Written by Anoop Aroor, 2014
 #include "FORRGeometry.h"
 #include "FORRCircle.h"
 #include "FORRExit.h"
-#include "Utils.h"
 
 class FORRAbstractMap{
  public:
@@ -142,7 +141,7 @@ class FORRAbstractMap{
 	  double short_angle = next_position.getTheta() + rotations[next_direction];
 	  double x = next_position.getX() + next_radius * cos(short_angle);
 	  double y = next_position.getY() + next_radius * sin(short_angle);
-	  double dist = Utils::get_euclidian_distance(current_circle.getCenter().get_x() , current_circle.getCenter().get_y() , x , y);
+	  double dist = current_circle.getCenter().get_distance(CartesianPoint(x , y));
 	  if(dist < current_circle.getRadius())
 	    current_circle.setRadius(dist);	       
 	} 
@@ -160,7 +159,7 @@ class FORRAbstractMap{
 	double short_angle = current_position.getTheta() + rotations[direction];
 	double x = current_position.getX() + radius * cos(short_angle);
 	double y = current_position.getY() + radius * sin(short_angle);
-	double dist = Utils::get_euclidian_distance(circles[robotRegion].getCenter().get_x(),circles[robotRegion].getCenter().get_y() ,x, y);
+	double dist = get_euclidian_distance(circles[robotRegion].getCenter().get_x(),circles[robotRegion].getCenter().get_y() ,x, y);
 	if(dist < circles[robotRegion].getRadius())
 	  circles[robotRegion].setRadius(dist);
       }

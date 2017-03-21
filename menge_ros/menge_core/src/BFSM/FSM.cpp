@@ -362,9 +362,7 @@ namespace Menge {
 					++exceptionCount;
 				}
 				geometry_msgs::Pose pose;
-				//std::cout << agt->_id << std::endl;
-				//std::cout <<"pos:" << agt->_pos._x << " " << agt->_pos._y << std::endl;
-				//std::cout <<"vel:" << agt->_vel._x << " " << agt->_vel._y << std::endl;
+				
 				pose.position.x = agt->_pos._x;
 				pose.position.y = agt->_pos._y;
 				pose.position.z = 0.0;
@@ -375,6 +373,10 @@ namespace Menge {
 				poseStamped.pose = pose;
 
 				if(agt->_isExternal){
+					//std::cout << agt->_id << std::endl;
+					//std::cout <<"pos:" << agt->_pos._x << " " << agt->_pos._y << std::endl;
+					//std::cout <<"vel:" << agt->_vel._x << " " << agt->_vel._y << std::endl;
+					//std::cout <<"orient:" << agt->_orient._x << " " << agt->_orient._y << std::endl;
 						
 					tf::TransformBroadcaster broadcaster1;
 					tf::TransformBroadcaster broadcaster2;
@@ -387,19 +389,20 @@ namespace Menge {
       						tf::StampedTransform(
         					tf::Transform(tf::createQuaternionFromRPY(0.0, 0.0, atan2(agt->_orient._y, 							agt->_orient._x)), 
 						tf::Vector3(pose.position.x, pose.position.y, 0.0)),
-        					current_time + ros::Duration(0.0),"pose", "laser_scan"));
+        					current_time + ros::Duration(0.0),"pose", "base_scan"));
 
 					//std::cout << "Robot position : (" << pose.position.x << "," << pose.position.y << ")" << std::endl;  
 					//std::cout << "Robot orientation : (" << agt->_orient._x << "," << agt->_orient._y << ")" << std::endl;  
 
 					poseStamped.header.stamp = current_time;
-    					poseStamped.header.frame_id = "pose";
+					//Change it to odom frame for IMU measurements
+    					poseStamped.header.frame_id = "map";
 					_pub_pose.publish(poseStamped);
 					//send laser sensor messages
 					sensor_msgs::LaserScan ls;					
 					this->computeRayScan(agt,ls);
 					ls.header.stamp = current_time;
-					ls.header.frame_id = "laser_scan";
+					ls.header.frame_id = "base_scan";
 					_pub_scan.publish(ls);
 				}
 				else{

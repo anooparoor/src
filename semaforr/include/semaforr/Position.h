@@ -10,7 +10,6 @@
 
 #include <string>
 #include <math.h>
-#include "FORRAction.h"
 #include <vector>
 
 
@@ -34,12 +33,6 @@ public:
   double getDistance(double x1, double y1);
   
   bool operator==(Position p);
-
-  Position getExpectedPositionAfterActions(Position initialPosition, vector<FORRAction> actionList);
-  Position getExpectedPositionAfterAction(Position initialPosition, FORRAction action);
-  Position afterLinearMove(Position initialPosition, double intensity);
-  Position afterAngularMove(Position initialPosition, double intensity);
-
 private:
   double x;
   double y;

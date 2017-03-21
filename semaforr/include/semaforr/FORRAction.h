@@ -12,15 +12,10 @@
 
 
 enum FORRActionType {
-  NOOP,
   FORWARD,
-  BACKWARD,
   RIGHT_TURN,
   LEFT_TURN,
-  WIDE_RIGHT_TURN,
-  WIDE_LEFT_TURN,
-  PAUSE,
-  HALT
+  PAUSE
 };
 
 class FORRAction {
@@ -43,7 +38,7 @@ class FORRAction {
     // I need constructor now that this is a class
     FORRAction(FORRActionType actionType, int par):type(actionType), parameter(par) {}
     // Also default constructor once you defined others
-    FORRAction(): type(NOOP), parameter(0) {};
+    FORRAction(): type(PAUSE), parameter(0) {};
     // Since I am returning map whose key is this class
     // I think I need copy constructor
     FORRAction(const FORRAction& action);

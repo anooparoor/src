@@ -14,8 +14,6 @@
 
 #include "AgentState.h"
 #include "SpatialModel.h"
-#include "Utils.h"
-#include "FORRGeometry.h"
 
 #include <time.h>
 #include <list>
@@ -28,7 +26,8 @@
 # include <cmath>
 # include <math.h>
 # include <iostream>
-
+#include <ros/ros.h>
+#include <ros/console.h>
 
 
 using std::vector;

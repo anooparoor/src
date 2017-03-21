@@ -103,70 +103,40 @@ bool Tier1Advisor::isFacing(Position robotPos , CartesianPoint point, double rad
 */
 
 bool Tier1Advisor::advisorVictory(FORRAction *decision) {
-  cout << "Begin victory advisor" << endl;
+  ROS_DEBUG("Begin victory advisor");
   // if the robot is oriented towards the goal and the robot actions which are not vetoed allows the robot to reach the goal then take that action.
   bool decisionMade = false;
+  CartesianPoint task(beliefs->getAgentState()->getCurrentTask()->getX(),beliefs->getAgentState()->getCurrentTask()->getY());
+  ROS_DEBUG("Check if target can be spotted using the laser scan");
+  bool targetInSight = beliefs->getAgentState()->canSeePoint(task);
   
-  // Check if the current heading intersects with any of the walls
-  int buffer = 30;
-  bool targetNotInSight = beliefs->getAgentState()->isTargetInSight();
-  
-  if(targetNotInSight == true){
-    cout << "Target not in sight , skipping victory advisor" << endl;
-    
+  if(targetInSight == false){
+    ROS_DEBUG("Target not in sight , skipping victory advisor");
   }
   else{
-      cout << "Target in sight , victory advisor active" << endl;
-      (*decision) = beliefs->getAgentState()->singleMoveTowardsTarget();
+      ROS_DEBUG("Target in sight , victory advisor active");;
+      (*decision) = beliefs->getAgentState()->moveTowards();
       decisionMade = true;
   }
   return decisionMade;
 }
 
 
-// Slavisa added Jan. 2014
 /*
  * This advisor has to do prevent all the actions that will result in robot hitting the wall.
  * Straight forward thing is to check for collsion in the orientation.
- * Slightly more complicated is to take into an account that robot takes up some space and 
- * it can hit the wall although there is no visible collision near (almost parallel to the wall).
- * Have to make it work and yet be simple computationally.
  */
-bool advisorAvoidWalls(){
-  const int THRESHOLD1 = 30;
-  const int THRESHOLD2 = 45;
-  //cout << "Avoid Walls called " << endl;
-  double wall_distance = beliefs->getAgentState()->getForwardObstacleDistance();
-  //cout << "avoid_walls_advisor:: Received distance from wall descriptive " << wall_distance << endl;
-  
+bool Tier1Advisor::advisorAvoidWalls(){
+  FORRAction max_forward = beliefs->getAgentState()->maxForwardAction();
+  int intensity = max_forward.parameter;
   set<FORRAction> *vetoedActions = beliefs->getAgentState()->getVetoedActions();
-  
-  if(wall_distance - 3 < THRESHOLD1){
-    vetoedActions->insert(FORRAction(FORWARD, 1));
-    //cout << "Vetoed Forward move with intensity 1 :" << endl;
-  }
-  if(wall_distance - 7 < THRESHOLD1){
-    vetoedActions->insert(FORRAction(FORWARD, 2));
-    //cout << "Vetoed Forward move with intensity 2"<< endl;
-  }
-  if(wall_distance - 20 < THRESHOLD1){
-    vetoedActions->insert(FORRAction(FORWARD, 3));
-    //cout << "Vetoed Forward move with intensity 3"<< endl;
-  }
-  if(wall_distance - 25 < THRESHOLD2){
-    vetoedActions->insert(FORRAction(FORWARD, 4));
-    //cout << "Vetoed Forward move with intensity 4"<< endl;
-  }
-  if(wall_distance - 105 < THRESHOLD2){
-    vetoedActions->insert(FORRAction(FORWARD, 5));
-    //cout << "Vetoed Forward move with intensity 5"<< endl;
-  }
-  for(int i = 1; i < 6; ++i)
-    vetoedActions->insert(FORRAction(BACKWARD, i));
-  // because it is annoying I have to do this manually
-  //vetoed_actions.insert(FORRAction(RIGHT_TURN, 5));
-  //vetoed_actions.insert(FORRAction(LEFT_TURN, 5));
-  //cout << " return from wall advisor" << endl;
+  for(int i = 5 ; i > 0; i--){
+	FORRAction a(FORWARD,i);
+	if(i > intensity){
+		vetoedActions->insert(a);
+		break;
+	}				
+  } 
   return false; 
 }
 

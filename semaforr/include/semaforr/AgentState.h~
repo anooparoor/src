@@ -13,7 +13,6 @@
 #include "Task.h"
 #include "FORRAction.h"
 #include "Position.h"
-#include "Utils.h"
 #include "FORRGeometry.h"
 
 #include <time.h>
@@ -24,6 +23,8 @@
 #include <deque>
 #include <set>
 
+#include <ros/ros.h>
+#include <ros/console.h>
 #include <sensor_msgs/LaserScan.h>
 
 using namespace std;
@@ -45,12 +46,15 @@ class AgentState
       		action_set->insert(FORRAction(FORWARD, i));
     	}
     	action_set->insert(FORRAction(PAUSE,0));
+	double m[] = {0, 0.1, 0.2, 0.4, 0.8, 1.6};  
+  	double r[] = {0, 0.2, 0.4, 0.8, 1.6};
+	for(int i = 0 ; i < 6 ; i++) move[i] = m[i];
+	for(int i = 0 ; i < 5 ; i++) rotate[i] = r[i];
+	
   }
   
-  // Use the laser scan value to check if the target is in sight
-  bool isTargetInSight();
   // Best possible move towards the target
-  FORRAction singleMoveTowardsTarget();
+  FORRAction moveTowards();
 
   set<FORRAction> *getActionSet(){return action_set;}
 
@@ -68,6 +72,12 @@ class AgentState
     double dx = x - currentTask->getX();
     double dy = y - currentTask->getY();
     return sqrt((dx*dx) + (dy*dy));
+  }
+
+  
+  // returns the euclidiean distance to target from the current robot position 
+  double getDistanceToTarget(){
+     return currentPosition.getDistance(currentTask->getX(), currentTask->getY());
   }
   
   bool isDestinationReached(int epsilon){
@@ -99,10 +109,12 @@ class AgentState
   list<Task*>& getAgenda() { return agenda; }
   
   void finishTask() {
+ 	cout << "In finish task" << endl;
     if (currentTask != NULL)
       agenda.remove(currentTask);
 
     currentTask = NULL;
+	cout << "exiting" << endl;
   }
 
   void skipTask() {
@@ -112,34 +124,53 @@ class AgentState
     currentTask = NULL;
   }
 
+  bool isMissionComplete(){
+	bool status = false; 
+	if(getAgenda().size() == 0 && currentTask == NULL){
+		status = true;
+ 	}
+	return status;
+  }
+
   sensor_msgs::LaserScan getCurrentLaserScan(){return currentLaserScan;}
-  void setCurrentLaserScan(sensor_msgs::LaserScan scan){ currentLaserScan = scan;}
-    
-  //return the distance to the forward obstacle using the current laser range scan
-  double getForwardObstacleDistance();
-  vector<double> get_angle_difference_vector();
-  double normalize_angle(double angle);
+  void setCurrentLaserScan(sensor_msgs::LaserScan scan){ 
+     currentLaserScan = scan;
+     transformToEndpoints();
+  }
 
-  Position getExpectedPositionAfterAction(FORRAction action);
-  Position getExpectedPositionAfterActions(vector<FORRAction> actions);
+  Position getExpectedPositionAfterAction(Position initialPosition, FORRAction action);
+  Position getExpectedPositionAfterActions(Position initialPosition, vector<FORRAction> actions);
 
-  double getDistanceToObstacle(FORRAction action);
-  double getDistanceToObstacle();
-  double getDistanceToTarget();
+  //Default as currentPosition
+  Position getExpectedPositionAfterAction(FORRAction action){
+	return getExpectedPositionAfterAction(currentPosition, action);
+  }
+  Position getExpectedPositionAfterActions(vector<FORRAction> actions){
+	return getExpectedPositionAfterActions(currentPosition, actions);
+  }
+
+  // Returns distance from obstacle 
+  double getDistanceToNearestObstacle(Position pos);
+  double getDistanceToForwardObstacle(){
+	return currentLaserScan.ranges[currentLaserScan.ranges.size()/2];
+  }
+
+  FORRAction maxForwardAction();
 
   // Can a robot see a segment or a point using its laser scan data?
   bool canSeeSegment(CartesianPoint point1, CartesianPoint point2);
   bool canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point1, CartesianPoint point2);
-  bool canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point, double epsilon);
-  bool canSeePoint(CartesianPoint point, double epsilon);
-  
-  //Converts current laser range scanner to endpoints
-  void transformToEndpoints();
+  bool canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point);
+  bool canSeePoint(CartesianPoint point);
+ 
 
  private:
 
+  // Stores the move and rotate action values
+  double move[6];  
+  double rotate[5];
+
   FORRAction get_max_allowed_forward_move();
-  double get_move_length(FORRAction forward_move);
 
   // Current position of the agent x, y, theta 
   Position currentPosition;
@@ -180,6 +211,13 @@ class AgentState
 
   // Current laser scan data as endpoints in the x-y coordinate frame
   vector<CartesianPoint> laserEndpoints;
+
+  //Converts current laser range scanner to endpoints
+  void transformToEndpoints();
+
+  //after linear move
+  Position afterLinearMove(Position initialPosition, double distance);
+  Position afterAngularMove(Position initialPosition, double angle);
 
 };
 

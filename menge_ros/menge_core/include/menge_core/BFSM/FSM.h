@@ -386,7 +386,7 @@ namespace Menge {
 				_pub_crowd = _nh->advertise<geometry_msgs::PoseArray>("crowd_pose", 50);
 				//_pub_odom = _nh->advertise<nav_msgs::Odometry>("odom", 50);
 				_pub_pose = _nh->advertise<geometry_msgs::PoseStamped>("pose", 50);
-				_pub_scan = _nh->advertise<sensor_msgs::LaserScan>("laser_scan", 50);
+				_pub_scan = _nh->advertise<sensor_msgs::LaserScan>("base_scan", 50);
 			}
 			/*!
 			 *	@brief		return ROS node handle
