@@ -37,15 +37,22 @@ class AgentState
 	vetoedActions = new set<FORRAction>();
         pos_hist = new vector<Position>();
         action_set = new set<FORRAction>();
+	forward_set = new set<FORRAction>();
+	rotation_set = new set<FORRAction>();
 
-    	for(int i = 1; i < 6; i++){
+    	for(int i = 1; i < 5; i++){
       		action_set->insert(FORRAction(LEFT_TURN, i));
       		action_set->insert(FORRAction(RIGHT_TURN, i));
+		rotation_set->insert(FORRAction(LEFT_TURN, i));
+      		rotation_set->insert(FORRAction(RIGHT_TURN, i));
     	}
     	for(int i = 1; i < 6; i++){
       		action_set->insert(FORRAction(FORWARD, i));
+		forward_set->insert(FORRAction(FORWARD, i));
     	}
     	action_set->insert(FORRAction(PAUSE,0));
+	//forward_set->insert(FORRAction(PAUSE,0));
+	//rotation_set->insert(FORRAction(PAUSE,0));
 	double m[] = {0, 0.1, 0.2, 0.4, 0.8, 1.6};  
   	double r[] = {0, 0.2, 0.4, 0.8, 1.6};
 	for(int i = 0 ; i < 6 ; i++) move[i] = m[i];
@@ -57,15 +64,22 @@ class AgentState
   FORRAction moveTowards();
 
   set<FORRAction> *getActionSet(){return action_set;}
+  set<FORRAction> *getForwardActionSet(){return forward_set;}
+  set<FORRAction> *getRotationActionSet(){return rotation_set;}
 
   vector<Position> *getPositionHistory(){return pos_hist;}
 
   void clearPositionHistory(){pos_hist->clear();}
 
   void savePosition(){
-     Position pos = pos_hist->back();
-     if(!(pos == currentPosition)) 
-	pos_hist->push_back(currentPosition);
+	if(pos_hist->size() < 1){
+		pos_hist->push_back(currentPosition);
+	}
+	else{	
+     		Position pos = pos_hist->back();
+     		if(!(pos == currentPosition)) 
+			pos_hist->push_back(currentPosition);
+	}
   }
 
   double getDistanceToTarget(double x, double y){ 
@@ -88,7 +102,10 @@ class AgentState
   }
 
   Position getCurrentPosition() { return currentPosition; }
-  void setCurrentPosition(Position p) { currentPosition = p; }
+  void setCurrentPosition(Position p) { 
+	currentPosition = p;
+	savePosition(); 
+  }
   
   
   Task *getCurrentTask() { return currentTask; }
@@ -108,11 +125,13 @@ class AgentState
   
   list<Task*>& getAgenda() { return agenda; }
   
+  //Merge finish task and skip task they are both doing the same right now
   void finishTask() {
     if (currentTask != NULL)
       agenda.remove(currentTask);
 
     currentTask = NULL;
+    clearPositionHistory();
   }
 
   void skipTask() {
@@ -120,6 +139,7 @@ class AgentState
       agenda.remove(currentTask);
 
     currentTask = NULL;
+    clearPositionHistory();
   }
 
   bool isMissionComplete(){
@@ -181,6 +201,12 @@ class AgentState
 
   // Set of all actions that the robot has in its action set
   set<FORRAction> *action_set;
+
+  // Set of all forward actions that the robot has in its action set
+  set<FORRAction> *forward_set;
+
+  // Set of all forward actions that the robot has in its action set
+  set<FORRAction> *rotation_set;
   
   // aggregate decision making statistics of the agent
   // Total travel time

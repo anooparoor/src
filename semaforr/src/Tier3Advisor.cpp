@@ -19,17 +19,16 @@
 using std::set;
   
 // Constructor for Tier3Advisor
-Tier3Advisor::Tier3Advisor(Beliefs *beliefs_para, string name, string description, double weight, double *magic_init, bool is_active)  { 
-  //  cout << "In constructor of tier 3 advisor" << endl;
+Tier3Advisor::Tier3Advisor(Beliefs *beliefs_para, string name_para, string description_para, double weight_para, double *magic_init, bool is_active)  { 
   beliefs = beliefs_para;
-  name = name;
-  description = description;
-  weight = weight;
+  name = name_para;
+  description = description_para;
+  weight = weight_para;
   active = is_active;
-  cout << "before initializing auxilary constants" << endl;
   // load all magic numbers for this advisor
   for (int i = 0; i < 4; ++i)
     auxiliary_constants[i] = magic_init[i];
+  //cout << "after initializing auxilary constants" << endl;
 }
 
 // Destructor
@@ -43,21 +42,50 @@ Tier3Advisor::~Tier3Advisor() {};
 // It returns map that maps action to comment strength
 std::map <FORRAction, double> Tier3Advisor::allAdvice(){
   set<FORRAction> *vetoed_actions = beliefs->getAgentState()->getVetoedActions();
-  set<FORRAction> *action_set = beliefs->getAgentState()->getActionSet();
+  set<FORRAction> *action_set;
+
+  bool inRotateMode;
+  cout << "Decision Count : " << beliefs->getAgentState()->getCurrentTask()->getDecisionCount() << endl;
+  
+  if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() % 2 == 0)  
+        inRotateMode = true;
+  else  
+        inRotateMode = false;
+
+  cout << "Rotation mode : " << inRotateMode << endl;
+
+  if(inRotateMode){
+	action_set = beliefs->getAgentState()->getRotationActionSet();
+  }
+  else{
+	action_set = beliefs->getAgentState()->getForwardActionSet();
+  }
+
   std::map <FORRAction, double> result;
+ 
+  std::size_t foundr = (this->get_name()).find("Rotation");
+  // If the advisor is linear and the agent is in rotation mode
+  if((foundr == std::string::npos) and inRotateMode){
+	cout << "Advisor is linear and agent is in rotation mode" << endl; 
+      return result;
+  }
+  // If the advisor is rotation and the agent is in linear mode
+  if((foundr != std::string::npos) and !inRotateMode){
+	cout << "Advisor is rotation and agent is in linear mode" << endl;
+      return result;
+  }
+
   double adviceStrength;
   FORRAction forrAction;
   //std::cout << this->agent_name << ": in allAdvice function .. comments are as following:" << std::endl;
   set<FORRAction>::iterator actionIter;
   for(actionIter = action_set->begin(); actionIter != action_set->end(); actionIter++){
     forrAction = *actionIter;
-    std::size_t foundr = (this->get_name()).find("Rotation");
-    if( ((forrAction.type == LEFT_TURN or forrAction.type == RIGHT_TURN ) and (foundr == std::string::npos)) or (forrAction.type == FORWARD and foundr != std::string::npos))
-      break;
+    cout << forrAction.type << " " << forrAction.parameter << endl;
     if(vetoed_actions->find(forrAction) != vetoed_actions->end())// is this action vetoed
       continue;
     adviceStrength = this->actionComment(forrAction);
-    //std::cout << "Advisor name :"  << this->get_name() << " Strength: " << adviceStrength << " Action Type:" << forrAction.type << " " << "Action intensity " << forrAction.parameter << std::endl;
+    std::cout << "Advisor name :"  << this->get_name() << " Strength: " << adviceStrength << " Action Type:" << forrAction.type << " " << "Action intensity " << forrAction.parameter << std::endl;
     result[forrAction] = adviceStrength;
   } 
   //if(result.size() > 1){
@@ -611,7 +639,7 @@ double Tier3AvoidObstacle::actionComment(FORRAction action){
 
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   double distanceToObstacle = beliefs->getAgentState()->getDistanceToNearestObstacle(expectedPosition);
-  return distanceToObstacle * (-1);
+  return distanceToObstacle;
 }
 
 // always on
@@ -627,7 +655,7 @@ double Tier3AvoidObstacleRotation::actionComment(FORRAction action){
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
   double obstacleDistance = beliefs->getAgentState()->getDistanceToNearestObstacle(expectedPosition);
   
-  return obstacleDistance * (-1);
+  return obstacleDistance;
 }
 
 void Tier3AvoidObstacleRotation::set_commenting(){

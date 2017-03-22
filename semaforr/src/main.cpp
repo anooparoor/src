@@ -11,10 +11,12 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cmath> 
+
 #include "Controller.h"
 #include "FORRAction.h"
 #include "Visualizer.h"
 
+#include <ros/package.h>
 #include <ros/ros.h>
 #include <ros/console.h>
 #include <geometry_msgs/Twist.h> 
@@ -170,6 +172,9 @@ public:
 		if(abs(turn_remaining) < epsilon_move) actionComplete = true;
 		else                                   actionComplete = false;
 	  }
+   	  else if(action.type == PAUSE){
+		actionComplete = true;
+	  }
 	  ROS_DEBUG_STREAM(" Action Completed ? : " << actionComplete);
   	  return actionComplete;
   }
@@ -217,9 +222,10 @@ int main(int argc, char **argv) {
      }
      ros::NodeHandle nh;
 
-     string advisor_config = "advisor.conf";
-     string action_config = "action.conf";
-     string tasks_config = "tasks.conf";
+     string path = ros::package::getPath("semaforr");
+     string advisor_config = path + "/config/advisors.conf";
+     string action_config = path + "/config/action.conf";
+     string tasks_config = path + "/config/tasks.conf";
 
      Controller *controller = new Controller(advisor_config,action_config,tasks_config); 
 

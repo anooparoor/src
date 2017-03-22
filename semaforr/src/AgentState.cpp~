@@ -103,11 +103,11 @@ bool AgentState::canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, Carte
 bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point){
   ROS_DEBUG_STREAM("AgentState:canSeePoint() , robot pos " << laserPos.get_x() << "," << laserPos.get_y() << " target " <<
 	point.get_x() << "," << point.get_y()); 
-  double epsilon = 2;
+  double epsilon = 0.5;
   ROS_DEBUG_STREAM("Number of laser endpoints " << givenLaserEndpoints.size()); 
   bool canSeePoint = false;
   for(int i = 0; i < givenLaserEndpoints.size(); i++){
-    ROS_DEBUG_STREAM("Laser endpoint : " << givenLaserEndpoints[i].get_x() << "," << givenLaserEndpoints[i].get_y());
+    //ROS_DEBUG_STREAM("Laser endpoint : " << givenLaserEndpoints[i].get_x() << "," << givenLaserEndpoints[i].get_y());
     double ab = laserPos.get_distance(point);
     double ac = laserPos.get_distance(givenLaserEndpoints[i]);
     double bc = givenLaserEndpoints[i].get_distance(point);
@@ -207,21 +207,21 @@ FORRAction AgentState::moveTowards(){
     FORRAction decision;
 
     if(fabs(required_rotation) > 0.2){
-      if(required_rotation > rotate[0] && required_rotation <= rotate[1])
+      if( required_rotation > rotate[1] && required_rotation <= rotate[2])
 	decision = FORRAction(LEFT_TURN, 1);
-      else if( required_rotation > rotate[1] && required_rotation <= rotate[2])
-	decision = FORRAction(LEFT_TURN, 2);
       else if( required_rotation > rotate[2] && required_rotation <= rotate[3])
-	decision = FORRAction(LEFT_TURN, 3);
+	decision = FORRAction(LEFT_TURN, 2);
       else if(required_rotation > rotate[3] && required_rotation <= rotate[4])
+	decision = FORRAction(LEFT_TURN, 3);
+      else if(required_rotation > rotate[4])
 	decision = FORRAction(LEFT_TURN, 4);
-      else if(required_rotation < rotate[0] && required_rotation >= -rotate[1])
-	decision = FORRAction(RIGHT_TURN, 1);
       else if( required_rotation < -rotate[1] && required_rotation >= -rotate[2])
-	decision = FORRAction(RIGHT_TURN, 2);
+	decision = FORRAction(RIGHT_TURN, 1);
       else if( required_rotation < -rotate[2] && required_rotation >= -rotate[3])
-	decision = FORRAction(RIGHT_TURN, 3);
+	decision = FORRAction(RIGHT_TURN, 2);
       else if(required_rotation < -rotate[3] && required_rotation >= -rotate[4])
+	decision = FORRAction(RIGHT_TURN, 3);
+      else if(required_rotation < -rotate[4])
 	decision = FORRAction(RIGHT_TURN, 4);
     }
     else{

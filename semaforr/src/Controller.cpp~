@@ -31,13 +31,15 @@ void Controller::initialize_advisors(string filename){
     string fileLine;
     string advisor_name, advisor_description;
     bool advisor_active;
-    double advisor_weight;
+    double advisor_weight = 1;
     double parameters[4];
-    ifstream file(filename.c_str());
-    cout << "Inside file in read_advisor_file " << endl;
+    std::ifstream file(filename.c_str());
+    ROS_DEBUG_STREAM("Reading read_advisor_file:" << filename);
+    if(!file.is_open()){
+	ROS_DEBUG("Unable to locate or read advisor config file!");
+    }
     //read advisor names and parameters from the config file and create new advisor objects
-    while(!file.eof()){
-       getline(file, fileLine);
+    while(getline(file, fileLine)){
        if(fileLine[0] == '#')  // skip comment lines
           continue;
        else{
@@ -51,6 +53,7 @@ void Controller::initialize_advisors(string filename){
        		advisor_active = true;
      	  else
       		advisor_active = false;
+	  advisor_weight = atof(vstrings[3].c_str());
 	  parameters[0]= atof(vstrings[4].c_str());
      	  parameters[1] = atof(vstrings[5].c_str());
           parameters[2] = atof(vstrings[6].c_str());
@@ -59,9 +62,9 @@ void Controller::initialize_advisors(string filename){
        }
      }
      
-     cout << tier3Advisors.size() << " advisors registered." << endl;
+     ROS_DEBUG_STREAM("" << tier3Advisors.size() << " advisors registered.");
      for(unsigned i = 0; i < tier3Advisors.size(); ++i)
-      	cout << "Created advisor " << tier3Advisors[i]->get_name() << " with weight: " << tier3Advisors[i]->get_weight() << endl;
+      	ROS_DEBUG_STREAM("Created advisor " << tier3Advisors[i]->get_name() << " with weight: " << tier3Advisors[i]->get_weight());
 
      //CONVEYORS = isAdvisorActive("WaypointFinderLinear");
      //REGIONS = isAdvisorActive("ExitFinderLinear");
@@ -90,8 +93,7 @@ void Controller::initialize_tasks(string filename){
     string fileLine;
     ifstream file(filename.c_str());
     cout << "Inside file in tasks " << endl;
-    while(!file.eof()){
-       getline(file, fileLine);
+    while(getline(file, fileLine)){
        if(fileLine[0] == '#')  // skip comment lines
           continue;
        else{
@@ -118,7 +120,7 @@ Controller::Controller(string advisor_config, string task_config, string action_
             beliefs = new Beliefs();
 
             // Initialize advisors and weights from config file
-            //initialize_advisors(advisor_config);
+            initialize_advisors(advisor_config);
 
 	    // Initialize the tasks from a config file
 	    //initialize_tasks(task_config);
@@ -127,8 +129,9 @@ Controller::Controller(string advisor_config, string task_config, string action_
 	    //initialize_actions(action_config);
 	    // create a dummy task for testing
 	    beliefs->getAgentState()->addTask(20,19);
+	    //beliefs->getAgentState()->addTask(25,19);
+	    beliefs->getAgentState()->addTask(9,19);
 	    beliefs->getAgentState()->addTask(25,19);
-	    beliefs->getAgentState()->addTask(30,19);
 	    // Initialize currnent task
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
 	    
@@ -144,12 +147,18 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
   	if (beliefs->getAgentState()->getDistanceToTarget() < 0.3){
 		ROS_DEBUG("Target Achieved!!");
     		beliefs->getAgentState()->finishTask();
+		if(beliefs->getAgentState()->getAgenda().size() > 0){
+			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
+		}
 		return;
 	}
 	//********************* Decision limit reached, skip task ***************************************  
   	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 250){
 		ROS_DEBUG("Controller.cpp decisionCount > 250 , skipping task");
     		beliefs->getAgentState()->skipTask();
+		if(beliefs->getAgentState()->getAgenda().size() > 0){
+			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
+		}
 		return;
   	}
 }
@@ -262,13 +271,11 @@ FORRAction Controller::FORRDecision()
     
     if(!tierOneDecision(decision)){
 	ROS_DEBUG("Decision to be made by t3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-	decision->type = FORWARD;
-	decision->parameter = 5;	
-	//tierThreeDecision(decision);
+	//decision->type = FORWARD;
+	//decision->parameter = 5;	
+	tierThreeDecision(decision);
     }
     
-    //decision->type = RIGHT_TURN;
-    //decision->parameter = 4;
     beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();
     return *decision;
 }
@@ -315,7 +322,7 @@ void Controller::tierThreeDecision(FORRAction *decision){
   double rotationBaseline, linearBaseline;
   for (advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
     Tier3Advisor *advisor = *it;
-    if(advisor->is_active() == true)
+    //if(advisor->is_active() == true)
       //cout << advisor->get_name() << " : " << advisor->get_weight() << endl;
     if(advisor->get_name() == "RotationBaseLine") rotationBaseline = advisor->get_weight();
     if(advisor->get_name() == "BaseLine")         linearBaseline   = advisor->get_weight();
@@ -324,7 +331,7 @@ void Controller::tierThreeDecision(FORRAction *decision){
   cout << "processing advisors::"<< endl;
   for (advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
     Tier3Advisor *advisor = *it; 
-    //cout << advisor->get_name() << endl;
+    cout << advisor->get_name() << endl;
     // check if advisor should make a decision
     advisor->set_commenting();
     if(advisor->is_active() == false){
@@ -335,9 +342,9 @@ void Controller::tierThreeDecision(FORRAction *decision){
       cout << advisor->get_name() << " is not commenting " << endl;
       continue;
     }
-    //cout << "Before commenting " << endl;
+    cout << "Before commenting " << endl;
     comments = advisor->allAdvice();
-    //cout << "after commenting " << endl;
+    cout << "after commenting " << endl;
     // aggregate all comments
 
     for(mapIt iterator = comments.begin(); iterator != comments.end(); iterator++){
