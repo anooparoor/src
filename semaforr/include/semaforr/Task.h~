@@ -10,6 +10,7 @@
 #define TASK_H
 
 #include "definitions.h"
+#include "FORRAction.h"
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -24,6 +25,7 @@ class Task {
       y = y_in; 
       status_ = ENROUTE; 
       decision_count = 0;
+      decisionSequence = new std::vector<FORRAction>;
     }
 
   int getX() { return x; }
@@ -38,6 +40,14 @@ class Task {
  
   int incrementDecisionCount() {decision_count += 1;}
 
+  std::vector<FORRAction> getPreviousDecisions(){
+	return *decisionSequence;
+  }
+
+  FORRAction saveDecision(FORRAction decision){
+	decisionSequence.push_back(decision);
+  }
+
  private:
   
   //<! expected task execution time in seconds 
@@ -45,6 +55,9 @@ class Task {
 
   // distance covered by the robot to get to the target
   float distance_travelled; 
+
+  // Sequence of decisions made
+  std::vector<FORRAction> *decisionSequence; 
 
   // decision count
   int decision_count;

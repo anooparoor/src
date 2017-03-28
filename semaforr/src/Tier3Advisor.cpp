@@ -361,13 +361,8 @@ double Tier3RegionFinderRotation::actionComment(FORRAction action){
     }
   }
 
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-
-  FORRAction max_forward_move = FORRAction(FORWARD,5);
-  actionList.push_back(max_forward_move);
-
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+ 
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   
   vector<FORRExit> exits = circles[robotCircle].getExits();
   
@@ -496,14 +491,8 @@ double Tier3ExitFinderRotation::actionComment(FORRAction action){
       robotCircle = i;
     }
   }
-
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
   
-  FORRAction max_forward_move = FORRAction(FORWARD,5);
-  actionList.push_back(max_forward_move);
-  
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
 
   cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << endl;
   vector<FORRExit> ext_exits = circles[robotCircle].getExtExits();
@@ -571,12 +560,7 @@ void Tier3CloseIn::set_commenting(){
 double Tier3CloseInRotation::actionComment(FORRAction action){
   double newDistance;
 
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-
-  FORRAction max_forward_move = FORRAction(FORWARD,5);
-  actionList.push_back(max_forward_move);
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   
   double task_x = beliefs->getAgentState()->getCurrentTask()->getX();
   double task_y = beliefs->getAgentState()->getCurrentTask()->getY();
@@ -649,10 +633,7 @@ void Tier3AvoidObstacle::set_commenting(){
 
 double Tier3AvoidObstacleRotation::actionComment(FORRAction action){
 
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-  actionList.push_back(FORRAction(FORWARD,5));
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   double obstacleDistance = beliefs->getAgentState()->getDistanceToNearestObstacle(expectedPosition);
   
   return obstacleDistance;
@@ -683,12 +664,7 @@ void Tier3Greedy::set_commenting(){
 double Tier3GreedyRotation::actionComment(FORRAction action){
   double newDistance;
 
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-
-  FORRAction max_forward_move = FORRAction(FORWARD,5);
-  actionList.push_back(max_forward_move);
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   
   double task_x = beliefs->getAgentState()->getCurrentTask()->getX();
   double task_y = beliefs->getAgentState()->getCurrentTask()->getY();
@@ -722,12 +698,8 @@ void Tier3BigStep::set_commenting(){
 }
 
 double Tier3BigStepRotation::actionComment(FORRAction action){
-   
-  vector<FORRAction> actions;
-  actions.push_back(action);
-  actions.push_back(FORRAction(FORWARD, 5));
 
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actions);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
 
   double cur_x = beliefs->getAgentState()->getCurrentPosition().getX();
   double cur_y = beliefs->getAgentState()->getCurrentPosition().getY();
@@ -864,11 +836,7 @@ double Tier3AvoidLeafRotation::actionComment(FORRAction action){
   Task *task = beliefs->getAgentState()->getCurrentTask();
   CartesianPoint targetPoint (task->getX() , task->getY());
 
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-  actionList.push_back(FORRAction(FORWARD,5));
-
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
 
   // check the preconditions for activating the advisor
   for(int i = 0; i < circles.size() ; i++){
@@ -951,11 +919,7 @@ void Tier3ExplorerRotation::set_commenting(){
 
 double Tier3ExplorerRotation::actionComment(FORRAction action){
  
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-  
-  actionList.push_back(FORRAction(FORWARD,5));
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
 
   vector<Position> *positionHis = beliefs->getAgentState()->getPositionHistory();
   int beta = 0;
@@ -1010,10 +974,7 @@ void Tier3WaypointFinderLinear::set_commenting(){
 
 double Tier3WaypointFinderRotation::actionComment(FORRAction action){
   //cout <<" Entered waypointfinder rotation." << endl;
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-  actionList.push_back(FORRAction(FORWARD,5));
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
 
   int grid_value = beliefs->getSpatialModel()->getWaypoints()->getGridValue(expectedPosition.getX(), expectedPosition.getY());
   //cout << "grid value: "<<grid_value<<endl;
@@ -1059,11 +1020,7 @@ double Tier3TrailFinderRotation::actionComment(FORRAction action){
      return 0;
    }
 
-  vector<FORRAction> actionList;
-  actionList.push_back(action);
-  actionList.push_back(FORRAction(FORWARD,5));
-
-  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterActions(actionList);
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   double newDistance = expectedPosition.getDistance(cur_pos);
   return newDistance *(-1); 
 }

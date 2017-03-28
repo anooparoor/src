@@ -103,9 +103,9 @@ public:
      //Declares the message to be sent
      geometry_msgs::Twist base_cmd;
 
-     ros::Rate rate(10.0);
-     double epsilon_move = 0.3;
-     double epsilon_turn = 0.1;
+     ros::Rate rate(40.0);
+     double epsilon_move = 0.5; //Meters
+     double epsilon_turn = 0.1; //Radians
      bool action_complete = true;
      bool mission_complete = false;
      FORRAction semaforr_action;
@@ -141,7 +141,7 @@ public:
           }
           //send the drive command 
           cmd_vel_pub_.publish(base_cmd);
-	  
+
 	  //wait for some time
           rate.sleep();
           // Sense input 
@@ -154,28 +154,45 @@ public:
 
 
   //! Drive the robot according to the semaforr action, episilon = 0 to 1 indicating percent of task completion
+  // Need to improve this
   bool testActionCompletion(FORRAction action, Position current, Position previous, double epsilon_move, double epsilon_rotate)
   {
-	  ROS_DEBUG("Testing if action has been completed by the robot");
-	  ROS_DEBUG_STREAM("Current position " << current.getX() << " " << current.getY() << " " << current.getTheta()); 
-	  ROS_DEBUG_STREAM("Previous position " << previous.getX() << " " << previous.getY() << " " << previous.getTheta());
+	  //ROS_DEBUG("Testing if action has been completed by the robot");
+	  //ROS_DEBUG_STREAM("Current position " << current.getX() << " " << current.getY() << " " << current.getTheta()); 
+	  //ROS_DEBUG_STREAM("Previous position " << previous.getX() << " " << previous.getY() << " " << previous.getTheta());
 	  bool actionComplete = false;
-          Position expected = controller->getBeliefs()->getAgentState()->getExpectedPositionAfterAction(action);
-	  ROS_DEBUG_STREAM("Position expected " << expected.getX() << " " << expected.getY() << " " << expected.getTheta());
+	  //ROS_DEBUG_STREAM("Position expected " << expected.getX() << " " << expected.getY() << " " << expected.getTheta());
 	  if (action.type == FORWARD){
- 	  	double distance_remaining = expected.getDistance(current);
-	  	if(distance_remaining < epsilon_move) actionComplete = true;
-	  	else  			              actionComplete = false;  
+ 	  	double distance_travelled = previous.getDistance(current);
+		double expected_travel = controller->getBeliefs()->getAgentState()->getMovement(action.parameter);
+	  	if(abs(distance_travelled - expected_travel) < epsilon_move){
+			 actionComplete = true;
+		}
+	  	else{  
+			actionComplete = false;  
+		}
 	  }
 	  else if(action.type == RIGHT_TURN or action.type == LEFT_TURN){
-		double turn_remaining = current.getTheta() - expected.getTheta();
-		if(abs(turn_remaining) < epsilon_move) actionComplete = true;
-		else                                   actionComplete = false;
+		double turn_completed = current.getTheta() - previous.getTheta();
+		
+		if(turn_completed > 3.1416)
+      			turn_completed = turn_completed - 6.283;
+    		if(turn_completed < -3.1416)
+      			turn_completed = turn_completed + 6.283;
+
+		double turn_expected = controller->getBeliefs()->getAgentState()->getRotation(action.parameter);
+		if(action.type == RIGHT_TURN) 
+			turn_expected = (-1)*turn_expected;
+		
+		if(abs(turn_completed - turn_expected) < epsilon_rotate) 
+			actionComplete = true;
+		else                                   
+			actionComplete = false;
 	  }
    	  else if(action.type == PAUSE){
 		actionComplete = true;
 	  }
-	  ROS_DEBUG_STREAM(" Action Completed ? : " << actionComplete);
+	  //ROS_DEBUG_STREAM(" Action Completed ? : " << actionComplete);
   	  return actionComplete;
   }
 
@@ -188,7 +205,7 @@ public:
 
     base_cmd.linear.x = base_cmd.linear.y = base_cmd.angular.z = 0; 
     if(action.type == FORWARD){
-    	base_cmd.linear.x = 0.25;
+    	base_cmd.linear.x = 0.5;
     }   
     else if(action.type == RIGHT_TURN){
  	base_cmd.linear.x = 0.01;

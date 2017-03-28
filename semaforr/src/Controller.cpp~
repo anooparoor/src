@@ -277,6 +277,7 @@ FORRAction Controller::FORRDecision()
     }
     
     beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();
+    beliefs->getAgentState()->getCurrentTask()->saveDecision(*decision);
     return *decision;
 }
 
@@ -297,7 +298,8 @@ bool Controller::tierOneDecision(FORRAction *decision){
   	// group of vetoing tier1 advisors which adds to the list of vetoed actions
 	ROS_INFO("Advisor avoid wall will veto actions");
   	tier1->advisorAvoidWalls();
-  	//tier1->advisorNotOpposite();
+	ROS_INFO("Advisor not opposite will veto actions");
+  	tier1->advisorNotOpposite();
   }
   return decisionMade;
 }

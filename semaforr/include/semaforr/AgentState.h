@@ -51,10 +51,10 @@ class AgentState
 		forward_set->insert(FORRAction(FORWARD, i));
     	}
     	action_set->insert(FORRAction(PAUSE,0));
-	//forward_set->insert(FORRAction(PAUSE,0));
+	forward_set->insert(FORRAction(PAUSE,0));
 	//rotation_set->insert(FORRAction(PAUSE,0));
-	double m[] = {0, 0.1, 0.2, 0.4, 0.8, 1.6};  
-  	double r[] = {0, 0.2, 0.4, 0.8, 1.6};
+	double m[] = {0, 0.2, 0.4, 0.8, 1.6, 3.2};  
+  	double r[] = {0, 0.25, 0.5, 1, 2};
 	for(int i = 0 ; i < 6 ; i++) move[i] = m[i];
 	for(int i = 0 ; i < 5 ; i++) rotate[i] = r[i];
 	
@@ -115,6 +115,7 @@ class AgentState
 
 
   set<FORRAction> *getVetoedActions() { return vetoedActions;}
+  void clearVetoedActions() { vetoedActions->clear();}
   
   void addTask(float x, float y) {
     Task *task = new Task(x,y);
@@ -156,20 +157,26 @@ class AgentState
      transformToEndpoints();
   }
 
-  Position getExpectedPositionAfterAction(Position initialPosition, FORRAction action);
-  Position getExpectedPositionAfterActions(Position initialPosition, vector<FORRAction> actions);
+  Position getExpectedPositionAfterAction(FORRAction action);
+  //Position getExpectedPositionAfterActions(Position initialPosition, vector<FORRAction> actions);
 
   //Default as currentPosition
-  Position getExpectedPositionAfterAction(FORRAction action){
-	return getExpectedPositionAfterAction(currentPosition, action);
-  }
-  Position getExpectedPositionAfterActions(vector<FORRAction> actions){
-	return getExpectedPositionAfterActions(currentPosition, actions);
-  }
+  //Position getExpectedPositionAfterAction(FORRAction action){
+	//return getExpectedPositionAfterAction(currentPosition, action);
+  //}
+  //Position getExpectedPositionAfterActions(vector<FORRAction> actions){
+	//return getExpectedPositionAfterActions(currentPosition, actions);
+  //}
 
   // Returns distance from obstacle 
   double getDistanceToNearestObstacle(Position pos);
+
+  // returns distance to obstacle in the direction of rotation
+  double getDistanceToObstacle(double rotation_angle);
   double getDistanceToForwardObstacle(){
+	//ROS_DEBUG("in getDistance to forward obstacle");
+	if(currentLaserScan.ranges.size() == 0)
+		return 25;
 	return currentLaserScan.ranges[currentLaserScan.ranges.size()/2];
   }
 
@@ -180,6 +187,9 @@ class AgentState
   bool canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point1, CartesianPoint point2);
   bool canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point);
   bool canSeePoint(CartesianPoint point);
+
+  double getMovement(int para){return move[para];}
+  double getRotation(int para){return rotate[para];}
  
 
  private:

@@ -18,7 +18,7 @@ public:
         Tier1Advisor(Beliefs *b){
 		beliefs = b;
 	}
-        //void advisorNotOpposite(Beliefs *beliefs);
+        void advisorNotOpposite();
 	//void advisorCircle(Beliefs *beliefs);
 	bool advisorAvoidWalls();
 

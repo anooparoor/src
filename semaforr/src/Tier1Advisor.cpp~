@@ -1,30 +1,30 @@
 
 #include "Tier1Advisor.h"
 
-/*
-void Tier1Advisor::advisorNotOpposite(Beliefs *beliefs){
-  cout << "COntroller::advisorNotOpposite > Entering function" << endl;
-  vector<FORRAction> actions = beliefs->getPreviousDecisions();
+
+void Tier1Advisor::advisorNotOpposite(){
+  ROS_DEBUG("COntroller::advisorNotOpposite > Entering function");
+  vector<FORRAction> actions = beliefs->getAgentState()->getCurrentTask()->getPreviousDecisions();
   int size = actions.size();
   if(actions.size() < 2){
-    cout <<"actions list less than 2. Exiting not opposite" << endl;
+    ROS_DEBUG("actions list less than 2. Exiting not opposite");
     return;
   }
   FORRAction lastAction = actions[size - 1];
   FORRAction lastlastAction = actions[size - 2];
-  cout << "Controller::advisorNotOpposite > " << lastAction.type << " " << lastAction.parameter << ", " << lastlastAction.type << " " << lastlastAction.parameter << endl; 
+  ROS_DEBUG_STREAM("Controller::advisorNotOpposite > " << lastAction.type << " " << lastAction.parameter << ", " << lastlastAction.type << " " << lastlastAction.parameter); 
   if(lastlastAction.type == RIGHT_TURN or lastlastAction.type == LEFT_TURN){
     if(lastAction.type == PAUSE){
-      cout << "Not opposite active "<< endl;
-      if(lastlastAction.type == RIGHT_TURN)    for(int i = 1; i < 6 ; i++)   (beliefs->vetoedActions)->insert(FORRAction(LEFT_TURN, i));
-      else                                     for(int i = 1; i < 6 ; i++)   (beliefs->vetoedActions)->insert(FORRAction(RIGHT_TURN, i));
+      ROS_DEBUG("Not opposite active ");
+      if(lastlastAction.type == RIGHT_TURN)    for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(LEFT_TURN, i));
+      else                                     for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(RIGHT_TURN, i));
     }
   }
-  cout << "leaving notOpposite"<<endl;
+  ROS_DEBUG("leaving notOpposite");
   return;
 }
 
-
+/*
 // This advisor should ban all forward moves not in the direction of the exit unless all of the exits
 // are already blocked by other robots
 void Tier1Advisor::advisorCircle(Beliefs *beliefs){
@@ -107,7 +107,7 @@ bool Tier1Advisor::advisorVictory(FORRAction *decision) {
   // if the robot is oriented towards the goal and the robot actions which are not vetoed allows the robot to reach the goal then take that action.
   bool decisionMade = false;
   CartesianPoint task(beliefs->getAgentState()->getCurrentTask()->getX(),beliefs->getAgentState()->getCurrentTask()->getY());
-  ROS_DEBUG("Check if target can be spotted using the laser scan");
+  ROS_DEBUG("Check if target can be spotted using laser scan");
   bool targetInSight = beliefs->getAgentState()->canSeePoint(task);
   
   if(targetInSight == false){
@@ -127,14 +127,16 @@ bool Tier1Advisor::advisorVictory(FORRAction *decision) {
  * Straight forward thing is to check for collsion in the orientation.
  */
 bool Tier1Advisor::advisorAvoidWalls(){
+  ROS_DEBUG("In advisor avoid walls");
   FORRAction max_forward = beliefs->getAgentState()->maxForwardAction();
+  ROS_DEBUG_STREAM("Max allowed forward action : " << max_forward.type << " " << max_forward.parameter);
   int intensity = max_forward.parameter;
   set<FORRAction> *vetoedActions = beliefs->getAgentState()->getVetoedActions();
   for(int i = 5 ; i > 0; i--){
 	FORRAction a(FORWARD,i);
 	if(i > intensity){
+		ROS_DEBUG_STREAM("Vetoed action : " << a.type << " " << a.parameter);
 		vetoedActions->insert(a);
-		break;
 	}				
   } 
   return false; 

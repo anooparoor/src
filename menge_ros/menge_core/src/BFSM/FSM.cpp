@@ -193,7 +193,8 @@ namespace Menge {
 			float start_angle = -1.91986; 
 			float end_angle = 1.918;
 			float increment = 0.005817;
-			float range_max = 25; // in meters
+			float range_max = 25; 
+			//In meters  
 			int i = 0;
 			for(float angle = start_angle; angle <= end_angle ; angle += increment){
 				//std::cout << "Generating obstacle distance " << angle; 
