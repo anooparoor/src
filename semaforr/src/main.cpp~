@@ -103,7 +103,7 @@ public:
      //Declares the message to be sent
      geometry_msgs::Twist base_cmd;
 
-     ros::Rate rate(40.0);
+     ros::Rate rate(30.0);
      double epsilon_move = 0.5; //Meters
      double epsilon_turn = 0.1; //Radians
      bool action_complete = true;

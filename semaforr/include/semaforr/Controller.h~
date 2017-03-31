@@ -38,7 +38,7 @@ public:
   //main sense decide loop, receives the input messages and calls the FORRDecision function
   FORRAction decide();
 
-  //Update state of the agent using sensor readings
+  //Update state of the agent using sensor readings 
   void updateState(Position current, sensor_msgs::LaserScan laserscan);
 
   //Returns the state of the robots mission (True 
@@ -60,7 +60,7 @@ private:
   
 
   // learns the spatial model and updates the beliefs
-  //void learnSpatialModel();
+  void learnSpatialModel(Task *task);
 
   void initialize_advisors(std::string);
   void initialize_tasks(std::string);

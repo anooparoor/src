@@ -13,7 +13,7 @@ using namespace std;
 //if it does find a trail marker that sees, return the index.  otherwise, return -1
 int FORRTrails::doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index){
   for(int j = 0; j < trails[trail_index].size(); j++){
-    if(agentState->canSeePoint(trails[trail_index][j].wallVectorEndpoints, trails[trail_index][j].coordinates, target_point, EPSILON)){
+    if(agentState->canSeePoint(trails[trail_index][j].wallVectorEndpoints, trails[trail_index][j].coordinates, target_point)){
       //target point is visible along trail at trail marker trails[trail_index][j]
       cout << "Trail at coordinate "<<trails[trail_index][j].coordinates.get_x()<<","<<
 	trails[trail_index][j].coordinates.get_y()<<" can see target"<<endl;
@@ -28,35 +28,10 @@ int FORRTrails::doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, i
 
 
 
-void FORRTrails::updateTrails(){
-
-  //ifstream trailstream;
-  ifstream vectorstream;
-  //trailstream.open("trail.conf");
-  vectorstream.open("corrected_wallvectors.conf");
+void FORRTrails::saveTrails(Task *task){
 
   vector<TrailMarker> trail;
-  
-  //string trail_list =  "";
-  string vector_list = "";
-  if(vectorstream.eof()) return; //if the trail is empty (because there was only a tier1 move, return)
-  
-  
-
-  while(!vectorstream.eof()){
-    getline(vectorstream, vector_list);
-    stringstream vs(vector_list);
-    string x_vector, y_vector = "";
-    string x_trail, y_trail = "";
-    
-    vs >> x_vector;
-    vs >> y_vector; // remove the starting coordinates, these are the trail x,y coordinates
-
-    int x_int_vector, y_int_vector = 0;
-
-    x_int_vector = atoi(x_vector.c_str());
-    y_int_vector = atoi(y_vector.c_str());
-    
+  task->
     CartesianPoint trail_point = CartesianPoint(x_int_vector, y_int_vector);
     cout << "Added trail_point ("<<x_int_vector<<","<<y_int_vector<<")"<<endl;
 

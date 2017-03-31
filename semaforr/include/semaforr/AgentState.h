@@ -35,7 +35,6 @@ class AgentState
   /** \brief AgentState constructor */
   AgentState() : currentTask(NULL) {
 	vetoedActions = new set<FORRAction>();
-        pos_hist = new vector<Position>();
         action_set = new set<FORRAction>();
 	forward_set = new set<FORRAction>();
 	rotation_set = new set<FORRAction>();
@@ -67,21 +66,6 @@ class AgentState
   set<FORRAction> *getForwardActionSet(){return forward_set;}
   set<FORRAction> *getRotationActionSet(){return rotation_set;}
 
-  vector<Position> *getPositionHistory(){return pos_hist;}
-
-  void clearPositionHistory(){pos_hist->clear();}
-
-  void savePosition(){
-	if(pos_hist->size() < 1){
-		pos_hist->push_back(currentPosition);
-	}
-	else{	
-     		Position pos = pos_hist->back();
-     		if(!(pos == currentPosition)) 
-			pos_hist->push_back(currentPosition);
-	}
-  }
-
   double getDistanceToTarget(double x, double y){ 
     double dx = x - currentTask->getX();
     double dy = y - currentTask->getY();
@@ -102,9 +86,14 @@ class AgentState
   }
 
   Position getCurrentPosition() { return currentPosition; }
-  void setCurrentPosition(Position p) { 
+  void setCurrentSensor(Position p, sensor_msgs::LaserScan scan) { 
 	currentPosition = p;
-	savePosition(); 
+     	currentLaserScan = scan;
+     	transformToEndpoints();
+	if(currentTask != NULL){
+		//save the current position and laser endpoints 
+		currentTask->saveSensor(p,laserEndpoints);
+	}
   }
   
   
@@ -128,19 +117,26 @@ class AgentState
   
   //Merge finish task and skip task they are both doing the same right now
   void finishTask() {
-    if (currentTask != NULL)
+    if (currentTask != NULL){
+	//save the current task position into all_trace
+    	vector<CartesianPoint> trace;
+        vector<Position> *pos_hist = currentTask->getPositionHistory();
+    	for(int i = 0 ; i < pos_hist->size() ; i++){
+		trace.push_back(CartesianPoint((*pos_hist)[i].getX(),(*pos_hist)[i].getY()));
+	}
+	all_trace.push_back(trace);
       agenda.remove(currentTask);
-
+    }
     currentTask = NULL;
-    clearPositionHistory();
   }
+
+  vector< vector<CartesianPoint> > getAllTrace(){return all_trace;}
 
   void skipTask() {
     if (currentTask != NULL)
       agenda.remove(currentTask);
 
     currentTask = NULL;
-    clearPositionHistory();
   }
 
   bool isMissionComplete(){
@@ -152,21 +148,9 @@ class AgentState
   }
 
   sensor_msgs::LaserScan getCurrentLaserScan(){return currentLaserScan;}
-  void setCurrentLaserScan(sensor_msgs::LaserScan scan){ 
-     currentLaserScan = scan;
-     transformToEndpoints();
-  }
-
+  
   Position getExpectedPositionAfterAction(FORRAction action);
-  //Position getExpectedPositionAfterActions(Position initialPosition, vector<FORRAction> actions);
 
-  //Default as currentPosition
-  //Position getExpectedPositionAfterAction(FORRAction action){
-	//return getExpectedPositionAfterAction(currentPosition, action);
-  //}
-  //Position getExpectedPositionAfterActions(vector<FORRAction> actions){
-	//return getExpectedPositionAfterActions(currentPosition, actions);
-  //}
 
   // Returns distance from obstacle 
   double getDistanceToNearestObstacle(Position pos);
@@ -203,8 +187,8 @@ class AgentState
   // Current position of the agent x, y, theta 
   Position currentPosition;
 
-  // Position History : Set of all unique positions the robot has been in , while pursuing the target
-  vector<Position> *pos_hist;
+  // All position history of all targets
+  vector< vector<CartesianPoint> > all_trace;
 
   // set of vetoed actions that the robot cant execute in its current state
   set<FORRAction> *vetoedActions;

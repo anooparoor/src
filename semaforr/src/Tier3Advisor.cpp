@@ -883,7 +883,7 @@ void Tier3Explorer::set_commenting(){
 
 double Tier3Explorer::actionComment(FORRAction action){
  
-  vector<Position> *positionHis = beliefs->getAgentState()->getPositionHistory();
+  vector<Position> *positionHis = beliefs->getAgentState()->getCurrentTask()->getPositionHistory();
  
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   int beta = 0;
@@ -921,7 +921,7 @@ double Tier3ExplorerRotation::actionComment(FORRAction action){
  
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
 
-  vector<Position> *positionHis = beliefs->getAgentState()->getPositionHistory();
+  vector<Position> *positionHis = beliefs->getAgentState()->getCurrentTask()->getPositionHistory();
   int beta = 0;
   double totalForce = 0, distance = 0;
  

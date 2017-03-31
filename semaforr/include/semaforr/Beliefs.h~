@@ -42,9 +42,9 @@ public:
      * \param m A line segment map
      */
 
-    Beliefs(){
+    Beliefs(double width, double height, double granularity){
 	agentState = new AgentState();
-	spatialModel = new SpatialModel();
+	spatialModel = new SpatialModel(width, height, granularity);
     }
  
     AgentState* getAgentState(){return agentState;}

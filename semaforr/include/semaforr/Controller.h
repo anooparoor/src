@@ -57,10 +57,9 @@ private:
 
   //Tier 3 advisors are called here
   void tierThreeDecision(FORRAction *decision);
-  
 
   // learns the spatial model and updates the beliefs
-  //void learnSpatialModel();
+  void learnSpatialModel(Task *task);
 
   void initialize_advisors(std::string);
   void initialize_tasks(std::string);

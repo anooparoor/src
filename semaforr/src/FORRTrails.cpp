@@ -29,34 +29,9 @@ int FORRTrails::doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, i
 
 
 void FORRTrails::updateTrails(){
-
-  //ifstream trailstream;
-  ifstream vectorstream;
-  //trailstream.open("trail.conf");
-  vectorstream.open("corrected_wallvectors.conf");
-
+/*
   vector<TrailMarker> trail;
-  
-  //string trail_list =  "";
-  string vector_list = "";
-  if(vectorstream.eof()) return; //if the trail is empty (because there was only a tier1 move, return)
-  
-  
-
-  while(!vectorstream.eof()){
-    getline(vectorstream, vector_list);
-    stringstream vs(vector_list);
-    string x_vector, y_vector = "";
-    string x_trail, y_trail = "";
-    
-    vs >> x_vector;
-    vs >> y_vector; // remove the starting coordinates, these are the trail x,y coordinates
-
-    int x_int_vector, y_int_vector = 0;
-
-    x_int_vector = atoi(x_vector.c_str());
-    y_int_vector = atoi(y_vector.c_str());
-    
+  task->
     CartesianPoint trail_point = CartesianPoint(x_int_vector, y_int_vector);
     cout << "Added trail_point ("<<x_int_vector<<","<<y_int_vector<<")"<<endl;
 
@@ -84,6 +59,7 @@ void FORRTrails::updateTrails(){
 
   //Finally, push the full trail into the trails vector in FORRTrails.h
   trails.push_back(trail);
+*/
 }
 
 

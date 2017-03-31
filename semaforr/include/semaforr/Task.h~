@@ -11,6 +11,8 @@
 
 #include "definitions.h"
 #include "FORRAction.h"
+#include "FORRGeometry.h"
+#include "Position.h"
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -26,6 +28,8 @@ class Task {
       status_ = ENROUTE; 
       decision_count = 0;
       decisionSequence = new std::vector<FORRAction>;
+      pos_hist = new vector<Position>();
+      laser_hist = new vector< vector<CartesianPoint> >();
     }
 
   int getX() { return x; }
@@ -45,8 +49,28 @@ class Task {
   }
 
   FORRAction saveDecision(FORRAction decision){
-	decisionSequence.push_back(decision);
+	decisionSequence->push_back(decision);
   }
+
+  vector<Position> *getPositionHistory(){return pos_hist;}
+
+  void clearPositionHistory(){pos_hist->clear();}
+
+  void saveSensor(Position currentPosition, vector<CartesianPoint> laserEndpoints){
+	if(pos_hist->size() < 1){
+		pos_hist->push_back(currentPosition);
+		laser_hist->push_back(laserEndpoints);
+	}
+	else{	
+     		Position pos = pos_hist->back();
+     		if(pos != currentPosition) {
+			pos_hist->push_back(currentPosition);
+			laser_hist->push_back(laserEndpoints);
+		}
+	}
+  }
+
+  vector< vector <CartesianPoint> > *getLaserHistory(){return laser_hist;}
 
  private:
   
@@ -56,8 +80,17 @@ class Task {
   // distance covered by the robot to get to the target
   float distance_travelled; 
 
-  // Sequence of decisions made
-  std::vector<FORRAction> *decisionSequence; 
+  // Sequence of decisions made while pursuing the target
+  std::vector<FORRAction> *decisionSequence;
+
+  // Position History : Set of all unique positions the robot has been in , while pursuing the target
+  std::vector<Position> *pos_hist; 
+
+  // Cleaned Position History : Set of cleaned positions
+  std::vector<Position> *cleaned_pos_hist;
+
+  // Laser scan history 
+  vector< vector<CartesianPoint> > *laser_hist; 
 
   // decision count
   int decision_count;

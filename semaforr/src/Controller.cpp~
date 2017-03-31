@@ -117,7 +117,7 @@ Controller::Controller(string advisor_config, string task_config, string action_
 
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
-            beliefs = new Beliefs();
+            beliefs = new Beliefs(30,26,2);
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
@@ -129,8 +129,8 @@ Controller::Controller(string advisor_config, string task_config, string action_
 	    //initialize_actions(action_config);
 	    // create a dummy task for testing
 	    beliefs->getAgentState()->addTask(20,19);
-	    //beliefs->getAgentState()->addTask(25,19);
-	    beliefs->getAgentState()->addTask(9,19);
+	    beliefs->getAgentState()->addTask(25,19);
+	    //beliefs->getAgentState()->addTask(9,19);
 	    beliefs->getAgentState()->addTask(25,19);
 	    // Initialize currnent task
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
@@ -141,11 +141,13 @@ Controller::Controller(string advisor_config, string task_config, string action_
 
 // Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
 void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
-      beliefs->getAgentState()->setCurrentPosition(current);
-      beliefs->getAgentState()->setCurrentLaserScan(laser_scan);
+      beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
 	//*********** Goal reached, switch task and learn spatial model from previous task ********************************
   	if (beliefs->getAgentState()->getDistanceToTarget() < 0.3){
 		ROS_DEBUG("Target Achieved!!");
+		//Learn spatial model only on tasks completed successfully
+		learnSpatialModel(beliefs->getAgentState()->getCurrentTask());
+		//Clear existing task
     		beliefs->getAgentState()->finishTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
@@ -181,22 +183,19 @@ FORRAction Controller::decide() {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Update spatial model after every task
+// Update spatial model after every task 
 //
 //
-/*
-void Controller::learnSpatialModel(){
 
- if(TRAILS){
-	vector<double> wallDistance = beliefs->wallDistanceVector;
-	CartesianPoint currPoint = CartesianPoint(beliefs->getCurrentPosition().getX(), beliefs->getCurrentPosition().getY());
-	Task *task = beliefs->getCurrentTask();
-	CartesianPoint targetPoint = CartesianPoint(task->getX() , task->getY());
-	beliefs->trail_vectors.findNearbyTrail(targetPoint, currPoint, wallDistance);
-  }
-  beliefs->abstractMap.save(beliefs->wallDistanceVector, position);
-  
-  if(TRAILS){
+void Controller::learnSpatialModel(Task* completedTask){
+ vector<Position> *pos_hist = completedTask->getPositionHistory();
+ vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
+ vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
+ bool trails = false;
+ bool conveyors = true;
+ bool regions = true;
+ /*
+  if(trails){
     //if a trail has not been found yet 
     if(beliefs->trail_vectors.getChosenTrail() == -1){
       vector<double> wallDistance = beliefs->wallDistanceVector;
@@ -206,57 +205,19 @@ void Controller::learnSpatialModel(){
       beliefs->trail_vectors.findNearbyTrail(targetPoint, currPoint, wallDistance);
     }
   }
-
-  //  	beliefs->trail_vectors.printTrails();
-
-  previousX = position.getX();
-  previousY = position.getY();
-  previousTheta = position.getTheta();
-     // *********************** start of learning spacial cognition *****************
-
-    if(TRAILS || CONVEYORS || REGIONS){
-
-      cout << "Learning gates, exits and waypoints after finishing a task" << endl;
-      gettimeofday(&learning_timer, NULL);
-      learning_timer_before  = learning_timer.tv_sec*1000000 + learning_timer.tv_usec;
+  */
+     cout << "Learning gates, exits and waypoints after finishing a task" << endl;
       
       //learn waypoints by reading from paths.conf
-      if(CONVEYORS){
-	beliefs->Waypoints.clearWaypoints();
-	beliefs->Waypoints.populateGridFromFullLine();
+      if(conveyors){
+	beliefs->getSpatialModel()->getWaypoints()->populateGridFromPositionHistory(pos_hist);
       }
-      // read from paths.conf
-      beliefs->getRunTrace()->read_trace_from_file();
-     
-      if(REGIONS){
-	beliefs->abstractMap.learnExits(beliefs->getRunTrace()->getAllTrace());
-	beliefs->abstractMap.learnRegions(); 
+      if(regions){
+	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist); 
+	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);	
       }
-
-      
-      if(TRAILS){
-	cout << "Before update trails."<<endl;
-	beliefs->trail_vectors.updateTrails();
-	beliefs->trail_vectors.printTrails();
-	cout << "After update trails."<<endl;
-      }
-      
-      // log the learned values
-      int interval = 10;
-      if(beliefs->getAgenda().size()%interval == 0){
-	ostringstream ostr;
-	ostr << beliefs->getAgenda().size();
-	string period = ostr.str();
-
-	if(REGIONS)
-	  (beliefs->abstractMap).saveCirclesIntoFile("regions_" + name + "_" + period  + ".conf");
-
-	if(CONVEYORS)
-	  beliefs->Waypoints.outputWaypoints("waypoints_" + name + "_" + period + ".conf");
-      }
-    }
 }
-*/
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -278,6 +239,7 @@ FORRAction Controller::FORRDecision()
     
     beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();
     beliefs->getAgentState()->getCurrentTask()->saveDecision(*decision);
+    beliefs->getAgentState()->clearVetoedActions();
     return *decision;
 }
 
