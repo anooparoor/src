@@ -9,8 +9,10 @@
 #include <ros/console.h>
 #include <geometry_msgs/Twist.h> 
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/PointStamped.h>
 #include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/Path.h>
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_datatypes.h>
 #include <visualization_msgs/Marker.h>
@@ -24,8 +26,11 @@ class Visualizer
 private:
   //! We will be publishing to the "target_point" topic to display target point on rviz
   ros::Publisher target_pub_;
+  ros::Publisher all_targets_pub_;
+  ros::Publisher remaining_targets_pub_;
   ros::Publisher region_pub_;
   ros::Publisher conveyor_pub_;
+  ros::Publisher trails_pub_;
   Beliefs *beliefs;
   ros::NodeHandle *nh_;
   
@@ -36,8 +41,12 @@ public:
     nh_ = nh;
     //set up the publisher for the cmd_vel topic
     target_pub_ = nh_->advertise<geometry_msgs::PointStamped>("target_point", 1);
+    all_targets_pub_ = nh_->advertise<geometry_msgs::PoseArray>("all_targets", 1);
+    remaining_targets_pub_ = nh_->advertise<geometry_msgs::PoseArray>("remaining_targets", 1);
+
     conveyor_pub_ = nh_->advertise<nav_msgs::OccupancyGrid>("conveyor", 1);
     region_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("region", 1);
+    trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
     //declare and create a controller with task, action and advisor configuration
     beliefs = b;
   }
@@ -45,9 +54,13 @@ public:
   void publish(){
 	if(beliefs->getAgentState()->getCurrentTask() != NULL){
 		publish_target();
+		publish_all_targets();
+		publish_remaining_targets();
 	}
+	
 	publish_conveyor();
 	publish_region();
+	publish_trails();
   }
 
   void publish_target(){
@@ -122,5 +135,69 @@ public:
 	}
 	region_pub_.publish(markerArray);
   }
+  void publish_trails(){
+	ROS_DEBUG("Inside publish trail");
+	//Goal here is to publish all trails
+	
+	FORRTrails *trails = beliefs->getSpatialModel()->getTrails();
+	nav_msgs::Path path;
+	path.header.frame_id = "map";
+    	path.header.stamp = ros::Time::now();
+
+	for(int i = 0; i < trails->getSize(); i++){
+		vector<TrailMarker> trail = trails->getTrail(i);
+		//fill up the path using the trail
+		for(int j = 0; j < trail.size(); j++){
+			double x = trail[j].coordinates.get_x();
+			double y = trail[j].coordinates.get_y();
+			geometry_msgs::PoseStamped poseStamped;
+			poseStamped.header.frame_id = "map";
+			poseStamped.header.stamp = path.header.stamp;
+			poseStamped.pose.position.x = x;
+			poseStamped.pose.position.y = y;
+			path.poses.push_back(poseStamped);
+		}
+	}
+	trails_pub_.publish(path);
+  }
+
+
+  void publish_all_targets(){
+	ROS_DEBUG("Publish All targets as pose array!!");
+	geometry_msgs::PoseArray targets;
+	targets.header.frame_id = "map";
+	targets.header.stamp = ros::Time::now();
+
+	list<Task*> agenda = beliefs->getAgentState()->getAllAgenda();
+	for(list<Task*>::iterator it = agenda.begin(); it != agenda.end(); it++){
+		double x = (*it)->getX();
+		double y = (*it)->getY();
+		geometry_msgs::Pose pose;
+		pose.position.x = x;
+		pose.position.y = y;
+		targets.poses.push_back(pose);
+	}
+	all_targets_pub_.publish(targets);
+  }
+
+  void publish_remaining_targets(){
+	ROS_DEBUG("Publish remaining targets as pose array!!");
+	geometry_msgs::PoseArray targets;
+	targets.header.frame_id = "map";
+	targets.header.stamp = ros::Time::now();
+
+	list<Task*> agenda = beliefs->getAgentState()->getAgenda();
+	for(list<Task*>::iterator it = agenda.begin(); it != agenda.end(); it++){
+		double x = (*it)->getX();
+		double y = (*it)->getY();
+		geometry_msgs::Pose pose;
+		pose.position.x = x;
+		pose.position.y = y;
+		targets.poses.push_back(pose);
+	}
+	remaining_targets_pub_.publish(targets);
+  }
+
+
 };
 

@@ -6,8 +6,8 @@
 Greedy                 Advisor-favors-steps-that-will-get-robot-closer-to-target   t  0.05 0 0 0 0
 GreedyRotation         Advisor-favors-steps-that-will-get-robot-closer-to-target   t  0.05 0 0 0 0
 #
-ObstacleAvoid          Advisor-that-does-not-like-robot-to-be-too-close-to-wall    f  0.05 10 -4 -.22 0
-ObstacleAvoidRotation  Advisor-that-does-not-like-robot-to-be-too-close-to-wall    f  0.05 10 -4 -.22 0
+ObstacleAvoid          Advisor-that-does-not-like-robot-to-be-too-close-to-wall    t  0.05 10 -4 -.22 0
+ObstacleAvoidRotation  Advisor-that-does-not-like-robot-to-be-too-close-to-wall    t  0.05 10 -4 -.22 0
 #
 CloseIn                Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
 CloseInRotation        Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
@@ -21,19 +21,19 @@ ExplorerRotation       Advisor-that-favors-places-that-have-not-been-visited    
 BaseLine               Advisor-that-gives-random-comments                          f  0.05 0 0 0 0
 BaseLineRotation       Advisor-that-gives-random-comments                          f  0.05 0 0 0 0
 #
-ExitFinderLinear       Advisor-that-moves-towards-exit                             f  0.05 0 0 0 0
-ExitFinderRotation     Advisor-that-moves-towards-exits                            f  0.05 0 0 0 0
+ExitFinderLinear       Advisor-that-moves-towards-exit                             t  0.05 0 0 0 0
+ExitFinderRotation     Advisor-that-moves-towards-exits                            t  0.05 0 0 0 0
 #
 #GoAroundRotation       Advisor-that-wants-to-turn-if-robot-has-obstacle-in-front   f  0.05 100 80 60 0
 #
-AvoidLeaf              Advisor-that-prefers-moves-in-general-direction-of-target   f  0.05 0 0 0 0
-AvoidLeafRotation      Advisor-that-prefers-moves-in-general-direction-of-target   f  0.05 0 0 0 0
+AvoidLeaf              Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
+AvoidLeafRotation      Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
 #
-RegionFinderLinear     Advisor-that-votes-to-go-into-a-region-which-has-target     f  0.05 0 0 0 0
-RegionFinderRotation     Advisor-that-votes-to-go-into-a-region-which-has-target   f  0.05 0 0 0 0
+RegionFinderLinear     Advisor-that-votes-to-go-into-a-region-which-has-target     t  0.05 0 0 0 0
+RegionFinderRotation     Advisor-that-votes-to-go-into-a-region-which-has-target   t  0.05 0 0 0 0
 #
 WaypointFinderLinear   Advisor-that-follows-waypoints-generated-from-paths         t  0.05 0 0 0 0
 WaypointFinderRotation Advisor-that-follows-waypoints-generated-from-path          t  0.05 0 0 0 0
 #
-TrailFinderLinear      Advisor-that-follows-previous-paths                         f  0.05 0 0 0 0
-TrailFinderRotation    Advisors-that-follows-previous-paths                        f  0.05 0 0 0 0
+TrailFinderLinear      Advisor-that-follows-previous-paths                         t  0.05 0 0 0 0
+TrailFinderRotation    Advisors-that-follows-previous-paths                        t  0.05 0 0 0 0

@@ -11,7 +11,7 @@ using namespace std;
 
 
 //if it does find a trail marker that sees, return the index.  otherwise, return -1
-int FORRTrails::doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index){
+int FORRTrails::doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index, AgentState *agentState){
   for(int j = 0; j < trails[trail_index].size(); j++){
     if(agentState->canSeePoint(trails[trail_index][j].wallVectorEndpoints, trails[trail_index][j].coordinates, target_point)){
       //target point is visible along trail at trail marker trails[trail_index][j]
@@ -28,42 +28,27 @@ int FORRTrails::doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, i
 
 
 
-void FORRTrails::updateTrails(){
-/*
-  vector<TrailMarker> trail;
-  task->
-    CartesianPoint trail_point = CartesianPoint(x_int_vector, y_int_vector);
-    cout << "Added trail_point ("<<x_int_vector<<","<<y_int_vector<<")"<<endl;
-
-    vector<CartesianPoint> vectorEndPoints;
-    
-
+void FORRTrails::updateTrails(Task *current){
+    vector<TrailMarker> trail;
+    std::pair < std::vector<CartesianPoint>, std::vector<vector<CartesianPoint> > > cleantrail = current->getCleanedTrailMarkers();
     //collect the wall distance vector endpoints after the initial x,y trail coordinates
-    while(vs >> x_vector){
-      vs >> y_vector;
-      x_int_vector = atoi(x_vector.c_str());
-      y_int_vector = atoi(y_vector.c_str());
-      
-      CartesianPoint c = CartesianPoint(x_int_vector, y_int_vector);
 
-      vectorEndPoints.push_back(c);
-
+    for(int i = 0; i < cleantrail.first.size(); i++){
+	TrailMarker t = TrailMarker(cleantrail.first[i],cleantrail.second[i]);
+	trail.push_back(t);
     }
-
-    TrailMarker t = TrailMarker (trail_point, vectorEndPoints);
-    if(x_int_vector !=0 && y_int_vector !=0) //in case it reached the end, error catching
-      trail.push_back(t);  // add to the current trail
-
-    
-  }
-
+  
   //Finally, push the full trail into the trails vector in FORRTrails.h
   trails.push_back(trail);
-*/
 }
 
 
-void FORRTrails::findNearbyTrail(){
+void FORRTrails::findNearbyTrail(AgentState *agentState){
+
+  // If trail in place return
+  if(chosen_trail != -1){
+	return;
+  }
   //first, check to see if there is a trail that is near your current position.
   //could also do this the other way around and check to see first if there are any points along the 
   //trail that are "seeable" (within some epsilon to a distance vector) to the target.
@@ -72,7 +57,7 @@ void FORRTrails::findNearbyTrail(){
   CartesianPoint target(agentState->getCurrentTask()->getX(),agentState->getCurrentTask()->getY());
   //loop through all your trails and see if there is any trail point along those that you can see from where the robot is currently
   for(unsigned int i = 0; i < trails.size(); i++){
-    trail_marker_seen_target = doesTrailHaveVisiblePointToTarget(target,i);
+    trail_marker_seen_target = doesTrailHaveVisiblePointToTarget(target,i, agentState);
     
     //if not -1, then has a trail marker that can see the target
     if(trail_marker_seen_target > 0){
@@ -111,7 +96,7 @@ void FORRTrails::findNearbyTrail(){
 }
 
 
-CartesianPoint FORRTrails::getFurthestVisiblePointOnChosenTrail(){
+CartesianPoint FORRTrails::getFurthestVisiblePointOnChosenTrail(AgentState *agentState){
   //if no trail found, return a dummy point
   if(chosen_trail == -1) return CartesianPoint(-1,-1);
 

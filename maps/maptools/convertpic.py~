@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     #function to be called when mouse is clicked
     def printcoords(event):
-        open("coordinatelist.xml","ab").write('\t<Vertex p_x="%f" p_y="%f" />\n' % ((event.x/20.0), (event.y/20.0)))
+        open("coordinatelist.xml","ab").write('\t<Vertex p_x="%f" p_y="%f" />\n' % ((event.x/20.0), (800.0-event.y)/20.0))
 
         #outputting x and y coords to console
         print (event.x,event.y)

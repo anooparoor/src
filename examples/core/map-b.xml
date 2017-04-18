@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<Project 
+	scene="map-b/map-b.xml" 
+	behavior="map-b/map-bB.xml" 
+	view="map-b/map-bV.xml" 
+	model="orca"
+	dumpPath="images/test"
+/>

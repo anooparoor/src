@@ -109,11 +109,13 @@ class AgentState
   void addTask(float x, float y) {
     Task *task = new Task(x,y);
     agenda.push_back(task); 
+    all_agenda.push_back(task);
   }
   
   Task *getNextTask() { return agenda.front(); }
   
   list<Task*>& getAgenda() { return agenda; }
+  list<Task*>& getAllAgenda() { return all_agenda; }
   
   //Merge finish task and skip task they are both doing the same right now
   void finishTask() {
@@ -218,8 +220,11 @@ class AgentState
   // Total tier 3 decisions
   int total_t3_decisions;
   
-  /** \brief The agent's list of tasks */
+  /** \brief The agent's currnet list of tasks */
   list<Task*> agenda;
+
+  // list of all targets;
+  list<Task*> all_agenda;
   
   // Current task in progress
   Task *currentTask;

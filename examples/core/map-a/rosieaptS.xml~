@@ -1,0 +1,2043 @@
+<?xml version="1.0"?>
+
+<Experiment version="2.0">
+	<SpatialQuery type="kd-tree" test_visibility="false" />
+	
+    <OpenSteer max_force="8" leak_through="0.1" reaction_time="0.5" />
+    <Common time_step="0.1" />
+    <GCF reaction_time="0.5" max_agent_dist="2" max_agent_force="3" agent_interp_width="0.1" nu_agent="0.35" />
+    <Helbing agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" body_force="1200" friction="2400" force_distance="0.015" />
+    <Johansson agent_scale="25" obstacle_scale="35" reaction_time="0.5" force_distance="0.15" stride_time="0.5" />
+    <Karamouzas orient_weight="0.8" fov="200" reaction_time="0.4" wall_steepness="2" wall_distance="2" colliding_count="5" d_min="1" d_mid="8" d_max="10" agent_force="4" />
+    <Zanlungo agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" force_distance="0.005" />
+	<Dummy stddev="0.05" />
+
+    <AgentProfile name="group1" >
+		<OpenSteer tau="3" tauObst="6" />
+        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.19" class="1" pref_speed="1.04" max_speed="2" max_accel="5" priority="0.0" external="1"/>
+		<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
+        <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
+        <Helbing mass="80" />
+        <Johansson fov_weight="0.16" />
+        <Karamouzas personal_space="0.69" anticipation="8" />
+        <ORCA tau="3.0" tauObst="0.15" />
+        <Zanlungo mass="80" />
+	</AgentProfile>
+
+	<AgentProfile name="group2" inherits="group1" >
+		<Common class="2" r="0.39" external="0"/>
+		<Helbing mass="320"/>
+	</AgentProfile>
+
+	<AgentGroup>
+        <ProfileSelector type="const" name="group1" />
+		<StateSelector type="const" name="Walk1" />
+		<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="1.0" >
+			<Agent p_x="10" p_y="20"/>
+		</Generator>
+    </AgentGroup>
+
+    <AgentGroup>
+        <StateSelector type="const" name="Walk2" />
+		<ProfileSelector type="const" name="group2" />
+		<Generator type="explicit">
+			<Agent p_x="10" p_y="30" />
+		</Generator>
+    </AgentGroup>
+
+    <ObstacleSet type="explicit" class="1">
+	<Obstacle closed="1">    	
+	<Vertex p_x="0.300000" p_y="0.400000" />
+	<Vertex p_x="0.300000" p_y="58.900000" />
+	<Vertex p_x="0.500000" p_y="0.500000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="0.500000" p_y="0.500000" />
+	<Vertex p_x="16.800000" p_y="0.400000" />
+	<Vertex p_x="0.300000" p_y="0.300000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.600000" p_y="0.600000" />
+	<Vertex p_x="16.900000" p_y="6.700000" />
+	<Vertex p_x="16.900000" p_y="0.300000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.800000" p_y="6.600000" />
+	<Vertex p_x="50.500000" p_y="6.900000" />
+	<Vertex p_x="16.700000" p_y="6.700000" />
+	</Obstacle>
+
+	
+	<Obstacle closed="1">    	
+	<Vertex p_x="50.500000" p_y="6.700000" />
+	<Vertex p_x="50.600000" p_y="0.900000" />
+	<Vertex p_x="50.300000" p_y="7.000000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.500000" p_y="0.800000" />
+	<Vertex p_x="71.000000" p_y="1.000000" />
+	<Vertex p_x="50.500000" p_y="1.000000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="71.200000" p_y="1.300000" />
+	<Vertex p_x="71.200000" p_y="9.600000" />
+	<Vertex p_x="71.200000" p_y="0.500000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="71.200000" p_y="10.000000" />
+	<Vertex p_x="85.500000" p_y="10.000000" />
+	<Vertex p_x="71.100000" p_y="9.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">    	
+	<Vertex p_x="85.400000" p_y="10.300000" />
+	<Vertex p_x="85.600000" p_y="12.800000" />
+	<Vertex p_x="85.500000" p_y="10.000000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="85.600000" p_y="12.700000" />
+	<Vertex p_x="87.700000" p_y="12.600000" />
+	<Vertex p_x="85.400000" p_y="12.700000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="87.900000" p_y="19.600000" />
+	<Vertex p_x="90.000000" p_y="19.800000" />
+	<Vertex p_x="87.800000" p_y="19.700000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="90.100000" p_y="20.100000" />
+	<Vertex p_x="90.200000" p_y="38.800000" />
+	<Vertex p_x="90.000000" p_y="19.500000" />
+	</Obstacle>
+
+	
+	<Obstacle closed="1">    	
+	<Vertex p_x="66.500000" p_y="38.900000" />
+	<Vertex p_x="89.900000" p_y="38.700000" />
+	<Vertex p_x="66.600000" p_y="39.200000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="66.500000" p_y="39.200000" />
+	<Vertex p_x="66.400000" p_y="58.700000" />
+	<Vertex p_x="66.700000" p_y="38.800000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="66.300000" p_y="58.600000" />
+	<Vertex p_x="0.600000" p_y="58.700000" />
+	<Vertex p_x="66.200000" p_y="58.900000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="87.600000" p_y="12.800000" />
+	<Vertex p_x="87.800000" p_y="19.800000" />
+	<Vertex p_x="87.800000" p_y="12.600000" />
+	</Obstacle>
+
+	<Obstacle closed="1">    	
+	<Vertex p_x="0.200000" p_y="3.500000" />
+	<Vertex p_x="1.850000" p_y="3.650000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="3.600000" p_y="0.150000" />
+	<Vertex p_x="3.500000" p_y="3.600000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="3.500000" p_y="3.600000" />
+	<Vertex p_x="5.400000" p_y="3.500000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.800000" p_y="0.300000" />
+	<Vertex p_x="6.750000" p_y="3.500000" />
+	</Obstacle>
+
+	
+	<Obstacle closed="1">    	
+	<Vertex p_x="6.750000" p_y="3.500000" />
+	<Vertex p_x="8.600000" p_y="3.550000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.000000" p_y="0.350000" />
+	<Vertex p_x="10.050000" p_y="3.650000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.400000" p_y="3.600000" />
+	<Vertex p_x="13.500000" p_y="3.550000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.500000" p_y="3.550000" />
+	<Vertex p_x="13.500000" p_y="0.350000" />
+	</Obstacle>
+
+	<Obstacle closed="1">    	
+	<Vertex p_x="14.850000" p_y="3.550000" />
+	<Vertex p_x="16.600000" p_y="3.500000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="1.950000" p_y="4.750000" />
+	<Vertex p_x="5.300000" p_y="4.800000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="3.650000" p_y="4.750000" />
+	<Vertex p_x="3.600000" p_y="7.900000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="0.200000" p_y="8.050000" />
+	<Vertex p_x="7.000000" p_y="8.050000" />
+	</Obstacle>
+
+	<Obstacle closed="1">    	
+	<Vertex p_x="7.000000" p_y="8.050000" />
+	<Vertex p_x="6.900000" p_y="6.900000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.900000" p_y="6.900000" />
+	<Vertex p_x="7.450000" p_y="6.900000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.450000" p_y="6.900000" />
+	<Vertex p_x="7.550000" p_y="4.750000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.000000" p_y="4.750000" />
+	<Vertex p_x="9.950000" p_y="9.500000" />
+	</Obstacle>
+
+	
+	<Obstacle closed="1">    	
+	<Vertex p_x="9.000000" p_y="6.900000" />
+	<Vertex p_x="9.850000" p_y="6.850000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.900000" p_y="7.950000" />
+	<Vertex p_x="16.750000" p_y="7.950000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.800000" p_y="7.950000" />
+	<Vertex p_x="13.700000" p_y="4.800000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.550000" p_y="4.750000" />
+	<Vertex p_x="14.950000" p_y="4.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">    	
+	<Vertex p_x="16.700000" p_y="6.700000" />
+	<Vertex p_x="16.700000" p_y="9.250000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.200000" p_y="6.700000" />
+	<Vertex p_x="21.150000" p_y="12.950000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.150000" p_y="12.950000" />
+	<Vertex p_x="23.800000" p_y="13.000000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="25.550000" p_y="6.700000" />
+	<Vertex p_x="25.500000" p_y="12.900000" />
+	</Obstacle>
+
+	
+	<Obstacle closed="1">    	
+	<Vertex p_x="25.500000" p_y="12.900000" />
+	<Vertex p_x="26.800000" p_y="12.900000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="28.550000" p_y="12.950000" />
+	<Vertex p_x="30.600000" p_y="12.900000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.250000" p_y="6.800000" />
+	<Vertex p_x="29.300000" p_y="12.750000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="33.250000" p_y="6.700000" />
+	<Vertex p_x="33.250000" p_y="11.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">    	
+	<Vertex p_x="32.400000" p_y="13.050000" />
+	<Vertex p_x="32.400000" p_y="13.050000" />
+	</Obstacle>
+
+
+
+	<Obstacle closed="1"> 
+	<Vertex p_x="32.400000" p_y="13.050000" />
+	<Vertex p_x="34.400000" p_y="13.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.750000" p_y="6.750000" />
+	<Vertex p_x="36.850000" p_y="13.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.850000" p_y="13.050000" />
+	<Vertex p_x="35.900000" p_y="13.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="38.500000" p_y="13.100000" />
+	<Vertex p_x="46.150000" p_y="12.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="39.950000" p_y="6.650000" />
+	<Vertex p_x="40.000000" p_y="10.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="43.700000" p_y="6.650000" />
+	<Vertex p_x="43.750000" p_y="12.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="31.750000" p_y="14.500000" />
+	<Vertex p_x="33.650000" p_y="14.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="33.600000" p_y="14.550000" />
+	<Vertex p_x="33.600000" p_y="16.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="30.250000" p_y="17.800000" />
+	<Vertex p_x="33.550000" p_y="17.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="35.300000" p_y="16.850000" />
+	<Vertex p_x="35.300000" p_y="17.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="35.300000" p_y="17.850000" />
+	<Vertex p_x="36.100000" p_y="17.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="35.350000" p_y="14.650000" />
+	<Vertex p_x="36.350000" p_y="14.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="9.850000" p_y="17.800000" />
+	<Vertex p_x="12.300000" p_y="17.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="9.850000" p_y="15.950000" />
+	<Vertex p_x="9.850000" p_y="11.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12.350000" p_y="11.100000" />
+	<Vertex p_x="9.900000" p_y="10.900000" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.900000" p_y="8.150000" />
+	<Vertex p_x="6.850000" p_y="11.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.850000" p_y="11.050000" />
+	<Vertex p_x="4.700000" p_y="11.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="2.850000" p_y="8.150000" />
+	<Vertex p_x="2.750000" p_y="11.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="0.200000" p_y="12.050000" />
+	<Vertex p_x="2.750000" p_y="12.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="0.250000" p_y="16.400000" />
+	<Vertex p_x="2.850000" p_y="16.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="2.850000" p_y="16.350000" />
+	<Vertex p_x="2.850000" p_y="13.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="2.850000" p_y="13.500000" />
+	<Vertex p_x="4.550000" p_y="13.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="4.550000" p_y="13.500000" />
+	<Vertex p_x="4.550000" p_y="12.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="4.550000" p_y="12.700000" />
+	<Vertex p_x="6.900000" p_y="12.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.900000" p_y="12.650000" />
+	<Vertex p_x="6.850000" p_y="15.800000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.850000" p_y="15.800000" />
+	<Vertex p_x="4.300000" p_y="15.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="0.300000" p_y="20.550000" />
+	<Vertex p_x="6.800000" p_y="20.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.850000" p_y="20.550000" />
+	<Vertex p_x="6.900000" p_y="18.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.900000" p_y="18.150000" />
+	<Vertex p_x="3.850000" p_y="18.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="2.500000" p_y="18.200000" />
+	<Vertex p_x="2.550000" p_y="20.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.850000" p_y="22.100000" />
+	<Vertex p_x="6.900000" p_y="28.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.900000" p_y="30.000000" />
+	<Vertex p_x="6.900000" p_y="32.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.900000" p_y="32.950000" />
+	<Vertex p_x="4.100000" p_y="33.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="4.100000" p_y="33.050000" />
+	<Vertex p_x="4.000000" p_y="34.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="0.300000" p_y="34.750000" />
+	<Vertex p_x="6.950000" p_y="34.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.950000" p_y="34.850000" />
+	<Vertex p_x="7.000000" p_y="36.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.950000" p_y="38.200000" />
+	<Vertex p_x="6.900000" p_y="46.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="6.900000" p_y="43.600000" />
+	<Vertex p_x="0.300000" p_y="43.550000" />
+	</Obstacle>
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12.300000" p_y="10.900000" />
+	<Vertex p_x="16.800000" p_y="10.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="16.800000" p_y="10.900000" />
+	<Vertex p_x="16.800000" p_y="14.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="16.800000" p_y="14.450000" />
+	<Vertex p_x="30.200000" p_y="14.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="30.200000" p_y="14.650000" />
+	<Vertex p_x="30.150000" p_y="17.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="30.150000" p_y="17.850000" />
+	<Vertex p_x="9.800000" p_y="17.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12.250000" p_y="17.750000" />
+	<Vertex p_x="12.300000" p_y="10.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.350000" p_y="14.650000" />
+	<Vertex p_x="36.300000" p_y="17.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.300000" p_y="17.900000" />
+	<Vertex p_x="56.600000" p_y="17.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.600000" p_y="17.900000" />
+	<Vertex p_x="56.500000" p_y="14.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.500000" p_y="14.500000" />
+	<Vertex p_x="54.400000" p_y="14.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="54.400000" p_y="14.650000" />
+	<Vertex p_x="54.400000" p_y="11.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="54.400000" p_y="11.300000" />
+	<Vertex p_x="56.650000" p_y="11.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.650000" p_y="11.200000" />
+	<Vertex p_x="56.600000" p_y="12.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.600000" p_y="11.350000" />
+	<Vertex p_x="56.650000" p_y="10.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.650000" p_y="10.600000" />
+	<Vertex p_x="49.900000" p_y="10.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.900000" p_y="10.650000" />
+	<Vertex p_x="49.900000" p_y="14.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.900000" p_y="14.550000" />
+	<Vertex p_x="35.450000" p_y="14.700000" />
+	</Obstacle>
+
+	<Obstacle closed="1">  	
+	<Vertex p_x="10.050000" p_y="20.600000" />
+	<Vertex p_x="10.050000" p_y="27.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="10.000000" p_y="27.650000" />
+	<Vertex p_x="14.400000" p_y="27.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="14.400000" p_y="27.700000" />
+	<Vertex p_x="14.450000" p_y="40.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="14.400000" p_y="29.750000" />
+	<Vertex p_x="20.300000" p_y="29.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="20.300000" p_y="29.700000" />
+	<Vertex p_x="20.350000" p_y="26.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="16.350000" p_y="26.200000" />
+	<Vertex p_x="25.450000" p_y="26.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="25.450000" p_y="27.050000" />
+	<Vertex p_x="25.400000" p_y="22.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="21.350000" p_y="26.100000" />
+	<Vertex p_x="21.450000" p_y="22.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="21.450000" p_y="22.150000" />
+	<Vertex p_x="23.650000" p_y="22.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.650000" p_y="22.000000" />
+	<Vertex p_x="23.650000" p_y="23.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.650000" p_y="23.350000" />
+	<Vertex p_x="21.550000" p_y="23.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="21.550000" p_y="23.450000" />
+	<Vertex p_x="21.550000" p_y="26.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="18.700000" p_y="26.250000" />
+	<Vertex p_x="18.700000" p_y="22.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="16.300000" p_y="26.250000" />
+	<Vertex p_x="16.300000" p_y="22.800000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12.100000" p_y="22.700000" />
+	<Vertex p_x="16.850000" p_y="22.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="16.850000" p_y="22.850000" />
+	<Vertex p_x="16.900000" p_y="20.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="15.000000" p_y="22.700000" />
+	<Vertex p_x="15.000000" p_y="20.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12.000000" p_y="22.550000" />
+	<Vertex p_x="12.150000" p_y="22.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12.150000" p_y="22.000000" />
+	<Vertex p_x="10.050000" p_y="22.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="10.050000" p_y="22.000000" />
+	<Vertex p_x="9.950000" p_y="20.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.100000" p_y="26.400000" />
+	<Vertex p_x="23.050000" p_y="33.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="21.900000" p_y="33.950000" />
+	<Vertex p_x="25.200000" p_y="33.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="25.350000" p_y="32.450000" />
+	<Vertex p_x="25.350000" p_y="31.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.200000" p_y="31.100000" />
+	<Vertex p_x="25.450000" p_y="31.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="25.400000" p_y="29.550000" />
+	<Vertex p_x="25.450000" p_y="28.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.150000" p_y="28.750000" />
+	<Vertex p_x="25.350000" p_y="28.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="14.450000" p_y="29.700000" />
+	<Vertex p_x="14.500000" p_y="40.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="11.950000" p_y="29.750000" />
+	<Vertex p_x="9.900000" p_y="29.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="9.900000" p_y="29.650000" />
+	<Vertex p_x="9.750000" p_y="42.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="9.750000" p_y="42.500000" />
+	<Vertex p_x="14.400000" p_y="42.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="14.400000" p_y="42.500000" />
+	<Vertex p_x="14.400000" p_y="41.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="9.800000" p_y="39.250000" />
+	<Vertex p_x="16.800000" p_y="39.250000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="16.800000" p_y="39.250000" />
+	<Vertex p_x="16.800000" p_y="38.250000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="14.450000" p_y="35.850000" />
+	<Vertex p_x="20.100000" p_y="35.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="20.150000" p_y="33.950000" />
+	<Vertex p_x="20.150000" p_y="42.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="20.150000" p_y="42.450000" />
+	<Vertex p_x="16.100000" p_y="42.550000" />
+	</Obstacle>
+
+	<Obstacle closed="1">  
+	<Vertex p_x="27.750000" p_y="21.950000" />
+	<Vertex p_x="27.700000" p_y="24.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="27.700000" p_y="23.500000" />
+	<Vertex p_x="31.700000" p_y="23.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="31.700000" p_y="23.600000" />
+	<Vertex p_x="31.600000" p_y="25.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="30.850000" p_y="22.050000" />
+	<Vertex p_x="30.800000" p_y="23.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="29.550000" p_y="21.950000" />
+	<Vertex p_x="38.650000" p_y="22.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="38.650000" p_y="22.000000" />
+	<Vertex p_x="38.600000" p_y="24.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="35.550000" p_y="22.100000" />
+	<Vertex p_x="35.500000" p_y="25.800000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="34.050000" p_y="25.950000" />
+	<Vertex p_x="39.000000" p_y="25.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="39.000000" p_y="25.950000" />
+	<Vertex p_x="39.050000" p_y="26.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.400000" p_y="25.950000" />
+	<Vertex p_x="36.400000" p_y="33.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="31.900000" p_y="33.800000" />
+	<Vertex p_x="37.500000" p_y="33.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="31.800000" p_y="30.450000" />
+	<Vertex p_x="36.400000" p_y="30.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.400000" p_y="28.500000" />
+	<Vertex p_x="39.050000" p_y="28.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="39.050000" p_y="28.500000" />
+	<Vertex p_x="39.100000" p_y="29.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.400000" p_y="31.500000" />
+	<Vertex p_x="39.050000" p_y="31.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="39.050000" p_y="31.550000" />
+	<Vertex p_x="39.000000" p_y="33.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="29.750000" p_y="25.950000" />
+	<Vertex p_x="29.800000" p_y="33.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="27.750000" p_y="25.900000" />
+	<Vertex p_x="29.700000" p_y="25.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="27.700000" p_y="25.850000" />
+	<Vertex p_x="27.700000" p_y="27.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="27.650000" p_y="28.500000" />
+	<Vertex p_x="29.750000" p_y="28.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="27.650000" p_y="28.450000" />
+	<Vertex p_x="27.750000" p_y="29.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="29.700000" p_y="31.000000" />
+	<Vertex p_x="27.700000" p_y="31.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="27.700000" p_y="31.100000" />
+	<Vertex p_x="27.700000" p_y="33.650000" />
+	</Obstacle>
+
+	<Obstacle closed="1">  
+	<Vertex p_x="41.050000" p_y="22.000000" />
+	<Vertex p_x="41.150000" p_y="26.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="41.150000" p_y="26.350000" />
+	<Vertex p_x="49.550000" p_y="26.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.550000" p_y="26.300000" />
+	<Vertex p_x="49.650000" p_y="22.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="43.300000" p_y="22.150000" />
+	<Vertex p_x="43.300000" p_y="26.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="43.300000" p_y="26.100000" />
+	<Vertex p_x="44.550000" p_y="26.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="44.550000" p_y="26.200000" />
+	<Vertex p_x="44.500000" p_y="22.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="44.550000" p_y="23.300000" />
+	<Vertex p_x="46.350000" p_y="23.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="46.350000" p_y="23.350000" />
+	<Vertex p_x="46.300000" p_y="22.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="47.700000" p_y="22.000000" />
+	<Vertex p_x="47.700000" p_y="26.250000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.700000" p_y="22.050000" />
+	<Vertex p_x="56.550000" p_y="22.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.550000" p_y="22.100000" />
+	<Vertex p_x="56.600000" p_y="27.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.600000" p_y="27.700000" />
+	<Vertex p_x="52.500000" p_y="27.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="52.500000" p_y="27.700000" />
+	<Vertex p_x="52.450000" p_y="29.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="46.050000" p_y="29.450000" />
+	<Vertex p_x="53.900000" p_y="29.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.600000" p_y="29.750000" />
+	<Vertex p_x="56.500000" p_y="42.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.500000" p_y="42.350000" />
+	<Vertex p_x="51.300000" p_y="42.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="50.350000" p_y="29.800000" />
+	<Vertex p_x="50.250000" p_y="39.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="48.500000" p_y="39.350000" />
+	<Vertex p_x="56.450000" p_y="39.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.550000" p_y="39.450000" />
+	<Vertex p_x="49.550000" p_y="42.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.550000" p_y="42.200000" />
+	<Vertex p_x="46.150000" p_y="42.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="46.150000" p_y="42.300000" />
+	<Vertex p_x="46.200000" p_y="41.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="46.200000" p_y="39.300000" />
+	<Vertex p_x="46.200000" p_y="34.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="46.200000" p_y="34.000000" />
+	<Vertex p_x="41.900000" p_y="33.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="43.250000" p_y="33.600000" />
+	<Vertex p_x="43.200000" p_y="26.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="40.650000" p_y="31.000000" />
+	<Vertex p_x="40.550000" p_y="33.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="40.650000" p_y="31.000000" />
+	<Vertex p_x="43.200000" p_y="31.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="40.600000" p_y="29.700000" />
+	<Vertex p_x="40.650000" p_y="28.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="40.650000" p_y="28.500000" />
+	<Vertex p_x="43.350000" p_y="28.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="22.100000" p_y="35.650000" />
+	<Vertex p_x="24.850000" p_y="35.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.450000" p_y="35.600000" />
+	<Vertex p_x="23.500000" p_y="43.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="22.200000" p_y="38.900000" />
+	<Vertex p_x="30.050000" p_y="38.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="30.100000" p_y="35.650000" />
+	<Vertex p_x="30.000000" p_y="43.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="28.250000" p_y="35.550000" />
+	<Vertex p_x="31.400000" p_y="35.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="26.300000" p_y="35.550000" />
+	<Vertex p_x="26.400000" p_y="38.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="26.050000" p_y="39.100000" />
+	<Vertex p_x="26.050000" p_y="43.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="25.100000" p_y="43.700000" />
+	<Vertex p_x="27.950000" p_y="43.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="30.100000" p_y="37.400000" />
+	<Vertex p_x="36.250000" p_y="37.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="33.150000" p_y="35.550000" />
+	<Vertex p_x="33.100000" p_y="43.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="31.850000" p_y="43.700000" />
+	<Vertex p_x="34.800000" p_y="43.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="34.750000" p_y="35.550000" />
+	<Vertex p_x="36.400000" p_y="35.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.400000" p_y="35.650000" />
+	<Vertex p_x="36.350000" p_y="43.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.350000" p_y="43.700000" />
+	<Vertex p_x="41.250000" p_y="43.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36.400000" p_y="39.650000" />
+	<Vertex p_x="43.350000" p_y="39.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="38.450000" p_y="35.500000" />
+	<Vertex p_x="43.300000" p_y="35.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="43.300000" p_y="35.550000" />
+	<Vertex p_x="43.250000" p_y="43.500000" />
+	</Obstacle>
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.000000" p_y="4.700000" />
+	<Vertex p_x="68.100000" p_y="9.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.100000" p_y="9.350000" />
+	<Vertex p_x="69.650000" p_y="9.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="69.650000" p_y="6.350000" />
+	<Vertex p_x="69.700000" p_y="11.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.100000" p_y="6.150000" />
+	<Vertex p_x="69.750000" p_y="6.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="69.750000" p_y="11.800000" />
+	<Vertex p_x="71.450000" p_y="11.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="71.450000" p_y="11.950000" />
+	<Vertex p_x="71.350000" p_y="13.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="71.350000" p_y="13.350000" />
+	<Vertex p_x="66.350000" p_y="13.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.500000" p_y="11.250000" />
+	<Vertex p_x="68.500000" p_y="13.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="73.300000" p_y="13.500000" />
+	<Vertex p_x="73.250000" p_y="14.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="73.250000" p_y="14.350000" />
+	<Vertex p_x="75.900000" p_y="14.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="78.450000" p_y="14.550000" />
+	<Vertex p_x="85.350000" p_y="14.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="85.350000" p_y="14.600000" />
+	<Vertex p_x="85.450000" p_y="12.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="66.450000" p_y="19.350000" />
+	<Vertex p_x="86.000000" p_y="19.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="86.000000" p_y="19.500000" />
+	<Vertex p_x="86.100000" p_y="36.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="86.100000" p_y="36.100000" />
+	<Vertex p_x="66.500000" p_y="36.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.600000" p_y="26.550000" />
+	<Vertex p_x="85.950000" p_y="26.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="70.900000" p_y="19.450000" />
+	<Vertex p_x="71.000000" p_y="23.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="71.000000" p_y="23.750000" />
+	<Vertex p_x="68.450000" p_y="24.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.400000" p_y="28.400000" />
+	<Vertex p_x="71.350000" p_y="28.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.450000" p_y="28.250000" />
+	<Vertex p_x="68.500000" p_y="35.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.550000" p_y="32.350000" />
+	<Vertex p_x="71.200000" p_y="32.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="72.800000" p_y="30.550000" />
+	<Vertex p_x="72.750000" p_y="35.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="73.300000" p_y="28.450000" />
+	<Vertex p_x="77.450000" p_y="28.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="77.450000" p_y="28.350000" />
+	<Vertex p_x="77.450000" p_y="35.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="66.400000" p_y="12.650000" />
+	<Vertex p_x="66.400000" p_y="26.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="66.300000" p_y="29.600000" />
+	<Vertex p_x="66.400000" p_y="38.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.000000" p_y="4.700000" />
+	<Vertex p_x="68.100000" p_y="9.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.100000" p_y="9.350000" />
+	<Vertex p_x="69.650000" p_y="9.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="69.650000" p_y="6.350000" />
+	<Vertex p_x="69.700000" p_y="11.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.100000" p_y="6.150000" />
+	<Vertex p_x="69.750000" p_y="6.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="69.750000" p_y="11.800000" />
+	<Vertex p_x="71.450000" p_y="11.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="71.450000" p_y="11.950000" />
+	<Vertex p_x="71.350000" p_y="13.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="71.350000" p_y="13.350000" />
+	<Vertex p_x="66.350000" p_y="13.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.500000" p_y="11.250000" />
+	<Vertex p_x="68.500000" p_y="13.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="73.300000" p_y="13.500000" />
+	<Vertex p_x="73.250000" p_y="14.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="73.250000" p_y="14.350000" />
+	<Vertex p_x="75.900000" p_y="14.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="78.450000" p_y="14.550000" />
+	<Vertex p_x="85.350000" p_y="14.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="85.350000" p_y="14.600000" />
+	<Vertex p_x="85.450000" p_y="12.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="66.450000" p_y="19.350000" />
+	<Vertex p_x="86.000000" p_y="19.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="86.000000" p_y="19.500000" />
+	<Vertex p_x="86.100000" p_y="36.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="86.100000" p_y="36.100000" />
+	<Vertex p_x="66.500000" p_y="36.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.600000" p_y="26.550000" />
+	<Vertex p_x="85.950000" p_y="26.550000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="70.900000" p_y="19.450000" />
+	<Vertex p_x="71.000000" p_y="23.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="71.000000" p_y="23.750000" />
+	<Vertex p_x="68.450000" p_y="24.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.400000" p_y="28.400000" />
+	<Vertex p_x="71.350000" p_y="28.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.450000" p_y="28.250000" />
+	<Vertex p_x="68.500000" p_y="35.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="68.550000" p_y="32.350000" />
+	<Vertex p_x="71.200000" p_y="32.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="72.800000" p_y="30.550000" />
+	<Vertex p_x="72.750000" p_y="35.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="73.300000" p_y="28.450000" />
+	<Vertex p_x="77.450000" p_y="28.350000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="77.450000" p_y="28.350000" />
+	<Vertex p_x="77.450000" p_y="35.950000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="66.400000" p_y="12.650000" />
+	<Vertex p_x="66.400000" p_y="26.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="66.300000" p_y="29.600000" />
+	<Vertex p_x="66.400000" p_y="38.850000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="57.100000" p_y="0.650000" />
+	<Vertex p_x="57.150000" p_y="9.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="57.150000" p_y="9.000000" />
+	<Vertex p_x="58.600000" p_y="8.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="58.600000" p_y="8.900000" />
+	<Vertex p_x="58.650000" p_y="10.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="58.650000" p_y="10.500000" />
+	<Vertex p_x="59.500000" p_y="10.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.500000" p_y="10.500000" />
+	<Vertex p_x="59.450000" p_y="12.750000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.450000" p_y="12.750000" />
+	<Vertex p_x="60.100000" p_y="12.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="60.100000" p_y="12.650000" />
+	<Vertex p_x="60.200000" p_y="11.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="60.200000" p_y="11.200000" />
+	<Vertex p_x="66.350000" p_y="11.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="66.350000" p_y="11.200000" />
+	<Vertex p_x="66.400000" p_y="0.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="61.800000" p_y="13.650000" />
+	<Vertex p_x="61.900000" p_y="12.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="61.900000" p_y="12.600000" />
+	<Vertex p_x="66.350000" p_y="12.650000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.550000" p_y="15.250000" />
+	<Vertex p_x="59.550000" p_y="17.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.600000" p_y="15.200000" />
+	<Vertex p_x="61.850000" p_y="15.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="63.300000" p_y="16.000000" />
+	<Vertex p_x="66.250000" p_y="16.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.500000" p_y="19.450000" />
+	<Vertex p_x="66.450000" p_y="19.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="63.100000" p_y="19.500000" />
+	<Vertex p_x="63.200000" p_y="26.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.500000" p_y="26.450000" />
+	<Vertex p_x="66.350000" p_y="26.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.500000" p_y="23.150000" />
+	<Vertex p_x="63.000000" p_y="23.150000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.450000" p_y="21.500000" />
+	<Vertex p_x="59.450000" p_y="23.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.450000" p_y="25.350000" />
+	<Vertex p_x="59.500000" p_y="26.450000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.500000" p_y="29.500000" />
+	<Vertex p_x="59.500000" p_y="35.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.600000" p_y="29.450000" />
+	<Vertex p_x="61.700000" p_y="29.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="63.650000" p_y="29.450000" />
+	<Vertex p_x="66.300000" p_y="29.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.550000" p_y="32.500000" />
+	<Vertex p_x="66.350000" p_y="32.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.450000" p_y="34.000000" />
+	<Vertex p_x="61.550000" p_y="33.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="61.550000" p_y="33.900000" />
+	<Vertex p_x="61.600000" p_y="36.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="61.600000" p_y="36.000000" />
+	<Vertex p_x="66.300000" p_y="36.050000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.550000" p_y="37.400000" />
+	<Vertex p_x="61.800000" p_y="37.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="61.800000" p_y="37.500000" />
+	<Vertex p_x="61.850000" p_y="39.250000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="61.850000" p_y="39.250000" />
+	<Vertex p_x="66.400000" p_y="39.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="59.550000" p_y="39.450000" />
+	<Vertex p_x="59.600000" p_y="46.800000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="58.700000" p_y="46.800000" />
+	<Vertex p_x="66.250000" p_y="46.800000" />
+	</Obstacle>
+
+	<Obstacle closed="1">  
+	<Vertex p_x="7.100000" p_y="48.300000" />
+	<Vertex p_x="7.000000" p_y="52.300000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="0.300000" p_y="52.400000" />
+	<Vertex p_x="7.500000" p_y="52.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="9.600000" p_y="52.500000" />
+	<Vertex p_x="10.100000" p_y="52.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="10.100000" p_y="52.400000" />
+	<Vertex p_x="10.300000" p_y="58.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="10.100000" p_y="49.700000" />
+	<Vertex p_x="10.000000" p_y="48.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="10.000000" p_y="48.500000" />
+	<Vertex p_x="13.800000" p_y="48.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="13.800000" p_y="48.400000" />
+	<Vertex p_x="13.900000" p_y="45.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="13.900000" p_y="45.600000" />
+	<Vertex p_x="18.800000" p_y="45.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="17.000000" p_y="44.700000" />
+	<Vertex p_x="17.100000" p_y="58.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="9.900000" p_y="46.300000" />
+	<Vertex p_x="10.000000" p_y="44.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="10.000000" p_y="44.700000" />
+	<Vertex p_x="13.000000" p_y="44.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="17.100000" p_y="45.800000" />
+	<Vertex p_x="18.700000" p_y="45.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="17.000000" p_y="51.800000" />
+	<Vertex p_x="18.800000" p_y="51.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="20.100000" p_y="53.500000" />
+	<Vertex p_x="20.100000" p_y="58.800000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="19.100000" p_y="53.600000" />
+	<Vertex p_x="21.100000" p_y="53.600000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="20.800000" p_y="52.000000" />
+	<Vertex p_x="23.300000" p_y="51.800000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.200000" p_y="46.000000" />
+	<Vertex p_x="23.100000" p_y="55.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="21.200000" p_y="45.600000" />
+	<Vertex p_x="28.100000" p_y="45.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="30.300000" p_y="45.900000" />
+	<Vertex p_x="30.400000" p_y="49.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.400000" p_y="49.800000" />
+	<Vertex p_x="43.700000" p_y="49.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="23.100000" p_y="53.600000" />
+	<Vertex p_x="43.800000" p_y="53.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="43.600000" p_y="45.800000" />
+	<Vertex p_x="43.800000" p_y="58.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="55.100000" p_y="58.800000" />
+	<Vertex p_x="55.000000" p_y="49.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="55.000000" p_y="49.700000" />
+	<Vertex p_x="56.400000" p_y="49.700000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="58.700000" p_y="49.600000" />
+	<Vertex p_x="58.900000" p_y="47.100000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="58.900000" p_y="47.100000" />
+	<Vertex p_x="66.300000" p_y="47.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="51.100000" p_y="52.900000" />
+	<Vertex p_x="51.100000" p_y="59.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.700000" p_y="54.800000" />
+	<Vertex p_x="49.700000" p_y="58.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.700000" p_y="52.900000" />
+	<Vertex p_x="49.700000" p_y="49.800000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.700000" p_y="48.000000" />
+	<Vertex p_x="49.800000" p_y="44.900000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.700000" p_y="46.000000" />
+	<Vertex p_x="56.600000" p_y="46.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.600000" p_y="46.200000" />
+	<Vertex p_x="56.600000" p_y="44.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="56.600000" p_y="44.400000" />
+	<Vertex p_x="52.500000" p_y="44.500000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="49.700000" p_y="48.000000" />
+	<Vertex p_x="52.900000" p_y="48.000000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="52.900000" p_y="48.000000" />
+	<Vertex p_x="53.200000" p_y="46.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="54.700000" p_y="46.400000" />
+	<Vertex p_x="54.700000" p_y="47.200000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="51.100000" p_y="50.400000" />
+	<Vertex p_x="52.900000" p_y="50.400000" />
+	</Obstacle>
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="48.200000" p_y="53.000000" />
+	<Vertex p_x="49.700000" p_y="52.900000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="43.800000" p_y="45.600000" />
+	<Vertex p_x="46.100000" p_y="45.800000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="46.100000" p_y="45.800000" />
+	<Vertex p_x="46.200000" p_y="44.900000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="46.200000" p_y="44.900000" />
+	<Vertex p_x="47.900000" p_y="45.000000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="47.900000" p_y="45.000000" />
+	<Vertex p_x="47.800000" p_y="48.700000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="43.900000" p_y="53.100000" />
+	<Vertex p_x="46.000000" p_y="53.100000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="43.900000" p_y="56.300000" />
+	<Vertex p_x="46.200000" p_y="56.100000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="46.200000" p_y="56.100000" />
+	<Vertex p_x="46.100000" p_y="54.700000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="47.800000" p_y="54.800000" />
+	<Vertex p_x="47.700000" p_y="57.400000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="47.700000" p_y="57.400000" />
+	<Vertex p_x="46.300000" p_y="57.600000" />
+	</Obstacle>
+	
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="46.300000" p_y="57.600000" />
+	<Vertex p_x="46.300000" p_y="58.600000" />
+	</Obstacle>
+
+</ObstacleSet>
+
+
+
+
+</Experiment>

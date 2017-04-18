@@ -990,48 +990,57 @@ void Tier3WaypointFinderRotation::set_commenting(){
 
 
 double Tier3TrailFinderLinear::actionComment(FORRAction action){
-   CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail();
+   CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail(beliefs->getAgentState());  
    //if out of line of sight of trail marker, vote the same value functionally turning off voting
    if(!beliefs->getSpatialModel()->getTrails()->canSeeTrail()){
      return 0;
    }
 
+  Position target(target_trailmarker.get_x(),target_trailmarker.get_y(),0);
+
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
-  double newDistance = expectedPosition.getDistance(beliefs->getAgentState()->getCurrentPosition());
+  double newDistance = expectedPosition.getDistance(target);
   return newDistance *(-1); 
 }
 
 //only turn on if a trail is active
 void Tier3TrailFinderLinear::set_commenting(){
+  // Searches for a trail if not found
+  beliefs->getSpatialModel()->getTrails()->findNearbyTrail(beliefs->getAgentState());
   if(beliefs->getSpatialModel()->getTrails()->getChosenTrail() == -1){
     advisor_commenting = false;
   }
   else{
+	// If the advisor is commenting that means a trail has been choosen and advisor will stick with it till the end of task
       advisor_commenting = true;
   }
 }
 
 double Tier3TrailFinderRotation::actionComment(FORRAction action){
-  Position cur_pos = beliefs->getAgentState()->getCurrentPosition();
-  CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail();
+   CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail(beliefs->getAgentState());  
    //if out of line of sight of trail marker, vote the same value in effect turning off voting
   //can_see_trail is set in getFurthestVisiblePointOnChosenTrail
    if(!beliefs->getSpatialModel()->getTrails()->canSeeTrail()){
      return 0;
    }
 
+  Position target(target_trailmarker.get_x(),target_trailmarker.get_y(),0);
+
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
-  double newDistance = expectedPosition.getDistance(cur_pos);
+  double newDistance = expectedPosition.getDistance(target);
   return newDistance *(-1); 
 }
 
 
 //only turn on if a trail is active
 void Tier3TrailFinderRotation::set_commenting(){
+  // Searches for a trail if not choosen yet
+  beliefs->getSpatialModel()->getTrails()->findNearbyTrail(beliefs->getAgentState());
   if(beliefs->getSpatialModel()->getTrails()->getChosenTrail() == -1){
     advisor_commenting = false;
   }
   else{
+    // If the advisor is commenting that means a trail has been choosen and advisor will stick with it till the end of task 
     advisor_commenting = true;
   }
 }

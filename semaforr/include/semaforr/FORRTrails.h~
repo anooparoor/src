@@ -25,7 +25,7 @@ using namespace std;
 
 //each trail (cleaned path) gets loaded in at the same time as the wall distance vectors
 //for that point to minimize confusion
-struct TrailMarker{
+class TrailMarker{
   CartesianPoint coordinates;
   vector<CartesianPoint> wallVectorEndpoints;
 TrailMarker(CartesianPoint c, vector<CartesianPoint> &v): coordinates(c), wallVectorEndpoints(v){}
@@ -38,22 +38,19 @@ enum DIRECTION {POSITIVE, NEGATIVE};
 
 class FORRTrails{
  public:
-  
-  void readTrails(string filename); //populate the trails vector with new paths
-  void setAgentState(AgentState *agent){agentState = agent;}
-
+ 
   //returns true if a point along the trail (indexed by trail_index) has wall vectors that come
   //close to target_point
-  int doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index);
+  int doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index, AgentState *agentState);
 
-  //assumes the trail file is trail.conf and the vectors file is corrected_wallvectors.conf
-  void updateTrails();
+  //
+  void updateTrails(Task *current);
   
-  CartesianPoint getFurthestVisiblePointOnChosenTrail();
+  CartesianPoint getFurthestVisiblePointOnChosenTrail(AgentState *agentState);
 
   //to be called by the Tier3 Advisor, which has access to the belief endDistances
   //returns an integer index to the top-level vector of trails
-  void findNearbyTrail();
+  void findNearbyTrail(AgentState *agentState);
 
   void printTrails();
   
@@ -83,8 +80,6 @@ class FORRTrails{
   //stores the integer index to the trails vector where you have found a usable trail
   int chosen_trail;
   bool can_see_trail;
-  AgentState *agentState;
-
 };
 
 

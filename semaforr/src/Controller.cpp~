@@ -129,10 +129,10 @@ Controller::Controller(string advisor_config, string task_config, string action_
 	    //initialize_actions(action_config);
 	    // create a dummy task for testing
 	    beliefs->getAgentState()->addTask(20,19);
+	    //beliefs->getAgentState()->addTask(25,19);
+	    beliefs->getAgentState()->addTask(9,19);
 	    beliefs->getAgentState()->addTask(25,19);
-	    //beliefs->getAgentState()->addTask(9,19);
-	    beliefs->getAgentState()->addTask(25,19);
-	    // Initialize currnent task
+	    // Initialize current task
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
 	    
 	    tier1 = new Tier1Advisor(beliefs);
@@ -191,31 +191,21 @@ void Controller::learnSpatialModel(Task* completedTask){
  vector<Position> *pos_hist = completedTask->getPositionHistory();
  vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
- bool trails = false;
+ bool trails = true;
  bool conveyors = true;
  bool regions = true;
- /*
+ 
   if(trails){
-    //if a trail has not been found yet 
-    if(beliefs->trail_vectors.getChosenTrail() == -1){
-      vector<double> wallDistance = beliefs->wallDistanceVector;
-      CartesianPoint currPoint = CartesianPoint(beliefs->getCurrentPosition().getX(), beliefs->getCurrentPosition().getY());
-      Task *task = beliefs->getCurrentTask();
-      CartesianPoint targetPoint = CartesianPoint(task->getX() , task->getY());
-      beliefs->trail_vectors.findNearbyTrail(targetPoint, currPoint, wallDistance);
-    }
+    	beliefs->getSpatialModel()->getTrails()->updateTrails(completedTask);
+	beliefs->getSpatialModel()->getTrails()->resetChosenTrail();
   }
-  */
-     cout << "Learning gates, exits and waypoints after finishing a task" << endl;
-      
-      //learn waypoints by reading from paths.conf
-      if(conveyors){
+  if(conveyors){
 	beliefs->getSpatialModel()->getWaypoints()->populateGridFromPositionHistory(pos_hist);
-      }
-      if(regions){
+  }
+  if(regions){
 	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist); 
 	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);	
-      }
+  }
 }
 
 

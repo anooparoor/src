@@ -1,0 +1,3 @@
+<launch>
+<node pkg="menge_sim" type="menge_sim -p src/examples/core/hunterFourth.xml" name="menge_sim"/>
+</launch>
