@@ -210,6 +210,7 @@ namespace Menge {
 			ls.range_max = range_max;
 			//std::cout << i << std::endl; 
 		}
+
 	
 		float FSM::distanceFromObstacle(float angle, float range_max, Agents::BaseAgent * agent){
 			// find the vector to represent the ray 
@@ -353,6 +354,9 @@ namespace Menge {
 			ros::Time current_time;
   			current_time = ros::Time::now();
 			geometry_msgs::PoseArray crowd;
+			Vector2 robot_pos;
+			Vector2 robot_orient;
+			// Compute preference velocities for each agent and also send the base_scan and robot position estimates
 			for ( int a = 0; a < agtCount; ++a ) {
 				Agents::BaseAgent * agt = this->_sim->getAgent( a );
 				try {
@@ -374,6 +378,8 @@ namespace Menge {
 				poseStamped.pose = pose;
 
 				if(agt->_isExternal){
+					robot_pos = agt->_pos;
+					robot_orient = agt->_orient;
 					//std::cout << agt->_id << std::endl;
 					//std::cout <<"pos:" << agt->_pos._x << " " << agt->_pos._y << std::endl;
 					//std::cout <<"vel:" << agt->_vel._x << " " << agt->_vel._y << std::endl;
@@ -406,12 +412,46 @@ namespace Menge {
 					ls.header.frame_id = "base_scan";
 					_pub_scan.publish(ls);
 				}
-				else{
-					crowd.poses.push_back(pose);
+			}
+			// Compute and publish the crowd positions that is visible to the robot via laser scan
+			for ( int a = 0; a < agtCount; ++a ) {
+				Agents::BaseAgent * agt = this->_sim->getAgent( a );
+				Vector2 agent_pos = agt->_pos;
+				Vector2 agent_orient = agt->_orient;
+				if(_sim->queryVisibility(agent_pos,robot_pos, 0.1) and !agt->_isExternal){
+					double dx = agent_pos._x - robot_pos._x;
+					double dy = agent_pos._y - robot_pos._y;
+					double distance = sqrt((dx * dx) + (dy * dy));
+
+					// Angle between robot orientation vector and robot-agent vector 
+					//double robot_ort = atan2(robot_orient._y, robot_orient._x);
+					//double robot_agent_ort = atan2(dy, dx);
+					//double difference = robot_ort - robot_agent_ort;
+					
+					double len_robot = sqrt(pow(robot_orient._x,2) + pow(robot_orient._y,2));
+					double len_robot_agent = sqrt(pow(dx,2) + pow(dy,2));
+					double dot_product=(robot_orient._x * dx) + (robot_orient._y * dy);
+					
+					double difference = acos(dot_product/(len_robot*len_robot_agent));
+					if(difference > 6.283){ 
+						difference = difference - 6.283;
+					}
+					else if(difference < -6.283){
+						difference = difference + 6.283;
+					}
+					 
+					if(distance < 25 and abs(difference) < 1.9198){
+						geometry_msgs::Pose pose;
+						pose.position.x = agent_pos._x;
+						pose.position.y = agent_pos._y;
+						pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 0.0, atan2(agt->_orient._y, agt->_orient._x));
+						crowd.poses.push_back(pose);
+					}
 				}
 			}
+
 			crowd.header.stamp = current_time;
-			crowd.header.frame_id = "pose";
+			crowd.header.frame_id = "map";
 			_pub_crowd.publish(crowd);
 
 			if ( exceptionCount > 0 ) {

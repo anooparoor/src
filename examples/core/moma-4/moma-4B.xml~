@@ -2,44 +2,52 @@
 
 <BFSM>
 	<GoalSet id="0">
-		<Goal type="point" id="0" x="-3" y="0.0"/>
-		<Goal type="point" id="1" x="3" y="0.0"/>
+		<Goal type="point" id="0" x="10" y="5"/>
+		<Goal type="point" id="1" x="15" y="5"/>
+		<Goal type="point" id="2" x="15" y="8"/>
+		<Goal type="point" id="3" x="15" y="3"/>
 	</GoalSet>
 	
 	<!-- Sub-component for agent that grows -->
-	<State name="Walk1" final="0" >
+	<State name="robotState" final="0" >
 		<GoalSelector type="explicit" goal_set="0" goal="0" />
 		<VelComponent type="goal" />
 	</State>
-	<State name="Reverse1" final="0">
-		<GoalSelector type="explicit" goal_set="0" goal="1" />
-		<VelComponent type="goal" />
-		<Action type="offset_property" property="r" dist="c" value="0.025" exit_reset="0"/>
-		<Action type="scale_property" property="pref_speed" dist="c" value="1.05" exit_reset="0"/>
-	</State>
 
-	<Transition from="Walk1" to="Reverse1" >
-		<Condition type="goal_reached"  distance="0.2"/>
-	</Transition>
-	<Transition from="Reverse1" to="Walk1" >
-		<Condition type="goal_reached"  distance="0.2"/>
-	</Transition>
-		
-	<!-- Sub-component for agent that stays fixed size -->
-	<State name="Walk2" final="0" >
-		<GoalSelector type="explicit" goal_set="0" goal="1" />
-		<VelComponent type="goal" />
-	</State>
-	<State name="Reverse2" final="0">
+	<State name="room0" final="0">
 		<GoalSelector type="explicit" goal_set="0" goal="0" />
 		<VelComponent type="goal" />
-		<Action type="set_property" property="r" dist="c" value="0.1" exit_reset="1"/>
 	</State>
 
-	<Transition from="Walk2" to="Reverse2" >
+	<State name="room1" final="0">
+		<GoalSelector type="explicit" goal_set="0" goal="1" />
+		<VelComponent type="goal" />
+	</State>
+
+	<State name="room2" final="0">
+		<GoalSelector type="explicit" goal_set="0" goal="2" />
+		<VelComponent type="goal" />
+	</State>
+
+	<State name="room3" final="0">
+		<GoalSelector type="explicit" goal_set="0" goal="3" />
+		<VelComponent type="goal" />
+	</State>
+
+	<Transition from="room0" to="room1" >
 		<Condition type="goal_reached"  distance="0.2"/>
 	</Transition>
-	<Transition from="Reverse2" to="Walk2" >
+
+	<Transition from="room1" to="room2" >
 		<Condition type="goal_reached"  distance="0.2"/>
 	</Transition>
+
+	<Transition from="room2" to="room3" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+
+	<Transition from="room3" to="room0" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+
 </BFSM>
