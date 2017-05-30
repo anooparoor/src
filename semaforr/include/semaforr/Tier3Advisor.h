@@ -223,7 +223,7 @@ class Tier3AvoidObstacle : public Tier3Advisor{
   // Default constructor
   Tier3AvoidObstacle();
   // Same as for Tier3Greedy, need to define destructor
-  ~ Tier3AvoidObstacle () {};
+  virtual ~Tier3AvoidObstacle () {};
   // This type of advisor will avoid obstacles by implementing Gompertz function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
@@ -235,7 +235,7 @@ class Tier3AvoidObstacleRotation : public Tier3Advisor{
   // Default constructor
   Tier3AvoidObstacleRotation();
   // Same as for Tier3Greedy, need to define destructor
-  ~ Tier3AvoidObstacleRotation () {};
+  virtual ~Tier3AvoidObstacleRotation () {};
   // This type of advisor will avoid obstacles by implementing Gompertz function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();

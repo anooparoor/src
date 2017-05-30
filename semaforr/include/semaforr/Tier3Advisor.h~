@@ -393,55 +393,6 @@ class Tier3BaseLineRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-class Tier3GateFinderLinear : public Tier3Advisor{
- public: 
-  Tier3GateFinderLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3GateFinderLinear();
-  
-  virtual ~Tier3GateFinderLinear(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-class Tier3GateFinderRotation : public Tier3Advisor{
- public: 
-  Tier3GateFinderRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3GateFinderRotation();
-  
-  virtual ~Tier3GateFinderRotation(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-class Tier3PortalHopperLinear : public Tier3Advisor{
- public: 
-  Tier3PortalHopperLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3PortalHopperLinear();
-  
-  virtual ~Tier3PortalHopperLinear(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-
-class Tier3PortalHopperRotation : public Tier3Advisor{
- public: 
-  Tier3PortalHopperRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3PortalHopperRotation();
-  
-  virtual ~Tier3PortalHopperRotation(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
 
 
 class Tier3WaypointFinderLinear : public Tier3Advisor{
