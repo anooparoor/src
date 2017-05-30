@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<BFSM>
+	<GoalSet id="0">
+		<Goal type="point" id="0" x="24" y="4"/>
+		<Goal type="point" id="1" x="9" y="4"/>
+		<Goal type="point" id="1" x="9" y="4"/>
+		<Goal type="point" id="2" x="9" y="15"/>
+		<Goal type="point" id="3" x="15" y="15"/>
+		<Goal type="point" id="4" x="15" y="15"/>
+	</GoalSet>
+	
+	<!-- Sub-component for agent that grows -->
+	<State name="robotState" final="0" >
+		<GoalSelector type="explicit" goal_set="0" goal="0" />
+		<VelComponent type="goal" />
+	</State>
+
+	<State name="room0" final="0">
+		<GoalSelector type="explicit" goal_set="0" goal="0" />
+		<VelComponent type="goal" />
+	</State>
+
+	<State name="room1" final="0">
+		<GoalSelector type="explicit" goal_set="0" goal="1" />
+		<VelComponent type="goal" />
+	</State>
+
+	<State name="room2" final="0">
+		<GoalSelector type="explicit" goal_set="0" goal="2" />
+		<VelComponent type="goal" />
+	</State>
+
+	<State name="room3" final="0">
+		<GoalSelector type="explicit" goal_set="0" goal="3" />
+		<VelComponent type="goal" />
+	</State>
+
+	<State name="goback" final="0">
+		<GoalSelector type="identity"/>
+		<VelComponent type="zero"/>
+		<Action type="teleport" dist="u" min_x="23" max_x="24" min_y="9" max_y="11" inside="1"/>
+	</State>
+
+	<Transition from="room0" to="room1" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+
+	<Transition from="room1" to="room2" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+
+	<Transition from="room2" to="room3" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+
+	<Transition from="room2" to="room3" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+
+	<Transition from="room3" to="goback" >
+		<Condition type="auto"/>
+	</Transition>
+
+	<Transition from="goback" to="room0" >
+		<Condition type="auto"/>
+	</Transition>
+
+</BFSM>
