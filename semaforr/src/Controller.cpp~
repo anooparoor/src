@@ -128,7 +128,7 @@ Controller::Controller(string advisor_config, string task_config, string action_
 	    // Initialize robot parameters from a config file
 	    //initialize_actions(action_config);
 	    // create a dummy task for testing
-	    beliefs->getAgentState()->addTask(20,19);
+	    beliefs->getAgentState()->addTask(20,20);
 	    //beliefs->getAgentState()->addTask(25,19);
 	    beliefs->getAgentState()->addTask(9,19);
 	    beliefs->getAgentState()->addTask(25,19);

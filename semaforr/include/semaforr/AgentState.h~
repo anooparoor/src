@@ -86,6 +86,8 @@ class AgentState
   }
 
   Position getCurrentPosition() { return currentPosition; }
+  vector<CartesianPoint> getCurrentLaserEndpoints() { return laserEndpoints; }
+
   void setCurrentSensor(Position p, sensor_msgs::LaserScan scan) { 
 	currentPosition = p;
      	currentLaserScan = scan;
@@ -95,7 +97,6 @@ class AgentState
 		currentTask->saveSensor(p,laserEndpoints);
 	}
   }
-  
   
   Task *getCurrentTask() { return currentTask; }
   void setCurrentTask(Task *task) { 
@@ -146,6 +147,14 @@ class AgentState
 	if(getAgenda().size() == 0 && currentTask == NULL){
 		status = true;
  	}
+	return status;
+  }
+
+  bool isTaskComplete(){
+	bool status = false;
+	if (beliefs->getAgentState()->getDistanceToTarget() < 0.3){
+		status = true;
+	}
 	return status;
   }
 

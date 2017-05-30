@@ -143,7 +143,7 @@ Controller::Controller(string advisor_config, string task_config, string action_
 void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
       beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
 	//*********** Goal reached, switch task and learn spatial model from previous task ********************************
-  	if (beliefs->getAgentState()->getDistanceToTarget() < 0.3){
+  	if (beliefs->getAgentState()->isTaskComplete()){
 		ROS_DEBUG("Target Achieved!!");
 		//Learn spatial model only on tasks completed successfully
 		learnSpatialModel(beliefs->getAgentState()->getCurrentTask());

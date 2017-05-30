@@ -36,11 +36,11 @@ class FORRWaypoints{
   	map_height = height;
   	map_width = width;
   	for(int i = 0; i < boxes_width; i++){
-    		vector<int> row;
+    		vector<int> col;
     		for(int j = 0; j < boxes_height; j++){
-      			row.push_back(0);
+      			col.push_back(0);
     		}
-    		waypoints.push_back(row);
+    		waypoints.push_back(col);
   	}
   	cout << "Exit setgrid."<<endl;
   	max_grid_value = 0;
@@ -50,7 +50,7 @@ class FORRWaypoints{
   void populateGridFromPositionHistory(vector<Position> *pos_hist);
 
   //populate grid from a line segment
-  void updateGridFromLine(double x1, double y1, double x2, double y2);
+  pair<int,int> updateGridFromLine(double x1, double y1, double x2, double y2, pair<int,int> prev);
 
   //outputs to file
   void outputWaypoints(string filename);

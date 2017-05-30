@@ -240,7 +240,7 @@ class Tier3AvoidObstacleRotation : public Tier3Advisor{
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
-
+/*
 class Tier3CloseIn : public Tier3Advisor{
  public:
   Tier3CloseIn(Beliefs *beliefs, string name, string description, double weight, double * magic_init, bool is_active = true); 
@@ -264,7 +264,7 @@ class Tier3CloseInRotation : public Tier3Advisor{
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
-
+*/
 // this is advisor that favors big steps
 class Tier3BigStep : public Tier3Advisor{
  public:

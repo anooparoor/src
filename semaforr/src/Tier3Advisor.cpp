@@ -141,8 +141,8 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
     return new Tier3Greedy(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ObstacleAvoid")
     return new Tier3AvoidObstacle(beliefs, name, description, weight, magic_init, is_active);
-  else if(name == "CloseIn")
-    return new Tier3CloseIn(beliefs, name, description, weight, magic_init, is_active);
+  //else if(name == "CloseIn")
+    //return new Tier3CloseIn(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BigStep")
     return new Tier3BigStep(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "AvoidLeaf")
@@ -157,8 +157,8 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
     return new Tier3GreedyRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ObstacleAvoidRotation")
     return new Tier3AvoidObstacleRotation(beliefs, name, description, weight, magic_init, is_active);
-  else if(name == "CloseInRotation")
-    return new Tier3CloseInRotation(beliefs, name, description, weight, magic_init, is_active);
+  //else if(name == "CloseInRotation")
+    //return new Tier3CloseInRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BigStepRotation")
     return new Tier3BigStepRotation(beliefs, name, description, weight, magic_init, is_active);
   //else if(name == "GoAroundRotation")
@@ -195,7 +195,7 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
 // Constructors 
 Tier3Greedy::Tier3Greedy (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3AvoidObstacle::Tier3AvoidObstacle(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
-Tier3CloseIn::Tier3CloseIn(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+//Tier3CloseIn::Tier3CloseIn(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3BigStep::Tier3BigStep(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};  
 Tier3AvoidLeaf::Tier3AvoidLeaf(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3Explorer::Tier3Explorer(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
@@ -204,7 +204,7 @@ Tier3BaseLine::Tier3BaseLine (Beliefs *beliefs, string name, string description,
 
 Tier3GreedyRotation::Tier3GreedyRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3AvoidObstacleRotation::Tier3AvoidObstacleRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
-Tier3CloseInRotation::Tier3CloseInRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+//Tier3CloseInRotation::Tier3CloseInRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3BigStepRotation::Tier3BigStepRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 //Tier3GoAroundRotation::Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3AvoidLeafRotation::Tier3AvoidLeafRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
@@ -225,7 +225,7 @@ Tier3TrailFinderRotation::Tier3TrailFinderRotation (Beliefs *beliefs, string nam
 // Default dummy constructors
 Tier3Greedy::Tier3Greedy(): Tier3Advisor() {};
 Tier3AvoidObstacle::Tier3AvoidObstacle(): Tier3Advisor() {};
-Tier3CloseIn::Tier3CloseIn(): Tier3Advisor() {};
+//Tier3CloseIn::Tier3CloseIn(): Tier3Advisor() {};
 Tier3BigStep::Tier3BigStep(): Tier3Advisor() {};
 Tier3AvoidLeaf::Tier3AvoidLeaf(): Tier3Advisor() {};
 Tier3Explorer::Tier3Explorer(): Tier3Advisor() {};
@@ -234,7 +234,7 @@ Tier3BaseLine::Tier3BaseLine(): Tier3Advisor() {};
 
 Tier3GreedyRotation::Tier3GreedyRotation(): Tier3Advisor() {};
 Tier3AvoidObstacleRotation::Tier3AvoidObstacleRotation(): Tier3Advisor() {};
-Tier3CloseInRotation::Tier3CloseInRotation(): Tier3Advisor() {};
+//Tier3CloseInRotation::Tier3CloseInRotation(): Tier3Advisor() {};
 Tier3BigStepRotation::Tier3BigStepRotation(): Tier3Advisor() {};
 //Tier3GoAroundRotation::Tier3GoAroundRotation(): Tier3Advisor() {};
 Tier3AvoidLeafRotation::Tier3AvoidLeafRotation(): Tier3Advisor() {};
@@ -532,7 +532,7 @@ void Tier3ExitFinderRotation::set_commenting(){
     advisor_commenting = false;
   
 }
-
+/*
 //CloseIn : When target is nearby, distance is within 80 units, go towards it!
 double Tier3CloseIn::actionComment(FORRAction action){
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
@@ -577,7 +577,7 @@ void Tier3CloseInRotation::set_commenting(){
   else
     advisor_commenting = true;
 }
-
+*/
 /*
 double Tier3AvoidRobot::actionComment(FORRAction action){
   double result;

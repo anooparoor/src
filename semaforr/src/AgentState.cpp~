@@ -203,7 +203,7 @@ FORRAction AgentState::maxForwardAction(){
 
 }
 
-
+/*
 FORRAction AgentState::get_max_allowed_forward_move(){
   FORRAction max_forward(FORWARD, 5);
   cout << " Number of vetoed actions : " << vetoedActions->size() << endl;
@@ -216,7 +216,7 @@ FORRAction AgentState::get_max_allowed_forward_move(){
   }
   return max_forward;
 }
-
+*/
 
 // returns an Action that takes the robot closest to the target
 FORRAction AgentState::moveTowards(){
