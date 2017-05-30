@@ -40,16 +40,16 @@
         <StateSelector type="const" name="room0" />
 	<ProfileSelector type="const" name="visitor" />
 	<Generator type="explicit">
-		<Agent p_x="10" p_y="5" />
+		<Agent p_x="23" p_y="9" />
 	</Generator>
 	<Generator type="explicit">
-		<Agent p_x="10" p_y="6" />
+		<Agent p_x="23" p_y="9.5" />
 	</Generator>
 	<Generator type="explicit">
-		<Agent p_x="10" p_y="7" />
+		<Agent p_x="23" p_y="10" />
 	</Generator>
 	<Generator type="explicit">
-		<Agent p_x="10" p_y="8" />
+		<Agent p_x="23" p_y="10.5" />
 	</Generator>
     </AgentGroup>
 
