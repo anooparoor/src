@@ -152,7 +152,7 @@ class AgentState
 
   bool isTaskComplete(){
 	bool status = false;
-	if (beliefs->getAgentState()->getDistanceToTarget() < 0.3){
+	if (getDistanceToTarget() < 0.3){
 		status = true;
 	}
 	return status;

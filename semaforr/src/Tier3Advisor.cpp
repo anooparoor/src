@@ -14,6 +14,7 @@
 # include <cstdlib>
 # include <time.h>
 # include <utility>
+# include <limits>
 
 using std::set;
   
@@ -98,7 +99,7 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
 //normalizing from 0 to 10
 void Tier3Advisor::
 normalize(map <FORRAction, double> * result){
-  double max = -1000, min = 1000;
+  double max = -std::numeric_limits<double>::infinity(), min = std::numeric_limits<double>::infinity();
   map<FORRAction, double>::iterator itr;
   for(itr = result->begin(); itr != result->end() ; itr++){
     if(max < itr->second)  max = itr->second;

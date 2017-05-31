@@ -91,9 +91,14 @@ void Controller::initialize_actions(string filename){
 //
 void Controller::initialize_tasks(string filename){
     string fileLine;
-    ifstream file(filename.c_str());
-    cout << "Inside file in tasks " << endl;
+    std::ifstream file(filename.c_str());
+    ROS_DEBUG_STREAM("Reading read_task_file:" << filename);
+    //cout << "Inside file in tasks " << endl;
+    if(!file.is_open()){
+	  ROS_DEBUG("Unable to locate or read task config file!");
+    }
     while(getline(file, fileLine)){
+       //cout << "Inside while in tasks" << endl;
        if(fileLine[0] == '#')  // skip comment lines
           continue;
        else{
@@ -104,6 +109,7 @@ void Controller::initialize_tasks(string filename){
 	  double x = atof(vstrings[0].c_str());
      	  double y = atof(vstrings[1].c_str());
 	  beliefs->getAgentState()->addTask(x,y);
+	  ROS_DEBUG_STREAM("Added task " << x << ", " << y);
        }
      }
 }
@@ -117,21 +123,17 @@ Controller::Controller(string advisor_config, string task_config, string action_
 
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
-            beliefs = new Beliefs(30,26,2);
+            beliefs = new Beliefs(60,60,2);
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
 
 	    // Initialize the tasks from a config file
-	    //initialize_tasks(task_config);
+	    initialize_tasks(task_config);
 
 	    // Initialize robot parameters from a config file
 	    //initialize_actions(action_config);
-	    // create a dummy task for testing
-	    beliefs->getAgentState()->addTask(20,20);
-	    //beliefs->getAgentState()->addTask(25,19);
-	    beliefs->getAgentState()->addTask(9,19);
-	    beliefs->getAgentState()->addTask(25,19);
+
 	    // Initialize current task
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
 	    

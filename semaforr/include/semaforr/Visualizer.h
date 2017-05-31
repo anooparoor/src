@@ -213,10 +213,11 @@ public:
 	sensor_msgs::LaserScan laserScan = beliefs->getAgentState()->getCurrentLaserScan();
 	FORRAction max_forward = beliefs->getAgentState()->maxForwardAction();
 	ROS_DEBUG("After max_forward");
-	vector< vector<CartesianPoint> > allTrace = beliefs->getAgentState()->getAllTrace();
+	//vector< vector<CartesianPoint> > allTrace = beliefs->getAgentState()->getAllTrace();
 	list<Task*>& agenda = beliefs->getAgentState()->getAgenda();
 	list<Task*>& all_agenda = beliefs->getAgentState()->getAllAgenda();
 	ROS_DEBUG("After all_agenda");
+	vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
 
 	int decisionCount = -1;
 	int currentTask = -1;
@@ -233,19 +234,29 @@ public:
 		lep << x << "," << y << ";";
 	}
 
-	std:stringstream ls;
+	std::stringstream ls;
 	for(int i = 0; i < laserScan.ranges.size(); i++){
 		double length = laserScan.ranges[i];
 		ls << length << ",";
 	}
 	
-	int totalSize = 0;
+	/*int totalSize = 0;
 	for(int i = 0; i < allTrace.size(); i++){
 		totalSize += allTrace[i].size();
+	}*/
+
+	std::stringstream regions;
+	for(int i = 0; i < circles.size(); i++){
+		regions << circles[i].getCenter().get_x() << " " << circles[i].getCenter().get_y() << " " << circles[i].getRadius();
+		vector<FORRExit> exits = circles[i].getExits();
+		for(int j = 0; j < exits.size() ; j++){
+			regions << " " << exits[j].getExitPoint().get_x() << " "  << exits[j].getExitPoint().get_y() << " "  << exits[j].getExitCircle();
+		}
+		regions << ";";
 	}
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter;// << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << regions.str();// << "\t" << lep.str() << "\t" << ls.str();
 	log.data = output.str();
 	stats_pub_.publish(log);
   }

@@ -15,6 +15,8 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 class Task {
   
@@ -72,7 +74,28 @@ class Task {
 		CartesianPoint pos(it->getX(),it->getY());
 		pos_history.push_back(pos);
 	}
+	
+	std::vector<CartesianPoint> trailPositions;
+	std::vector< vector<CartesianPoint> > trailLaserEndpoints;
+	trailPositions.push_back(pos_history[0]);
+	trailLaserEndpoints.push_back((*laser_hist)[0]);
 
+	for(int i = 0; i < pos_history.size(); i++){
+		cout << "First point: " << pos_history[i].get_x() << " " << pos_history[i].get_y() << endl;
+		for(int j = pos_history.size()-1; j > i; j--){
+			cout << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
+			//if(agentState->canSeePoint((*laser_hist)[i], pos_history[i], pos_history[j])) {
+			if(pos_history[i].get_distance(pos_history[j]) < 5) {
+				cout << "CanSeePoint is true" << endl;
+				cout << "Next point: " << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
+				trailPositions.push_back(pos_history[j]);
+				trailLaserEndpoints.push_back((*laser_hist)[j]);
+				i = j-1;
+			}
+		}
+	}
+	cout << pos_history[pos_history.size()-1].get_x() << " " << pos_history[pos_history.size()-1].get_y() << endl;
+	cout << trailPositions[trailPositions.size()-1].get_x() << " " << trailPositions[trailPositions.size()-1].get_y() << endl;
 	cleanedMarker.first = pos_history;
 	cleanedMarker.second = *laser_hist;
 	return cleanedMarker;

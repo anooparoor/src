@@ -206,11 +206,15 @@ class FORRAbstractMap{
   }
 
   void saveExit(CartesianPoint begin1, CartesianPoint begin2, int begin_circle, CartesianPoint end1, CartesianPoint end2, int end_circle){
-    //cout << begin1.get_x() << " " << begin1.get_y() << " " << begin2.get_x() << " " << begin2.get_y() << endl;
-    //cout << end1.get_x() << " " << end1.get_y() << " " << end2.get_x() << " " << end2.get_y() << endl;
     CartesianPoint exit_begin_p = getPointOnCircle(begin2, begin_circle);
     CartesianPoint exit_end_p = getPointOnCircle(end1, end_circle);
     
+    CartesianPoint exit_begin_pc = getCrossingPointOnCircle(begin1, begin2, begin_circle);
+    CartesianPoint exit_end_pc = getCrossingPointOnCircle(end1, end2, end_circle);
+    cout << begin1.get_x() << " " << begin1.get_y() << " " << begin2.get_x() << " " << begin2.get_y() << " " << circles[begin_circle].getCenter().get_x() << " " << circles[begin_circle].getCenter().get_y() << " " << circles[begin_circle].getRadius() << " " << exit_begin_p.get_x() << " " << exit_begin_p.get_y() << " " << exit_begin_pc.get_x() << " " << exit_begin_pc.get_y() << endl;
+    cout << end1.get_x() << " " << end1.get_y() << " " << end2.get_x() << " " << end2.get_y() << " " << circles[end_circle].getCenter().get_x() << " " << circles[end_circle].getCenter().get_y() << " " << circles[end_circle].getRadius() << " " << exit_end_p.get_x() << " " << exit_end_p.get_y() << " " << exit_end_pc.get_x() << " " << exit_end_pc.get_y() << endl;
+    cout << "End exit begin/end" << endl;
+
     //cout << "In save exit  " << "Start circle : " << begin_circle << "End circle : " << end_circle << endl;
     FORRExit exit_begin ( exit_begin_p , end_circle );
     FORRExit exit_end ( exit_end_p , begin_circle );
@@ -229,6 +233,10 @@ class FORRAbstractMap{
     return CartesianPoint (center.get_x() + (radius * cos(angle)), center.get_y() + (radius * sin(angle))); 
   }
 
+  CartesianPoint getCrossingPointOnCircle(CartesianPoint pos1, CartesianPoint pos2, int circle_id){
+    Circle region = Circle(circles[circle_id].getCenter(), circles[circle_id].getRadius());
+    return intersection_point(region, LineSegment(pos1, pos2));
+  }
 
   // returns the position of the circle in which the point is located
   int pointInCircles(double x, double y){

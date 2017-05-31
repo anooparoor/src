@@ -26,6 +26,7 @@ using namespace std;
 //each trail (cleaned path) gets loaded in at the same time as the wall distance vectors
 //for that point to minimize confusion
 class TrailMarker{
+public:
   CartesianPoint coordinates;
   vector<CartesianPoint> wallVectorEndpoints;
 TrailMarker(CartesianPoint c, vector<CartesianPoint> &v): coordinates(c), wallVectorEndpoints(v){}

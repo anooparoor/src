@@ -55,7 +55,7 @@ class FORRTrails{
 
   void printTrails();
   
- FORRTrails(): chosen_trail(-1) {}  
+  FORRTrails(): chosen_trail(-1) {}  
   
   void setDirection(DIRECTION d){dir = d;}
   

@@ -1,6 +1,8 @@
 #include<vector>
 #include<FORRGeometry.h>
 #include<FORRTrails.h>
+#include "Beliefs.h"
+#include "AgentState.h"
 #include<fstream>
 #include<sstream>
 

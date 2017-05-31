@@ -247,6 +247,7 @@ class Circle{
   double get_radius();
   //verify intersection 
   friend bool do_intersect(Circle circle, Line line);
+  friend CartesianPoint intersection_point(Circle circle, LineSegment line_segment);
  private:
   CartesianPoint center;
   double radius;
