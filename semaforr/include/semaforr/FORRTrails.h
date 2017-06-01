@@ -45,7 +45,7 @@ class FORRTrails{
   int doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index, AgentState *agentState);
 
   //
-  void updateTrails(Task *current);
+  void updateTrails(AgentState *agentState);
   
   CartesianPoint getFurthestVisiblePointOnChosenTrail(AgentState *agentState);
 
@@ -60,7 +60,9 @@ class FORRTrails{
   void setDirection(DIRECTION d){dir = d;}
   
   vector<TrailMarker> getTrail(int i){ return trails[i]; }
-  
+  vector< vector< TrailMarker> > getTrails(){ return trails; }
+  vector< vector< CartesianPoint > > getTrailsPoints();
+
   int getSize(){return trails.size();}
   
   void setChosenTrail(int n){ chosen_trail = n;}

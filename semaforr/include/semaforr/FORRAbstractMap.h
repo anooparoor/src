@@ -155,7 +155,7 @@ class FORRAbstractMap{
   
   void learnExits(vector< vector<CartesianPoint> > run_trace){
     // learning gates between different circles
-    clearAllExits();
+    //clearAllExits();
     // for every position in the position history vector .. check if a move is from one circle to another and save it as gate
     //cout << "In learning exits: size of trace is " << run_trace.size() << endl;
     for(int k = 0; k < run_trace.size() ; k++){

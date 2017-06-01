@@ -59,7 +59,7 @@ private:
   void tierThreeDecision(FORRAction *decision);
 
   // learns the spatial model and updates the beliefs
-  void learnSpatialModel(Task *task);
+  void learnSpatialModel(AgentState *agentState);
 
   void initialize_advisors(std::string);
   void initialize_tasks(std::string);

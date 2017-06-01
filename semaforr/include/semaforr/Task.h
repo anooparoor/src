@@ -65,7 +65,7 @@ class Task {
 		}
 	}
   }
-
+/*
   std::pair < std::vector<CartesianPoint>, std::vector< vector<CartesianPoint> > > getCleanedTrailMarkers(){
 	std::pair < std::vector<CartesianPoint>, std::vector<vector<CartesianPoint> > > cleanedMarker;
 	// call code to clean the trails
@@ -84,8 +84,8 @@ class Task {
 		cout << "First point: " << pos_history[i].get_x() << " " << pos_history[i].get_y() << endl;
 		for(int j = pos_history.size()-1; j > i; j--){
 			cout << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
-			//if(agentState->canSeePoint((*laser_hist)[i], pos_history[i], pos_history[j])) {
-			if(pos_history[i].get_distance(pos_history[j]) < 5) {
+			if(canSeePoint((*laser_hist)[i], pos_history[i], pos_history[j])) {
+			//if(pos_history[i].get_distance(pos_history[j]) < 5) {
 				cout << "CanSeePoint is true" << endl;
 				cout << "Next point: " << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
 				trailPositions.push_back(pos_history[j]);
@@ -100,7 +100,7 @@ class Task {
 	cleanedMarker.second = *laser_hist;
 	return cleanedMarker;
   }
-
+*/
   vector< vector <CartesianPoint> > *getLaserHistory(){return laser_hist;}
 
  private:

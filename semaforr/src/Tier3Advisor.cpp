@@ -1000,6 +1000,7 @@ double Tier3TrailFinderLinear::actionComment(FORRAction action){
 
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   double newDistance = expectedPosition.getDistance(target);
+  cout << (-1)* newDistance << endl;
   return newDistance *(-1); 
 }
 

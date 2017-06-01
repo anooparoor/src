@@ -122,6 +122,7 @@ public:
           //Sense the input and the current target to run the advisors and generate a decision
           if(action_complete){
 		ROS_INFO_STREAM("Action completed. Save sensor info, Current position: " << current.getX() << " " << current.getY() << " " << current.getTheta());
+		viz_->publishLog();
 		controller->updateState(current, laserscan);
 		viz_->publish();
 		previous = current;
@@ -244,7 +245,7 @@ int main(int argc, char **argv) {
      string action_config = path + "/config/action.conf";
      string tasks_config = path + "/config/target.conf";
 
-     Controller *controller = new Controller(advisor_config,action_config,tasks_config); 
+     Controller *controller = new Controller(advisor_config,tasks_config,action_config); 
 
      ROS_INFO("Controller Initialized");
      RobotDriver driver(nh, controller);

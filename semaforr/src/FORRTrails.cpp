@@ -28,9 +28,9 @@ int FORRTrails::doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, i
 
 
 
-void FORRTrails::updateTrails(Task *current){
+void FORRTrails::updateTrails(AgentState *agentState){
     vector<TrailMarker> trail;
-    std::pair < std::vector<CartesianPoint>, std::vector<vector<CartesianPoint> > > cleantrail = current->getCleanedTrailMarkers();
+    std::pair < std::vector<CartesianPoint>, std::vector<vector<CartesianPoint> > > cleantrail = agentState->getCleanedTrailMarkers();
     //collect the wall distance vector endpoints after the initial x,y trail coordinates
 
     for(int i = 0; i < cleantrail.first.size(); i++){
@@ -100,6 +100,25 @@ CartesianPoint FORRTrails::getFurthestVisiblePointOnChosenTrail(AgentState *agen
   //if no trail found, return a dummy point
   if(chosen_trail == -1) return CartesianPoint(-1,-1);
 
+  if(dir == POSITIVE) {
+  //go backwards if direction is positive to grab a further point first if possible
+    for(int j = trails[chosen_trail].size()-1; j >= 1; j--){
+      if(agentState->canSeePoint(trails[chosen_trail][j].coordinates)) {
+        can_see_trail = true;
+        return trails[chosen_trail][j].coordinates;
+      }
+    }
+  }
+  else if(dir == NEGATIVE){
+  //go forwards if direction is negative to grab a further point first if possible
+    for(int j = 0; j < trails[chosen_trail].size(); j++){
+      if(agentState->canSeePoint(trails[chosen_trail][j].coordinates)) {
+        can_see_trail = true;
+        return trails[chosen_trail][j].coordinates;
+      }
+    }
+  }
+/*
   //go backwards to grab a further point first if possible
   for(int j = trails[chosen_trail].size(); j >= 1; j--){
     if(agentState->canSeeSegment(trails[chosen_trail][j].coordinates,
@@ -108,7 +127,7 @@ CartesianPoint FORRTrails::getFurthestVisiblePointOnChosenTrail(AgentState *agen
       return trails[chosen_trail][j].coordinates;
     }
   }
-  
+  */
   can_see_trail = false;
   return CartesianPoint(-1,-1);
 }
@@ -121,4 +140,16 @@ void FORRTrails::printTrails(){
     }
     cout <<endl;
   }
+}
+
+vector< vector< CartesianPoint > > FORRTrails::getTrailsPoints(){
+  vector< vector< CartesianPoint > > trailsPoints;
+  for(int i = 0; i < trails.size(); i++){
+    vector< CartesianPoint > trailPoints;
+    for(int j = 0; j < trails[i].size(); j++){
+      trailPoints.push_back(trails[i][j].coordinates);
+    }
+    trailsPoints.push_back(trailPoints);
+  }
+  return trailsPoints;
 }

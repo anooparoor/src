@@ -65,6 +65,10 @@ public:
 	publish_conveyor();
 	publish_region();
 	publish_trails();
+	//publish_log();
+  }
+
+  void publishLog(){
 	publish_log();
   }
 
@@ -218,6 +222,7 @@ public:
 	list<Task*>& all_agenda = beliefs->getAgentState()->getAllAgenda();
 	ROS_DEBUG("After all_agenda");
 	vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+	vector< vector< CartesianPoint> > trails =  beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
 
 	int decisionCount = -1;
 	int currentTask = -1;
@@ -255,8 +260,16 @@ public:
 		regions << ";";
 	}
 
+	std::stringstream trailstream;
+	for(int i = 0; i < trails.size(); i++){
+		for(int j = 0; j < trails[i].size(); j++){
+			trailstream << trails[i][j].get_x() << " " << trails[i][j].get_y() << " ";
+		}
+		trailstream << ";";
+	}
+
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << regions.str();// << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << regions.str() << "\t" << trailstream.str();// << "\t" << lep.str() << "\t" << ls.str();
 	log.data = output.str();
 	stats_pub_.publish(log);
   }

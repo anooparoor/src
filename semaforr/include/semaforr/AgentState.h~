@@ -169,7 +169,7 @@ class AgentState
   // returns distance to obstacle in the direction of rotation
   double getDistanceToObstacle(double rotation_angle);
   double getDistanceToForwardObstacle(){
-	//ROS_DEBUG("in getDistance to forward obstacle");
+	ROS_DEBUG("in getDistance to forward obstacle");
 	if(currentLaserScan.ranges.size() == 0)
 		return 25;
 	return currentLaserScan.ranges[currentLaserScan.ranges.size()/2];

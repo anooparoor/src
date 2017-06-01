@@ -148,7 +148,7 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
   	if (beliefs->getAgentState()->isTaskComplete()){
 		ROS_DEBUG("Target Achieved!!");
 		//Learn spatial model only on tasks completed successfully
-		learnSpatialModel(beliefs->getAgentState()->getCurrentTask());
+		learnSpatialModel(beliefs->getAgentState());
 		//Clear existing task
     		beliefs->getAgentState()->finishTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
@@ -189,24 +189,27 @@ FORRAction Controller::decide() {
 //
 //
 
-void Controller::learnSpatialModel(Task* completedTask){
+void Controller::learnSpatialModel(AgentState* agentState){
+ Task* completedTask = agentState->getCurrentTask();
  vector<Position> *pos_hist = completedTask->getPositionHistory();
  vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
+ vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
  bool trails = true;
  bool conveyors = true;
  bool regions = true;
  
   if(trails){
-    	beliefs->getSpatialModel()->getTrails()->updateTrails(completedTask);
+    	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
 	beliefs->getSpatialModel()->getTrails()->resetChosenTrail();
   }
   if(conveyors){
 	beliefs->getSpatialModel()->getWaypoints()->populateGridFromPositionHistory(pos_hist);
   }
   if(regions){
-	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist); 
-	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);	
+	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist);
+	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);
+	beliefs->getSpatialModel()->getAbstractMap()->learnExits(trails_trace);
   }
 }
 
