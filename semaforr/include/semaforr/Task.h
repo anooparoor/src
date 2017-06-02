@@ -46,6 +46,7 @@ class Task {
 
   FORRAction saveDecision(FORRAction decision){
 	decisionSequence->push_back(decision);
+	cout << "After decisionToPush" << endl;
   }
 
   vector<Position> *getPositionHistory(){return pos_hist;}

@@ -9,6 +9,8 @@
 #define FORRACTION_H
 
 #include <string>
+#include <iostream>
+#include <set>
 
 
 enum FORRActionType {
@@ -26,8 +28,6 @@ class FORRAction {
     // this is number 1-5 for motion command in Localization 
     // it determines the "intensity" of movement
     int parameter;
-    // This is distance in meters for forward moves and radians for left and right turns 
-    double intensity;
     // This is to make my life easier with Advisors
     // Each FORRAction type will have string description
     //std::string actionDescriptions[] = {"Noop", "Forward", "Backward", "Right turn", "Left turn", "Wide right turn", "Wide left turn", "Pause", "Halt"};
@@ -44,6 +44,12 @@ class FORRAction {
     // Since I am returning map whose key is this class
     // I think I need copy constructor
     FORRAction(const FORRAction& action);
+    ~FORRAction() {};
+
+    int decisionTier;
+    char vetoedActions;
+    char advisors;
+    char advisorComments;
 };
 
 

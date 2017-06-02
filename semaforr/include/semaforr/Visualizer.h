@@ -68,8 +68,8 @@ public:
 	//publish_log();
   }
 
-  void publishLog(){
-	publish_log();
+  void publishLog(FORRAction decision){
+	publish_log(decision);
   }
 
   void publish_target(){
@@ -207,12 +207,14 @@ public:
 	remaining_targets_pub_.publish(targets);
   }
 
-  void publish_log(){
+  void publish_log(FORRAction decision){
 	ROS_DEBUG("Inside publish decision log!!");
 	std_msgs::String log;
 	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
 	double robotY = beliefs->getAgentState()->getCurrentPosition().getY();
 	double robotTheta = beliefs->getAgentState()->getCurrentPosition().getTheta();
+	double targetX = beliefs->getAgentState()->getCurrentTask()->getX();
+	double targetY = beliefs->getAgentState()->getCurrentTask()->getY();
 	vector<CartesianPoint> laserEndpoints = beliefs->getAgentState()->getCurrentLaserEndpoints();
 	sensor_msgs::LaserScan laserScan = beliefs->getAgentState()->getCurrentLaserScan();
 	FORRAction max_forward = beliefs->getAgentState()->maxForwardAction();
@@ -223,14 +225,21 @@ public:
 	ROS_DEBUG("After all_agenda");
 	vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
 	vector< vector< CartesianPoint> > trails =  beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
-
+	ROS_DEBUG("After trails");
+	FORRActionType chosenActionType = decision.type;
+	int chosenActionParameter = decision.parameter;
+	string vetoedActions = decision.vetoedActions;
+	int decisionTier = decision.decisionTier;
+	string advisors = decision.advisors;
+	string advisorComments = decision.advisorComments;
+	cout << "vetoedActions = " << vetoedActions << " decisionTier = " << decisionTier << " advisors = " << advisors << " advisorComments = " << advisorComments << endl;
+	ROS_DEBUG("After decision statistics");
 	int decisionCount = -1;
 	int currentTask = -1;
 	if(!agenda.empty()){
 		currentTask = all_agenda.size() - agenda.size();
 		decisionCount = beliefs->getAgentState()->getCurrentTask()->getDecisionCount();
 	}
-
 	ROS_DEBUG("After decisionCount");
 	std::stringstream lep;
 	for(int i = 0; i < laserEndpoints.size(); i++){
@@ -238,13 +247,13 @@ public:
  		double y = laserEndpoints[i].get_y();
 		lep << x << "," << y << ";";
 	}
-
+	ROS_DEBUG("After laserEndpoints");
 	std::stringstream ls;
 	for(int i = 0; i < laserScan.ranges.size(); i++){
 		double length = laserScan.ranges[i];
 		ls << length << ",";
 	}
-	
+	ROS_DEBUG("After laserScan");
 	/*int totalSize = 0;
 	for(int i = 0; i < allTrace.size(); i++){
 		totalSize += allTrace[i].size();
@@ -259,7 +268,7 @@ public:
 		}
 		regions << ";";
 	}
-
+	ROS_DEBUG("After regions");
 	std::stringstream trailstream;
 	for(int i = 0; i < trails.size(); i++){
 		for(int j = 0; j < trails[i].size(); j++){
@@ -267,9 +276,10 @@ public:
 		}
 		trailstream << ";";
 	}
+	ROS_DEBUG("After trails");
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << regions.str() << "\t" << trailstream.str();// << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str();// << "\t" << lep.str() << "\t" << ls.str();
 	log.data = output.str();
 	stats_pub_.publish(log);
   }

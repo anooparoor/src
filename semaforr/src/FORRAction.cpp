@@ -18,6 +18,10 @@
 FORRAction::FORRAction(const FORRAction& action){
   type = action.type;
   parameter = action.parameter;
+  decisionTier = action.decisionTier;
+  vetoedActions = action.vetoedActions;
+  advisors = action.advisors;
+  advisorComments = action.advisorComments;
   }
 
 // We need to overload this operator because this class is 

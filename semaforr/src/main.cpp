@@ -122,7 +122,7 @@ public:
           //Sense the input and the current target to run the advisors and generate a decision
           if(action_complete){
 		ROS_INFO_STREAM("Action completed. Save sensor info, Current position: " << current.getX() << " " << current.getY() << " " << current.getTheta());
-		viz_->publishLog();
+		viz_->publishLog(semaforr_action);
 		controller->updateState(current, laserscan);
 		viz_->publish();
 		previous = current;
@@ -130,7 +130,7 @@ public:
 		mission_complete = controller->isMissionComplete();
 		if(mission_complete){
 			ROS_INFO("Mission completed");
-			viz_->publishLog();
+			viz_->publishLog(semaforr_action);
 			break;
 		}
 		else{

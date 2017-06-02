@@ -45,7 +45,9 @@ class Task {
   }
 
   FORRAction saveDecision(FORRAction decision){
+	cout << "After decisionToPush" << endl;
 	decisionSequence->push_back(decision);
+	cout << "After decisionToPush" << endl;
   }
 
   vector<Position> *getPositionHistory(){return pos_hist;}
@@ -65,7 +67,7 @@ class Task {
 		}
 	}
   }
-
+/*
   std::pair < std::vector<CartesianPoint>, std::vector< vector<CartesianPoint> > > getCleanedTrailMarkers(){
 	std::pair < std::vector<CartesianPoint>, std::vector<vector<CartesianPoint> > > cleanedMarker;
 	// call code to clean the trails
@@ -100,7 +102,7 @@ class Task {
 	cleanedMarker.second = *laser_hist;
 	return cleanedMarker;
   }
-
+*/
   vector< vector <CartesianPoint> > *getLaserHistory(){return laser_hist;}
 
  private:

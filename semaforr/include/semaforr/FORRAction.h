@@ -9,6 +9,8 @@
 #define FORRACTION_H
 
 #include <string>
+#include <iostream>
+#include <set>
 
 
 enum FORRActionType {
@@ -42,6 +44,12 @@ class FORRAction {
     // Since I am returning map whose key is this class
     // I think I need copy constructor
     FORRAction(const FORRAction& action);
+    ~FORRAction() {};
+
+    int decisionTier;
+    std::string vetoedActions;
+    std::string advisors;
+    std::string advisorComments;
 };
 
 

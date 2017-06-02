@@ -130,6 +130,7 @@ public:
 		mission_complete = controller->isMissionComplete();
 		if(mission_complete){
 			ROS_INFO("Mission completed");
+			viz_->publishLog();
 			break;
 		}
 		else{
