@@ -62,7 +62,7 @@ public:
     init_pos_received = false;
     current.setX(0);current.setY(0);current.setTheta(0);
     previous.setX(0);previous.setY(0);previous.setTheta(0);
-    viz_ = new Visualizer(&nh_, con->getBeliefs());
+    viz_ = new Visualizer(&nh_, con);
   }
 
   // Callback function for pose message

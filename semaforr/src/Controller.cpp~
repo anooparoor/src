@@ -157,8 +157,8 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
 		return;
 	}
 	//********************* Decision limit reached, skip task ***************************************  
-  	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 250){
-		ROS_DEBUG("Controller.cpp decisionCount > 250 , skipping task");
+  	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
+		ROS_DEBUG("Controller.cpp decisionCount > 500 , skipping task");
     		beliefs->getAgentState()->skipTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
@@ -226,18 +226,18 @@ FORRAction Controller::FORRDecision()
     FORRAction *decision = new FORRAction();
     // Basic semaFORR three tier decision making architecture 
     
-    if(!tierOneDecision(decision)){
+    //if(!tierOneDecision(decision)){
 	ROS_DEBUG("Decision to be made by t3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	//decision->type = FORWARD;
 	//decision->parameter = 5;
 	tierThreeDecision(decision);
-	decision->decisionTier = 3;
-    }
-    cout << "decisionTier = " << decision->decisionTier << endl;
+	decisionStats->decisionTier = 3;
+    //}
+    cout << "decisionTier = " << decisionStats->decisionTier << endl;
     ROS_DEBUG("After decision made");
     beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();
     ROS_DEBUG("After incrementDecisionCount");
-    //beliefs->getAgentState()->getCurrentTask()->saveDecision(*decision);
+    beliefs->getAgentState()->getCurrentTask()->saveDecision(*decision);
     ROS_DEBUG("After saveDecision");
     beliefs->getAgentState()->clearVetoedActions();
     ROS_DEBUG("After clearVetoedActions");
@@ -255,7 +255,7 @@ bool Controller::tierOneDecision(FORRAction *decision){
   bool decisionMade = false;
   if(tier1->advisorVictory(decision)){ 
 	ROS_INFO_STREAM("Advisor victory has made a decision " << decision->type << " " << decision->parameter);
-	decision->decisionTier = 1;
+	decisionStats->decisionTier = 1;
 	decisionMade = true;	
   }
   else{
@@ -271,8 +271,8 @@ bool Controller::tierOneDecision(FORRAction *decision){
   for(it = vetoedActions->begin(); it != vetoedActions->end(); it++){
     vetoList << it->type << " " << it->parameter << ";";
   }
-  decision->vetoedActions = vetoList.str();
-  cout << "vetoedActions = " << decision->vetoedActions << " " << vetoList.str() << endl;
+  decisionStats->vetoedActions = vetoList.str();
+  cout << "vetoedActions = " << vetoList.str() << endl;
   return decisionMade;
 }
 
@@ -312,10 +312,12 @@ void Controller::tierThreeDecision(FORRAction *decision){
     advisor->set_commenting();
     if(advisor->is_active() == false){
       cout << advisor->get_name() << " is inactive " << endl;
+      advisorsList << advisor->get_name() << " " << advisor->get_weight() << " " << advisor->is_active() << " " << advisor->is_commenting() << ";";
       continue;
     }
     if(advisor->is_commenting() == false){
       cout << advisor->get_name() << " is not commenting " << endl;
+      advisorsList << advisor->get_name() << " " << advisor->get_weight() << " " << advisor->is_active() << " " << advisor->is_commenting() << ";";
       continue;
     }
 
@@ -334,7 +336,9 @@ void Controller::tierThreeDecision(FORRAction *decision){
       cout << "<" << advisor->get_name() << "," << iterator->first.type << "," << iterator->first.parameter << "> : " << iterator->second << endl; 
       weight = advisor->get_weight();
       cout << "Weight for this advisor : " << weight << endl;
+
       advisorCommentsList << advisor->get_name() << " " << iterator->first.type << " " << iterator->first.parameter << " " << iterator->second << ";";
+
       if( allComments.find(iterator->first) == allComments.end()){
 	    allComments[iterator->first] =  iterator->second * weight;
       }
@@ -371,9 +375,9 @@ void Controller::tierThreeDecision(FORRAction *decision){
   int random_number = rand() % (best_decisions.size());
     
   (*decision) = best_decisions.at(random_number);
-  decision->advisors = advisorsList.str();
-  decision->advisorComments = advisorCommentsList.str();
-  cout << " advisors = " << decision->advisors << "\nadvisorComments = " << decision->advisorComments << endl;
+  decisionStats->advisors = advisorsList.str();
+  decisionStats->advisorComments = advisorCommentsList.str();
+  cout << " advisors = " << decisionStats->advisors << "\nadvisorComments = " << decisionStats->advisorComments << endl;
 }
 
 

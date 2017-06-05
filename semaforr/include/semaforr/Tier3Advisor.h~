@@ -240,7 +240,7 @@ class Tier3AvoidObstacleRotation : public Tier3Advisor{
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
-
+/*
 class Tier3CloseIn : public Tier3Advisor{
  public:
   Tier3CloseIn(Beliefs *beliefs, string name, string description, double weight, double * magic_init, bool is_active = true); 
@@ -264,7 +264,7 @@ class Tier3CloseInRotation : public Tier3Advisor{
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
-
+*/
 // this is advisor that favors big steps
 class Tier3BigStep : public Tier3Advisor{
  public:
@@ -290,7 +290,7 @@ class Tier3BigStepRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-/*
+
 class Tier3GoAroundRotation : public Tier3Advisor{
  public:
   Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
@@ -303,7 +303,7 @@ class Tier3GoAroundRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-*/
+
 
 // Idea for this advisor
 // since it is fuzzy it should allow robot to go away from the target if it
@@ -339,6 +339,30 @@ class Tier3AvoidLeafRotation : public Tier3Advisor{
   Tier3AvoidLeafRotation();
   
   virtual ~Tier3AvoidLeafRotation() {};
+  
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3AvoidLeafField : public Tier3Advisor{
+ public:
+  Tier3AvoidLeafField(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  
+  Tier3AvoidLeafField();
+  
+  virtual ~Tier3AvoidLeafField() {};
+  
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3AvoidLeafFieldRotation : public Tier3Advisor{
+ public:
+  Tier3AvoidLeafFieldRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  
+  Tier3AvoidLeafFieldRotation();
+  
+  virtual ~Tier3AvoidLeafFieldRotation() {};
   
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();

@@ -36,20 +36,18 @@ class FORRAction {
     // be defined if you want to use the class as a key
     // for a map and it has to be const function that
     // accepts const argument otherwise compiler will kill you
-    bool operator < (const FORRAction &action) const; 
+    bool operator < (const FORRAction &action) const;
+
     // I need constructor now that this is a class
-    FORRAction(FORRActionType actionType, int par):type(actionType), parameter(par) {}
+    FORRAction(FORRActionType actionType, int par):type(actionType), parameter(par) {};
     // Also default constructor once you defined others
     FORRAction(): type(PAUSE), parameter(0) {};
+
     // Since I am returning map whose key is this class
     // I think I need copy constructor
     FORRAction(const FORRAction& action);
-    ~FORRAction() {};
 
-    int decisionTier;
-    std::string vetoedActions;
-    std::string advisors;
-    std::string advisorComments;
+
 };
 
 

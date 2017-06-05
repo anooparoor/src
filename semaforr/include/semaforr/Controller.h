@@ -16,6 +16,7 @@
 #include "Beliefs.h"
 #include "Tier1Advisor.h"
 #include "Tier3Advisor.h"
+#include "FORRActionStats.h"
 
 #include <fstream>
 #include <ros/ros.h>
@@ -38,6 +39,9 @@ public:
   //main sense decide loop, receives the input messages and calls the FORRDecision function
   FORRAction decide();
 
+  FORRActionStats *getCurrentDecisionStats() { return decisionStats; }
+  void clearCurrentDecisionStats() { decisionStats = new FORRActionStats();}
+
   //Update state of the agent using sensor readings 
   void updateState(Position current, sensor_msgs::LaserScan laserscan);
 
@@ -51,6 +55,8 @@ private:
 
   //FORR decision loop and tiers
   FORRAction FORRDecision();
+
+  FORRActionStats *decisionStats = new FORRActionStats();
   
   //Tier 1 advisors are called here
   bool tierOneDecision(FORRAction *decision);

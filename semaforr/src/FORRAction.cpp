@@ -10,6 +10,7 @@
 
 #include "FORRAction.h"
 
+
 // I think we need this copy constructor because adviser's
 // function is returning a map and for datatypes that
 // are returned from function we have to define copy constructor
@@ -18,10 +19,6 @@
 FORRAction::FORRAction(const FORRAction& action){
   type = action.type;
   parameter = action.parameter;
-  decisionTier = action.decisionTier;
-  vetoedActions = action.vetoedActions;
-  advisors = action.advisors;
-  advisorComments = action.advisorComments;
   }
 
 // We need to overload this operator because this class is 

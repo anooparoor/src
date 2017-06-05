@@ -137,21 +137,21 @@ bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, Cartesi
 
 std::pair < std::vector<CartesianPoint>, std::vector< vector<CartesianPoint> > > AgentState::getCleanedTrailMarkers(){
 	std::pair < std::vector<CartesianPoint>, std::vector<vector<CartesianPoint> > > cleanedMarker;
-	// call code to clean the trails
+	// Change position history into CartesianPoint format
 	vector <CartesianPoint> pos_history;
 	for(std::vector<Position>::iterator it = currentTask->getPositionHistory()->begin() ; it != currentTask->getPositionHistory()->end(); ++it){
 		CartesianPoint pos(it->getX(),it->getY());
 		pos_history.push_back(pos);
 	}
-	
+	// Initialize trail vectors
 	std::vector<CartesianPoint> trailPositions;
 	std::vector< vector<CartesianPoint> > trailLaserEndpoints;
-
+	//Get laser history
 	std::vector< vector<CartesianPoint> > laser_endpoints = *(currentTask->getLaserHistory());
-	
+	// Push first point in path to trail
 	trailPositions.push_back(pos_history[0]);
 	trailLaserEndpoints.push_back(laser_endpoints[0]);
-
+	// Find the furthest point on path that can be seen from current position, push that point to trail and then move to that point
 	for(int i = 0; i < pos_history.size(); i++){
 		//cout << "First point: " << pos_history[i].get_x() << " " << pos_history[i].get_y() << endl;
 		for(int j = pos_history.size()-1; j > i; j--){
@@ -165,8 +165,8 @@ std::pair < std::vector<CartesianPoint>, std::vector< vector<CartesianPoint> > >
 			}
 		}
 	}
-	cout << pos_history[pos_history.size()-1].get_x() << " " << pos_history[pos_history.size()-1].get_y() << endl;
-	cout << trailPositions[trailPositions.size()-1].get_x() << " " << trailPositions[trailPositions.size()-1].get_y() << endl;
+	//cout << pos_history[pos_history.size()-1].get_x() << " " << pos_history[pos_history.size()-1].get_y() << endl;
+	//cout << trailPositions[trailPositions.size()-1].get_x() << " " << trailPositions[trailPositions.size()-1].get_y() << endl;
 	
 	cleanedMarker.first = trailPositions;
 	cleanedMarker.second = trailLaserEndpoints;
@@ -223,8 +223,8 @@ FORRAction AgentState::maxForwardAction(){
  	ROS_DEBUG("In maxforwardaction");
 	double error_margin = 1; //one meter margin from the wall
 	double forward_distance = getDistanceToForwardObstacle() - error_margin;
-	double forward_distance_left = getDistanceToObstacle(0.25) - error_margin;
-	double forward_distance_right = getDistanceToObstacle(-0.25) - error_margin;
+	double forward_distance_left = getDistanceToObstacle(0.35) - error_margin;
+	double forward_distance_right = getDistanceToObstacle(-0.35) - error_margin;
 
  	ROS_DEBUG_STREAM("Distances " << forward_distance << "," << forward_distance_left << "," << forward_distance_right);
 

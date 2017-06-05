@@ -34,12 +34,13 @@ private:
   ros::Publisher conveyor_pub_;
   ros::Publisher trails_pub_;
   ros::Publisher stats_pub_;
+  Controller *con;
   Beliefs *beliefs;
   ros::NodeHandle *nh_;
   
 public:
   //! ROS node initialization
-  Visualizer(ros::NodeHandle *nh, Beliefs *b)
+  Visualizer(ros::NodeHandle *nh, Controller *c)
   {
     nh_ = nh;
     //set up the publisher for the cmd_vel topic
@@ -52,7 +53,8 @@ public:
     trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
     stats_pub_ = nh_->advertise<std_msgs::String>("decision_log", 1);
     //declare and create a controller with task, action and advisor configuration
-    beliefs = b;
+    con = c;
+    beliefs = con->getBeliefs();
   }
 
   void publish(){
@@ -212,9 +214,16 @@ public:
 	std_msgs::String log;
 	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
 	double robotY = beliefs->getAgentState()->getCurrentPosition().getY();
+	double targetX;
+	double targetY;
 	double robotTheta = beliefs->getAgentState()->getCurrentPosition().getTheta();
-	double targetX = beliefs->getAgentState()->getCurrentTask()->getX();
-	double targetY = beliefs->getAgentState()->getCurrentTask()->getY();
+	if(beliefs->getAgentState()->getCurrentTask() != NULL) {
+		targetX = beliefs->getAgentState()->getCurrentTask()->getX();
+		targetY = beliefs->getAgentState()->getCurrentTask()->getY();
+	} else {
+		targetX = 0;
+		targetY = 0;
+	}
 	vector<CartesianPoint> laserEndpoints = beliefs->getAgentState()->getCurrentLaserEndpoints();
 	sensor_msgs::LaserScan laserScan = beliefs->getAgentState()->getCurrentLaserScan();
 	FORRAction max_forward = beliefs->getAgentState()->maxForwardAction();
@@ -228,11 +237,13 @@ public:
 	ROS_DEBUG("After trails");
 	FORRActionType chosenActionType = decision.type;
 	int chosenActionParameter = decision.parameter;
-	string vetoedActions = decision.vetoedActions;
-	int decisionTier = decision.decisionTier;
-	string advisors = decision.advisors;
-	string advisorComments = decision.advisorComments;
+	int decisionTier = con->getCurrentDecisionStats()->decisionTier;
+	string vetoedActions = con->getCurrentDecisionStats()->vetoedActions;
+	string advisors = con->getCurrentDecisionStats()->advisors;
+	string advisorComments = con->getCurrentDecisionStats()->advisorComments;
 	cout << "vetoedActions = " << vetoedActions << " decisionTier = " << decisionTier << " advisors = " << advisors << " advisorComments = " << advisorComments << endl;
+	vector< vector<int> > waypoints = beliefs->getSpatialModel()->getWaypoints()->getWaypoints();
+
 	ROS_DEBUG("After decision statistics");
 	int decisionCount = -1;
 	int currentTask = -1;
@@ -277,11 +288,20 @@ public:
 		trailstream << ";";
 	}
 	ROS_DEBUG("After trails");
+	
+	std::stringstream conveyorStream;
+	for(int j = 0; j < waypoints.size(); j++){
+		for(int i = 0; i < waypoints[j].size(); i++){
+			conveyorStream << waypoints[i][j] << " ";
+		}
+		conveyorStream << ";";
+	}
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str();// << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str();// << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
 	log.data = output.str();
 	stats_pub_.publish(log);
+	con->clearCurrentDecisionStats();
   }
 
 };

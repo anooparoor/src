@@ -10,6 +10,24 @@
 
 #include "FORRAction.h"
 
+
+/*FORRAction::FORRAction(FORRActionType actionType, int par, int decTier, std::string vActions, std::string adv, std::string advComments){
+  init(actionType, par, decTier, vActions, adv, advComments);
+}
+
+FORRAction::FORRAction(FORRActionType actionType, int par){
+  init(actionType, par, 0, " ", " ", " ");
+}
+
+void FORRAction::init(FORRActionType actionType, int par, int decTier, std::string vActions, std::string adv, std::string advComments){
+  type = actionType;
+  parameter = par;
+  decisionTier = decTier;
+  vetoedActions = vActions;
+  advisors = adv;
+  advisorComments = advComments;
+}*/
+
 // I think we need this copy constructor because adviser's
 // function is returning a map and for datatypes that
 // are returned from function we have to define copy constructor
@@ -18,10 +36,10 @@
 FORRAction::FORRAction(const FORRAction& action){
   type = action.type;
   parameter = action.parameter;
-  decisionTier = action.decisionTier;
-  //vetoedActions = action.vetoedActions;
-  //advisors = action.advisors;
-  //advisorComments = action.advisorComments;
+  ////decisionTier = action.decisionTier;
+  ////vetoedActions = action.vetoedActions;
+  ////advisors = action.advisors;
+  ////advisorComments = action.advisorComments;
   }
 
 // We need to overload this operator because this class is 

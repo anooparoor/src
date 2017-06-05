@@ -81,6 +81,7 @@ class Tier3Advisor {
     virtual void set_commenting() = 0;
     void normalize(map <FORRAction, double> *);
     void rank(map <FORRAction, double> *);
+    void standardize(map <FORRAction, double> *);
     
     // Cannot use private since I am subclassing this class and I need all these member variables
  protected:
@@ -290,7 +291,7 @@ class Tier3BigStepRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-/*
+
 class Tier3GoAroundRotation : public Tier3Advisor{
  public:
   Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
@@ -303,7 +304,7 @@ class Tier3GoAroundRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-*/
+
 
 // Idea for this advisor
 // since it is fuzzy it should allow robot to go away from the target if it
@@ -339,6 +340,30 @@ class Tier3AvoidLeafRotation : public Tier3Advisor{
   Tier3AvoidLeafRotation();
   
   virtual ~Tier3AvoidLeafRotation() {};
+  
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3AvoidLeafField : public Tier3Advisor{
+ public:
+  Tier3AvoidLeafField(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  
+  Tier3AvoidLeafField();
+  
+  virtual ~Tier3AvoidLeafField() {};
+  
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3AvoidLeafFieldRotation : public Tier3Advisor{
+ public:
+  Tier3AvoidLeafFieldRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  
+  Tier3AvoidLeafFieldRotation();
+  
+  virtual ~Tier3AvoidLeafFieldRotation() {};
   
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
