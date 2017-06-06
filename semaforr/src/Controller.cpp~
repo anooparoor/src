@@ -198,6 +198,7 @@ void Controller::learnSpatialModel(AgentState* agentState){
  bool trails = true;
  bool conveyors = true;
  bool regions = true;
+ bool doors = true;
  
   if(trails){
     	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
@@ -211,6 +212,10 @@ void Controller::learnSpatialModel(AgentState* agentState){
 	beliefs->getSpatialModel()->getAbstractMap()->clearAllExits();
 	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);
 	beliefs->getSpatialModel()->getAbstractMap()->learnExits(trails_trace);
+  }
+  std::vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  if(doors){
+	beliefs->getSpatialModel()->getDoors()->learnDoors(circles);
   }
 }
 
@@ -226,13 +231,13 @@ FORRAction Controller::FORRDecision()
     FORRAction *decision = new FORRAction();
     // Basic semaFORR three tier decision making architecture 
     
-    //if(!tierOneDecision(decision)){
+    if(!tierOneDecision(decision)){
 	ROS_DEBUG("Decision to be made by t3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	//decision->type = FORWARD;
 	//decision->parameter = 5;
 	tierThreeDecision(decision);
 	decisionStats->decisionTier = 3;
-    //}
+    }
     cout << "decisionTier = " << decisionStats->decisionTier << endl;
     ROS_DEBUG("After decision made");
     beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();

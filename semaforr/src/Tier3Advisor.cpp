@@ -90,8 +90,8 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
     result[forrAction] = adviceStrength;
   } 
   //if(result.size() > 1){
-  //normalize(&result);
-  rank(&result);
+  normalize(&result);
+  //rank(&result);
   //standardize(&result);
   //}
   return result;

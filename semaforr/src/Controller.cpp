@@ -198,6 +198,7 @@ void Controller::learnSpatialModel(AgentState* agentState){
  bool trails = true;
  bool conveyors = true;
  bool regions = true;
+ bool doors = true;
  
   if(trails){
     	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
@@ -211,6 +212,10 @@ void Controller::learnSpatialModel(AgentState* agentState){
 	beliefs->getSpatialModel()->getAbstractMap()->clearAllExits();
 	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);
 	beliefs->getSpatialModel()->getAbstractMap()->learnExits(trails_trace);
+  }
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  if(doors){
+	beliefs->getSpatialModel()->getDoors()->learnDoors(circles);
   }
 }
 
