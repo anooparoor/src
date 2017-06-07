@@ -973,11 +973,11 @@ void Tier3WaypointFinderLinear::set_commenting(){
 }
 
 double Tier3WaypointFinderRotation::actionComment(FORRAction action){
-  //cout <<" Entered waypointfinder rotation." << endl;
+  cout <<" Entered waypointfinder rotation." << endl;
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
-
+  cout <<" Expected position after action: " <<expectedPosition.getX() << " " << expectedPosition.getY() << endl;
   int grid_value = beliefs->getSpatialModel()->getWaypoints()->getGridValue(expectedPosition.getX(), expectedPosition.getY());
-  //cout << "grid value: "<<grid_value<<endl;
+  cout << "grid value: "<<grid_value<<endl;
 
   Position cur_pos = beliefs->getAgentState()->getCurrentPosition();
   double distance = cur_pos.getDistance(expectedPosition.getX(), expectedPosition.getY());  

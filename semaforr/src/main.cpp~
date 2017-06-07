@@ -244,7 +244,7 @@ int main(int argc, char **argv) {
      string action_config = path + "/config/action.conf";
      string tasks_config = path + "/config/tasks.conf";
 
-     Controller *controller = new Controller(advisor_config,action_config,tasks_config); 
+     Controller *controller = new Controller(advisor_config,tasks_config, action_config); 
 
      ROS_INFO("Controller Initialized");
      RobotDriver driver(nh, controller);

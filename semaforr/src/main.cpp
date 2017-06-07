@@ -242,9 +242,9 @@ int main(int argc, char **argv) {
      string path = ros::package::getPath("semaforr");
      string advisor_config = path + "/config/advisors.conf";
      string action_config = path + "/config/action.conf";
-     string tasks_config = path + "/config/tasks.conf";
+     string tasks_config = path + "/config/target.conf";
 
-     Controller *controller = new Controller(advisor_config,action_config,tasks_config); 
+     Controller *controller = new Controller(advisor_config,tasks_config, action_config); 
 
      ROS_INFO("Controller Initialized");
      RobotDriver driver(nh, controller);

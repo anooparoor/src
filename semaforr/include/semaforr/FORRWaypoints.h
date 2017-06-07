@@ -35,9 +35,9 @@ class FORRWaypoints{
   	boxes_height = height/granularity;
   	map_height = height;
   	map_width = width;
-  	for(int i = 0; i < boxes_width; i++){
+  	for(int i = 0; i <= boxes_width; i++){
     		vector<int> row;
-    		for(int j = 0; j < boxes_height; j++){
+    		for(int j = 0; j <= boxes_height; j++){
       			row.push_back(0);
     		}
     		waypoints.push_back(row);

@@ -973,11 +973,11 @@ void Tier3WaypointFinderLinear::set_commenting(){
 }
 
 double Tier3WaypointFinderRotation::actionComment(FORRAction action){
-  //cout <<" Entered waypointfinder rotation." << endl;
+  cout <<" Entered waypointfinder rotation." << endl;
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
 
   int grid_value = beliefs->getSpatialModel()->getWaypoints()->getGridValue(expectedPosition.getX(), expectedPosition.getY());
-  //cout << "grid value: "<<grid_value<<endl;
+  cout << "grid value: "<<grid_value<<endl;
 
   Position cur_pos = beliefs->getAgentState()->getCurrentPosition();
   double distance = cur_pos.getDistance(expectedPosition.getX(), expectedPosition.getY());  
@@ -990,13 +990,12 @@ void Tier3WaypointFinderRotation::set_commenting(){
 
 
 double Tier3TrailFinderLinear::actionComment(FORRAction action){
-  
+   CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail(beliefs->getAgentState());  
    //if out of line of sight of trail marker, vote the same value functionally turning off voting
    if(!beliefs->getSpatialModel()->getTrails()->canSeeTrail()){
      return 0;
    }
 
-  CartesianPoint target_trailmarker = beliefs->getSpatialModel()->getTrails()->getFurthestVisiblePointOnChosenTrail(beliefs->getAgentState());
   Position target(target_trailmarker.get_x(),target_trailmarker.get_y(),0);
 
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);

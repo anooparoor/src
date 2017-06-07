@@ -500,7 +500,7 @@ namespace Menge {
 			}
 
 			totalN += nCount;
-			mesh-> addGroup( grpName, nCount );
+			mesh->addGroup( grpName, nCount );
 			assert( totalN == mesh->getNodeCount() && "Data management problem -- tracked node count does not match in-memory node count" );
 
 			for ( ; n < totalN; ++n ) {

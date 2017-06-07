@@ -200,6 +200,10 @@ namespace Menge {
 				//std::cout << "Generating obstacle distance " << angle; 
 				//for each angle compute the distance from the obstacle
 				float distance =  distanceFromObstacle(angle,range_max, agent);
+				float distance_agent = distanceFromAgent(angle, range_max, agent);
+				if(distance > distance_agent){
+					distance = distance_agent;
+				}
 				ls.ranges.push_back(distance);
 				//std::cout << " distance : " << distance << std::endl; 
 				i++;
@@ -209,6 +213,23 @@ namespace Menge {
 			ls.angle_increment = increment;
 			ls.range_max = range_max;
 			//std::cout << i << std::endl; 
+		}
+
+		float FSM::distanceFromAgent(float angle, float range_max, Agents::BaseAgent * agent){
+			// find the vector to represent the ray 
+			float min_range = 0.01;
+			float width = 0.1;
+			
+			float agent_dir_angle = atan2(agent->_orient._y, agent->_orient._x);
+			//std::cout << "Calculate laser:Agent orient x:" << agent->_orient._x << " y:" << agent->_orient._y << std::endl;
+			//std::cout << "Calculate Agent direction : " << agent_dir_angle << std::endl;
+			float new_angle = agent_dir_angle + angle;
+			//
+			Vector2 laser_begin = agent->_pos;
+			Vector2 laser_end = laser_begin;
+			laser_end._x += cos(new_angle) * range_max;
+			laser_end._y += sin(new_angle) * range_max;
+			return nearAgentDistance(laser_begin, laser_end);
 		}
 
 	
@@ -244,6 +265,63 @@ namespace Menge {
 				return laser_end.distance(agent->_pos);
 			}
 		}
+
+		//return true if start and end are visible to each other 
+		float FSM::nearAgentDistance(Vector2 start, Vector2 end){
+			float distance = start.distance(end);
+			int agtCount = (int)this->_sim->getNumAgents();
+			for ( int a = 0; a < agtCount; ++a ) {
+				Agents::BaseAgent * agt = this->_sim->getAgent( a );
+				if(agt->_isExternal == false){
+					//the agent in question is a crowd agent
+					Vector2 agent_pos = agt->_pos;
+					float current = intersect(start, end, agent_pos, 0.4);
+					if(current < distance) 
+						distance = current;				
+				}
+			}
+			return distance;
+		}
+
+		float FSM::intersect(Vector2 start, Vector2 end, Vector2 circle, float radius){
+			double r = radius;
+  			double cx = circle._x;
+  			double cy = circle._y;
+  			double m = (start._y - end._y)/(start._x - end._x);
+  			double b = ((-1)*start._x * m) + start._y;
+  			double A = (m*m) + 1;
+  			double B = 2*(m*b - m*cy - cx);
+  			double C = (cx*cx) + (b*b) + (cy*cy) - (2*b*cy) - (r*r);
+  			//cout << r << " " << cx << " " << cy << " " << m << " " << b << " " << A << " " << B << " " << C << endl;
+  			// solution of the equation of point of intersection of the line segment and circle
+			if((B*B) - (4*A*C) > 0){
+				Vector2 first,second;
+  				first._x = (-B + sqrt( ((B*B) - (4*A*C)) ))/(2*A);
+  				first._y = m*first._x + b;
+  				second._x = (-B - sqrt( ((B*B) - (4*A*C)) ))/(2*A);
+  				second._y = m*second._x + b;
+				if(in_between(start,first,end) and in_between(start,second,end)){
+					float d1 = start.distance(first);
+					float d2 = start.distance(second);
+					if(d1 < d2) return d1;
+					else return d2;
+				}
+			}
+			return start.distance(end);
+  		}
+		//returns true if point lies in between start and end points
+		bool FSM::in_between(Vector2 start, Vector2 point, Vector2 end){
+			float ac = start.distance(end);
+			float ab = start.distance(point);
+			float bc = point.distance(end);
+			if((ab + bc - ac) < 0.01){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+
 
 		/////////////////////////////////////////////////////////////////////
 
@@ -391,25 +469,25 @@ namespace Menge {
 					broadcaster1.sendTransform(
       						tf::StampedTransform(
         					tf::Transform(tf::createIdentityQuaternion(), tf::Vector3(0.0, 0.0, 0.0)),
-        					current_time + ros::Duration(0.0),"map", "pose"));
+        					ros::Time::now() + ros::Duration(0),"map", "pose"));
 					broadcaster2.sendTransform(
       						tf::StampedTransform(
         					tf::Transform(tf::createQuaternionFromRPY(0.0, 0.0, atan2(agt->_orient._y, 							agt->_orient._x)), 
 						tf::Vector3(pose.position.x, pose.position.y, 0.0)),
-        					current_time + ros::Duration(0.0),"pose", "base_scan"));
+        					ros::Time::now() + ros::Duration(0),"pose", "base_scan"));
 
 					//std::cout << "Robot position : (" << pose.position.x << "," << pose.position.y << ")" << std::endl;  
 					//std::cout << "Robot orientation : (" << agt->_orient._x << "," << agt->_orient._y << ")" << std::endl;  
 
-					poseStamped.header.stamp = current_time;
+					poseStamped.header.stamp = ros::Time::now();
 					//Change it to odom frame for IMU measurements
     					poseStamped.header.frame_id = "map";
 					_pub_pose.publish(poseStamped);
 					//send laser sensor messages
 					sensor_msgs::LaserScan ls;					
 					this->computeRayScan(agt,ls);
-					ls.header.stamp = current_time;
-					ls.header.frame_id = "base_scan";
+					ls.header.stamp = ros::Time::now();
+					ls.header.frame_id = "map";
 					_pub_scan.publish(ls);
 				}
 			}
