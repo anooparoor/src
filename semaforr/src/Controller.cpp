@@ -215,6 +215,7 @@ void Controller::learnSpatialModel(AgentState* agentState){
   }
   vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
   if(doors){
+	beliefs->getSpatialModel()->getDoors()->clearAllDoors();
 	beliefs->getSpatialModel()->getDoors()->learnDoors(circles);
   }
 }
@@ -238,14 +239,14 @@ FORRAction Controller::FORRDecision()
 	tierThreeDecision(decision);
 	decisionStats->decisionTier = 3;
     }
-    cout << "decisionTier = " << decisionStats->decisionTier << endl;
-    ROS_DEBUG("After decision made");
+    //cout << "decisionTier = " << decisionStats->decisionTier << endl;
+    //ROS_DEBUG("After decision made");
     beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();
-    ROS_DEBUG("After incrementDecisionCount");
+    //ROS_DEBUG("After incrementDecisionCount");
     beliefs->getAgentState()->getCurrentTask()->saveDecision(*decision);
-    ROS_DEBUG("After saveDecision");
+    //ROS_DEBUG("After saveDecision");
     beliefs->getAgentState()->clearVetoedActions();
-    ROS_DEBUG("After clearVetoedActions");
+    //ROS_DEBUG("After clearVetoedActions");
     return *decision;
 }
 
@@ -277,7 +278,7 @@ bool Controller::tierOneDecision(FORRAction *decision){
     vetoList << it->type << " " << it->parameter << ";";
   }
   decisionStats->vetoedActions = vetoList.str();
-  cout << "vetoedActions = " << vetoList.str() << endl;
+  //cout << "vetoedActions = " << vetoList.str() << endl;
   return decisionMade;
 }
 
@@ -382,7 +383,7 @@ void Controller::tierThreeDecision(FORRAction *decision){
   (*decision) = best_decisions.at(random_number);
   decisionStats->advisors = advisorsList.str();
   decisionStats->advisorComments = advisorCommentsList.str();
-  cout << " advisors = " << decisionStats->advisors << "\nadvisorComments = " << decisionStats->advisorComments << endl;
+  //cout << " advisors = " << decisionStats->advisors << "\nadvisorComments = " << decisionStats->advisorComments << endl;
 }
 
 

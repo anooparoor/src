@@ -36,10 +36,6 @@ class FORRExit{
   void setExitCircle(int circle_id) { exitCircle = circle_id;}
   int getExitCircle(){ return exitCircle; }
 
-  bool operator < (const FORRExit &exit) const{
-    return false;
-  }
-
  private:
   CartesianPoint exitPoint;
   int exitCircle;

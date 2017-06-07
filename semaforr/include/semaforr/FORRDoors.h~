@@ -14,6 +14,7 @@ Written by Raj Korpan, adapted from Gil Dekel, 2017
 #include <iostream>
 #include <cmath>        //for atan2 and M_PI
 #include <utility>      //for exit
+#include <algorithm>
 #include "FORRGeometry.h"
 #include "FORRCircle.h"
 #include "FORRExit.h"
@@ -22,11 +23,11 @@ Written by Raj Korpan, adapted from Gil Dekel, 2017
  * Struct for Door start and endpoints and strength.
  */
 struct Door {
-    FORRExit* startPoint;
-    FORRExit* endPoint;
+    FORRExit startPoint;
+    FORRExit endPoint;
     int str;
-    Door(): startPoint(NULL), endPoint(NULL), str(0) { }
-    Door(FORRExit *s, FORRExit *e, int currStr): startPoint(s), endPoint(e), str(currStr) { }
+    Door(): startPoint(), endPoint(), str(0) { }
+    Door(FORRExit s, FORRExit e, int currStr): startPoint(s), endPoint(e), str(currStr) { }
 };
 
 /* FORRDoors class
@@ -42,93 +43,119 @@ public:
         doors = std::vector< std::vector<Door> >();
     };
     std::vector< std::vector<Door> > getDoors(){return doors;}
-    //std::map<float, FORRExit> calculateExitAngles(FORRCircle region);
-    //double calculateFixedAngle(double x, double y);
-    //void learnDoors(std::vector<FORRCircle> reg);
     ~FORRDoors(){};
+
+    void clearAllDoors(){
+        doors.clear();
+    }
 
     void learnDoors(std::vector<FORRCircle> reg) {
         std::vector<FORRCircle> regions = reg;
+	std::cout << "Number of regions = " << regions.size() << std::endl;
         for (int i = 0; i < regions.size(); i++) {
             std::vector<Door> regionDoors;
-            std::map<double, FORRExit> exitAngles = calculateExitAngles(regions[i]);
-
+            vector< std::pair<double, FORRExit> > exitAngles = calculateExitAngles(regions[i]);
+            std::cout << "Number of exits for region " << i << " = " << exitAngles.size() << std::endl;
             //Door will be considered for regions with two exit points and above
             if (regions[i].getExits().size() >= 2) {
                 //A formula to calculate the maximum allowed distance between two points in radians
                 float epsilon = -1.3*(1/(1+((2*M_PI)/regions[i].getExits().size())))+1.35;
                 std::cout << epsilon << std::endl;
                 
-                /////auto idx = exitAngles.cbegin();
-                typedef std::map<double, FORRExit>::iterator idx;
-                exitAngleIT idx = exitAngles.begin();
-                Door *doorToPush = new Door();
+                vector< std::pair<double, FORRExit> >::iterator idx = exitAngles.begin();
+                Door *doorToPush = new Door(FORRExit(CartesianPoint(-1,-1),-1), FORRExit(CartesianPoint(-1,-1),-1), 0);
                 doorToPush->startPoint = idx->second;    //Put the first exit point in a door object.
                 ++doorToPush->str;                       //Door now has strength 1
                 double doorToPushStartAngle = idx->first;
                 double firstStartAngle = idx->first;
-                
-                while (std::next(idx,1) != exitAngles.cend()) {
+                std::cout << "doorToPush->startPoint = " << doorToPush->startPoint.getExitPoint().get_x() << ", " << doorToPush->startPoint.getExitPoint().get_y() << std::endl;
+                std::cout << "doorToPush->str = " << doorToPush->str << std::endl;
+                std::cout << "doorToPushStartAngle = " << doorToPushStartAngle << ", firstStartAngle = " << firstStartAngle << std::endl;
+
+                for (idx = exitAngles.begin(); idx != exitAngles.end(); idx++){
+                    std::cout << "idx->first = " << idx->first << ", (idx+1)->first = " << (idx+1)->first << ", (idx+1)->first - idx->first = " << ((idx+1)->first - idx->first) << ", epsilon = " << epsilon << std::endl;
                     //if the two point are close enough, extend the end of the current door to the new point
-                    if (std::next(idx,1)->first - idx->first < epsilon) {
-                        doorToPush->endPoint = std::next(idx,1)->second;
+                    if ((idx+1)->first - idx->first < epsilon) {
+                        doorToPush->endPoint = (idx+1)->second;
                         ++doorToPush->str;  //increase the strength of the door each time a point is added to the door.
+                        std::cout << "doorToPush->endPoint = " << doorToPush->endPoint.getExitPoint().get_x() << ", " << doorToPush->endPoint.getExitPoint().get_y() << std::endl;
+                        std::cout << "doorToPush->str = " << doorToPush->str << std::endl;
                     } else {
                         //push the new door only if it is not a single point.
-                        if (doorToPush->endPoint != NULL) {
+                        if (!(doorToPush->endPoint.getExitPoint() == CartesianPoint(-1,-1))) {
                             regionDoors.push_back(*doorToPush);
+                            std::cout << "regionDoors.size() = " << regionDoors.size() << std::endl;
                         }
-    
-                        doorToPush = new Door();                              //prepare a new door
-                        doorToPush->startPoint = std::next(idx,1)->second;    //set the start position to the new further out point.
+
+                        doorToPush = new Door(FORRExit(CartesianPoint(-1,-1),-1), FORRExit(CartesianPoint(-1,-1),-1), 0); //prepare a new door
+                        doorToPush->startPoint = (idx+1)->second;    //set the start position to the new further out point.
                         ++doorToPush->str;
                         doorToPushStartAngle = idx->first;
+                        std::cout << "doorToPush->startPoint = " << doorToPush->startPoint.getExitPoint().get_x() << ", " << doorToPush->startPoint.getExitPoint().get_y() << std::endl;
+                        std::cout << "doorToPush->str = " << doorToPush->str << std::endl;
+                        std::cout << "doorToPushStartAngle = " << doorToPushStartAngle << ", firstStartAngle = " << firstStartAngle << std::endl;
                     }
-                    ++idx;
                 }
-    
+
+                std::cout << "doorToPush->startPoint = " << doorToPush->startPoint.getExitPoint().get_x() << ", " << doorToPush->startPoint.getExitPoint().get_y() << std::endl;
+                std::cout << "doorToPush->endPoint = " << doorToPush->endPoint.getExitPoint().get_x() << ", " << doorToPush->endPoint.getExitPoint().get_y() << std::endl;
                 //Take care of the last door
-                if (doorToPush->startPoint != NULL && doorToPush->endPoint != NULL) {
-                    regionDoors.push_back(*doorToPush);                
+                if (!(doorToPush->startPoint.getExitPoint() == CartesianPoint(-1,-1)) && !(doorToPush->endPoint.getExitPoint() == CartesianPoint(-1,-1))) {
+                    regionDoors.push_back(*doorToPush);
+                    std::cout << "regionDoors.size() = " << regionDoors.size() << std::endl;
     
                 //Take care of the last point on the circle before going back to the terminal.
-                } else if (doorToPush->startPoint != NULL && doorToPush->endPoint == NULL) {
-                    if (2*M_PI - (doorToPushStartAngle - exitAngles.cbegin()->first) < epsilon) {
-                        doorToPush->endPoint = exitAngles.cbegin()->second;
+                } else if (!(doorToPush->startPoint.getExitPoint() == CartesianPoint(-1,-1)) && (doorToPush->endPoint.getExitPoint() == CartesianPoint(-1,-1))) {
+                    if (2*M_PI - (doorToPushStartAngle - exitAngles.begin()->first) < epsilon) {
+                        doorToPush->endPoint = exitAngles.begin()->second;
                         ++doorToPush->str;
+                        std::cout << "doorToPush->endPoint = " << doorToPush->endPoint.getExitPoint().get_x() << ", " << doorToPush->endPoint.getExitPoint().get_y() << std::endl;
+                        std::cout << "doorToPush->str = " << doorToPush->str << std::endl;
                         regionDoors.push_back(*doorToPush);
+                        std::cout << "regionDoors.size() = " << regionDoors.size() << std::endl;
                     }
                 }
-    
+
                 //Check if the first and last doors can be merged into one over the terminal
                 //Only if there is more than one door.
                 if (regionDoors.size() > 1) {
-                    if (regionDoors.back().endPoint->getExitPoint() == regionDoors[0].startPoint->getExitPoint() ||
-                    (2*M_PI - (calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors.back().endPoint->getExitPoint().get_x(), regionDoors.back().endPoint->getExitPoint().get_y()) - calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors[0].startPoint->getExitPoint().get_x(), regionDoors[0].startPoint->getExitPoint().get_y()) )) < epsilon) {
-                        // std::cout << "never thought I'll make it here!\n";
+                std::cout << "regionDoors.back().endPoint.getExitPoint() = " << regionDoors.back().endPoint.getExitPoint().get_x() << ", " << regionDoors.back().endPoint.getExitPoint().get_y() << std::endl;
+                std::cout << "regionDoors[0].startPoint.getExitPoint() = " << regionDoors[0].startPoint.getExitPoint().get_x() << ", " << regionDoors[0].startPoint.getExitPoint().get_y() << std::endl;
+                std::cout << "calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors.back().endPoint.getExitPoint().get_x(), regionDoors.back().endPoint.getExitPoint().get_y()) = " << calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors.back().endPoint.getExitPoint().get_x(), regionDoors.back().endPoint.getExitPoint().get_y()) << std::endl;
+                std::cout << "calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors[0].startPoint.getExitPoint().get_x(), regionDoors[0].startPoint.getExitPoint().get_y()) = " << calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors[0].startPoint.getExitPoint().get_x(), regionDoors[0].startPoint.getExitPoint().get_y()) << std::endl;
+                std::cout << "Difference = " << (calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors.back().endPoint.getExitPoint().get_x(), regionDoors.back().endPoint.getExitPoint().get_y()) - calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors[0].startPoint.getExitPoint().get_x(), regionDoors[0].startPoint.getExitPoint().get_y()) ) << std::endl;
+                    if (regionDoors.back().endPoint.getExitPoint() == regionDoors[0].startPoint.getExitPoint() ||
+                    (2*M_PI - (calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors.back().endPoint.getExitPoint().get_x(), regionDoors.back().endPoint.getExitPoint().get_y()) - calculateFixedAngle(regions[i].getCenter().get_x(), regions[i].getCenter().get_y(), regionDoors[0].startPoint.getExitPoint().get_x(), regionDoors[0].startPoint.getExitPoint().get_y()) )) < epsilon) {
+                        std::cout << "never thought I'll make it here!\n";
                         //Set the starting point of the first door to the starting point of the last door
                         regionDoors[0].startPoint = regionDoors.back().startPoint;
                         regionDoors[0].str += regionDoors.back().str;                 //update the strength of the merged door
+                        std::cout << "regionDoors[0].startPoint.getExitPoint() = " << regionDoors[0].startPoint.getExitPoint().get_x() << ", " << regionDoors[0].startPoint.getExitPoint().get_y() << std::endl;
+                        std::cout << "regionDoors[0].str = " << regionDoors[0].str << std::endl;
                         //Removed the merged last door.
                         regionDoors.pop_back();
+                        std::cout << "regionDoors.size() = " << regionDoors.size() << std::endl;
                     }
                 }
             }
+            std::cout << "regionDoors.size() = " << regionDoors.size() << std::endl;
             doors.push_back(regionDoors);
+            std::cout << "doors.size() = " << doors.size() << std::endl;
         }
     }
 
-    std::map<double, FORRExit> calculateExitAngles(FORRCircle region){
+    vector< std::pair<double, FORRExit> > calculateExitAngles(FORRCircle region){
         vector<FORRExit> exits = region.getExits();
         double regionX = region.getCenter().get_x();
         double regionY = region.getCenter().get_y();
-        std::map<double, FORRExit> exitAngles;
+        vector< std::pair<double, FORRExit> > exitAngles;
         for(int i = 0; i < exits.size(); i++){
             double exitX = exits[i].getExitPoint().get_x();
 	    double exitY = exits[i].getExitPoint().get_y();
             double fixedAngle = calculateFixedAngle(regionX, regionY, exitX, exitY);
-            exitAngles.insert(std::pair<double, FORRExit>(fixedAngle, exits[i]));
+            exitAngles.push_back(std::pair<double, FORRExit>(fixedAngle, exits[i]));
         }
+        std::sort(exitAngles.begin(), exitAngles.end());
         return exitAngles;
     }
 
@@ -142,7 +169,6 @@ public:
         }
         return fixedAngle;
     }
-
 
 private:
     std::vector< std::vector<Door> > doors;

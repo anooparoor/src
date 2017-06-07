@@ -114,7 +114,7 @@ bool AgentState::canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, Carte
 bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point){
   ROS_DEBUG_STREAM("AgentState:canSeePoint() , robot pos " << laserPos.get_x() << "," << laserPos.get_y() << " target " <<
 	point.get_x() << "," << point.get_y()); 
-  double epsilon = 0.2;
+  double epsilon = 0.1;
   ROS_DEBUG_STREAM("Number of laser endpoints " << givenLaserEndpoints.size()); 
   bool canSeePoint = false;
   for(int i = 0; i < givenLaserEndpoints.size(); i++){
@@ -223,8 +223,8 @@ FORRAction AgentState::maxForwardAction(){
  	ROS_DEBUG("In maxforwardaction");
 	double error_margin = 1; //one meter margin from the wall
 	double forward_distance = getDistanceToForwardObstacle() - error_margin;
-	double forward_distance_left = getDistanceToObstacle(0.35) - error_margin;
-	double forward_distance_right = getDistanceToObstacle(-0.35) - error_margin;
+	double forward_distance_left = getDistanceToObstacle(0.25) - error_margin;
+	double forward_distance_right = getDistanceToObstacle(-0.25) - error_margin;
 
  	ROS_DEBUG_STREAM("Distances " << forward_distance << "," << forward_distance_left << "," << forward_distance_right);
 
