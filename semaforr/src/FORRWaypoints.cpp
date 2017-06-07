@@ -34,18 +34,22 @@ int FORRWaypoints::getGridValue(double map_x, double map_y){
 //Populate grid by walking along the path of robot travel
 void FORRWaypoints::populateGridFromPositionHistory(vector<Position> *pos_hist){
 	vector<Position> position = *pos_hist;
+	pair<int,int> prev, next;
+	prev.first = -1;
+	prev.second = -2;
 	for(int i = 0 ; i < position.size() - 1; i++){
-		updateGridFromLine(position[i].getX(), position[i].getY(), position[i+1].getX(), position[i+1].getY());
+		next = updateGridFromLine(position[i].getX(), position[i].getY(), position[i+1].getX(), position[i+1].getY(), prev);
+		prev = next;
 	}
 }
 
 //Populate grid by walking along a line segment
-void FORRWaypoints::updateGridFromLine(double x1, double y1, double x2, double y2){
+pair<int,int> FORRWaypoints::updateGridFromLine(double x1, double y1, double x2, double y2, pair<int,int> prev){
 	double step_size = 0.1;
 	double tx,ty;
-	pair<int,int> grid_point, prev;
-	grid_point.first = prev.first = -1;
-	grid_point.second = prev.second = -2;
+	pair<int,int> grid_point;
+	grid_point.first = -1;
+	grid_point.second = -2;
 	//cout << "POints " << x1 << "," << y1 << " ; " << x2 << "," << y2 << endl; 
 	for(double step = 0; step <= 1; step += step_size){
 		tx = (x1 * step) + (x2 * (1-step));
@@ -58,6 +62,7 @@ void FORRWaypoints::updateGridFromLine(double x1, double y1, double x2, double y
 		}
 		prev = grid_point;
 	}
+	return prev;
 }
 
 
@@ -126,8 +131,8 @@ pair<int, int> FORRWaypoints::getNextGridPosition(double curr_x, double curr_y){
     }
   }
   
-  int reconverted_x = ((converted_x*granularity)+((converted_x+1)*granularity))/2;
-  int reconverted_y = ((converted_y*granularity)+((converted_y+1)*granularity))/2;
+  int reconverted_x = ((new_x*granularity)+((new_x+1)*granularity))/2;
+  int reconverted_y = ((new_y*granularity)+((new_y+1)*granularity))/2;
   return make_pair(reconverted_x, reconverted_y);
 
 }

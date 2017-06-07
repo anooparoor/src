@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "Beliefs.h"
+#include <sstream>
 
 #include <ros/ros.h>
 #include <ros/console.h>
@@ -17,6 +18,7 @@
 #include <tf/transform_datatypes.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
+#include <std_msgs/String.h>
 
 using namespace std;
 
@@ -31,12 +33,14 @@ private:
   ros::Publisher region_pub_;
   ros::Publisher conveyor_pub_;
   ros::Publisher trails_pub_;
+  ros::Publisher stats_pub_;
+  Controller *con;
   Beliefs *beliefs;
   ros::NodeHandle *nh_;
   
 public:
   //! ROS node initialization
-  Visualizer(ros::NodeHandle *nh, Beliefs *b)
+  Visualizer(ros::NodeHandle *nh, Controller *c)
   {
     nh_ = nh;
     //set up the publisher for the cmd_vel topic
@@ -47,8 +51,10 @@ public:
     conveyor_pub_ = nh_->advertise<nav_msgs::OccupancyGrid>("conveyor", 1);
     region_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("region", 1);
     trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
+    stats_pub_ = nh_->advertise<std_msgs::String>("decision_log", 1);
     //declare and create a controller with task, action and advisor configuration
-    beliefs = b;
+    con = c;
+    beliefs = con->getBeliefs();
   }
 
   void publish(){
@@ -61,6 +67,11 @@ public:
 	publish_conveyor();
 	publish_region();
 	publish_trails();
+	//publish_log();
+  }
+
+  void publishLog(FORRAction decision){
+	publish_log(decision);
   }
 
   void publish_target(){
@@ -198,6 +209,100 @@ public:
 	remaining_targets_pub_.publish(targets);
   }
 
+  void publish_log(FORRAction decision){
+	ROS_DEBUG("Inside publish decision log!!");
+	std_msgs::String log;
+	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
+	double robotY = beliefs->getAgentState()->getCurrentPosition().getY();
+	double targetX;
+	double targetY;
+	double robotTheta = beliefs->getAgentState()->getCurrentPosition().getTheta();
+	if(beliefs->getAgentState()->getCurrentTask() != NULL) {
+		targetX = beliefs->getAgentState()->getCurrentTask()->getX();
+		targetY = beliefs->getAgentState()->getCurrentTask()->getY();
+	} else {
+		targetX = 0;
+		targetY = 0;
+	}
+	vector<CartesianPoint> laserEndpoints = beliefs->getAgentState()->getCurrentLaserEndpoints();
+	sensor_msgs::LaserScan laserScan = beliefs->getAgentState()->getCurrentLaserScan();
+	FORRAction max_forward = beliefs->getAgentState()->maxForwardAction();
+	ROS_DEBUG("After max_forward");
+	//vector< vector<CartesianPoint> > allTrace = beliefs->getAgentState()->getAllTrace();
+	list<Task*>& agenda = beliefs->getAgentState()->getAgenda();
+	list<Task*>& all_agenda = beliefs->getAgentState()->getAllAgenda();
+	ROS_DEBUG("After all_agenda");
+	vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+	vector< vector< CartesianPoint> > trails =  beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
+	ROS_DEBUG("After trails");
+	FORRActionType chosenActionType = decision.type;
+	int chosenActionParameter = decision.parameter;
+	int decisionTier = con->getCurrentDecisionStats()->decisionTier;
+	string vetoedActions = con->getCurrentDecisionStats()->vetoedActions;
+	string advisors = con->getCurrentDecisionStats()->advisors;
+	string advisorComments = con->getCurrentDecisionStats()->advisorComments;
+	cout << "vetoedActions = " << vetoedActions << " decisionTier = " << decisionTier << " advisors = " << advisors << " advisorComments = " << advisorComments << endl;
+	vector< vector<int> > waypoints = beliefs->getSpatialModel()->getWaypoints()->getWaypoints();
+
+	ROS_DEBUG("After decision statistics");
+	int decisionCount = -1;
+	int currentTask = -1;
+	if(!agenda.empty()){
+		currentTask = all_agenda.size() - agenda.size();
+		decisionCount = beliefs->getAgentState()->getCurrentTask()->getDecisionCount();
+	}
+	ROS_DEBUG("After decisionCount");
+	std::stringstream lep;
+	for(int i = 0; i < laserEndpoints.size(); i++){
+		double x = laserEndpoints[i].get_x();
+ 		double y = laserEndpoints[i].get_y();
+		lep << x << "," << y << ";";
+	}
+	ROS_DEBUG("After laserEndpoints");
+	std::stringstream ls;
+	for(int i = 0; i < laserScan.ranges.size(); i++){
+		double length = laserScan.ranges[i];
+		ls << length << ",";
+	}
+	ROS_DEBUG("After laserScan");
+	/*int totalSize = 0;
+	for(int i = 0; i < allTrace.size(); i++){
+		totalSize += allTrace[i].size();
+	}*/
+
+	std::stringstream regions;
+	for(int i = 0; i < circles.size(); i++){
+		regions << circles[i].getCenter().get_x() << " " << circles[i].getCenter().get_y() << " " << circles[i].getRadius();
+		vector<FORRExit> exits = circles[i].getExits();
+		for(int j = 0; j < exits.size() ; j++){
+			regions << " " << exits[j].getExitPoint().get_x() << " "  << exits[j].getExitPoint().get_y() << " "  << exits[j].getExitCircle();
+		}
+		regions << ";";
+	}
+	ROS_DEBUG("After regions");
+	std::stringstream trailstream;
+	for(int i = 0; i < trails.size(); i++){
+		for(int j = 0; j < trails[i].size(); j++){
+			trailstream << trails[i][j].get_x() << " " << trails[i][j].get_y() << " ";
+		}
+		trailstream << ";";
+	}
+	ROS_DEBUG("After trails");
+	
+	std::stringstream conveyorStream;
+	for(int j = 0; j < waypoints.size(); j++){
+		for(int i = 0; i < waypoints[j].size(); i++){
+			conveyorStream << waypoints[i][j] << " ";
+		}
+		conveyorStream << ";";
+	}
+
+	std::stringstream output;
+	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str();// << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+	log.data = output.str();
+	stats_pub_.publish(log);
+	con->clearCurrentDecisionStats();
+  }
 
 };
 

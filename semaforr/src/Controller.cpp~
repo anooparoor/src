@@ -91,9 +91,14 @@ void Controller::initialize_actions(string filename){
 //
 void Controller::initialize_tasks(string filename){
     string fileLine;
-    ifstream file(filename.c_str());
-    cout << "Inside file in tasks " << endl;
+    std::ifstream file(filename.c_str());
+    ROS_DEBUG_STREAM("Reading read_task_file:" << filename);
+    //cout << "Inside file in tasks " << endl;
+    if(!file.is_open()){
+	  ROS_DEBUG("Unable to locate or read task config file!");
+    }
     while(getline(file, fileLine)){
+       //cout << "Inside while in tasks" << endl;
        if(fileLine[0] == '#')  // skip comment lines
           continue;
        else{
@@ -104,6 +109,7 @@ void Controller::initialize_tasks(string filename){
 	  double x = atof(vstrings[0].c_str());
      	  double y = atof(vstrings[1].c_str());
 	  beliefs->getAgentState()->addTask(x,y);
+	  ROS_DEBUG_STREAM("Added task " << x << ", " << y);
        }
      }
 }
@@ -117,21 +123,17 @@ Controller::Controller(string advisor_config, string task_config, string action_
 
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
-            beliefs = new Beliefs(30,26,2);
+            beliefs = new Beliefs(120,120,2);
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
 
 	    // Initialize the tasks from a config file
-	    //initialize_tasks(task_config);
+	    initialize_tasks(task_config);
 
 	    // Initialize robot parameters from a config file
 	    //initialize_actions(action_config);
-	    // create a dummy task for testing
-	    beliefs->getAgentState()->addTask(20,19);
-	    //beliefs->getAgentState()->addTask(25,19);
-	    beliefs->getAgentState()->addTask(9,19);
-	    beliefs->getAgentState()->addTask(25,19);
+
 	    // Initialize current task
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
 	    
@@ -143,10 +145,10 @@ Controller::Controller(string advisor_config, string task_config, string action_
 void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
       beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
 	//*********** Goal reached, switch task and learn spatial model from previous task ********************************
-  	if (beliefs->getAgentState()->getDistanceToTarget() < 0.3){
+  	if (beliefs->getAgentState()->isTaskComplete()){
 		ROS_DEBUG("Target Achieved!!");
 		//Learn spatial model only on tasks completed successfully
-		learnSpatialModel(beliefs->getAgentState()->getCurrentTask());
+		learnSpatialModel(beliefs->getAgentState());
 		//Clear existing task
     		beliefs->getAgentState()->finishTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
@@ -155,8 +157,8 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
 		return;
 	}
 	//********************* Decision limit reached, skip task ***************************************  
-  	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 250){
-		ROS_DEBUG("Controller.cpp decisionCount > 250 , skipping task");
+  	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
+		ROS_DEBUG("Controller.cpp decisionCount > 500 , skipping task");
     		beliefs->getAgentState()->skipTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
@@ -187,24 +189,33 @@ FORRAction Controller::decide() {
 //
 //
 
-void Controller::learnSpatialModel(Task* completedTask){
+void Controller::learnSpatialModel(AgentState* agentState){
+ Task* completedTask = agentState->getCurrentTask();
  vector<Position> *pos_hist = completedTask->getPositionHistory();
  vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
+ vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
  bool trails = true;
  bool conveyors = true;
  bool regions = true;
+ bool doors = true;
  
   if(trails){
-    	beliefs->getSpatialModel()->getTrails()->updateTrails(completedTask);
+    	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
 	beliefs->getSpatialModel()->getTrails()->resetChosenTrail();
   }
   if(conveyors){
 	beliefs->getSpatialModel()->getWaypoints()->populateGridFromPositionHistory(pos_hist);
   }
   if(regions){
-	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist); 
-	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);	
+	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist);
+	beliefs->getSpatialModel()->getAbstractMap()->clearAllExits();
+	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);
+	beliefs->getSpatialModel()->getAbstractMap()->learnExits(trails_trace);
+  }
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  if(doors){
+	beliefs->getSpatialModel()->getDoors()->learnDoors(circles);
   }
 }
 
@@ -223,13 +234,18 @@ FORRAction Controller::FORRDecision()
     if(!tierOneDecision(decision)){
 	ROS_DEBUG("Decision to be made by t3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	//decision->type = FORWARD;
-	//decision->parameter = 5;	
+	//decision->parameter = 5;
 	tierThreeDecision(decision);
+	decisionStats->decisionTier = 3;
     }
-    
+    //cout << "decisionTier = " << decisionStats->decisionTier << endl;
+    //ROS_DEBUG("After decision made");
     beliefs->getAgentState()->getCurrentTask()->incrementDecisionCount();
+    //ROS_DEBUG("After incrementDecisionCount");
     beliefs->getAgentState()->getCurrentTask()->saveDecision(*decision);
+    //ROS_DEBUG("After saveDecision");
     beliefs->getAgentState()->clearVetoedActions();
+    //ROS_DEBUG("After clearVetoedActions");
     return *decision;
 }
 
@@ -244,6 +260,7 @@ bool Controller::tierOneDecision(FORRAction *decision){
   bool decisionMade = false;
   if(tier1->advisorVictory(decision)){ 
 	ROS_INFO_STREAM("Advisor victory has made a decision " << decision->type << " " << decision->parameter);
+	decisionStats->decisionTier = 1;
 	decisionMade = true;	
   }
   else{
@@ -253,6 +270,14 @@ bool Controller::tierOneDecision(FORRAction *decision){
 	ROS_INFO("Advisor not opposite will veto actions");
   	tier1->advisorNotOpposite();
   }
+  set<FORRAction> *vetoedActions = beliefs->getAgentState()->getVetoedActions();
+  std::stringstream vetoList;
+  set<FORRAction>::iterator it;
+  for(it = vetoedActions->begin(); it != vetoedActions->end(); it++){
+    vetoList << it->type << " " << it->parameter << ";";
+  }
+  decisionStats->vetoedActions = vetoList.str();
+  //cout << "vetoedActions = " << vetoList.str() << endl;
   return decisionMade;
 }
 
@@ -282,6 +307,8 @@ void Controller::tierThreeDecision(FORRAction *decision){
     if(advisor->get_name() == "BaseLine")         linearBaseline   = advisor->get_weight();
   }
        
+  std::stringstream advisorsList;
+  std::stringstream advisorCommentsList;
   cout << "processing advisors::"<< endl;
   for (advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
     Tier3Advisor *advisor = *it; 
@@ -290,12 +317,17 @@ void Controller::tierThreeDecision(FORRAction *decision){
     advisor->set_commenting();
     if(advisor->is_active() == false){
       cout << advisor->get_name() << " is inactive " << endl;
+      advisorsList << advisor->get_name() << " " << advisor->get_weight() << " " << advisor->is_active() << " " << advisor->is_commenting() << ";";
       continue;
     }
     if(advisor->is_commenting() == false){
       cout << advisor->get_name() << " is not commenting " << endl;
+      advisorsList << advisor->get_name() << " " << advisor->get_weight() << " " << advisor->is_active() << " " << advisor->is_commenting() << ";";
       continue;
     }
+
+    advisorsList << advisor->get_name() << " " << advisor->get_weight() << " " << advisor->is_active() << " " << advisor->is_commenting() << ";";
+
     cout << "Before commenting " << endl;
     comments = advisor->allAdvice();
     cout << "after commenting " << endl;
@@ -309,6 +341,9 @@ void Controller::tierThreeDecision(FORRAction *decision){
       cout << "<" << advisor->get_name() << "," << iterator->first.type << "," << iterator->first.parameter << "> : " << iterator->second << endl; 
       weight = advisor->get_weight();
       cout << "Weight for this advisor : " << weight << endl;
+
+      advisorCommentsList << advisor->get_name() << " " << iterator->first.type << " " << iterator->first.parameter << " " << iterator->second << ";";
+
       if( allComments.find(iterator->first) == allComments.end()){
 	    allComments[iterator->first] =  iterator->second * weight;
       }
@@ -345,6 +380,9 @@ void Controller::tierThreeDecision(FORRAction *decision){
   int random_number = rand() % (best_decisions.size());
     
   (*decision) = best_decisions.at(random_number);
+  decisionStats->advisors = advisorsList.str();
+  decisionStats->advisorComments = advisorCommentsList.str();
+  //cout << " advisors = " << decisionStats->advisors << "\nadvisorComments = " << decisionStats->advisorComments << endl;
 }
 
 
