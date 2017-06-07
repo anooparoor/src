@@ -109,7 +109,7 @@ void Controller::initialize_tasks(string filename){
 	  double x = atof(vstrings[0].c_str());
      	  double y = atof(vstrings[1].c_str());
 	  beliefs->getAgentState()->addTask(x,y);
-	  ROS_DEBUG_STREAM("Added task " << x << ", " << y);
+	  ROS_DEBUG_STREAM("Task:" << x << " " << y << endl);
        }
      }
 }
@@ -123,7 +123,8 @@ Controller::Controller(string advisor_config, string task_config, string action_
 
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
-            beliefs = new Beliefs(120,120,2);
+            //beliefs = new Beliefs(120,120,2);
+            beliefs = new Beliefs(48.5,36.5,2);
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
@@ -136,7 +137,6 @@ Controller::Controller(string advisor_config, string task_config, string action_
 
 	    // Initialize current task
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-	    
 	    tier1 = new Tier1Advisor(beliefs);
 }
 

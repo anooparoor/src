@@ -156,7 +156,7 @@ class GaussianCrowdModel:
 	print "returning density data"
         return density_data
 
-    def mean(self):
+    #def mean(self):
 	
 		
     def predict(self):

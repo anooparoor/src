@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<Project 
+	scene="openOfficeEmpty/openOfficeS.xml" 
+	behavior="openOfficeEmpty/openOfficeB.xml" 
+	view="openOfficeEmpty/openOfficeV.xml" 
+	model="orca"
+	dumpPath="images/test"
+/>

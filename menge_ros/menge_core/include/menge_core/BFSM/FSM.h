@@ -361,6 +361,12 @@ namespace Menge {
 			 */
 			float distanceFromObstacle(float angle, float range_max, Agents::BaseAgent * agent);
 
+			float distanceFromAgent(float angle, float range_max, Agents::BaseAgent * agent);
+			float nearAgentDistance(Vector2 start, Vector2 end);
+			float intersect(Vector2 start, Vector2 end, Vector2 circle, float radius);
+			bool in_between(Vector2 start, Vector2 point, Vector2 end);
+
+
 			friend FSM * buildFSM( FSMDescrip & fsmDescrip, Agents::SimulatorInterface * sim, bool VERBOSE );
 
 			/*!

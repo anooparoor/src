@@ -231,6 +231,6 @@ class GaussianCrowdModel:
 	    self.training_y = np.append(self.training_y,data[-1])
 
 
-crowd_model = GaussianCrowdModel(40,40,10)
+crowd_model = GaussianCrowdModel(40,30,10)
 crowd_model.listen()
 

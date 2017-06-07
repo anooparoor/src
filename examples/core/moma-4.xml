@@ -2,7 +2,7 @@
 
 <Project 
 	scene="moma-4/moma-4S.xml" 
-	behavior="moma-4/moma-4B_new.xml" 
+	behavior="moma-4/moma-4B.xml" 
 	view="moma-4/moma-4V.xml" 
 	model="orca"
 	dumpPath="images/test"

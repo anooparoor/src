@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<BFSM>
+	<GoalSet id="0">
+		<Goal type="AABB" id="0" min_x="41" max_x="43"  min_y="29" max_y="31" weight="1.0"/>
+		<Goal type="AABB" id="1" min_x="5" max_x="7"  min_y="5" max_y="7" weight="1.0"/>
+		<Goal type="AABB" id="2" min_x="5" max_x="7"  min_y="29" max_y="31" weight="1.0"/>
+		<Goal type="AABB" id="3" min_x="41" max_x="43"  min_y="5" max_y="7" weight="1.0"/>
+		<Goal type="AABB" id="4" min_x="17" max_x="19"  min_y="17" max_y="19" weight="1.0"/>
+		<Goal type="AABB" id="5" min_x="29" max_x="30"  min_y="17" max_y="19" weight="1.0"/>
+	</GoalSet>
+	
+	<!-- crowd states -->
+	<State name="a" final="0" >
+		<GoalSelector type="weighted" goal_set="0"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+	<State name="b" final="0">
+		<GoalSelector type="weighted" goal_set="0"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+	
+
+	<Transition from="a" to="b" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+	<Transition from="b" to="a" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+
+
+</BFSM>
