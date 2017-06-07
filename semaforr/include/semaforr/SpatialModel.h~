@@ -10,6 +10,7 @@
 #include <FORRAbstractMap.h>
 #include <FORRTrails.h>
 #include <FORRWaypoints.h>
+#include <FORRDoors.h>
 
 class SpatialModel{
 
@@ -19,16 +20,19 @@ public:
 		//trace = new FORRTrace();
 		trails = new FORRTrails();
 		waypoints = new FORRWaypoints(width, height, granularity);
+		doors = new FORRDoors();
 	};
 
         FORRAbstractMap* getAbstractMap(){return abstract_map;}
 	//FORRTrace* getTrace(){return trace;}
 	FORRTrails* getTrails(){return trails;}
 	FORRWaypoints* getWaypoints(){return waypoints;}
+	FORRDoors* getDoors(){return doors;}
 
 private:
 	FORRAbstractMap *abstract_map;
         //FORRTrace *trace;
 	FORRTrails *trails;
 	FORRWaypoints *waypoints;
+	//FORRDoors *doors;
 };

@@ -26,6 +26,7 @@ using namespace std;
 //each trail (cleaned path) gets loaded in at the same time as the wall distance vectors
 //for that point to minimize confusion
 class TrailMarker{
+public:
   CartesianPoint coordinates;
   vector<CartesianPoint> wallVectorEndpoints;
 TrailMarker(CartesianPoint c, vector<CartesianPoint> &v): coordinates(c), wallVectorEndpoints(v){}
@@ -44,7 +45,7 @@ class FORRTrails{
   int doesTrailHaveVisiblePointToTarget(CartesianPoint target_point, int trail_index, AgentState *agentState);
 
   //
-  void updateTrails(Task *current);
+  void updateTrails(AgentState *agentState);
   
   CartesianPoint getFurthestVisiblePointOnChosenTrail(AgentState *agentState);
 
@@ -54,12 +55,13 @@ class FORRTrails{
 
   void printTrails();
   
- FORRTrails(): chosen_trail(-1) {}  
+  FORRTrails(): chosen_trail(-1) {}  
   
   void setDirection(DIRECTION d){dir = d;}
   
   vector<TrailMarker> getTrail(int i){ return trails[i]; }
-  
+  vector< vector< TrailMarker> > getTrails(){ return trails; }
+
   int getSize(){return trails.size();}
   
   void setChosenTrail(int n){ chosen_trail = n;}

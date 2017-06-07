@@ -11,10 +11,11 @@
 # include "FORRAction.h"
 # include <cmath>
 # include <iostream>
-# include "FORRWall.h"
 # include <cstdlib>
 # include <time.h>
 # include <utility>
+# include <limits>
+# include <sensor_msgs/LaserScan.h>
 
 using std::set;
   
@@ -89,8 +90,9 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
     result[forrAction] = adviceStrength;
   } 
   //if(result.size() > 1){
-  //normalize(&result);
-  rank(&result);
+  normalize(&result);
+  //rank(&result);
+  //standardize(&result);
   //}
   return result;
 }
@@ -99,7 +101,7 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
 //normalizing from 0 to 10
 void Tier3Advisor::
 normalize(map <FORRAction, double> * result){
-  double max = -1000, min = 1000;
+  double max = -std::numeric_limits<double>::infinity(), min = std::numeric_limits<double>::infinity();
   map<FORRAction, double>::iterator itr;
   for(itr = result->begin(); itr != result->end() ; itr++){
     if(max < itr->second)  max = itr->second;
@@ -136,20 +138,53 @@ rank(map <FORRAction, double> *result){
   }
 }
 
+//standardize the comments by converting to a z-score
+void Tier3Advisor::
+standardize(map <FORRAction, double> * result){
+  double mean = 0, count = 0, stdDev = 0;
+  map<FORRAction, double>::iterator itr;
+  for(itr = result->begin(); itr != result->end() ; itr++){
+    mean += itr->second;
+    count++;
+  }
+  mean = (mean / count);
+
+  for(itr = result->begin(); itr != result->end() ; itr++){
+    stdDev += pow((itr->second - mean), 2);
+  }
+  stdDev = sqrt(stdDev / count);
+  if(stdDev != 0) {
+    for(itr = result->begin(); itr != result->end() ; itr++){
+      cout << "Before : " << itr->second << endl;
+      itr->second = ((itr->second - mean)/stdDev)+1000;
+    }
+  }
+  else {
+    for(itr = result->begin(); itr != result->end() ; itr++){
+      cout << "Before : " << itr->second << endl;
+      itr->second = 1000;
+    }
+  }
+}
+
 // factory definition
 Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active){
   if(name == "Greedy")
     return new Tier3Greedy(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ObstacleAvoid")
     return new Tier3AvoidObstacle(beliefs, name, description, weight, magic_init, is_active);
-  else if(name == "CloseIn")
-    return new Tier3CloseIn(beliefs, name, description, weight, magic_init, is_active);
+  //else if(name == "CloseIn")
+    //return new Tier3CloseIn(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BigStep")
     return new Tier3BigStep(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "AvoidLeaf")
     return new Tier3AvoidLeaf(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "AvoidLeafRotation")
     return new Tier3AvoidLeafRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "AvoidLeafField")
+    return new Tier3AvoidLeafField(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "AvoidLeafFieldRotation")
+    return new Tier3AvoidLeafFieldRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "Explorer")
     return new Tier3Explorer(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BaseLine")
@@ -158,12 +193,12 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
     return new Tier3GreedyRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ObstacleAvoidRotation")
     return new Tier3AvoidObstacleRotation(beliefs, name, description, weight, magic_init, is_active);
-  else if(name == "CloseInRotation")
-    return new Tier3CloseInRotation(beliefs, name, description, weight, magic_init, is_active);
+  //else if(name == "CloseInRotation")
+    //return new Tier3CloseInRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BigStepRotation")
     return new Tier3BigStepRotation(beliefs, name, description, weight, magic_init, is_active);
-  //else if(name == "GoAroundRotation")
-    //return new Tier3GoAroundRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "GoAroundRotation")
+    return new Tier3GoAroundRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ExplorerRotation")
     return new Tier3ExplorerRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "BaseLineRotation")
@@ -196,19 +231,21 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
 // Constructors 
 Tier3Greedy::Tier3Greedy (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3AvoidObstacle::Tier3AvoidObstacle(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
-Tier3CloseIn::Tier3CloseIn(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+//Tier3CloseIn::Tier3CloseIn(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3BigStep::Tier3BigStep(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};  
 Tier3AvoidLeaf::Tier3AvoidLeaf(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
+Tier3AvoidLeafField::Tier3AvoidLeafField(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3Explorer::Tier3Explorer(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3BaseLine::Tier3BaseLine (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 //Tier3AvoidRobot::Tier3AvoidRobot (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 
 Tier3GreedyRotation::Tier3GreedyRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3AvoidObstacleRotation::Tier3AvoidObstacleRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
-Tier3CloseInRotation::Tier3CloseInRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+//Tier3CloseInRotation::Tier3CloseInRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3BigStepRotation::Tier3BigStepRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
-//Tier3GoAroundRotation::Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
+Tier3GoAroundRotation::Tier3GoAroundRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3AvoidLeafRotation::Tier3AvoidLeafRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
+Tier3AvoidLeafFieldRotation::Tier3AvoidLeafFieldRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3ExplorerRotation::Tier3ExplorerRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3BaseLineRotation::Tier3BaseLineRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 //Tier3AvoidRobotRotation::Tier3AvoidRobotRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
@@ -226,19 +263,21 @@ Tier3TrailFinderRotation::Tier3TrailFinderRotation (Beliefs *beliefs, string nam
 // Default dummy constructors
 Tier3Greedy::Tier3Greedy(): Tier3Advisor() {};
 Tier3AvoidObstacle::Tier3AvoidObstacle(): Tier3Advisor() {};
-Tier3CloseIn::Tier3CloseIn(): Tier3Advisor() {};
+//Tier3CloseIn::Tier3CloseIn(): Tier3Advisor() {};
 Tier3BigStep::Tier3BigStep(): Tier3Advisor() {};
 Tier3AvoidLeaf::Tier3AvoidLeaf(): Tier3Advisor() {};
+Tier3AvoidLeafField::Tier3AvoidLeafField(): Tier3Advisor() {};
 Tier3Explorer::Tier3Explorer(): Tier3Advisor() {};
 //Tier3AvoidRobot::Tier3AvoidRobot(): Tier3Advisor() {};
 Tier3BaseLine::Tier3BaseLine(): Tier3Advisor() {};
 
 Tier3GreedyRotation::Tier3GreedyRotation(): Tier3Advisor() {};
 Tier3AvoidObstacleRotation::Tier3AvoidObstacleRotation(): Tier3Advisor() {};
-Tier3CloseInRotation::Tier3CloseInRotation(): Tier3Advisor() {};
+//Tier3CloseInRotation::Tier3CloseInRotation(): Tier3Advisor() {};
 Tier3BigStepRotation::Tier3BigStepRotation(): Tier3Advisor() {};
-//Tier3GoAroundRotation::Tier3GoAroundRotation(): Tier3Advisor() {};
+Tier3GoAroundRotation::Tier3GoAroundRotation(): Tier3Advisor() {};
 Tier3AvoidLeafRotation::Tier3AvoidLeafRotation(): Tier3Advisor() {};
+Tier3AvoidLeafFieldRotation::Tier3AvoidLeafFieldRotation(): Tier3Advisor() {};
 Tier3ExplorerRotation::Tier3ExplorerRotation(): Tier3Advisor() {};
 //Tier3AvoidRobotRotation::Tier3AvoidRobotRotation(): Tier3Advisor() {};
 Tier3BaseLineRotation::Tier3BaseLineRotation(): Tier3Advisor() {};
@@ -296,7 +335,7 @@ double Tier3RegionFinderLinear::actionComment(FORRAction action){
 
   double metric = 0;
   for(int i = 0; i < nearCircles.size(); i++){
-    if(beliefs->getSpatialModel()->getAbstractMap()->isLeaf(nearCircles[i]) and nearCircles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+    if(nearCircles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
       cout << "RegionFinder: Found Target Region !" << endl;
       metric += pow(expectedPosition.getDistance(nearCircles[i].getCenter().get_x(), nearCircles[i].getCenter().get_y()), 2);
     }
@@ -377,7 +416,7 @@ double Tier3RegionFinderRotation::actionComment(FORRAction action){
 
   double metric = 0;
   for(int i = 0; i < nearCircles.size(); i++){
-    if(beliefs->getSpatialModel()->getAbstractMap()->isLeaf(nearCircles[i]) and nearCircles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+    if(nearCircles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
       cout << "RegionFinderRotation: Found Target Region !" << endl;
       metric += pow(expectedPosition.getDistance(nearCircles[i].getCenter().get_x(), nearCircles[i].getCenter().get_y()), 2);
     }
@@ -533,7 +572,7 @@ void Tier3ExitFinderRotation::set_commenting(){
     advisor_commenting = false;
   
 }
-
+/*
 //CloseIn : When target is nearby, distance is within 80 units, go towards it!
 double Tier3CloseIn::actionComment(FORRAction action){
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
@@ -578,7 +617,7 @@ void Tier3CloseInRotation::set_commenting(){
   else
     advisor_commenting = true;
 }
-
+*/
 /*
 double Tier3AvoidRobot::actionComment(FORRAction action){
   double result;
@@ -876,6 +915,166 @@ double Tier3AvoidLeafRotation::actionComment(FORRAction action){
   return metric;
 }
 
+void Tier3AvoidLeafField::set_commenting(){
+  //cout << "In avoid leaf set commenting " << endl;
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  bool currPosInCircleWithExit = false;
+  int robotCircle=-1, targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and ((circles[i]).getExits().size() >= 1)){
+      currPosInCircleWithExit = true;
+      robotCircle = i;
+    }
+  }
+
+  if(currPosInCircleWithExit == true and robotCircle != targetCircle)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3AvoidLeafField::actionComment(FORRAction action){
+  //cout << "In Avoid leaf " << endl;
+  double result;
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  int robotCircle=-1,targetCircle=-1;
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+  
+  vector<FORRExit> exits = circles[robotCircle].getExits();
+  //cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << endl;
+
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      //cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
+    }
+  }
+
+  //cout << "#neighbours found" << nearCircles.size() << endl; 
+
+  double metric = 0;
+  for(int i = 0; i < nearCircles.size(); i++){
+    if(beliefs->getSpatialModel()->getAbstractMap()->isLeaf(nearCircles[i]) and !(nearCircles[i].inCircle(targetPoint.get_x(), targetPoint.get_y()))){
+      //cout << "Avoid Leaf: Found deadend !" << endl;
+      metric += 1/(expectedPosition.getDistance(nearCircles[i].getCenter().get_x(), nearCircles[i].getCenter().get_y()));
+    }
+  }
+
+  return metric;
+}
+
+void Tier3AvoidLeafFieldRotation::set_commenting(){
+  //cout << "In region finder rotation set commenting " << endl;
+   vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+   Task *task = beliefs->getAgentState()->getCurrentTask();
+   CartesianPoint targetPoint (task->getX() , task->getY());
+   CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+   bool targetInCircle = false;
+   bool currPosInCircleWithExit = false;
+   int robotCircle=-1, targetCircle = -1;
+   
+   // check the preconditions for activating the advisor
+   for(int i = 0; i < circles.size() ; i++){
+     // check if the target point is in circle
+     if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+       targetInCircle = true;
+       targetCircle = i;
+     }
+     // check if the rob_pos is in a circle and the circle has atleast one exit
+     if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and ((circles[i]).getExits().size() >= 1)){
+       currPosInCircleWithExit = true;
+       robotCircle = i;
+     }
+   }
+   
+   if(currPosInCircleWithExit == true and robotCircle != targetCircle)
+     advisor_commenting = true;
+   else
+     advisor_commenting = false;
+}
+
+double Tier3AvoidLeafFieldRotation::actionComment(FORRAction action){
+  //cout << "In Avoid leaf Rotation" << endl;
+  double result;
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  int robotCircle=-1,targetCircle=-1;
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+  
+  vector<FORRExit> exits = circles[robotCircle].getExits();
+  //cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << endl;
+
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      //cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
+    }
+  }
+
+  //cout << "#neighbours found" << nearCircles.size() << endl; 
+
+  double metric = 0;
+  for(int i = 0; i < nearCircles.size(); i++){
+    if(beliefs->getSpatialModel()->getAbstractMap()->isLeaf(nearCircles[i]) and !(nearCircles[i].inCircle(targetPoint.get_x(), targetPoint.get_y()))){
+      //cout << "Avoid leaf Rotation: Found deadend !" << endl;
+      metric += 1/(expectedPosition.getDistance(nearCircles[i].getCenter().get_x(), nearCircles[i].getCenter().get_y()));
+    }
+  }
+
+  return metric;
+}
+
 // always on
 void Tier3Explorer::set_commenting(){
   advisor_commenting = true;
@@ -1000,6 +1199,7 @@ double Tier3TrailFinderLinear::actionComment(FORRAction action){
 
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
   double newDistance = expectedPosition.getDistance(target);
+  cout << (-1)* newDistance << endl;
   return newDistance *(-1); 
 }
 
@@ -1043,4 +1243,49 @@ void Tier3TrailFinderRotation::set_commenting(){
     // If the advisor is commenting that means a trail has been choosen and advisor will stick with it till the end of task 
     advisor_commenting = true;
   }
+}
+
+double Tier3GoAroundRotation::actionComment(FORRAction action){
+  // break up action into its components
+  FORRActionType actionType = action.type;
+  int intensity = action.parameter;
+  double comment_strength;
+  double avgRightDistanceVector = 0, avgLeftDistanceVector = 0;
+  sensor_msgs::LaserScan laserScan = beliefs->getAgentState()->getCurrentLaserScan();
+  // compute forward distance to obstacle
+  double centerDistanceVector = ( laserScan.ranges[((laserScan.ranges.size()/2)-1)] + laserScan.ranges[((laserScan.ranges.size()/2))] ) / 2;
+  // find average length of distance vectors on right and left sides
+  for(int i = 0; i < ((laserScan.ranges.size()/2)); i++){
+    double length = laserScan.ranges[i];
+    avgRightDistanceVector += length;
+  }
+  for(int i = (laserScan.ranges.size()/2); i < (laserScan.ranges.size()-1); i++){
+    double length = laserScan.ranges[i];
+    avgLeftDistanceVector += length;
+  }
+
+  avgRightDistanceVector = avgRightDistanceVector / (laserScan.ranges.size()/2);
+  avgLeftDistanceVector = avgLeftDistanceVector / (laserScan.ranges.size()/2);
+  // Comment strength is computed as the intensity of the rotation divided by the distance to the forward obstacle
+  if(avgRightDistanceVector > avgLeftDistanceVector && actionType == RIGHT_TURN) {
+    comment_strength = (intensity / centerDistanceVector);
+  }
+  else if(avgRightDistanceVector < avgLeftDistanceVector && actionType == RIGHT_TURN) {
+    comment_strength = -1 * (intensity / centerDistanceVector);
+  }
+  else if(avgRightDistanceVector > avgLeftDistanceVector && actionType == LEFT_TURN) {
+    comment_strength = -1 * (intensity / centerDistanceVector);
+  }
+  else if(avgRightDistanceVector < avgLeftDistanceVector && actionType == LEFT_TURN) {
+    comment_strength = (intensity / centerDistanceVector);
+  }
+  else if(avgRightDistanceVector = avgLeftDistanceVector) {
+    comment_strength = (intensity / centerDistanceVector);
+  }
+
+  return comment_strength;
+}
+  
+void Tier3GoAroundRotation::set_commenting(){
+  advisor_commenting = true;
 }

@@ -62,7 +62,7 @@ public:
     init_pos_received = false;
     current.setX(0);current.setY(0);current.setTheta(0);
     previous.setX(0);previous.setY(0);previous.setTheta(0);
-    viz_ = new Visualizer(&nh_, con->getBeliefs());
+    viz_ = new Visualizer(&nh_, con);
   }
 
   // Callback function for pose message
@@ -122,6 +122,7 @@ public:
           //Sense the input and the current target to run the advisors and generate a decision
           if(action_complete){
 		ROS_INFO_STREAM("Action completed. Save sensor info, Current position: " << current.getX() << " " << current.getY() << " " << current.getTheta());
+		viz_->publishLog(semaforr_action);
 		controller->updateState(current, laserscan);
 		viz_->publish();
 		previous = current;
@@ -129,6 +130,7 @@ public:
 		mission_complete = controller->isMissionComplete();
 		if(mission_complete){
 			ROS_INFO("Mission completed");
+			viz_->publishLog(semaforr_action);
 			break;
 		}
 		else{
@@ -242,9 +244,9 @@ int main(int argc, char **argv) {
      string path = ros::package::getPath("semaforr");
      string advisor_config = path + "/config/advisors.conf";
      string action_config = path + "/config/action.conf";
-     string tasks_config = path + "/config/tasks.conf";
+     string tasks_config = path + "/config/target.conf";
 
-     Controller *controller = new Controller(advisor_config,tasks_config, action_config); 
+     Controller *controller = new Controller(advisor_config,tasks_config,action_config); 
 
      ROS_INFO("Controller Initialized");
      RobotDriver driver(nh, controller);

@@ -86,6 +86,8 @@ class AgentState
   }
 
   Position getCurrentPosition() { return currentPosition; }
+  vector<CartesianPoint> getCurrentLaserEndpoints() { return laserEndpoints; }
+
   void setCurrentSensor(Position p, sensor_msgs::LaserScan scan) { 
 	currentPosition = p;
      	currentLaserScan = scan;
@@ -95,7 +97,6 @@ class AgentState
 		currentTask->saveSensor(p,laserEndpoints);
 	}
   }
-  
   
   Task *getCurrentTask() { return currentTask; }
   void setCurrentTask(Task *task) { 
@@ -149,6 +150,14 @@ class AgentState
 	return status;
   }
 
+  bool isTaskComplete(){
+	bool status = false;
+	if (getDistanceToTarget() < 0.3){
+		status = true;
+	}
+	return status;
+  }
+
   sensor_msgs::LaserScan getCurrentLaserScan(){return currentLaserScan;}
   
   Position getExpectedPositionAfterAction(FORRAction action);
@@ -160,7 +169,7 @@ class AgentState
   // returns distance to obstacle in the direction of rotation
   double getDistanceToObstacle(double rotation_angle);
   double getDistanceToForwardObstacle(){
-	//ROS_DEBUG("in getDistance to forward obstacle");
+	ROS_DEBUG("in getDistance to forward obstacle");
 	if(currentLaserScan.ranges.size() == 0)
 		return 25;
 	return currentLaserScan.ranges[currentLaserScan.ranges.size()/2];

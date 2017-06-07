@@ -135,6 +135,45 @@ bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, Cartesi
 
 
 
+std::pair < std::vector<CartesianPoint>, std::vector< vector<CartesianPoint> > > AgentState::getCleanedTrailMarkers(){
+	std::pair < std::vector<CartesianPoint>, std::vector<vector<CartesianPoint> > > cleanedMarker;
+	// Change position history into CartesianPoint format
+	vector <CartesianPoint> pos_history;
+	for(std::vector<Position>::iterator it = currentTask->getPositionHistory()->begin() ; it != currentTask->getPositionHistory()->end(); ++it){
+		CartesianPoint pos(it->getX(),it->getY());
+		pos_history.push_back(pos);
+	}
+	// Initialize trail vectors
+	std::vector<CartesianPoint> trailPositions;
+	std::vector< vector<CartesianPoint> > trailLaserEndpoints;
+	//Get laser history
+	std::vector< vector<CartesianPoint> > laser_endpoints = *(currentTask->getLaserHistory());
+	// Push first point in path to trail
+	trailPositions.push_back(pos_history[0]);
+	trailLaserEndpoints.push_back(laser_endpoints[0]);
+	// Find the furthest point on path that can be seen from current position, push that point to trail and then move to that point
+	for(int i = 0; i < pos_history.size(); i++){
+		//cout << "First point: " << pos_history[i].get_x() << " " << pos_history[i].get_y() << endl;
+		for(int j = pos_history.size()-1; j > i; j--){
+			//cout << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
+			if(canSeePoint(laser_endpoints[i], pos_history[i], pos_history[j])) {
+				//cout << "CanSeePoint is true" << endl;
+				//cout << "Next point: " << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
+				trailPositions.push_back(pos_history[j]);
+				trailLaserEndpoints.push_back(laser_endpoints[j]);
+				i = j-1;
+			}
+		}
+	}
+	//cout << pos_history[pos_history.size()-1].get_x() << " " << pos_history[pos_history.size()-1].get_y() << endl;
+	//cout << trailPositions[trailPositions.size()-1].get_x() << " " << trailPositions[trailPositions.size()-1].get_y() << endl;
+	
+	cleanedMarker.first = trailPositions;
+	cleanedMarker.second = trailLaserEndpoints;
+	return cleanedMarker;
+}
+
+
 //returns true if there is a point that is "visible" by the wall distance vectors to some epsilon.  
 //A point is visible if the distance to a wall distance vector line is < epsilon.
 bool AgentState::canSeePoint(CartesianPoint point){
@@ -162,12 +201,20 @@ void AgentState::transformToEndpoints(){
 }
 
 double AgentState::getDistanceToObstacle(double rotation_angle){
+	ROS_DEBUG("In getDistanceToObstacle");
 	// one increment in the laser range scan is 1/3 degrees, i.e 0.005817 in radians  
 	int index = (int)(rotation_angle/(0.005817));
+	//ROS_DEBUG("In getDistanceToObstacle after index");
 	//shift the index in the positive
 	index = index + 330;
+	//ROS_DEBUG("In getDistanceToObstacle after index shift");
 	if(index < 0) index = 0;
+	//ROS_DEBUG("In getDistanceToObstacle after first if");
 	if(index > 659) index = 659;
+	//ROS_DEBUG("In getDistanceToObstacle after second if");
+	//cout << index << " " << currentLaserScan.ranges.size() << endl;
+	if(currentLaserScan.ranges.size() == 0) { return 25; }
+	//cout << currentLaserScan.ranges[index] << endl;
 	return currentLaserScan.ranges[index];
 }
 
