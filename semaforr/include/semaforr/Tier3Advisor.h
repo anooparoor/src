@@ -160,6 +160,64 @@ class Tier3ExitFinderRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
+class Tier3ExitFinderFieldLinear : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderfield advisor
+  Tier3ExitFinderFieldLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderFieldLinear();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderFieldLinear() {};
+  // TierExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3ExitFinderFieldRotation : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderfield advisor
+  Tier3ExitFinderFieldRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderFieldRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderFieldRotation() {};
+  // Tier3ExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3RegionLeaverLinear : public Tier3Advisor{
+  public:
+  // this is constructor for RegionLeaver advisor
+  Tier3RegionLeaverLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3RegionLeaverLinear();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3RegionLeaverLinear() {};
+  // TierRegionLeaver should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3RegionLeaverRotation : public Tier3Advisor{
+  public:
+  // this is constructor for RegionLeaver advisor
+  Tier3RegionLeaverRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3RegionLeaverRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3RegionLeaverRotation() {};
+  // Tier3RegionLeaver should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
 class Tier3RegionFinderLinear : public Tier3Advisor{
   public:
   // this is constructor for regionfinder advisor

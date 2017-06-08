@@ -10,7 +10,8 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <cmath> 
+#include <cmath>
+#include <ctime>
 
 #include "Controller.h"
 #include "FORRAction.h"
@@ -109,6 +110,9 @@ public:
      bool action_complete = true;
      bool mission_complete = false;
      FORRAction semaforr_action;
+     time_t initialTime, overallTime, computationTime;
+     double overallTimeSec=0, computationTimeSec=0;
+     initialTime = time(NULL);
      // Run the loop , the input sensing and the output beaming is asynchrounous
      while(nh_.ok()) {
 	  // If pos value is not received from menge wait
@@ -119,10 +123,12 @@ public:
           	// Sense input 
           	ros::spinOnce();	
 	  }
+          overallTimeSec = difftime(time(NULL),initialTime);
           //Sense the input and the current target to run the advisors and generate a decision
           if(action_complete){
 		ROS_INFO_STREAM("Action completed. Save sensor info, Current position: " << current.getX() << " " << current.getY() << " " << current.getTheta());
-		viz_->publishLog(semaforr_action);
+		viz_->publishLog(semaforr_action, overallTimeSec, computationTimeSec);
+                computationTime = time(NULL);
 		controller->updateState(current, laserscan);
 		viz_->publish();
 		previous = current;
@@ -130,7 +136,8 @@ public:
 		mission_complete = controller->isMissionComplete();
 		if(mission_complete){
 			ROS_INFO("Mission completed");
-			viz_->publishLog(semaforr_action);
+                        computationTimeSec = difftime(time(NULL),computationTime);
+			viz_->publishLog(semaforr_action, overallTimeSec, computationTimeSec);
 			break;
 		}
 		else{
@@ -140,6 +147,7 @@ public:
   			base_cmd = convert_to_vel(semaforr_action);
 			action_complete = false;
 		}
+                computationTimeSec = difftime(time(NULL),computationTime);
           }
           //send the drive command 
           cmd_vel_pub_.publish(base_cmd);

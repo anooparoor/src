@@ -81,6 +81,7 @@ class Tier3Advisor {
     virtual void set_commenting() = 0;
     void normalize(map <FORRAction, double> *);
     void rank(map <FORRAction, double> *);
+    void standardize(map <FORRAction, double> *);
     
     // Cannot use private since I am subclassing this class and I need all these member variables
  protected:
@@ -154,6 +155,64 @@ class Tier3ExitFinderRotation : public Tier3Advisor{
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
   virtual ~Tier3ExitFinderRotation() {};
   // Tier3Greedy should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3ExitFinderFieldLinear : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderfield advisor
+  Tier3ExitFinderFieldLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderFieldLinear();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderFieldLinear() {};
+  // TierExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3ExitFinderFieldRotation : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderfield advisor
+  Tier3ExitFinderFieldRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderFieldRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderFieldRotation() {};
+  // Tier3ExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3ExitFinderBoolLinear : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderbool advisor
+  Tier3ExitFinderBoolLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderBoolLinear();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderBoolLinear() {};
+  // TierExitFinderBool should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3ExitFinderBoolRotation : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderbool advisor
+  Tier3ExitFinderBoolRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderBoolRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderBoolRotation() {};
+  // Tier3ExitFinderBool should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();

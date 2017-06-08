@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "Beliefs.h"
 #include <sstream>
+#include <ctime>
 
 #include <ros/ros.h>
 #include <ros/console.h>
@@ -70,8 +71,8 @@ public:
 	//publish_log();
   }
 
-  void publishLog(FORRAction decision){
-	publish_log(decision);
+  void publishLog(FORRAction decision, clock_t overallTime, clock_t computationTime){
+	publish_log(decision, overallTime, computationTime);
   }
 
   void publish_target(){
@@ -209,9 +210,11 @@ public:
 	remaining_targets_pub_.publish(targets);
   }
 
-  void publish_log(FORRAction decision){
+  void publish_log(FORRAction decision, clock_t overallTime, clock_t computationTime){
 	ROS_DEBUG("Inside publish decision log!!");
 	std_msgs::String log;
+	double overallTimeSec = ((double)overallTime)/CLOCKS_PER_SEC;
+	double computationTimeSec = ((double)computationTime)/CLOCKS_PER_SEC;
 	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
 	double robotY = beliefs->getAgentState()->getCurrentPosition().getY();
 	double targetX;
@@ -302,14 +305,14 @@ public:
 	std::stringstream doorStream;
 	for(int i = 0; i < doors.size(); i++){
 		for(int j = 0; j < doors[i].size(); j++){
-			doorStream << doors[i].startPoint.getExitPoint().get_x() << " " << doors[i].startPoint.getExitPoint().get_y() << " " << doors[i].endPoint.getExitPoint().get_x() << " " << doors[i].endPoint.getExitPoint().get_y() << " " << doors[i].str << ", ";
+			doorStream << doors[i][j].startPoint.getExitPoint().get_x() << " " << doors[i][j].startPoint.getExitPoint().get_y() << " " << doors[i][j].endPoint.getExitPoint().get_x() << " " << doors[i][j].endPoint.getExitPoint().get_y() << " " << doors[i][j].str << ", ";
 		}
 		doorStream << ";";
 	}
 	ROS_DEBUG("After doors");
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str();// << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments;// << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
 	log.data = output.str();
 	stats_pub_.publish(log);
 	con->clearCurrentDecisionStats();

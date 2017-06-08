@@ -70,8 +70,8 @@ public:
 	//publish_log();
   }
 
-  void publishLog(FORRAction decision){
-	publish_log(decision);
+  void publishLog(FORRAction decision, double overallTimeSec, double computationTimeSec){
+	publish_log(decision, overallTimeSec, computationTimeSec);
   }
 
   void publish_target(){
@@ -209,7 +209,7 @@ public:
 	remaining_targets_pub_.publish(targets);
   }
 
-  void publish_log(FORRAction decision){
+  void publish_log(FORRAction decision, double overallTimeSec, double computationTimeSec){
 	ROS_DEBUG("Inside publish decision log!!");
 	std_msgs::String log;
 	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
@@ -309,7 +309,7 @@ public:
 	ROS_DEBUG("After doors");
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str();// << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments;// << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
 	log.data = output.str();
 	stats_pub_.publish(log);
 	con->clearCurrentDecisionStats();
