@@ -243,6 +243,7 @@ public:
 	string advisorComments = con->getCurrentDecisionStats()->advisorComments;
 	cout << "vetoedActions = " << vetoedActions << " decisionTier = " << decisionTier << " advisors = " << advisors << " advisorComments = " << advisorComments << endl;
 	vector< vector<int> > waypoints = beliefs->getSpatialModel()->getWaypoints()->getWaypoints();
+	std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
 
 	ROS_DEBUG("After decision statistics");
 	int decisionCount = -1;
@@ -296,9 +297,19 @@ public:
 		}
 		conveyorStream << ";";
 	}
+	ROS_DEBUG("After conveyors");
+
+	std::stringstream doorStream;
+	for(int i = 0; i < doors.size(); i++){
+		for(int j = 0; j < doors[i].size(); j++){
+			doorStream << doors[i].startPoint.getExitPoint().get_x() << " " << doors[i].startPoint.getExitPoint().get_y() << " " << doors[i].endPoint.getExitPoint().get_x() << " " << doors[i].endPoint.getExitPoint().get_y() << " " << doors[i].str << ", ";
+		}
+		doorStream << ";";
+	}
+	ROS_DEBUG("After doors");
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << conveyorStream.str();// << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str();// << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
 	log.data = output.str();
 	stats_pub_.publish(log);
 	con->clearCurrentDecisionStats();

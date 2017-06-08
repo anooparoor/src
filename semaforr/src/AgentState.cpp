@@ -221,18 +221,19 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 
 FORRAction AgentState::maxForwardAction(){
  	ROS_DEBUG("In maxforwardaction");
-	double error_margin = 1; //one meter margin from the wall
-	double forward_distance = getDistanceToForwardObstacle() - error_margin;
-	double forward_distance_left = getDistanceToObstacle(0.25) - error_margin;
-	double forward_distance_right = getDistanceToObstacle(-0.25) - error_margin;
+	double error_margin = 1; // margin from obstacles
+	double view = 0.8; // +view radians to -view radians view
 
- 	ROS_DEBUG_STREAM("Distances " << forward_distance << "," << forward_distance_left << "," << forward_distance_right);
+	double min_distance = getDistanceToObstacle(view);
 
-	double min_distance;
-	if(forward_distance_left >= forward_distance_right) min_distance = forward_distance_right;
- 	else min_distance = forward_distance_left;
-
-	if(forward_distance < min_distance) min_distance = forward_distance;
+	for(double angle = (-1)*view; angle > view; angle = angle + 0.005){
+		double distance = getDistanceToObstacle(angle);
+		if(distance < min_distance){
+			min_distance = distance;
+		} 
+	}
+	
+	min_distance = min_distance - error_margin;
 
 	ROS_DEBUG_STREAM("Forward obstacle distance " << min_distance);
 	if(min_distance > move[5])
@@ -320,8 +321,13 @@ FORRAction AgentState::moveTowards(){
 	intensity = 4;
       else
 	intensity = 5;
-      decision = FORRAction(FORWARD,intensity);
+      int max_allowed = maxForwardAction().parameter;
+      if(intensity > max_allowed){
+	 intensity = max_allowed;
+      }
+      decision = FORRAction(FORWARD, intensity);
     }
+    
     ROS_INFO_STREAM("Action choosen : " << decision.type << "," << decision.parameter);
     return decision;
 }

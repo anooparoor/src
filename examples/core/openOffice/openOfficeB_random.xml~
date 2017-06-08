@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<BFSM>
+	<GoalSet id="0">
+		<Goal type="point" id="0" x="42" y="30"/>
+		<Goal type="point" id="1" x="6" y="30"/>
+		<Goal type="point" id="2" x="42" y="6"/>		
+	</GoalSet>
+	<GoalSet id="1">
+		<Goal type="point" id="0" x="6" y="6"/>		
+	</GoalSet>
+	
+	<!-- crowd states -->
+	<State name="walk" final="0" >
+		<GoalSelector type="random" goal_set="0"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+	<State name="gohome" final="0">
+		<GoalSelector type="explicit" goal_set="1" goal="0"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+	
+
+	<Transition from="walk" to="gohome" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+	<Transition from="gohome" to="walk" >
+		<Condition type="goal_reached"  distance="0.2"/>
+	</Transition>
+	
+</BFSM>
