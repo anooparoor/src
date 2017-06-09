@@ -189,30 +189,30 @@ class Tier3ExitFinderFieldRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-class Tier3ExitFinderBoolLinear : public Tier3Advisor{
+class Tier3RegionLeaverLinear : public Tier3Advisor{
   public:
-  // this is constructor for exitfinderbool advisor
-  Tier3ExitFinderBoolLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // this is constructor for RegionLeaver advisor
+  Tier3RegionLeaverLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3ExitFinderBoolLinear();
+  Tier3RegionLeaverLinear();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3ExitFinderBoolLinear() {};
-  // TierExitFinderBool should inherit constructor of the Tier3Advisor class, nothing more is needed
+  virtual ~Tier3RegionLeaverLinear() {};
+  // TierRegionLeaver should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
 
-class Tier3ExitFinderBoolRotation : public Tier3Advisor{
+class Tier3RegionLeaverRotation : public Tier3Advisor{
   public:
-  // this is constructor for exitfinderbool advisor
-  Tier3ExitFinderBoolRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // this is constructor for RegionLeaver advisor
+  Tier3RegionLeaverRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3ExitFinderBoolRotation();
+  Tier3RegionLeaverRotation();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3ExitFinderBoolRotation() {};
-  // Tier3ExitFinderBool should inherit constructor of the Tier3Advisor class, nothing more is needed
+  virtual ~Tier3RegionLeaverRotation() {};
+  // Tier3RegionLeaver should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();

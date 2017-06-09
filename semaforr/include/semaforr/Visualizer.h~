@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include "Beliefs.h"
 #include <sstream>
-#include <ctime>
 
 #include <ros/ros.h>
 #include <ros/console.h>
@@ -71,8 +70,8 @@ public:
 	//publish_log();
   }
 
-  void publishLog(FORRAction decision, clock_t overallTime, clock_t computationTime){
-	publish_log(decision, overallTime, computationTime);
+  void publishLog(FORRAction decision, double overallTimeSec, double computationTimeSec){
+	publish_log(decision, overallTimeSec, computationTimeSec);
   }
 
   void publish_target(){
@@ -210,11 +209,9 @@ public:
 	remaining_targets_pub_.publish(targets);
   }
 
-  void publish_log(FORRAction decision, clock_t overallTime, clock_t computationTime){
+  void publish_log(FORRAction decision, double overallTimeSec, double computationTimeSec){
 	ROS_DEBUG("Inside publish decision log!!");
 	std_msgs::String log;
-	double overallTimeSec = ((double)overallTime)/CLOCKS_PER_SEC;
-	double computationTimeSec = ((double)computationTime)/CLOCKS_PER_SEC;
 	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
 	double robotY = beliefs->getAgentState()->getCurrentPosition().getY();
 	double targetX;

@@ -21,8 +21,8 @@ ExplorerRotation        Advisor-that-favors-places-that-have-not-been-visited   
 BaseLine                Advisor-that-gives-random-comments                          f  0.05 0 0 0 0
 BaseLineRotation        Advisor-that-gives-random-comments                          f  0.05 0 0 0 0
 #
-ExitFinderLinear        Advisor-that-moves-towards-exits                            t  0.05 0 0 0 0
-ExitFinderRotation      Advisor-that-moves-towards-exits                            t  0.05 0 0 0 0
+ExitFinderLinear        Advisor-that-moves-towards-exits                            f  0.05 0 0 0 0
+ExitFinderRotation      Advisor-that-moves-towards-exits                            f  0.05 0 0 0 0
 #
 ExitFinderFieldLinear   Advisor-that-moves-towards-closer-exits                     t  0.05 0 0 0 0
 ExitFinderFieldRotation Advisor-that-moves-towards-closer-exits                     t  0.05 0 0 0 0
@@ -32,8 +32,8 @@ RegionLeaverRotation    Advisor-that-leaves-a-region-without-the-target         
 #
 GoAroundRotation        Advisor-that-wants-to-turn-if-robot-has-obstacle-in-front   t  0.05 0 0 0 0
 #
-AvoidLeaf               Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
-AvoidLeafRotation       Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
+AvoidLeaf               Advisor-that-prefers-moves-in-general-direction-of-target   f  0.05 0 0 0 0
+AvoidLeafRotation       Advisor-that-prefers-moves-in-general-direction-of-target   f  0.05 0 0 0 0
 #
 AvoidLeafField          Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
 AvoidLeafFieldRotation  Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
