@@ -9,8 +9,8 @@ GreedyRotation         Advisor-favors-steps-that-will-get-robot-closer-to-target
 ObstacleAvoid          Advisor-that-does-not-like-robot-to-be-too-close-to-wall    t  0.05 10 -4 -.22 0
 ObstacleAvoidRotation  Advisor-that-does-not-like-robot-to-be-too-close-to-wall    t  0.05 10 -4 -.22 0
 #
-#CloseIn                Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
-#CloseInRotation        Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
+#CloseIn               Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
+#CloseInRotation       Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
 #
 BigStep                Advisor-that-favors-making-biggest-possible-steps           t  0.05 0 0 0 0
 BigStepRotation        Advisor-that-favors-making-biggest-possible-steps           t  0.05 0 0 0 0
@@ -26,11 +26,14 @@ ExitFinderRotation     Advisor-that-moves-towards-exits                         
 #
 GoAroundRotation       Advisor-that-wants-to-turn-if-robot-has-obstacle-in-front   t  0.05 0 0 0 0
 #
-AvoidLeaf              Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
-AvoidLeafRotation      Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
+AvoidLeaf              Advisor-that-prefers-moves-in-general-direction-of-target   f  0.05 0 0 0 0
+AvoidLeafRotation      Advisor-that-prefers-moves-in-general-direction-of-target   f  0.05 0 0 0 0
+#
+AvoidLeafField         Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
+AvoidLeafFieldRotation Advisor-that-prefers-moves-in-general-direction-of-target   t  0.05 0 0 0 0
 #
 RegionFinderLinear     Advisor-that-votes-to-go-into-a-region-which-has-target     t  0.05 0 0 0 0
-RegionFinderRotation     Advisor-that-votes-to-go-into-a-region-which-has-target   t  0.05 0 0 0 0
+RegionFinderRotation   Advisor-that-votes-to-go-into-a-region-which-has-target     t  0.05 0 0 0 0
 #
 WaypointFinderLinear   Advisor-that-follows-waypoints-generated-from-paths         t  0.05 0 0 0 0
 WaypointFinderRotation Advisor-that-follows-waypoints-generated-from-path          t  0.05 0 0 0 0

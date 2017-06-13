@@ -45,14 +45,9 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
   set<FORRAction> *vetoed_actions = beliefs->getAgentState()->getVetoedActions();
   set<FORRAction> *action_set;
 
-  bool inRotateMode;
+  bool inRotateMode = beliefs->getAgentState()->getRotateMode();
   cout << "Decision Count : " << beliefs->getAgentState()->getCurrentTask()->getDecisionCount() << endl;
   
-  if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() % 2 == 0)  
-        inRotateMode = true;
-  else  
-        inRotateMode = false;
-
   cout << "Rotation mode : " << inRotateMode << endl;
 
   if(inRotateMode){
@@ -90,8 +85,8 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
     result[forrAction] = adviceStrength;
   } 
   //if(result.size() > 1){
-  //normalize(&result);
-  rank(&result);
+  normalize(&result);
+  //rank(&result);
   //standardize(&result);
   //}
   return result;
@@ -1174,7 +1169,7 @@ void Tier3WaypointFinderLinear::set_commenting(){
 double Tier3WaypointFinderRotation::actionComment(FORRAction action){
   cout <<" Entered waypointfinder rotation." << endl;
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
-
+  cout <<" Expected position after action: " <<expectedPosition.getX() << " " << expectedPosition.getY() << endl;
   int grid_value = beliefs->getSpatialModel()->getWaypoints()->getGridValue(expectedPosition.getX(), expectedPosition.getY());
   cout << "grid value: "<<grid_value<<endl;
 

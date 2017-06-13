@@ -38,6 +38,7 @@ class AgentState
         action_set = new set<FORRAction>();
 	forward_set = new set<FORRAction>();
 	rotation_set = new set<FORRAction>();
+        rotateMode = true;
 
     	for(int i = 1; i < 5; i++){
       		action_set->insert(FORRAction(LEFT_TURN, i));
@@ -130,6 +131,7 @@ class AgentState
 	all_trace.push_back(trace);
       agenda.remove(currentTask);
     }
+    rotateMode = true;
     currentTask = NULL;
   }
 
@@ -186,6 +188,9 @@ class AgentState
 
   double getMovement(int para){return move[para];}
   double getRotation(int para){return rotate[para];}
+
+  bool getRotateMode(){return rotateMode;}
+  void setRotateMode(bool mode){rotateMode = mode;}
  
 
  private:
@@ -247,6 +252,9 @@ class AgentState
 
   //Converts current laser range scanner to endpoints
   void transformToEndpoints();
+
+  //Rotate mode tells if the t3 should rotate or move
+  bool rotateMode;
 
   //after linear move
   Position afterLinearMove(Position initialPosition, double distance);

@@ -124,7 +124,7 @@ Controller::Controller(string advisor_config, string task_config, string action_
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
             //beliefs = new Beliefs(120,120,2);
-            beliefs = new Beliefs(48.5,36.5,2);
+            beliefs = new Beliefs(49,37,2);
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
@@ -247,6 +247,13 @@ FORRAction Controller::FORRDecision()
     //ROS_DEBUG("After saveDecision");
     beliefs->getAgentState()->clearVetoedActions();
     //ROS_DEBUG("After clearVetoedActions");
+    if(decision->type == FORWARD or decision->type == PAUSE){
+	beliefs->getAgentState()->setRotateMode(true);
+    }
+    else{
+	beliefs->getAgentState()->setRotateMode(false);
+    }
+
     return *decision;
 }
 
