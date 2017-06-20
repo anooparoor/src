@@ -27,8 +27,8 @@ ExitFinderRotation      Advisor-that-moves-towards-exits                        
 ExitFinderFieldLinear   Advisor-that-moves-towards-closer-exits                     t  0.05 0 0 0 0
 ExitFinderFieldRotation Advisor-that-moves-towards-closer-exits                     t  0.05 0 0 0 0
 #
-RegionLeaverLinear      Advisor-that-leaves-a-region-without-the-target             t  0.05 0 0 0 0
-RegionLeaverRotation    Advisor-that-leaves-a-region-without-the-target             t  0.05 0 0 0 0
+RegionLeaverLinear      Advisor-that-leaves-a-region-without-the-target             f  0.05 0 0 0 0
+RegionLeaverRotation    Advisor-that-leaves-a-region-without-the-target             f  0.05 0 0 0 0
 #
 GoAroundRotation        Advisor-that-wants-to-turn-if-robot-has-obstacle-in-front   t  0.05 0 0 0 0
 #
@@ -46,3 +46,15 @@ WaypointFinderRotation  Advisor-that-follows-waypoints-generated-from-path      
 #
 TrailFinderLinear       Advisor-that-follows-previous-paths                         t  0.05 0 0 0 0
 TrailFinderRotation     Advisors-that-follows-previous-paths                        t  0.05 0 0 0 0
+#
+EnterDoorLinear         Advisor-that-follows-previous-paths                         f  0.05 0 0 0 0
+EnterDoorRotation       Advisors-that-follows-previous-paths                        f  0.05 0 0 0 0
+#
+ExitDoorLinear          Advisor-that-follows-previous-paths                         f  0.05 0 0 0 0
+ExitDoorRotation        Advisors-that-follows-previous-paths                        f  0.05 0 0 0 0
+#
+DoorAttractorLinear     Advisor-that-follows-previous-paths                         f  0.05 0 0 0 0
+DoorAttractorRotation   Advisors-that-follows-previous-paths                        f  0.05 0 0 0 0
+#
+NeighborDoorLinear      Advisor-that-follows-previous-paths                         f  0.05 0 0 0 0
+NeighborDoorRotation    Advisors-that-follows-previous-paths                        f  0.05 0 0 0 0
