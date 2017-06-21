@@ -152,14 +152,6 @@ class AgentState
 	return status;
   }
 
-  bool isTaskComplete(){
-	bool status = false;
-	if (getDistanceToTarget() < 0.3){
-		status = true;
-	}
-	return status;
-  }
-
   sensor_msgs::LaserScan getCurrentLaserScan(){return currentLaserScan;}
   
   Position getExpectedPositionAfterAction(FORRAction action);

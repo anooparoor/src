@@ -16,8 +16,6 @@
 #include <string>
 #include <sstream>
 
-
-
 using namespace std;
 
 #define CTRL_DEBUG true
@@ -84,6 +82,31 @@ void Controller::initialize_actions(string filename){
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Read from the map file and intialize planner
+//
+//
+void Controller::initialize_planner(string filename){
+	//Initialize map in cms 
+	// Need to move them to a config file
+	double length = 4800;//48 meters
+	double height = 3600;//36 meters
+	double bufferSize = 50;//0.5 meters
+	double proximity = 100;//1 meters
+	Map *map = new Map(length, height, bufferSize);
+	string address = "/home/anooparoor/catkin_ws/src/examples/core/openOffice/openOfficeS.xml";
+	map->readMapFromXML(address);
+	cout << "Finished reading map"<< endl;
+	
+	Graph *navGraph = new Graph(map, proximity);
+	cout << "initialized nav graph" << endl;
+	navGraph->printGraph();
+	Node n;
+        planner = new PathPlanner(navGraph, *map, n,n);
+	cout << "initialized planner" << endl;
+}
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Read from the config file and intialize tasks
@@ -119,7 +142,7 @@ void Controller::initialize_tasks(string filename){
 // Initialize the controller and setup messaging to ROS
 //
 //
-Controller::Controller(string advisor_config, string task_config, string action_config){
+Controller::Controller(string advisor_config, string task_config, string action_config, string planner_config){
 
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
@@ -135,35 +158,46 @@ Controller::Controller(string advisor_config, string task_config, string action_
 	    // Initialize robot parameters from a config file
 	    //initialize_actions(action_config);
 
-	    // Initialize current task
+	    // Initialize planner
+	    initialize_planner(planner_config);
+
+	    // Initialize current task, and robot initial position
+	    Position initialPosition(10,20,0);
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
+	    beliefs->getAgentState()->getCurrentTask()->generateWaypoints(initialPosition, planner);
 	    tier1 = new Tier1Advisor(beliefs);
 }
 
 
 // Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
 void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
-      beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
-	//*********** Goal reached, switch task and learn spatial model from previous task ********************************
-  	if (beliefs->getAgentState()->isTaskComplete()){
-		ROS_DEBUG("Target Achieved!!");
+        beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
+	bool waypointReached = beliefs->getAgentState()->getCurrentTask()->isWaypointComplete(current);
+	bool taskCompleted = beliefs->getAgentState()->getCurrentTask()->isTaskComplete(current);
+
+	if(taskCompleted == true){
+		ROS_DEBUG("Target Achieved, moving on to next target!!");
 		//Learn spatial model only on tasks completed successfully
 		learnSpatialModel(beliefs->getAgentState());
-		//Clear existing task
-    		beliefs->getAgentState()->finishTask();
+		//Clear existing task and associated plans
+	    	beliefs->getAgentState()->finishTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
+			beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
 		}
-		return;
-	}
-	//********************* Decision limit reached, skip task ***************************************  
-  	if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
+	} 
+	else if(waypointReached == true){
+		ROS_DEBUG("Waypoint reached, but task still incomplete, switching to next waypoint!!");
+		beliefs->getAgentState()->getCurrentTask()->setupNextWaypoint();
+	}  
+	//********************* Task Decision limit reached, skip task ********************
+	else if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
 		ROS_DEBUG("Controller.cpp decisionCount > 500 , skipping task");
-    		beliefs->getAgentState()->skipTask();
+	    	beliefs->getAgentState()->skipTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
+			beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
 		}
-		return;
   	}
 }
 
@@ -231,7 +265,6 @@ FORRAction Controller::FORRDecision()
     ROS_DEBUG("In FORR decision");
     FORRAction *decision = new FORRAction();
     // Basic semaFORR three tier decision making architecture 
-    
     if(!tierOneDecision(decision)){
 	ROS_DEBUG("Decision to be made by t3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	//decision->type = FORWARD;

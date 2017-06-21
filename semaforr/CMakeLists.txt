@@ -119,6 +119,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${PROJECT_SOURCE_DIR}/include/semaforr/
+  ${PROJECT_SOURCE_DIR}/include/semaforr/planner/
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -127,7 +128,8 @@ include_directories(
 file(
 	GLOB_RECURSE
 	source_files
-	${PROJECT_SOURCE_DIR}/src/*.cpp  
+	${PROJECT_SOURCE_DIR}/src/*.cpp
+	${PROJECT_SOURCE_DIR}/include/semaforr/planner/*.h  
 	${PROJECT_SOURCE_DIR}/include/semaforr/*.h
 )
 

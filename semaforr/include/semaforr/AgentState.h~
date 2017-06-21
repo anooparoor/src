@@ -38,7 +38,7 @@ class AgentState
         action_set = new set<FORRAction>();
 	forward_set = new set<FORRAction>();
 	rotation_set = new set<FORRAction>();
-        inRotateMode = true;
+        rotateMode = true;
 
     	for(int i = 1; i < 5; i++){
       		action_set->insert(FORRAction(LEFT_TURN, i));
@@ -131,7 +131,7 @@ class AgentState
 	all_trace.push_back(trace);
       agenda.remove(currentTask);
     }
-    inRotateMode = true;
+    rotateMode = true;
     currentTask = NULL;
   }
 
@@ -149,14 +149,6 @@ class AgentState
 	if(getAgenda().size() == 0 && currentTask == NULL){
 		status = true;
  	}
-	return status;
-  }
-
-  bool isTaskComplete(){
-	bool status = false;
-	if (getDistanceToTarget() < 0.3){
-		status = true;
-	}
 	return status;
   }
 

@@ -17,6 +17,7 @@
 #include "Tier1Advisor.h"
 #include "Tier3Advisor.h"
 #include "FORRActionStats.h"
+#include "planner/PathPlanner.h"
 
 #include <fstream>
 #include <ros/ros.h>
@@ -34,7 +35,7 @@ typedef std::vector<Tier3Advisor*>::iterator advisor3It;
 class Controller {
 public:
 
-  Controller(string, string, string);
+  Controller(string, string, string, string);
   
   //main sense decide loop, receives the input messages and calls the FORRDecision function
   FORRAction decide();
@@ -70,12 +71,14 @@ private:
   void initialize_advisors(std::string);
   void initialize_tasks(std::string);
   void initialize_actions(std::string);
+  void initialize_planner(std::string);
   
   // Knowledge component of robot
   Beliefs *beliefs;
 
   // An ordered list of advisors that are consulted by Controller::FORRDecision
   Tier1Advisor *tier1;
+  PathPlanner *planner;
   std::vector<Tier3Advisor*> tier3Advisors;
   
   // Checks if a given advisor is active
