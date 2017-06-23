@@ -194,7 +194,6 @@ void Controller::learnSpatialModel(AgentState* agentState){
  vector<Position> *pos_hist = completedTask->getPositionHistory();
  vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
- vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
  bool trails = true;
  bool conveyors = true;
  bool regions = true;
@@ -207,6 +206,7 @@ void Controller::learnSpatialModel(AgentState* agentState){
   if(conveyors){
 	beliefs->getSpatialModel()->getWaypoints()->populateGridFromPositionHistory(pos_hist);
   }
+ vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
   if(regions){
 	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist);
 	beliefs->getSpatialModel()->getAbstractMap()->clearAllExits();
