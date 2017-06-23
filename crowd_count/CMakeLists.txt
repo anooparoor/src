@@ -103,7 +103,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES test_george
-#  CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy
+   CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy
 #  DEPENDS system_lib
 )
 

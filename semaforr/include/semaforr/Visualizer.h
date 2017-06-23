@@ -28,6 +28,7 @@ class Visualizer
 private:
   //! We will be publishing to the "target_point" topic to display target point on rviz
   ros::Publisher target_pub_;
+  ros::Publisher waypoint_pub_;
   ros::Publisher all_targets_pub_;
   ros::Publisher remaining_targets_pub_;
   ros::Publisher region_pub_;
@@ -46,6 +47,7 @@ public:
     nh_ = nh;
     //set up the publisher for the cmd_vel topic
     target_pub_ = nh_->advertise<geometry_msgs::PointStamped>("target_point", 1);
+    waypoint_pub_ = nh_->advertise<geometry_msgs::PointStamped>("waypoint", 1);
     all_targets_pub_ = nh_->advertise<geometry_msgs::PoseArray>("all_targets", 1);
     remaining_targets_pub_ = nh_->advertise<geometry_msgs::PoseArray>("remaining_targets", 1);
     plan_pub_ = nh_->advertise<nav_msgs::Path>("plan", 1);
@@ -61,7 +63,8 @@ public:
 
   void publish(){
 	if(beliefs->getAgentState()->getCurrentTask() != NULL){
-		publish_target();
+		publish_next_target();
+		publish_next_waypoint();
 		publish_plan();
 		publish_all_targets();
 		publish_remaining_targets();
@@ -77,15 +80,26 @@ public:
 	publish_log(decision);
   }
 
-  void publish_target(){
+  void publish_next_target(){
 	ROS_DEBUG("Inside visualization tool!!");
 	geometry_msgs::PointStamped target;
 	target.header.frame_id = "map";
 	target.header.stamp = ros::Time::now();
-	target.point.x = beliefs->getAgentState()->getCurrentTask()->getX();
-	target.point.y = beliefs->getAgentState()->getCurrentTask()->getY();
+	target.point.x = beliefs->getAgentState()->getCurrentTask()->getTaskX();
+	target.point.y = beliefs->getAgentState()->getCurrentTask()->getTaskY();
 	target.point.z = 0;
 	target_pub_.publish(target);
+  }
+
+  void publish_next_waypoint(){
+	ROS_DEBUG("Inside visualization tool!!");
+	geometry_msgs::PointStamped waypoint;
+	waypoint.header.frame_id = "map";
+	waypoint.header.stamp = ros::Time::now();
+	waypoint.point.x = beliefs->getAgentState()->getCurrentTask()->getX();
+	waypoint.point.y = beliefs->getAgentState()->getCurrentTask()->getY();
+	waypoint.point.z = 0;
+	waypoint_pub_.publish(waypoint);
   }
 
 

@@ -104,14 +104,14 @@ void Graph::generateNavGraph() {
 
     for( it = nbrs.begin(); it != nbrs.end(); it++ ){
       Edge * e = new Edge( (*iter)->getID(), getNode(*it).getID() );
-
+      //cout << "for each edge "<< endl;
       if ( !isEdge((*e)) ) {
 	double distCost = Map::distance((*iter)->getX(), (*iter)->getY(), getNode(*it).getX(), getNode(*it).getY());
 	int multiplier = 1;
 	if ( (*iter)->getInBuffer() )
-	  multiplier += 2;
+	  multiplier += 4;
 	if ( getNode(*it).getInBuffer() )
-	  multiplier += 2;
+	  multiplier += 4;
 	if ( (*iter)->getX() == getNode(*it).getX() || (*iter)->getY() == getNode(*it).getY() ){
 	  e->setCost(multiplier * distCost); 
 	}
@@ -123,6 +123,7 @@ void Graph::generateNavGraph() {
 	
 	(*iter)->addNodeEdge(e);
 	nodes.at(*it)->addNodeEdge(e);
+	//cout << "Edge from :" << (*iter)->getX() << " " << (*iter)->getY() << "->" << getNode(*it).getX() << " " << getNode(*it).getY() << " cost : " << e->getCost() << endl;
       }
     }
   }
@@ -147,6 +148,8 @@ vector<Node*> Graph::getNodesInRegion( int x, int y, double dist ) {
   return nodesInRegion;
 }
 
+
+// returns nodes within a square grid
 vector<Node*> Graph::getNodesInRegion( int x1, int y1, int x2, int y2 ){
   vector<Node*> nodesInRegion;
   vector<Node*>::iterator iter;

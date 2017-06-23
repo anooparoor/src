@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>test_george</name>
+  <name>crowd_count</name>
   <version>0.0.0</version>
-  <description>The test_george package</description>
+  <description>The crowd_count package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

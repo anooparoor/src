@@ -12,7 +12,7 @@
 #include "FORRAction.h"
 #include "FORRGeometry.h"
 #include "Position.h"
-#include "planner/PathPlanner.h"
+#include "PathPlanner.h"
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -35,6 +35,9 @@ class Task {
       pos_hist = new vector<Position>();
       laser_hist = new vector< vector<CartesianPoint> >();
     }
+
+  double getTaskX(){ return x;}
+  double getTaskY(){ return y;}
 
   double getX() { 
 	if(isPlanActive == false){
@@ -100,7 +103,7 @@ class Task {
 	Node t(1, x*100, y*100);
 	planner->setTarget(t);
 
-        cout << "plan generation status" << planner->calcPath(false) << endl;
+        cout << "plan generation status" << planner->calcPath(true) << endl;
 
 	list<int> path = planner->getPath();
 	Graph *navGraph = planner->getGraph();
@@ -137,7 +140,7 @@ class Task {
   bool isTaskComplete(Position currentPosition){
 	bool status = false;
 	double dis = currentPosition.getDistance(x, y);
-	if (dis < 0.5){
+	if (dis < 1){
 		status = true;
 	}
 	return status;
@@ -147,7 +150,7 @@ class Task {
    bool isWaypointComplete(Position currentPosition){
 	bool status = false;
 	double dis = currentPosition.getDistance(wx, wy);
-	if (isPlanActive && (dis < 1)){
+	if (isPlanActive && (dis < 3)){
 		status = true;
 	}
 	return status;

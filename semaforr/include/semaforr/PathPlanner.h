@@ -8,6 +8,7 @@
 #define PATH_PLANNER_H
 
 #include "astar.h"
+#include <semaforr/CrowdModel.h>
 
 /*! 
   \brief PathPlanner class in PathPlanner module
@@ -19,6 +20,7 @@ class PathPlanner {
 private: 
   Graph * navGraph; 
   Map map;
+  semaforr::CrowdModel crowdModel;
   Node source, target; 
   list<int> path; 
   double pathCost;
@@ -49,6 +51,14 @@ public:
     pathCompleted = true; 
     pathCalculated = false;
   }
+
+  void setCrowdModel(semaforr::CrowdModel c){ 
+	crowdModel = c;
+  }
+  semaforr::CrowdModel getCrowdModel(){ return crowdModel;}
+
+  void updateNavGraph();
+  double computeNewEdgeCost(Node s, Node d, double previousEdgeCost);
 
   Graph* getGraph(){ return navGraph; }
 

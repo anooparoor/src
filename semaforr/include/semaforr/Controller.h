@@ -17,7 +17,7 @@
 #include "Tier1Advisor.h"
 #include "Tier3Advisor.h"
 #include "FORRActionStats.h"
-#include "planner/PathPlanner.h"
+#include "PathPlanner.h"
 
 #include <fstream>
 #include <ros/ros.h>
@@ -51,6 +51,9 @@ public:
 
   // getter for beliefs
   Beliefs *getBeliefs() { return beliefs; }
+
+  // getter for planner
+  PathPlanner *getPlanner() { return planner; }
 
 private:
 

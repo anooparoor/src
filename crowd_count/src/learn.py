@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from geometry_msgs.msg import PoseArray, Pose, Point, PoseStamped
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import OccupancyGrid
+from semaforr.msg import CrowdModel
 from std_msgs.msg import String, Header
 import itertools
 import tf
@@ -17,7 +18,8 @@ class CountCrowdModel:
 	rospy.Subscriber("crowd_pose", PoseArray, self.crowd_data)
 	rospy.Subscriber("base_scan", LaserScan, self.laser_data)
 	rospy.Subscriber("pose", PoseStamped, self.pose_data)
-	self.pub_crowd_model = rospy.Publisher('crowd_model', OccupancyGrid, queue_size=1)
+	self.pub_crowd_model_rviz = rospy.Publisher('crowd_model_rviz', OccupancyGrid, queue_size=1)
+	self.pub_crowd_model = rospy.Publisher('crowd_model', CrowdModel, queue_size=1)
 	self.pub_visibility_grid = rospy.Publisher('visibility_grid', OccupancyGrid, queue_size=1)
 
 	# intialize time
@@ -161,20 +163,31 @@ class CountCrowdModel:
 	    return 0
 
     def publish_crowd_model(self,crowd):
-	crowd_model = OccupancyGrid()
+	crowd_model = CrowdModel()
 	crowd_model.header.stamp = rospy.Time.now()
 	crowd_model.header.frame_id = "map"
-	crowd_model.info.resolution = self.height/self.division
-	crowd_model.info.width = self.division
-	crowd_model.info.height = self.division
-	crowd_model.info.origin.orientation.w = 1
+	crowd_model.resolution = self.height/self.division
+	crowd_model.width = self.division
+	crowd_model.height = self.division
 	crowd_list = [crowd[x][y] for x in range(self.division) for y in range(self.division)]
-	print "Final crowd model before rounding :"
-	print crowd_list
-	crowd_model.data = self.normalize(crowd_list, 0, 100)  
-	print "Final crowd model after rounding :"
-	print crowd_model.data 
+	crowd_list = self.normalize_float(crowd_list, 0, 1)
+	crowd_model.densities = crowd_list  
+	print "Final crowd model sent for semaforr:"
+	print crowd_model.densities 
 	self.pub_crowd_model.publish(crowd_model)
+        # send another message for rviz display
+	crowd_rviz = OccupancyGrid()
+	crowd_rviz.header.stamp = rospy.Time.now()
+	crowd_rviz.header.frame_id = "map"
+	crowd_rviz.info.resolution = self.height/self.division
+	crowd_rviz.info.width = self.division
+	crowd_rviz.info.height = self.division
+	crowd_rviz.info.origin.orientation.w = 1
+	crowd_rviz.data = self.normalize(crowd_list, 0, 100)  
+	print "Normalized Crowd model sent for rviz:"
+	print crowd_rviz.data 
+	self.pub_crowd_model_rviz.publish(crowd_rviz)
+	
 
     def normalize(self, list_of_floats, minimum, maximum):
 	max_number = max(list_of_floats)
@@ -183,6 +196,16 @@ class CountCrowdModel:
 	    return [int(x) for x in list_of_floats]
 	else:
 	    return [int((x/max_number)*maximum) for x in list_of_floats]
+
+    
+    def normalize_float(self, list_of_floats, minimum, maximum):
+	max_number = max(list_of_floats)
+	print max_number
+	if max_number == 0:
+	    return [x for x in list_of_floats]
+	else:
+	    return [(x/max_number)*maximum for x in list_of_floats]
+
 
     def distance(self, x1,y1,x2,y2):
 	return ((x1-x2)**2 + (y1-y2)**2) ** 0.5 

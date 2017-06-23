@@ -71,6 +71,8 @@ int PathPlanner::calcPath(bool cautious){
       cout << endl;
     }
 
+    // update the nav graph with the latest crowd model to change the edge weights
+    updateNavGraph();
     astar newsearch(*navGraph, s, t);
     if ( newsearch.isPathFound() ) {
       path = newsearch.getPathToTarget();
@@ -89,6 +91,43 @@ int PathPlanner::calcPath(bool cautious){
   }
   return 0;
 }
+
+void PathPlanner::updateNavGraph(){
+	cout << "Updating nav graph before with the current crowd model" << endl;
+	if(crowdModel.densities.size() == 0){
+		cout << "crowdModel not recieved" << endl; 
+	}
+	else{
+		cout << crowdModel.height << endl;
+		for(int i = 0 ; i < crowdModel.densities.size(); i++){
+			cout << crowdModel.densities[i] << endl;
+		} 
+		vector<Edge*> edges = navGraph->getEdges();
+		// compute the extra cost imposed by crowd model on each edge in navGraph
+		for(int i = 0; i < edges.size(); i++){
+			double oldEdgeCost = edges[i]->getCost();
+			Node toNode = navGraph->getNode(edges[i]->getTo());
+			Node fromNode = navGraph->getNode(edges[i]->getFrom());
+			double newEdgeCost = computeNewEdgeCost(toNode, fromNode, edges[i]->getCost()); 
+			navGraph->updateEdgeCost(i, newEdgeCost);
+			cout << "Edge Cost : " << oldEdgeCost << " -> " << newEdgeCost << endl;  
+		}
+	}
+}
+
+
+double PathPlanner::computeNewEdgeCost(Node s, Node d, double previousEdgeCost){
+	int s_x_index = (int)((s.getX()/100.0)/crowdModel.resolution);
+	int s_y_index = (int)((s.getY()/100.0)/crowdModel.resolution);
+	int d_x_index = (int)((d.getX()/100.0)/crowdModel.resolution);
+	int d_y_index = (int)((d.getY()/100.0)/crowdModel.resolution);
+	//Assuming crowd densities are normalized between 0 and 1
+	double d_crowd = crowdModel.densities[(s_y_index * crowdModel.width) + s_y_index] + 1;
+	double s_crowd = crowdModel.densities[(d_y_index * crowdModel.width) + d_y_index] + 1;
+	cout << "Node penalty : " << d_crowd << " * " << s_crowd << endl; 
+	double newEdgeCost = previousEdgeCost * d_crowd * s_crowd;
+	return newEdgeCost;
+} 
 
 
 bool PathPlanner::isAccessible(Node s, Node t) {

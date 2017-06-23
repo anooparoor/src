@@ -54,6 +54,10 @@ public:
 
   Edge* getEdge(int n1, int n2);
 
+  void updateEdgeCost(int i, double cost){
+	edges[i]->setCost(cost);
+  }
+
   //! returns the neigbors of the node with index n. Calls directly Node::getNeighbors 
   vector<int> getNeighbors(Node n); 
 

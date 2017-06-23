@@ -91,7 +91,7 @@ void Controller::initialize_planner(string filename){
 	// Need to move them to a config file
 	double length = 4800;//48 meters
 	double height = 3600;//36 meters
-	double bufferSize = 50;//0.5 meters
+	double bufferSize = 100;//1 meters
 	double proximity = 100;//1 meters
 	Map *map = new Map(length, height, bufferSize);
 	string address = "/home/anooparoor/catkin_ws/src/examples/core/openOffice/openOfficeS.xml";
