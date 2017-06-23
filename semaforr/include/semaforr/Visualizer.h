@@ -28,11 +28,13 @@ class Visualizer
 private:
   //! We will be publishing to the "target_point" topic to display target point on rviz
   ros::Publisher target_pub_;
+  ros::Publisher waypoint_pub_;
   ros::Publisher all_targets_pub_;
   ros::Publisher remaining_targets_pub_;
   ros::Publisher region_pub_;
   ros::Publisher conveyor_pub_;
   ros::Publisher trails_pub_;
+  ros::Publisher plan_pub_;
   ros::Publisher stats_pub_;
   ros::Publisher doors_pub_;
   Controller *con;
@@ -46,8 +48,10 @@ public:
     nh_ = nh;
     //set up the publisher for the cmd_vel topic
     target_pub_ = nh_->advertise<geometry_msgs::PointStamped>("target_point", 1);
+    waypoint_pub_ = nh_->advertise<geometry_msgs::PointStamped>("waypoint", 1);
     all_targets_pub_ = nh_->advertise<geometry_msgs::PoseArray>("all_targets", 1);
     remaining_targets_pub_ = nh_->advertise<geometry_msgs::PoseArray>("remaining_targets", 1);
+    plan_pub_ = nh_->advertise<nav_msgs::Path>("plan", 1);
 
     conveyor_pub_ = nh_->advertise<nav_msgs::OccupancyGrid>("conveyor", 1);
     region_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("region", 1);
@@ -61,7 +65,9 @@ public:
 
   void publish(){
 	if(beliefs->getAgentState()->getCurrentTask() != NULL){
-		publish_target();
+		publish_next_target();
+		publish_next_waypoint();
+		publish_plan();
 		publish_all_targets();
 		publish_remaining_targets();
 	}
@@ -77,16 +83,47 @@ public:
 	publish_log(decision, overallTimeSec, computationTimeSec);
   }
 
-  void publish_target(){
+  void publish_next_target(){
 	ROS_DEBUG("Inside visualization tool!!");
 	geometry_msgs::PointStamped target;
 	target.header.frame_id = "map";
 	target.header.stamp = ros::Time::now();
-	target.point.x = beliefs->getAgentState()->getCurrentTask()->getX();
-	target.point.y = beliefs->getAgentState()->getCurrentTask()->getY();
+	target.point.x = beliefs->getAgentState()->getCurrentTask()->getTaskX();
+	target.point.y = beliefs->getAgentState()->getCurrentTask()->getTaskY();
 	target.point.z = 0;
 	target_pub_.publish(target);
   }
+
+  void publish_next_waypoint(){
+	ROS_DEBUG("Inside visualization tool!!");
+	geometry_msgs::PointStamped waypoint;
+	waypoint.header.frame_id = "map";
+	waypoint.header.stamp = ros::Time::now();
+	waypoint.point.x = beliefs->getAgentState()->getCurrentTask()->getX();
+	waypoint.point.y = beliefs->getAgentState()->getCurrentTask()->getY();
+	waypoint.point.z = 0;
+	waypoint_pub_.publish(waypoint);
+  }
+
+
+  void publish_plan(){
+	ROS_DEBUG("Inside publish plan!!");
+	nav_msgs::Path path;
+	path.header.frame_id = "map";
+	path.header.stamp = ros::Time::now();
+
+	vector <CartesianPoint> waypoints = beliefs->getAgentState()->getCurrentTask()->getWaypoints();
+
+	for(int i = 0; i < waypoints.size(); i++){
+		geometry_msgs::PoseStamped poseStamped;
+		poseStamped.header.frame_id = "map";
+		poseStamped.header.stamp = path.header.stamp;
+		poseStamped.pose.position.x = waypoints[i].get_x();
+		poseStamped.pose.position.y = waypoints[i].get_y();
+		path.poses.push_back(poseStamped);
+	}
+	plan_pub_.publish(path);
+ }
 
   void publish_conveyor(){
 	ROS_DEBUG("Inside publish conveyor");

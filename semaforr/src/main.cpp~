@@ -24,6 +24,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_datatypes.h>
+#include <semaforr/CrowdModel.h>
 
 
 using namespace std;
@@ -36,13 +37,16 @@ private:
   ros::NodeHandle nh_;
   //! We will be publishing to the "cmd_vel" topic to issue commands
   ros::Publisher cmd_vel_pub_;
-  //! We will be listening to \pose and \laserscan topics
+  //! We will be listening to \pose, \laserscan and \crowd_model topics
   ros::Subscriber sub_pose_;
   ros::Subscriber sub_laser_;
+  ros::Subscriber sub_crowd_model_;
   // Current position and previous stopping position of the robot
   Position current, previous;
   // Current and previous laser scan
   sensor_msgs::LaserScan laserscan;
+  // Current crowd_model
+  semaforr::CrowdModel crowdModel;
   // Controller
   Controller *controller;
   // Pos received
@@ -58,12 +62,21 @@ public:
     cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     sub_pose_ = nh_.subscribe("pose", 1000, &RobotDriver::updatePose, this);
     sub_laser_ = nh_.subscribe("base_scan", 1000, &RobotDriver::updateLaserScan, this);
+    sub_crowd_model_ = nh_.subscribe("crowd_model", 1000, &RobotDriver::updateCrowdModel, this);
     //declare and create a controller with task, action and advisor configuration
     controller = con;
     init_pos_received = false;
     current.setX(0);current.setY(0);current.setTheta(0);
     previous.setX(0);previous.setY(0);previous.setTheta(0);
     viz_ = new Visualizer(&nh_, con);
+  }
+
+  // Callback function for pose message
+  void updateCrowdModel(const semaforr::CrowdModel & crowd_model){
+	ROS_DEBUG("Inside callback for crowd model");
+        cout << crowd_model.height << " " << crowd_model.width << endl;
+	//update the crowd model of the belief
+	con->getPlanner()->setCrowdModel(crowd_model);
   }
 
   // Callback function for pose message
@@ -286,8 +299,10 @@ int main(int argc, char **argv) {
      string advisor_config = path + "/config/advisors.conf";
      string action_config = path + "/config/action.conf";
      string tasks_config = path + "/config/target.conf";
+     // currently not implemented
+     string planner_config = path;
 
-     Controller *controller = new Controller(advisor_config,tasks_config,action_config); 
+     Controller *controller = new Controller(advisor_config,tasks_config,action_config,planner_config); 
 
      ROS_INFO("Controller Initialized");
      RobotDriver driver(nh, controller);

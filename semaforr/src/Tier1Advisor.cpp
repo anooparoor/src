@@ -115,16 +115,20 @@ bool Tier1Advisor::advisorVictory(FORRAction *decision) {
     ROS_DEBUG("Target not in sight , skipping victory advisor");
   }
   else{
-      ROS_DEBUG("Target in sight , victory advisor active");;
+      ROS_DEBUG("Target in sight , victory advisor active");
       (*decision) = beliefs->getAgentState()->moveTowards();
-      decisionMade = true;
+      FORRAction forward = beliefs->getAgentState()->maxForwardAction();
+      if(forward.parameter >= decision->parameter){
+	ROS_DEBUG("Target in sight and no obstacles , victory advisor to take decision");
+      	decisionMade = true;
+      }
   }
   return decisionMade;
 }
 
 
 /*
- * This advisor has to do prevent all the actions that will result in robot hitting the wall.
+ * This advisor has to do prevent all the actions that will result in robot hitting the obstacles.
  * Straight forward thing is to check for collsion in the orientation.
  */
 bool Tier1Advisor::advisorAvoidWalls(){
