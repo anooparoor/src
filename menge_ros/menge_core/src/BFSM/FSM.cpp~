@@ -183,6 +183,31 @@ namespace Menge {
 			agent->setPreferredVelocity(newVel);
 		}
 
+		void FSM::transformToEndpoints(Vector2 pos, float angle, sensor_msgs::LaserScan ls){
+    			ROS_DEBUG("Convert laser scan to endpoints");
+    			double start_angle = ls.angle_min;
+    			double increment = ls.angle_increment;
+    			
+    			double r_x = pos._x;
+    			double r_y = pos._y;
+    			double r_ang = angle;
+
+			ros::Time current_time;
+  			current_time = ros::Time::now();
+			geometry_msgs::PoseArray end;
+			end.header.frame_id = "map";
+			end.header.stamp = ros::Time::now();
+    			
+    			for(int i = 0 ; i < ls.ranges.size(); i++){
+				geometry_msgs::Pose pose;
+				pose.position.x = r_x + (ls.ranges[i] * cos(start_angle + r_ang));
+				pose.position.y = r_y + (ls.ranges[i] * sin(start_angle + r_ang));
+				end.poses.push_back(pose);
+       				start_angle = start_angle + increment;
+    			}
+			_pub_endpoints.publish(end);
+		}
+
 
 		void FSM::computeRayScan( Agents::BaseAgent * agent, sensor_msgs::LaserScan& ls) {
 			const size_t ID = agent->_id;
@@ -275,7 +300,7 @@ namespace Menge {
 				if(agt->_isExternal == false){
 					//the agent in question is a crowd agent
 					Vector2 agent_pos = agt->_pos;
-					float current = intersect(start, end, agent_pos, 0.4);
+					float current = intersect(start, end, agent_pos, 0.6);
 					if(current < distance) 
 						distance = current;				
 				}
@@ -434,6 +459,7 @@ namespace Menge {
 			geometry_msgs::PoseArray crowd;
 			Vector2 robot_pos;
 			Vector2 robot_orient;
+			float robot_angle;
 			// Compute preference velocities for each agent and also send the base_scan and robot position estimates
 			for ( int a = 0; a < agtCount; ++a ) {
 				Agents::BaseAgent * agt = this->_sim->getAgent( a );
@@ -458,6 +484,7 @@ namespace Menge {
 				if(agt->_isExternal){
 					robot_pos = agt->_pos;
 					robot_orient = agt->_orient;
+					robot_angle = atan2(agt->_orient._y, agt->_orient._x);
 					//std::cout << agt->_id << std::endl;
 					//std::cout <<"pos:" << agt->_pos._x << " " << agt->_pos._y << std::endl;
 					//std::cout <<"vel:" << agt->_vel._x << " " << agt->_vel._y << std::endl;
@@ -472,7 +499,7 @@ namespace Menge {
         					ros::Time::now() + ros::Duration(0),"map", "pose"));
 					broadcaster2.sendTransform(
       						tf::StampedTransform(
-        					tf::Transform(tf::createQuaternionFromRPY(0.0, 0.0, atan2(agt->_orient._y, 							agt->_orient._x)), 
+        					tf::Transform(tf::createQuaternionFromRPY(0.0, 0.0, robot_angle), 
 						tf::Vector3(pose.position.x, pose.position.y, 0.0)),
         					ros::Time::now() + ros::Duration(0),"pose", "base_scan"));
 
@@ -487,8 +514,12 @@ namespace Menge {
 					sensor_msgs::LaserScan ls;					
 					this->computeRayScan(agt,ls);
 					ls.header.stamp = ros::Time::now();
-					ls.header.frame_id = "map";
+					ls.header.frame_id = "base_scan";
 					_pub_scan.publish(ls);
+
+					//publish endpoints for rviz display
+					transformToEndpoints(robot_pos,robot_angle,ls);
+
 				}
 			}
 			// Compute and publish the crowd positions that is visible to the robot via laser scan

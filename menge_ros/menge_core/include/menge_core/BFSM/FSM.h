@@ -393,6 +393,7 @@ namespace Menge {
 				//_pub_odom = _nh->advertise<nav_msgs::Odometry>("odom", 50);
 				_pub_pose = _nh->advertise<geometry_msgs::PoseStamped>("pose", 50);
 				_pub_scan = _nh->advertise<sensor_msgs::LaserScan>("base_scan", 50);
+				_pub_endpoints = _nh->advertise<geometry_msgs::PoseArray>("laser_end", 50);
 			}
 			/*!
 			 *	@brief		return ROS node handle
@@ -400,6 +401,8 @@ namespace Menge {
 			 *	@param		void		
 			 */
 			ros::NodeHandle* getNodeHandle(){return _nh;}
+
+			void transformToEndpoints(Vector2 pos, float angle, sensor_msgs::LaserScan ls);
 
 		protected:
 			/*!
@@ -447,6 +450,7 @@ namespace Menge {
 			ros::Publisher _pub_pose;
 			ros::Publisher _pub_odom;
 			ros::Publisher _pub_scan;
+			ros::Publisher _pub_endpoints;
 			Agents::PrefVelocity prefVelMsg;
 
 		};

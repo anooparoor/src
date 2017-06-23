@@ -221,8 +221,8 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 
 FORRAction AgentState::maxForwardAction(){
  	ROS_DEBUG("In maxforwardaction");
-	double error_margin = 0.4; // margin from obstacles
-	double view = 0.8; // +view radians to -view radians view
+	double error_margin = 1; // margin from obstacles
+	double view = 1.0472; // +view radians to -view radians view
 
 	double min_distance = getDistanceToObstacle(view);
 
@@ -321,10 +321,10 @@ FORRAction AgentState::moveTowards(){
 	intensity = 4;
       else
 	intensity = 5;
-      int max_allowed = maxForwardAction().parameter;
-      if(intensity > max_allowed){
-	 intensity = max_allowed;
-      }
+      //int max_allowed = maxForwardAction().parameter;
+      //if(intensity > max_allowed){
+	// intensity = max_allowed;
+      //}
       decision = FORRAction(FORWARD, intensity);
     }
     
