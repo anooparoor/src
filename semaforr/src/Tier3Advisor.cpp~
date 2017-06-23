@@ -90,8 +90,8 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
     result[forrAction] = adviceStrength;
   } 
   //if(result.size() > 1){
-  //normalize(&result);
-  rank(&result);
+  normalize(&result);
+  //rank(&result);
   //standardize(&result);
   //}
   return result;
@@ -113,6 +113,8 @@ normalize(map <FORRAction, double> * result){
       cout << "Before : " << itr->second << endl;
       itr->second = (itr->second - min)/norm_factor;
     }
+  } else {
+    itr->second = 0;
   }
 }
 
@@ -156,13 +158,13 @@ standardize(map <FORRAction, double> * result){
   if(stdDev != 0) {
     for(itr = result->begin(); itr != result->end() ; itr++){
       cout << "Before : " << itr->second << endl;
-      itr->second = ((itr->second - mean)/stdDev)+1000;
+      itr->second = ((itr->second - mean)/stdDev);
     }
   }
   else {
     for(itr = result->begin(); itr != result->end() ; itr++){
       cout << "Before : " << itr->second << endl;
-      itr->second = 1000;
+      itr->second = 0;
     }
   }
 }
@@ -211,6 +213,14 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
     return new Tier3ExitFinderLinear(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ExitFinderRotation")
     return new Tier3ExitFinderRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "ExitFinderFieldLinear")
+    return new Tier3ExitFinderFieldLinear(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "ExitFinderFieldRotation")
+    return new Tier3ExitFinderFieldRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "RegionLeaverLinear")
+    return new Tier3RegionLeaverLinear(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "RegionLeaverRotation")
+    return new Tier3RegionLeaverRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "RegionFinderLinear")
     return new Tier3RegionFinderLinear(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "RegionFinderRotation")
@@ -223,7 +233,22 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
     return new Tier3TrailFinderLinear(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "TrailFinderRotation")
     return new Tier3TrailFinderRotation(beliefs, name, description, weight, magic_init, is_active);
-
+  else if(name == "EnterDoorLinear")
+    return new Tier3EnterDoorLinear(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "EnterDoorRotation")
+    return new Tier3EnterDoorRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "ExitDoorLinear")
+    return new Tier3ExitDoorLinear(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "ExitDoorRotation")
+    return new Tier3ExitDoorRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "DoorAttractorLinear")
+    return new Tier3DoorAttractorLinear(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "DoorAttractorRotation")
+    return new Tier3DoorAttractorRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "NeighborDoorLinear")
+    return new Tier3NeighborDoorLinear(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "NeighborDoorRotation")
+    return new Tier3NeighborDoorRotation(beliefs, name, description, weight, magic_init, is_active);
   else 
     std::cout << "No such advisor " << std::endl;
 }
@@ -251,12 +276,24 @@ Tier3BaseLineRotation::Tier3BaseLineRotation (Beliefs *beliefs, string name, str
 //Tier3AvoidRobotRotation::Tier3AvoidRobotRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3ExitFinderLinear::Tier3ExitFinderLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3ExitFinderRotation::Tier3ExitFinderRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3ExitFinderFieldLinear::Tier3ExitFinderFieldLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3ExitFinderFieldRotation::Tier3ExitFinderFieldRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3RegionLeaverLinear::Tier3RegionLeaverLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3RegionLeaverRotation::Tier3RegionLeaverRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3RegionFinderLinear::Tier3RegionFinderLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3RegionFinderRotation::Tier3RegionFinderRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3WaypointFinderLinear::Tier3WaypointFinderLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3WaypointFinderRotation::Tier3WaypointFinderRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3TrailFinderLinear::Tier3TrailFinderLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3TrailFinderRotation::Tier3TrailFinderRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3EnterDoorLinear::Tier3EnterDoorLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3EnterDoorRotation::Tier3EnterDoorRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3ExitDoorLinear::Tier3ExitDoorLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3ExitDoorRotation::Tier3ExitDoorRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3DoorAttractorLinear::Tier3DoorAttractorLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3DoorAttractorRotation::Tier3DoorAttractorRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
+Tier3NeighborDoorLinear::Tier3NeighborDoorLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3NeighborDoorRotation::Tier3NeighborDoorRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
  
 
 
@@ -284,13 +321,24 @@ Tier3BaseLineRotation::Tier3BaseLineRotation(): Tier3Advisor() {};
 
 Tier3ExitFinderLinear::Tier3ExitFinderLinear(): Tier3Advisor() {};
 Tier3ExitFinderRotation::Tier3ExitFinderRotation(): Tier3Advisor() {};
+Tier3ExitFinderFieldLinear::Tier3ExitFinderFieldLinear(): Tier3Advisor() {};
+Tier3ExitFinderFieldRotation::Tier3ExitFinderFieldRotation(): Tier3Advisor() {};
+Tier3RegionLeaverLinear::Tier3RegionLeaverLinear(): Tier3Advisor() {};
+Tier3RegionLeaverRotation::Tier3RegionLeaverRotation(): Tier3Advisor() {};
 Tier3RegionFinderLinear::Tier3RegionFinderLinear(): Tier3Advisor() {};
 Tier3RegionFinderRotation::Tier3RegionFinderRotation(): Tier3Advisor() {};
 Tier3WaypointFinderLinear::Tier3WaypointFinderLinear(): Tier3Advisor() {};
 Tier3WaypointFinderRotation::Tier3WaypointFinderRotation(): Tier3Advisor() {};
 Tier3TrailFinderLinear::Tier3TrailFinderLinear(): Tier3Advisor() {};
 Tier3TrailFinderRotation::Tier3TrailFinderRotation(): Tier3Advisor() {};
-
+Tier3EnterDoorLinear::Tier3EnterDoorLinear(): Tier3Advisor() {};
+Tier3EnterDoorRotation::Tier3EnterDoorRotation(): Tier3Advisor() {};
+Tier3ExitDoorLinear::Tier3ExitDoorLinear(): Tier3Advisor() {};
+Tier3ExitDoorRotation::Tier3ExitDoorRotation(): Tier3Advisor() {};
+Tier3DoorAttractorLinear::Tier3DoorAttractorLinear(): Tier3Advisor() {};
+Tier3DoorAttractorRotation::Tier3DoorAttractorRotation(): Tier3Advisor() {};
+Tier3NeighborDoorLinear::Tier3NeighborDoorLinear(): Tier3Advisor() {};
+Tier3NeighborDoorRotation::Tier3NeighborDoorRotation(): Tier3Advisor() {};
 
 // vote to go through an extrance to a region containing the target
 
@@ -544,6 +592,234 @@ double Tier3ExitFinderRotation::actionComment(FORRAction action){
 }
 
 void Tier3ExitFinderRotation::set_commenting(){
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  bool currPosInCircleWithExit = false;
+  int robotCircle=-1, targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and ((circles[i]).getExits().size() >= 1)){
+      currPosInCircleWithExit = true;
+      robotCircle = i;
+    }
+  }
+  if(currPosInCircleWithExit == true and robotCircle != targetCircle)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+  
+}
+
+double Tier3ExitFinderFieldLinear::actionComment(FORRAction action){
+  double result=0;
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  
+  int robotCircle=-1;
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+ 
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  
+  cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << endl;
+  vector<FORRExit> ext_exits = circles[robotCircle].getExtExits();
+
+  for(int i = 0 ; i < ext_exits.size(); i++){
+    result += (1 / expectedPosition.getDistance(ext_exits[i].getExitPoint().get_x(), ext_exits[i].getExitPoint().get_y()));
+  }
+
+  return result;
+}
+
+
+void Tier3ExitFinderFieldLinear::set_commenting(){
+
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  bool currPosInCircleWithExit = false;
+  int robotCircle=-1, targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and ((circles[i]).getExits().size() >= 1)){
+      currPosInCircleWithExit = true;
+      robotCircle = i;
+    }
+  }
+  if(currPosInCircleWithExit == true and robotCircle != targetCircle)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+
+double Tier3ExitFinderFieldRotation::actionComment(FORRAction action){
+  double result=0;
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  
+  int robotCircle=-1;
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+ 
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+  
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+
+  cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << endl;
+  vector<FORRExit> ext_exits = circles[robotCircle].getExtExits();
+
+  for(int i = 0 ; i < ext_exits.size(); i++){
+    result += (1 / expectedPosition.getDistance(ext_exits[i].getExitPoint().get_x(), ext_exits[i].getExitPoint().get_y()));
+  }
+
+  return result;
+}
+
+void Tier3ExitFinderFieldRotation::set_commenting(){
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  bool currPosInCircleWithExit = false;
+  int robotCircle=-1, targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and ((circles[i]).getExits().size() >= 1)){
+      currPosInCircleWithExit = true;
+      robotCircle = i;
+    }
+  }
+  if(currPosInCircleWithExit == true and robotCircle != targetCircle)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+  
+}
+
+double Tier3RegionLeaverLinear::actionComment(FORRAction action){
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  
+  int robotCircle=-1;
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+ 
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  
+  cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << " " << circles[robotCircle].getRadius() << endl;
+
+  if(expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) > circles[robotCircle].getRadius()) {
+    return expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) - circles[robotCircle].getRadius();
+  } else {
+    return (-1);
+  }
+}
+
+
+void Tier3RegionLeaverLinear::set_commenting(){
+
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  bool currPosInCircleWithExit = false;
+  int robotCircle=-1, targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and ((circles[i]).getExits().size() >= 1)){
+      currPosInCircleWithExit = true;
+      robotCircle = i;
+    }
+  }
+  if(currPosInCircleWithExit == true and robotCircle != targetCircle)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+
+double Tier3RegionLeaverRotation::actionComment(FORRAction action){
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  
+  int robotCircle=-1;
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+ 
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+  
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+
+  cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << " " << circles[robotCircle].getRadius() << endl;
+
+  if(expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) > circles[robotCircle].getRadius()) {
+    return expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) - circles[robotCircle].getRadius();
+  } else {
+    return (-1);
+  }
+}
+
+void Tier3RegionLeaverRotation::set_commenting(){
   vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
   Task *task = beliefs->getAgentState()->getCurrentTask();
@@ -992,7 +1268,7 @@ double Tier3AvoidLeafField::actionComment(FORRAction action){
     }
   }
 
-  return metric;
+  return metric * (-1);
 }
 
 void Tier3AvoidLeafFieldRotation::set_commenting(){
@@ -1072,7 +1348,7 @@ double Tier3AvoidLeafFieldRotation::actionComment(FORRAction action){
     }
   }
 
-  return metric;
+  return metric * (-1);
 }
 
 // always on
@@ -1174,7 +1450,7 @@ void Tier3WaypointFinderLinear::set_commenting(){
 double Tier3WaypointFinderRotation::actionComment(FORRAction action){
   cout <<" Entered waypointfinder rotation." << endl;
   Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
-
+  cout <<" Expected position after action: " <<expectedPosition.getX() << " " << expectedPosition.getY() << endl;
   int grid_value = beliefs->getSpatialModel()->getWaypoints()->getGridValue(expectedPosition.getX(), expectedPosition.getY());
   cout << "grid value: "<<grid_value<<endl;
 
@@ -1288,4 +1564,468 @@ double Tier3GoAroundRotation::actionComment(FORRAction action){
   
 void Tier3GoAroundRotation::set_commenting(){
   advisor_commenting = true;
+}
+
+double Tier3EnterDoorLinear::actionComment(FORRAction action){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+  int targetCircle = -1;
+  double comment_strength = 0;
+
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetCircle = i;
+    }
+  }
+  // check if the expected position is in the target's region
+  if(circles[targetCircle].inCircle(expPosition) == true){
+    Circle region = Circle(circles[targetCircle].getCenter(), circles[targetCircle].getRadius());
+    CartesianPoint intersectPoint = intersection_point(region, LineSegment(currentPosition, expPosition));
+    double intersectPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[targetCircle].getCenter().get_x(), circles[targetCircle].getCenter().get_y(), intersectPoint.get_x(), intersectPoint.get_y());
+    for(int i = 0; i < doors[targetCircle].size(); i++) {
+      // check if the point that the robot crosses into the region goes through one of the doors
+      double startPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[targetCircle].getCenter().get_x(), circles[targetCircle].getCenter().get_y(), doors[targetCircle][i].startPoint.getExitPoint().get_x(), doors[targetCircle][i].startPoint.getExitPoint().get_y());
+      double endPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[targetCircle].getCenter().get_x(), circles[targetCircle].getCenter().get_y(), doors[targetCircle][i].endPoint.getExitPoint().get_x(), doors[targetCircle][i].endPoint.getExitPoint().get_y());
+      if(intersectPointAngle <= endPointAngle and intersectPointAngle >= startPointAngle){
+        comment_strength = 1;
+      }
+    }
+  }
+
+  return comment_strength;
+}
+
+void Tier3EnterDoorLinear::set_commenting(){
+  cout << "In enter door linear set commenting " << endl;
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircleWithDoor = false;
+  bool currPosInTargetRegion = false;
+  int targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y()) and (doors[i].size() >= 1)){
+      targetInCircleWithDoor = true;
+      targetCircle = i;
+      currPosInTargetRegion = circles[targetCircle].inCircle(curr_pos.getX(), curr_pos.getY());
+    }
+  }
+
+  if(targetInCircleWithDoor == true and currPosInTargetRegion == false)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3EnterDoorRotation::actionComment(FORRAction action){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+  int targetCircle = -1;
+  double comment_strength = 0;
+
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetCircle = i;
+    }
+  }
+  // check if the expected position is in the target's region
+  if(circles[targetCircle].inCircle(expPosition) == true){
+    Circle region = Circle(circles[targetCircle].getCenter(), circles[targetCircle].getRadius());
+    CartesianPoint intersectPoint = intersection_point(region, LineSegment(currentPosition, expPosition));
+    double intersectPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[targetCircle].getCenter().get_x(), circles[targetCircle].getCenter().get_y(), intersectPoint.get_x(), intersectPoint.get_y());
+    for(int i = 0; i < doors[targetCircle].size(); i++) {
+      // check if the point that the robot crosses into the region goes through one of the doors
+      double startPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[targetCircle].getCenter().get_x(), circles[targetCircle].getCenter().get_y(), doors[targetCircle][i].startPoint.getExitPoint().get_x(), doors[targetCircle][i].startPoint.getExitPoint().get_y());
+      double endPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[targetCircle].getCenter().get_x(), circles[targetCircle].getCenter().get_y(), doors[targetCircle][i].endPoint.getExitPoint().get_x(), doors[targetCircle][i].endPoint.getExitPoint().get_y());
+      if(intersectPointAngle <= endPointAngle and intersectPointAngle >= startPointAngle){
+        comment_strength = 1;
+      }
+    }
+  }
+
+  return comment_strength;
+}
+
+void Tier3EnterDoorRotation::set_commenting(){
+  cout << "In enter door rotation set commenting " << endl;
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircleWithDoor = false;
+  bool currPosInTargetRegion = false;
+  int targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y()) and (doors[i].size() >= 1)){
+      targetInCircleWithDoor = true;
+      targetCircle = i;
+      currPosInTargetRegion = circles[targetCircle].inCircle(curr_pos.getX(), curr_pos.getY());
+    }
+  }
+
+  if(targetInCircleWithDoor == true and currPosInTargetRegion == false)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3ExitDoorLinear::actionComment(FORRAction action){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+  double comment_strength = 0;
+  int robotCircle=-1;
+ 
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+
+  cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << " " << circles[robotCircle].getRadius() << endl;
+
+  // check if the robot gets out of the region
+  if(expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) > circles[robotCircle].getRadius()) {
+    Circle region = Circle(circles[robotCircle].getCenter(), circles[robotCircle].getRadius());
+    CartesianPoint intersectPoint = intersection_point(region, LineSegment(currentPosition, expPosition));
+    double intersectPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y(), intersectPoint.get_x(), intersectPoint.get_y());
+    for(int i = 0; i < doors[robotCircle].size(); i++) {
+      // check if the point that the robot crosses out of the region goes through one of the doors
+      double startPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y(), doors[robotCircle][i].startPoint.getExitPoint().get_x(), doors[robotCircle][i].startPoint.getExitPoint().get_y());
+      double endPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y(), doors[robotCircle][i].endPoint.getExitPoint().get_x(), doors[robotCircle][i].endPoint.getExitPoint().get_y());
+      if(intersectPointAngle <= endPointAngle and intersectPointAngle >= startPointAngle){
+        comment_strength = ((double)(doors[robotCircle][i].str)) * (expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) - circles[robotCircle].getRadius());
+      }
+    }
+  }
+  return comment_strength;
+}
+
+void Tier3ExitDoorLinear::set_commenting(){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  bool currPosInCircleWithDoor = false;
+  int robotCircle=-1, targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and (doors[i].size() >= 1)){
+      currPosInCircleWithDoor = true;
+      robotCircle = i;
+    }
+  }
+  if(currPosInCircleWithDoor == true and robotCircle != targetCircle)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3ExitDoorRotation::actionComment(FORRAction action){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+  double comment_strength = 0;
+  int robotCircle=-1;
+ 
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY())){
+      robotCircle = i;
+    }
+  }
+
+  cout << "Robot Circle : " << circles[robotCircle].getCenter().get_x() << " " << circles[robotCircle].getCenter().get_y() << " " << circles[robotCircle].getRadius() << endl;
+
+  // check if the robot gets out of the region
+  if(expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) > circles[robotCircle].getRadius()) {
+    Circle region = Circle(circles[robotCircle].getCenter(), circles[robotCircle].getRadius());
+    CartesianPoint intersectPoint = intersection_point(region, LineSegment(currentPosition, expPosition));
+    double intersectPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y(), intersectPoint.get_x(), intersectPoint.get_y());
+    for(int i = 0; i < doors[robotCircle].size(); i++) {
+      // check if the point that the robot crosses out of the region goes through one of the doors
+      double startPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y(), doors[robotCircle][i].startPoint.getExitPoint().get_x(), doors[robotCircle][i].startPoint.getExitPoint().get_y());
+      double endPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y(), doors[robotCircle][i].endPoint.getExitPoint().get_x(), doors[robotCircle][i].endPoint.getExitPoint().get_y());
+      if(intersectPointAngle <= endPointAngle and intersectPointAngle >= startPointAngle){
+        comment_strength = ((double)(doors[robotCircle][i].str)) * (expectedPosition.getDistance(circles[robotCircle].getCenter().get_x(), circles[robotCircle].getCenter().get_y()) - circles[robotCircle].getRadius());
+      }
+    }
+  }
+  return comment_strength;
+}
+
+void Tier3ExitDoorRotation::set_commenting(){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  bool currPosInCircleWithDoor = false;
+  int robotCircle=-1, targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+    // check if the rob_pos is in a circle and the circle has atleast one exit
+    if(circles[i].inCircle(curr_pos.getX(), curr_pos.getY()) and (doors[i].size() >= 1)){
+      currPosInCircleWithDoor = true;
+      robotCircle = i;
+    }
+  }
+  if(currPosInCircleWithDoor == true and robotCircle != targetCircle)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3DoorAttractorLinear::actionComment(FORRAction action){
+  double result=0;
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+
+  for(int i = 0; i < doors.size() ; i++){
+    result += ((1 / expPosition.get_distance(circles[i].getCenter())) * doors[i].size());
+  }
+
+  return result;
+}
+
+void Tier3DoorAttractorLinear::set_commenting(){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  bool atLeastOneDoor = false;
+  for(int i = 0; i < doors.size(); i++){
+    if(doors[i].size() >= 1){
+      atLeastOneDoor = true;
+    }
+  }
+  if(atLeastOneDoor == true) 
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3DoorAttractorRotation::actionComment(FORRAction action){
+  double result=0;
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+
+  for(int i = 0; i < doors.size() ; i++){
+    result += ((1 / expPosition.get_distance(circles[i].getCenter())) * doors[i].size());
+  }
+
+  return result;
+}
+
+void Tier3DoorAttractorRotation::set_commenting(){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  bool atLeastOneDoor = false;
+  for(int i = 0; i < doors.size(); i++){
+    if(doors[i].size() >= 1){
+      atLeastOneDoor = true;
+    }
+  }
+  if(atLeastOneDoor == true) 
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3NeighborDoorLinear::actionComment(FORRAction action){
+  double result=0;
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+  int targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetCircle = i;
+    }
+  }
+
+  vector<FORRExit> exits = circles[targetCircle].getExits();
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      result += ((1 / expPosition.get_distance(circles[exits[i].getExitCircle()].getCenter())) * doors[exits[i].getExitCircle()].size());
+    }
+  }
+
+  return result;
+}
+
+void Tier3NeighborDoorLinear::set_commenting(){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  int targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+  }
+
+  vector<FORRExit> exits = circles[targetCircle].getExits();
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
+    }
+  }
+
+  cout << "#Neighbors found :" << nearCircles.size() << endl;
+
+  if(targetInCircle == true and nearCircles.size() >= 1)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3NeighborDoorRotation::actionComment(FORRAction action){
+  double result=0;
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+  CartesianPoint expPosition (expectedPosition.getX(), expectedPosition.getY());
+  int targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetCircle = i;
+    }
+  }
+
+  vector<FORRExit> exits = circles[targetCircle].getExits();
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      result += ((1 / expPosition.get_distance(circles[exits[i].getExitCircle()].getCenter())) * doors[exits[i].getExitCircle()].size());
+    }
+  }
+
+  return result;
+}
+
+void Tier3NeighborDoorRotation::set_commenting(){
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInCircle = false;
+  int targetCircle = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < circles.size() ; i++){
+    // check if the target point is in circle
+    if(circles[i].inCircle(targetPoint.get_x(), targetPoint.get_y())){
+      targetInCircle = true;
+      targetCircle = i;
+    }
+  }
+
+  vector<FORRExit> exits = circles[targetCircle].getExits();
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
+    }
+  }
+
+  cout << "#Neighbors found :" << nearCircles.size() << endl;
+
+  if(targetInCircle == true and nearCircles.size() >= 1)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
 }

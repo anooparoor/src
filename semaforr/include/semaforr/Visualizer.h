@@ -34,6 +34,7 @@ private:
   ros::Publisher conveyor_pub_;
   ros::Publisher trails_pub_;
   ros::Publisher stats_pub_;
+  ros::Publisher doors_pub_;
   Controller *con;
   Beliefs *beliefs;
   ros::NodeHandle *nh_;
@@ -52,6 +53,7 @@ public:
     region_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("region", 1);
     trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
     stats_pub_ = nh_->advertise<std_msgs::String>("decision_log", 1);
+    doors_pub_ = nh_->advertise<visualization_msgs::Marker>("door", 1);
     //declare and create a controller with task, action and advisor configuration
     con = c;
     beliefs = con->getBeliefs();
@@ -67,11 +69,12 @@ public:
 	publish_conveyor();
 	publish_region();
 	publish_trails();
+	publish_doors();
 	//publish_log();
   }
 
-  void publishLog(FORRAction decision){
-	publish_log(decision);
+  void publishLog(FORRAction decision, double overallTimeSec, double computationTimeSec){
+	publish_log(decision, overallTimeSec, computationTimeSec);
   }
 
   void publish_target(){
@@ -172,6 +175,40 @@ public:
 	trails_pub_.publish(path);
   }
 
+  void publish_doors(){
+	ROS_DEBUG("Inside publish doors");
+
+	std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
+	cout << "There are currently " << doors.size() << " circles" << endl;
+	visualization_msgs::Marker line_list;	
+	line_list.header.frame_id = "map";
+    	line_list.header.stamp = ros::Time::now();
+	line_list.ns = "basic_shapes";
+	line_list.action = visualization_msgs::Marker::ADD;
+    	line_list.id = 1;
+	line_list.type = visualization_msgs::Marker::LINE_LIST;
+	line_list.pose.orientation.w = 1.0;
+	line_list.scale.x = 0.3;
+	line_list.color.r = 1.0;
+	line_list.color.a = 1.0;
+
+	for(int i = 0 ; i < doors.size(); i++){	
+		for(int j = 0; j < doors[i].size(); j++){
+			geometry_msgs::Point p1, p2;
+			p1.x = doors[i][j].startPoint.getExitPoint().get_x();
+			p1.y = doors[i][j].startPoint.getExitPoint().get_y();
+			p1.z = 0;
+
+			p2.x = doors[i][j].endPoint.getExitPoint().get_x();
+			p2.y = doors[i][j].endPoint.getExitPoint().get_y();
+			p2.z = 0;
+		
+			line_list.points.push_back(p1);
+			line_list.points.push_back(p2);
+		}
+	}
+	doors_pub_.publish(line_list);
+  }
 
   void publish_all_targets(){
 	ROS_DEBUG("Publish All targets as pose array!!");
@@ -209,7 +246,7 @@ public:
 	remaining_targets_pub_.publish(targets);
   }
 
-  void publish_log(FORRAction decision){
+  void publish_log(FORRAction decision, double overallTimeSec, double computationTimeSec){
 	ROS_DEBUG("Inside publish decision log!!");
 	std_msgs::String log;
 	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
@@ -309,7 +346,9 @@ public:
 	ROS_DEBUG("After doors");
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str();// << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+
 	log.data = output.str();
 	stats_pub_.publish(log);
 	con->clearCurrentDecisionStats();

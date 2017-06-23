@@ -36,13 +36,6 @@
 	</Generator>
     </AgentGroup>
 
-    <AgentGroup>
-        <StateSelector type="const" name="Walk2" />
-	<ProfileSelector type="const" name="group2" />
-	<Generator type="explicit">
-		<Agent p_x="1" p_y="1" />
-	</Generator>
-    </AgentGroup>
 
 <ObstacleSet type="explicit" class="1">
     <Obstacle closed="1"> 

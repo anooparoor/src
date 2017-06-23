@@ -138,6 +138,8 @@ add_executable(
 
 target_link_libraries (controller ${catkin_LIBRARIES})
 
+#add_definitions(-std=c++11)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(semaforr_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
