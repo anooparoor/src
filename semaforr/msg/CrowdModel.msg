@@ -1,0 +1,14 @@
+Header header
+string child_frame_id
+int64 height
+int64 width
+int64 resolution
+float64[] densities
+float64[] up
+float64[] down
+float64[] left
+float64[] right
+float64[] up_left
+float64[] up_right
+float64[] down_left
+float64[] down_right

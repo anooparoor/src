@@ -1,0 +1,3 @@
+<launch>
+<node pkg="crowd_count" type="learn" name="learn" output="screen"/>
+</launch>

@@ -29,7 +29,6 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
-
 using std::vector;
 using std::set;
 
@@ -49,6 +48,7 @@ public:
  
     AgentState* getAgentState(){return agentState;}
     SpatialModel* getSpatialModel(){return spatialModel;}
+
         
  private:
     

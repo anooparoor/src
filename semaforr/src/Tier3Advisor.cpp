@@ -45,14 +45,9 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
   set<FORRAction> *vetoed_actions = beliefs->getAgentState()->getVetoedActions();
   set<FORRAction> *action_set;
 
-  bool inRotateMode;
+  bool inRotateMode = beliefs->getAgentState()->getRotateMode();
   cout << "Decision Count : " << beliefs->getAgentState()->getCurrentTask()->getDecisionCount() << endl;
   
-  if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() % 2 == 0)  
-        inRotateMode = true;
-  else  
-        inRotateMode = false;
-
   cout << "Rotation mode : " << inRotateMode << endl;
 
   if(inRotateMode){

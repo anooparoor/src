@@ -28,7 +28,7 @@
 # include <iostream>
 #include <ros/ros.h>
 #include <ros/console.h>
-
+#include <semaforr/Crowd.h>
 
 using std::vector;
 using std::set;
@@ -49,6 +49,11 @@ public:
  
     AgentState* getAgentState(){return agentState;}
     SpatialModel* getSpatialModel(){return spatialModel;}
+
+    CrowdModel getCrowdModel(){return crowdModel;}
+    void setCrowdModel(Crowd crowd){ 
+	crowdModel = crowd;
+    }
         
  private:
     
@@ -57,6 +62,9 @@ public:
 
     /*! \brief Manages the environment model learned by the agent */ 
     SpatialModel *spatialModel;
+
+    // Manages the crowd model
+    CrowdModel crowdModel;
 };
 
 #endif

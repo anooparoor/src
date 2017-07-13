@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<Project 
+	scene="openOffice/flow/openOfficeFlowS.xml" 
+	behavior="openOffice/flow/openOfficeFlowB.xml" 
+	view="openOffice/flow/openOfficeFlowV.xml" 
+	model="orca"
+	dumpPath="images/test"
+/>

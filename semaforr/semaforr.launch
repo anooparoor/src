@@ -1,0 +1,3 @@
+<launch>
+<node pkg="semaforr" type="controller" name="semaforr" output="screen"/>
+</launch>
