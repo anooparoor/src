@@ -19,7 +19,7 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <std_msgs/String.h>
-#include <string>  
+#include <string>
 
 using namespace std;
 
@@ -82,10 +82,9 @@ public:
 	//publish_edges();
 	//publish_edges_cost();
 	publish_conveyor();
-	//publish_region();
+	publish_region();
 	publish_trails();
 	publish_doors();
-	//publish_log();
   }
 
 
@@ -478,7 +477,7 @@ public:
 	}
 	ROS_DEBUG("After decisionCount");
 
-	/*
+	
 	std::stringstream lep;
 	for(int i = 0; i < laserEndpoints.size(); i++){
 		double x = laserEndpoints[i].get_x();
@@ -486,7 +485,7 @@ public:
 		lep << x << "," << y << ";";
 	}
 	ROS_DEBUG("After laserEndpoints");
-	*/
+	
 
 	std::stringstream ls;
 	double min_laser_scan = 25; //meters
@@ -503,7 +502,7 @@ public:
 		totalSize += allTrace[i].size();
 	}*/
 
-	/*
+	
 	std::stringstream regions;
 	for(int i = 0; i < circles.size(); i++){
 		regions << circles[i].getCenter().get_x() << " " << circles[i].getCenter().get_y() << " " << circles[i].getRadius();
@@ -515,7 +514,7 @@ public:
 	}
 	ROS_DEBUG("After regions");
 
-	*/
+	
 	std::stringstream trailstream;
 	for(int i = 0; i < trails.size(); i++){
 		for(int j = 0; j < trails[i].size(); j++){
