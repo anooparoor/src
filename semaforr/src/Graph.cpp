@@ -68,7 +68,7 @@ bool Graph::isEdge(Edge e) {
   for ( iter = edges.begin() ; iter != edges.end() ; iter++ ) {
     if ( e == (*(*iter)) )
       return true;
-    Edge en((*iter)->getTo(), (*iter)->getFrom(), (*iter)->getCost());
+    Edge en((*iter)->getTo(), (*iter)->getFrom(), (*iter)->getCost(true), (*iter)->getCost(false));
     if ( en == e )
       return true;
   }
@@ -112,12 +112,8 @@ void Graph::generateNavGraph() {
 	  multiplier += 4;
 	if ( getNode(*it).getInBuffer() )
 	  multiplier += 4;
-	if ( (*iter)->getX() == getNode(*it).getX() || (*iter)->getY() == getNode(*it).getY() ){
-	  e->setCost(multiplier * distCost); 
-	}
-	else{
-	  e->setCost(multiplier * distCost);
-	}
+	
+	e->setDistCost(multiplier * distCost);
 
 	edges.push_back(e);
 	
@@ -169,163 +165,6 @@ void Graph::clearGraph() {
   }
 }
 
-void Graph::addObstacle(int x1, int y1, int x2, int y2){
-  toggleObstacle(false, x1, y1, x2, y2);
-}
-
-void Graph::removeObstacle(int x1, int y1, int x2, int y2){
-  toggleObstacle(true, x1, y1, x2, y2);
-}
-
-void Graph::toggleObstacle(bool access, int x1, int y1, int x2, int y2){
-  assert( x1 <= x2 && y1 >= y2 ); 
-
-  int buffer = ceil(proximity / 2); 
-  vector<Node*> roi_nodes = getNodesInRegion( (x1 - buffer), (y1 + buffer), 
-					     (x2 + buffer), (y2 - buffer) );
-
-  vector<Node*>::iterator iter; 
-  for ( iter = roi_nodes.begin(); iter != roi_nodes.end(); iter++ ) {
-    (*iter)->setAccessible(access);  
-
-    if ( !access ) {
-      obstacles.push_back((*iter)->getID()) ; 
-    }
-    else {
-      vector<int>::iterator o_iter; 
-      for( o_iter = obstacles.begin(); o_iter != obstacles.end(); o_iter++ ){
-	if( (*o_iter) == (*iter)->getID() ) {
-	  obstacles.erase(o_iter);
-	  break;
-	}
-      }
-    }
-  }
-}
-
-void Graph::addObstacle(int x, int y, double dist) {
-  vector<Node*> roiNodes = getNodesInRegion(x,y,dist); 
-  vector<Node*>::iterator iter; 
-  for ( iter = roiNodes.begin(); iter != roiNodes.end(); iter++ ) {
-    obstacles.push_back((*iter)->getID()); 
-    (*iter)->setAccessible(false); 
-  }
-}
-
-void Graph::removeObstacle(int x, int y, double dist) {
-  vector<Node*> roiNodes = getNodesInRegion(x,y,dist); 
-  vector<Node*>::iterator iter; 
-  for(iter = roiNodes.begin(); iter != roiNodes.end(); iter++) {
-    (*iter)->setAccessible(true);
- 
-    vector<int>::iterator it; 
-    for(it = obstacles.begin(); it != obstacles.end(); it++) {
-      if((*it) == (*iter)->getID()) {
-	obstacles.erase(it);
-	break; 
-      }
-    }
-  }
-}
-
-void Graph::removeAllObstacles(){
-  vector<int>::iterator o_iter; 
-  for( o_iter = obstacles.begin(); o_iter != obstacles.end(); o_iter++ ){
-    getNodePtr(*o_iter)->setAccessible(true); 
-  }
-  obstacles.clear();
-}
-
-void Graph::addTempObstacle(int x1, int y1, int x2, int y2){
-  toggleTempObstacle(false, x1, y1, x2, y2);
-}
-
-void Graph::removeTempObstacle(int x1, int y1, int x2, int y2){
-  toggleTempObstacle(true, x1, y1, x2, y2);
-}
-
-void Graph::toggleTempObstacle(bool access, int x1, int y1, int x2, int y2){
-  assert( x1 <= x2 && y1 >= y2 ); 
-
-  int buffer = ceil(proximity / 2); 
-  vector<Node*> roi_nodes = getNodesInRegion( (x1 - buffer), (y1 + buffer), 
-					     (x2 + buffer), (y2 - buffer) );
-
-  vector<Node*>::iterator iter; 
-  for ( iter = roi_nodes.begin(); iter != roi_nodes.end(); iter++ ) {
-
-    vector<Edge*> nodeEdges = (*iter)->getNodeEdges(); 
-    vector<Edge*>::iterator e_itr; 
-
-    if ( !access ) {
-      for ( e_itr = nodeEdges.begin(); e_itr != nodeEdges.end(); e_itr++ ) {
-	(*e_itr)->setTempCost(2 * (*e_itr)->getCost());
-      }
-      tempObstacles.push_back((*iter)->getID()) ; 
-    }
-    else {
-      for ( e_itr = nodeEdges.begin(); e_itr != nodeEdges.end(); e_itr++ ) {
-	(*e_itr)->setTempCost(0);
-      }
-      vector<int>::iterator o_iter; 
-      for( o_iter = tempObstacles.begin(); o_iter != tempObstacles.end(); o_iter++ ){
-	if( (*o_iter) == (*iter)->getID() ) {
-	  tempObstacles.erase(o_iter);
-	  break;
-	}
-      }
-    }
-  }
-}
-
-void Graph::addTempObstacle(int x, int y, double dist){
-  vector<Node*> roiNodes = getNodesInRegion(x,y,dist); 
-  vector<Node*>::iterator iter; 
-  for ( iter = roiNodes.begin(); iter != roiNodes.end(); iter++ ) {
-
-    vector<Edge*> nodeEdges = (*iter)->getNodeEdges(); 
-    vector<Edge*>::iterator e_itr; 
-    for ( e_itr = nodeEdges.begin(); e_itr != nodeEdges.end(); e_itr++ ) {
-      (*e_itr)->setTempCost(2 * (*e_itr)->getCost());
-    }
-
-    tempObstacles.push_back((*iter)->getID()); 
-  }
-}
-
-void Graph::removeTempObstacle(int x, int y, double dist){
-  vector<Node*> roiNodes = getNodesInRegion(x,y,dist); 
-  vector<Node*>::iterator iter; 
-  for ( iter = roiNodes.begin(); iter != roiNodes.end(); iter++ ) {
-
-    vector<Edge*> nodeEdges = (*iter)->getNodeEdges(); 
-    vector<Edge*>::iterator e_itr; 
-    for ( e_itr = nodeEdges.begin(); e_itr != nodeEdges.end(); e_itr++ ) {
-      (*e_itr)->setTempCost(0);
-    }
-
-    vector<int>::iterator o_iter; 
-    for( o_iter = tempObstacles.begin(); o_iter != tempObstacles.end(); o_iter++ ){
-      if( (*o_iter) == (*iter)->getID() ) {
-	tempObstacles.erase(o_iter);
-	break;
-      }
-    }
-  }
-}
-
-void Graph::removeAllTempObstacles(){
-  vector<int>::iterator o_iter; 
-  for( o_iter = tempObstacles.begin(); o_iter != tempObstacles.end(); o_iter++ ){
-    vector<Edge*> nodeEdges = getNode(*o_iter).getNodeEdges(); 
-    vector<Edge*>::iterator e_itr; 
-      for ( e_itr = nodeEdges.begin(); e_itr != nodeEdges.end(); e_itr++ ) {
-	(*e_itr)->setTempCost(0);
-      }
-  }
-  tempObstacles.clear();
-}
-
 vector<int> Graph::getNeighbors(Node n){
     return n.getNeighbors(); 
 }
@@ -334,12 +173,19 @@ vector<int> Graph::getNeighbors(Node n){
 void Graph::populateNodeNeighbors(){
   vector<Node*>::iterator iter; 
   for ( iter = nodes.begin(); iter != nodes.end(); iter++ ) {
-    for( int x = (*iter)->getX()-proximity; x <= (*iter)->getX()+proximity; x += proximity )
-      for( int y = (*iter)->getY()-proximity; y <= (*iter)->getY()+proximity; y += proximity ) 
-	if( ! ( x == (*iter)->getX() && y == (*iter)->getY() ) )
-	  if ( map->isWithinBorders(x, y) &&  !map->isPathObstructed((*iter)->getX(), (*iter)->getY(), x, y) ){	   
-	    (*iter)->addNeighbor(getNodeID(x,y));
-	  }
+	//cout << "Given node : " << (*iter)->getX() << " " << (*iter)->getY() << endl;  
+  	for( int x = (*iter)->getX()-proximity; x <= (*iter)->getX()+proximity; x += proximity ){
+      		for( int y = (*iter)->getY()-proximity; y <= (*iter)->getY()+proximity; y += proximity ){ 
+			//cout << "--nearby nodes : " << x << " " << y << endl;
+			if( ! ( x == (*iter)->getX() && y == (*iter)->getY() ) ){
+				//cout << "--not given node" << endl;
+	  			if ( map->isWithinBorders(x, y) &&  !map->isPathObstructed((*iter)->getX(), (*iter)->getY(), x, y)){   
+	    				//cout << "--adding node as neighbor : " << x << " " << y << endl;
+	    				(*iter)->addNeighbor(getNodeID(x,y));
+	  			}
+			}
+      		}
+  	}
   }
 }
 
@@ -354,7 +200,7 @@ int Graph::getNodeID(int x, int y) {
 }
 
 double Graph::calcCost(Node n1, Node n2){
-  return Map::distance(n1.getX(), n1.getY(), n2.getX(), n2.getY()); 
+  return n1.getCostTo(n2.getID()); 
 } 
 
 void Graph::printGraph() {

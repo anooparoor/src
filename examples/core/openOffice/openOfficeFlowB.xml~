@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<BFSM>
+	<GoalSet id="0">
+		<Goal type="AABB" id="0" min_x="41" max_x="43"  min_y="29" max_y="31" weight="1.0"/>
+		<Goal type="AABB" id="1" min_x="5" max_x="7"  min_y="5" max_y="7" weight="1.0"/>
+		<Goal type="AABB" id="2" min_x="5" max_x="7"  min_y="29" max_y="31" weight="1.0"/>
+		<Goal type="AABB" id="3" min_x="41" max_x="43"  min_y="5" max_y="7" weight="1.0"/>
+	</GoalSet>
+
+	<!-- Cubicle behavior -->
+	<State name="left-down" final="0" >
+		<GoalSelector type="nearest" goal_set="0" goal_id="0"/>
+		<VelComponent type="road_map" file_name="graph.txt" />
+	</State>	
+	<State name="right-down" final="0" >
+		<GoalSelector type="nearest" goal_set="0" goal_id="1"/>
+		<VelComponent type="road_map" file_name="graph.txt" />
+	</State>
+
+	<State name="right-up" final="0" >
+		<GoalSelector type="nearest" goal_set="0" goal_id="2"/>
+		<VelComponent type="road_map" file_name="graph.txt" />
+	</State>
+
+	<State name="left-up" final="0" >
+		<GoalSelector type="nearest" goal_set="0" goal_id="3"/>
+		<VelComponent type="road_map" file_name="graph.txt" />
+	</State>
+	
+	<Transition from="left-down" to="right-down" >
+		<Condition type="goal_reached" distance=".3" />
+	</Transition>
+
+	<Transition from="right-down" to="right-up" >
+		<Condition type="goal_reached" distance=".3" />
+	</Transition>
+
+	<Transition from="right-up" to="left-up" >
+		<Condition type="goal_reached" distance=".3" />
+	</Transition>
+
+	<Transition from="left-up" to="left-down" >
+		<Condition type="goal_reached" distance=".3" />
+	</Transition>
+
+</BFSM>

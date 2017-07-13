@@ -230,8 +230,8 @@ void Controller::learnSpatialModel(AgentState* agentState){
  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
  bool trails = true;
  bool conveyors = true;
- bool regions = true;
- bool doors = true;
+ bool regions = false;
+ bool doors = false;
  
   if(trails){
     	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);

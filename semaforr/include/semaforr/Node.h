@@ -121,11 +121,13 @@ public:
       Edge* tmp = *it;
       if(tmp->getTo() == this->id && tmp->getFrom() == nid)
       {
-        cost = tmp->getCost();
+	//get cost from nid to this node 
+        cost = tmp->getCost(false);
       }
       else if(tmp->getFrom() == this->id && tmp->getTo() == nid)
       {
-        cost = tmp->getCost();
+	//get cost from this node to nid
+        cost = tmp->getCost(true);
       }
     }
 
