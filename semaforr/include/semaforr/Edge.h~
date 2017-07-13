@@ -16,7 +16,7 @@ protected:
   double costfromto, costtofrom, cost;
 
 public:
-  Edge(): from (-1), to(-1), costfromto(0), costtofrom(0) { usable = true; cost = 0; } 
+  Edge(): from (-1), to(-1), costfromto(0), costtofrom(0) { usable = true; } 
   Edge(int n1, int n2, double cft = 0, double ctf = 0): from(n1), to(n2), costfromto(cft), costtofrom(ctf)    { usable = true; }
   bool operator == ( Edge e ) {
     int ef = e.getFrom();

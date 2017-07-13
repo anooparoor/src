@@ -19,16 +19,6 @@ private:
 
   void generateNavGraph();    
 
-  // this keeps a list of nodes which the edges around them are temporarily disabled (not usable)
-  vector<int> obstacles;
-
-  // this keeps a list of nodes which the cost of edges around them are temporarily increased
-  vector<int> tempObstacles;
-  
-  void toggleObstacle(bool b, int x1, int y1, int x2, int y2);
-
-  void toggleTempObstacle(bool access, int x1, int y1, int x2, int y2);
-
   bool isEdge(Edge e); 
  
 public: 
@@ -54,8 +44,8 @@ public:
 
   Edge* getEdge(int n1, int n2);
 
-  void updateEdgeCost(int i, double cost){
-	edges[i]->setCost(cost);
+  void updateEdgeCost(int i, double costfromto, double costtofrom){
+	edges[i]->setCost(costfromto, costtofrom);
   }
 
   //! returns the neigbors of the node with index n. Calls directly Node::getNeighbors 
@@ -78,32 +68,6 @@ public:
 
   //! sets all the nodes in the graph as accessible
   void clearGraph();
-
-  void addObstacle(int x1, int y1, int x2, int y2);
-
-  void removeObstacle(int x1, int y1, int x2, int y2);
-
-  void addObstacle(int x, int y, double dist);
-
-  void removeObstacle(int x, int y, double dist);
-
-  void removeAllObstacles();
-
-  vector<int> getObstacles() { return obstacles; }
-
-  void addTempObstacle(int x1, int y1, int x2, int y2);
-
-  void removeTempObstacle(int x1, int y1, int x2, int y2);
-
-  void addTempObstacle(int x, int y, double dist);
-
-  void removeTempObstacle(int x, int y, double dist);
-
-  void removeAllTempObstacles();
-
-  vector<int> getTempObstacles() { return tempObstacles; }
-
-  double calcEdgeCost(Node, Node);
 
   double calcCost(Node, Node);
 };

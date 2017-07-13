@@ -9,6 +9,7 @@
 
 #include "astar.h"
 #include <semaforr/CrowdModel.h>
+#include <math.h>
 
 /*! 
   \brief PathPlanner class in PathPlanner module
@@ -32,6 +33,8 @@ private:
   bool pathCalculated;
 
   void smoothPath(list<int>&, Node, Node);
+  double computeCrowdFlow(Node s, Node d);
+  double projection(double angle, double length, double xs, double ys, double xd, double yd);
 
 public: 
   /*! \brief C'tor (only version) 
@@ -58,7 +61,7 @@ public:
   semaforr::CrowdModel getCrowdModel(){ return crowdModel;}
 
   void updateNavGraph();
-  double computeNewEdgeCost(Node s, Node d, double previousEdgeCost);
+  double computeNewEdgeCost(Node s, Node d, bool direction, double oldcost);
 
   Graph* getGraph(){ return navGraph; }
 
@@ -180,47 +183,6 @@ public:
   void clearGraph() { 
     navGraph->clearGraph(); 
   }
-
-  void addObstacle(int x, int y, double dist){
-    navGraph->addObstacle(x, y, dist); 
-  }
-  
-  void removeObstacle(int x, int y, double dist){
-    navGraph->removeObstacle(x, y, dist); 
-  }
-  
-  void addObstacle(int x1, int y1, int x2, int y2){
-    navGraph->addObstacle(x1, y1, x2, y2); 
-  }
-  
-  void removeObstacle(int x1, int y1, int x2, int y2){
-    navGraph->removeObstacle(x1, y1, x2, y2); 
-  }
-
-  void removeAllObstacles(){
-    navGraph->removeAllObstacles();
-  } 
-
-  /* Wrapper functions for adding 'soft' obstacles. These increase/decrease the temporary edge costs in the graph */ 
-  void addTempObstacle(int x, int y, double dist){
-    navGraph->addTempObstacle(x, y, dist); 
-  }
-  
-  void removeTempObstacle(int x, int y, double dist){
-    navGraph->removeTempObstacle(x, y, dist); 
-  }
-  
-  void addTempObstacle(int x1, int y1, int x2, int y2){
-    navGraph->addTempObstacle(x1, y1, x2, y2); 
-  }
-  
-  void removeTempObstacle(int x1, int y1, int x2, int y2){
-    navGraph->removeTempObstacle(x1, y1, x2, y2); 
-  }
-  
-  void removeAllTempObstacles(){
-    navGraph->removeAllTempObstacles();
-  } 
   
   void printPath();
 

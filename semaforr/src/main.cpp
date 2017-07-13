@@ -10,7 +10,8 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <cmath> 
+#include <cmath>
+#include <sys/time.h>
 
 #include "Controller.h"
 #include "FORRAction.h"
@@ -122,6 +123,13 @@ public:
      bool action_complete = true;
      bool mission_complete = false;
      FORRAction semaforr_action;
+     double overallTimeSec=0.0, computationTimeSec=0.0;
+     timeval tv, cv;
+     double start_time, start_timecv;
+     double end_time, end_timecv;
+     gettimeofday(&tv,NULL);
+     start_time = tv.tv_sec + (tv.tv_usec/1000000.0);
+
      // Run the loop , the input sensing and the output beaming is asynchrounous
      while(nh_.ok()) {
 	  // If pos value is not received from menge wait
@@ -132,10 +140,15 @@ public:
           	// Sense input 
           	ros::spinOnce();	
 	  }
+	  gettimeofday(&tv,NULL);
+          end_time = tv.tv_sec + (tv.tv_usec/1000000.0);
+          overallTimeSec = (end_time-start_time);
           //Sense the input and the current target to run the advisors and generate a decision
           if(action_complete){
 		ROS_INFO_STREAM("Action completed. Save sensor info, Current position: " << current.getX() << " " << current.getY() << " " << current.getTheta());
-		viz_->publishLog(semaforr_action);
+		viz_->publishLog(semaforr_action, overallTimeSec, computationTimeSec);
+                gettimeofday(&cv,NULL);
+                start_timecv = cv.tv_sec + (cv.tv_usec/1000000.0);
 		controller->updateState(current, laserscan);
 		viz_->publish();
 		previous = current;
@@ -143,7 +156,10 @@ public:
 		mission_complete = controller->isMissionComplete();
 		if(mission_complete){
 			ROS_INFO("Mission completed");
-			viz_->publishLog(semaforr_action);
+			gettimeofday(&cv,NULL);
+                        end_timecv = cv.tv_sec + (cv.tv_usec/1000000.0);
+                        computationTimeSec = (end_timecv-start_timecv);
+			viz_->publishLog(semaforr_action, overallTimeSec, computationTimeSec);
 			break;
 		}
 		else{
@@ -153,6 +169,9 @@ public:
   			base_cmd = convert_to_vel(semaforr_action);
 			action_complete = false;
 		}
+		gettimeofday(&cv,NULL);
+                end_timecv = cv.tv_sec + (cv.tv_usec/1000000.0);
+                computationTimeSec = (end_timecv-start_timecv);
           }
           //send the drive command 
           cmd_vel_pub_.publish(base_cmd);

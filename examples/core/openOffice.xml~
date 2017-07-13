@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <Project 
-	scene="openOffice/openOfficeS_simple.xml" 
-	behavior="openOffice/openOfficeB.xml" 
-	view="openOffice/openOfficeV.xml" 
+	scene="openOffice/random/openOffice30S.xml" 
+	behavior="openOffice/random/openOfficeB.xml" 
+	view="openOffice/random/openOfficeV.xml" 
 	model="orca"
 	dumpPath="images/test"
 />

@@ -19,6 +19,7 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <std_msgs/String.h>
+#include <string>  
 
 using namespace std;
 
@@ -35,6 +36,9 @@ private:
   ros::Publisher conveyor_pub_;
   ros::Publisher trails_pub_;
   ros::Publisher plan_pub_;
+  ros::Publisher nodes_pub_;
+  ros::Publisher edges_pub_;
+  ros::Publisher edges_cost_pub_;
   ros::Publisher stats_pub_;
   Controller *con;
   Beliefs *beliefs;
@@ -54,6 +58,9 @@ public:
 
     conveyor_pub_ = nh_->advertise<nav_msgs::OccupancyGrid>("conveyor", 1);
     region_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("region", 1);
+    nodes_pub_ = nh_->advertise<visualization_msgs::Marker>("nodes", 1);
+    edges_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("edges", 1);
+    edges_cost_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("edges_cost", 1);
     trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
     stats_pub_ = nh_->advertise<std_msgs::String>("decision_log", 1);
     //declare and create a controller with task, action and advisor configuration
@@ -69,15 +76,157 @@ public:
 		publish_all_targets();
 		publish_remaining_targets();
 	}
-	
+	//publish_nodes();
+	//publish_edges();
+	//publish_edges_cost();
 	publish_conveyor();
-	publish_region();
+	//publish_region();
 	publish_trails();
-	//publish_log();
   }
 
-  void publishLog(FORRAction decision){
-	publish_log(decision);
+
+  void publish_nodes(){
+	visualization_msgs::Marker marker;
+	marker.header.frame_id = "map";
+    	marker.header.stamp = ros::Time::now();
+	marker.ns = "basic_shapes";
+	marker.type = visualization_msgs::Marker::POINTS;
+    	marker.pose.position.x = 0;
+    	marker.pose.position.y = 0;
+    	marker.pose.position.z = 0;
+    	marker.pose.orientation.x = 0.0;
+    	marker.pose.orientation.y = 0.0;
+    	marker.pose.orientation.z = 0.0;
+    	marker.pose.orientation.w = 1.0;
+	// Set the scale of the marker -- 1x1x1 here means 1m on a side
+	marker.scale.x = marker.scale.y = 0.15;
+	marker.scale.z = 0.15;
+	// Set the color -- be sure to set alpha to something non-zero!
+	marker.color.r = 0.0f;
+	marker.color.g = 0.0f;
+	marker.color.b = 1.0f;
+	marker.color.a = 0.5;
+	marker.lifetime = ros::Duration();
+
+	vector<Edge*> edges = con->getPlanner()->getGraph()->getEdges();
+	vector<Node*> nodes = con->getPlanner()->getGraph()->getNodes();
+	
+	for( int i = 0; i < nodes.size(); i++ ){
+    		float x = nodes[i]->getX()/100;
+		float y = nodes[i]->getY()/100;
+		geometry_msgs::Point point;
+		point.x = x;
+		point.y = y;
+		point.z = 0;
+		marker.points.push_back(point);
+	}
+	nodes_pub_.publish(marker);
+  }
+
+  void publish_edges_cost(){
+	visualization_msgs::MarkerArray markerArrayCost;
+	
+	Graph *graph = con->getPlanner()->getGraph();
+	vector<Edge*> edges = graph->getEdges();
+	vector<Node*> nodes = graph->getNodes();
+	
+	for( int i = 0; i < edges.size(); i++ ){
+		visualization_msgs::Marker costMarker;
+
+		costMarker.header.frame_id = "map";
+	    	costMarker.header.stamp = ros::Time::now();
+		costMarker.ns = "basic_shapes";
+		costMarker.id = i;
+		costMarker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+		costMarker.action = visualization_msgs::Marker::ADD;
+	    	costMarker.pose.orientation.x = 0.0;
+	    	costMarker.pose.orientation.y = 0.0;
+	    	costMarker.pose.orientation.z = 0.0;
+	    	costMarker.pose.orientation.w = 1.0;
+		// Set the scale of the marker -- 1x1x1 here means 1m on a side
+		costMarker.scale.x = 1;
+
+		// Set the color -- be sure to set alpha to something non-zero!
+		costMarker.color.r = 0.0f;
+		costMarker.color.g = 1.0f;
+		costMarker.color.b = 0.0f;
+		costMarker.color.a = 0.5;
+		costMarker.lifetime = ros::Duration();
+
+
+		Node *from = graph->getNodePtr(edges[i]->getFrom());
+		Node *to = graph->getNodePtr(edges[i]->getTo());
+		geometry_msgs::Point f;
+		f.x = from->getX()/100;
+		f.y = from->getY()/100;
+		f.z = 0;
+		geometry_msgs::Point t;
+		t.x = to->getX()/100;
+		t.y = to->getY()/100;
+		t.z = 0;
+
+		costMarker.pose.position.x = (f.x + t.x)/2;
+		costMarker.pose.position.y = (f.y + t.y)/2;
+		costMarker.pose.position.z = 0;
+		//to_string(edges[i]->getCost(true)) + " " + to_string(edges[i]->getCost(false));
+		costMarker.text = "a"; 
+
+		markerArrayCost.markers.push_back(costMarker);
+	}
+	edges_cost_pub_.publish(markerArrayCost);
+  }
+
+  void publish_edges(){
+	visualization_msgs::MarkerArray markerArray;
+
+	Graph *graph = con->getPlanner()->getGraph();
+	vector<Edge*> edges = graph->getEdges();
+	vector<Node*> nodes = graph->getNodes();
+	
+	for( int i = 0; i < edges.size(); i++ ){
+		visualization_msgs::Marker marker;
+		marker.header.frame_id = "map";
+	    	marker.header.stamp = ros::Time::now();
+		marker.ns = "basic_shapes";
+		marker.id = i;
+		marker.type = visualization_msgs::Marker::LINE_LIST;
+	    	marker.pose.position.x = 0;
+	    	marker.pose.position.y = 0;
+	    	marker.pose.position.z = 0;
+	    	marker.pose.orientation.x = 0.0;
+	    	marker.pose.orientation.y = 0.0;
+	    	marker.pose.orientation.z = 0.0;
+	    	marker.pose.orientation.w = 1.0;
+		// Set the scale of the marker -- 1x1x1 here means 1m on a side
+		marker.scale.x = 0.1;
+
+		// Set the color -- be sure to set alpha to something non-zero!
+		marker.color.r = 0.0f;
+		marker.color.g = 1.0f;
+		marker.color.b = 0.0f;
+		marker.color.a = 0.5;
+		marker.lifetime = ros::Duration();
+
+		Node *from = graph->getNodePtr(edges[i]->getFrom());
+		Node *to = graph->getNodePtr(edges[i]->getTo());
+		geometry_msgs::Point f;
+		f.x = from->getX()/100;
+		f.y = from->getY()/100;
+		f.z = 0;
+		geometry_msgs::Point t;
+		t.x = to->getX()/100;
+		t.y = to->getY()/100;
+		t.z = 0;
+		marker.points.push_back(f);
+		marker.points.push_back(t);
+
+		markerArray.markers.push_back(marker);
+	}
+	edges_pub_.publish(markerArray);
+  }
+
+  void publishLog(FORRAction decision, double overallTimeSec, double computationTimeSec){
+	publish_log(decision, overallTimeSec, computationTimeSec);
   }
 
   void publish_next_target(){
@@ -246,7 +395,7 @@ public:
 	remaining_targets_pub_.publish(targets);
   }
 
-  void publish_log(FORRAction decision){
+  void publish_log(FORRAction decision, double overallTimeSec, double computationTimeSec){
 	ROS_DEBUG("Inside publish decision log!!");
 	std_msgs::String log;
 	double robotX = beliefs->getAgentState()->getCurrentPosition().getX();
@@ -255,8 +404,8 @@ public:
 	double targetY;
 	double robotTheta = beliefs->getAgentState()->getCurrentPosition().getTheta();
 	if(beliefs->getAgentState()->getCurrentTask() != NULL) {
-		targetX = beliefs->getAgentState()->getCurrentTask()->getX();
-		targetY = beliefs->getAgentState()->getCurrentTask()->getY();
+		targetX = beliefs->getAgentState()->getCurrentTask()->getTaskX();
+		targetY = beliefs->getAgentState()->getCurrentTask()->getTaskY();
 	} else {
 		targetX = 0;
 		targetY = 0;
@@ -280,6 +429,7 @@ public:
 	string advisorComments = con->getCurrentDecisionStats()->advisorComments;
 	cout << "vetoedActions = " << vetoedActions << " decisionTier = " << decisionTier << " advisors = " << advisors << " advisorComments = " << advisorComments << endl;
 	vector< vector<int> > waypoints = beliefs->getSpatialModel()->getWaypoints()->getWaypoints();
+	std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
 
 	ROS_DEBUG("After decision statistics");
 	int decisionCount = -1;
@@ -289,6 +439,8 @@ public:
 		decisionCount = beliefs->getAgentState()->getCurrentTask()->getDecisionCount();
 	}
 	ROS_DEBUG("After decisionCount");
+
+	/*
 	std::stringstream lep;
 	for(int i = 0; i < laserEndpoints.size(); i++){
 		double x = laserEndpoints[i].get_x();
@@ -296,9 +448,15 @@ public:
 		lep << x << "," << y << ";";
 	}
 	ROS_DEBUG("After laserEndpoints");
+	*/
+
 	std::stringstream ls;
+	double min_laser_scan = 25; //meters
 	for(int i = 0; i < laserScan.ranges.size(); i++){
 		double length = laserScan.ranges[i];
+		if(length < min_laser_scan){
+			min_laser_scan = length;
+		}
 		ls << length << ",";
 	}
 	ROS_DEBUG("After laserScan");
@@ -307,6 +465,7 @@ public:
 		totalSize += allTrace[i].size();
 	}*/
 
+	/*
 	std::stringstream regions;
 	for(int i = 0; i < circles.size(); i++){
 		regions << circles[i].getCenter().get_x() << " " << circles[i].getCenter().get_y() << " " << circles[i].getRadius();
@@ -317,6 +476,8 @@ public:
 		regions << ";";
 	}
 	ROS_DEBUG("After regions");
+
+	*/
 	std::stringstream trailstream;
 	for(int i = 0; i < trails.size(); i++){
 		for(int j = 0; j < trails[i].size(); j++){
@@ -333,9 +494,25 @@ public:
 		}
 		conveyorStream << ";";
 	}
+	ROS_DEBUG("After conveyors");
+
+	/*std::stringstream doorStream;
+	for(int i = 0; i < doors.size(); i++){
+		for(int j = 0; j < doors[i].size(); j++){
+			doorStream << doors[i][j].startPoint.getExitPoint().get_x() << " " << doors[i][j].startPoint.getExitPoint().get_y() << " " << doors[i][j].endPoint.getExitPoint().get_x() << " " << doors[i][j].endPoint.getExitPoint().get_y() << " " << doors[i][j].str << ", ";
+		}
+		doorStream << ";";
+	}
+	ROS_DEBUG("After doors");	
+
+	*/
 
 	std::stringstream output;
-	output << currentTask << "\t" << decisionCount << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str();// << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+
+	//output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << trailstream.str() << "\t" << conveyorStream.str() << "\t" << min_laser_scan ;
+
 	log.data = output.str();
 	stats_pub_.publish(log);
 	con->clearCurrentDecisionStats();
