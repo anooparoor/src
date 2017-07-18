@@ -45,6 +45,13 @@ private:
 	// Advisors with their associated rationales
 	std::map <std::string, std::string> advSupportRationales;
 	std::map <std::string, std::string> advOpposeRationales;
+	// Confidence metrics with their associated phrases
+	std::vector <double> confidenceLevelThreshold;
+	std::vector <std::string> confidenceLevelPhrase;
+	std::vector <double> giniThreshold;
+	std::vector <std::string> giniPhrase;
+	std::vector <double> overallSupportThreshold;
+	std::vector <std::string> overallSupportPhrase;
 	// Stats on tier 3
 	std::set<std::string> advisors;
 	std::map <std::string, double> advisorTotal;
@@ -57,6 +64,7 @@ private:
 	std::map <std::string, double> actionCount;
 	std::map <std::string, double> actionMean;
 	std::map <std::string, double> actionStandardDeviation;
+	double gini, overallSupport, confidenceLevel;
 
 public:
 	//! ROS node initialization
@@ -118,6 +126,33 @@ public:
 					ROS_DEBUG_STREAM("File text:" << vstrings[i] << " " << vstrings[i+1] << endl);
 				}
 			}
+			else if (fileLine.find("confidencelevel") != std::string::npos){
+				std::vector<std::string> vstrings = parseText(fileLine);
+				for(int i=1; i < vstrings.size(); i+=2){
+					confidenceLevelThreshold.push_back(atof(vstrings[i].c_str()));
+					confidenceLevelPhrase.push_back(vstrings[i+1]);
+					ROS_DEBUG_STREAM("File text:" << vstrings[i+1] << " " << vstrings[i] << endl);
+				}
+				//ROS_DEBUG_STREAM("File text:" << vstrings[0]);
+			}
+			else if (fileLine.find("gini") != std::string::npos){
+				std::vector<std::string> vstrings = parseText(fileLine);
+				for(int i=1; i < vstrings.size(); i+=2){
+					giniThreshold.push_back(atof(vstrings[i].c_str()));
+					giniPhrase.push_back(vstrings[i+1]);
+					ROS_DEBUG_STREAM("File text:" << vstrings[i+1] << " " << vstrings[i] << endl);
+				}
+				//ROS_DEBUG_STREAM("File text:" << vstrings[0]);
+			}
+			else if (fileLine.find("overallsupport") != std::string::npos){
+				std::vector<std::string> vstrings = parseText(fileLine);
+				for(int i=1; i < vstrings.size(); i+=2){
+					overallSupportThreshold.push_back(atof(vstrings[i].c_str()));
+					overallSupportPhrase.push_back(vstrings[i+1]);
+					ROS_DEBUG_STREAM("File text:" << vstrings[i+1] << " " << vstrings[i] << endl);
+				}
+				//ROS_DEBUG_STREAM("File text:" << vstrings[0]);
+			}
 		}
 
 
@@ -145,14 +180,15 @@ public:
 			//ROS_INFO_STREAM(decisionTier << " " << vetoedActions << " " << chosenAction << " " << advisorComments << endl << endl);
 
 			if (decisionTier == 1){
-				explanationString.data = "I could see our target and " + actionText[chosenAction] + " would get us closer to it.";
+				explanationString.data = "I could see our target and " + actionText[chosenAction] + " would get us closer to it.\n" + "Highly confident, since our target is in sensory range and this would get us closer to it.";
 			} else if (vetoedActions == "0 1;0 2;0 3;0 4;0 5;") {
 				//ROS_DEBUG(vetoedActions << endl);
-				explanationString.data = "I decided to " + actionText[chosenAction] + " because there's not enough room to move forward.";
+				explanationString.data = "I decided to " + actionText[chosenAction] + " because there's not enough room to move forward.\n" + "Highly confident, since there is not enough room to move forward.";
 			} else {
 				parseTier3Comments(advisorComments);
 				computeTier3TScores(advisorComments, chosenAction);
-				explanationString.data = tier3Explanation(chosenAction);
+				computeConfidence(chosenAction);
+				explanationString.data = tier3Explanation(chosenAction) + "\n" + confidenceExplanation();
 			}
 			//explanationString.data = parseText(current_log)[10];
 			//send the explanation
@@ -392,6 +428,53 @@ public:
 			}
 		}
 		
+		return explanation;
+	}
+	
+	void computeConfidence(string chosenAction) {
+		gini = 2 * (actionTotal[chosenAction]/(10*actionCount[chosenAction])) * (1 - (actionTotal[chosenAction]/(10*actionCount[chosenAction])));
+		ROS_INFO_STREAM(actionTotal[chosenAction] << " " << actionCount[chosenAction] << " " << gini);
+		double totalCommentCount=0, totalCommentMean=0, totalCommentStdev=0;
+		std::map <std::string, double>::iterator itr;
+		for (itr = actionTotal.begin(); itr != actionTotal.end(); itr++) {
+			totalCommentMean += itr->second;
+			totalCommentCount++;
+		}
+		totalCommentMean = totalCommentMean / totalCommentCount;
+		for (itr = actionTotal.begin(); itr != actionTotal.end(); itr++) {
+			totalCommentStdev += pow((itr->second - totalCommentMean), 2);
+		}
+		totalCommentStdev = sqrt(totalCommentStdev / totalCommentCount);
+		if (totalCommentStdev != 0) {
+			overallSupport = (actionTotal[chosenAction] - totalCommentMean)/totalCommentStdev;
+		}
+		else {
+			overallSupport = 0;
+		}
+		ROS_INFO_STREAM(totalCommentCount << " " << totalCommentMean << " " << totalCommentStdev << " " << overallSupport);
+		confidenceLevel = (0.5 - gini) * overallSupport;
+		ROS_INFO_STREAM(confidenceLevel);
+	}
+	
+	std::string confidenceExplanation() {
+		std::string explanation, phraseGini, phraseOverallSupport, phraseConfidenceLevel;	
+		for (int i = giniThreshold.size()-1; i >= 0; --i) {
+			if (gini <= giniThreshold[i]) {
+				phraseGini = giniPhrase[i];
+			}
+		}
+		for (int i = overallSupportThreshold.size()-1; i >= 0; --i) {
+			if (overallSupport <= overallSupportThreshold[i]) {
+				phraseOverallSupport = overallSupportPhrase[i];
+			}
+		}
+		for (int i = confidenceLevelThreshold.size()-1; i >= 0; --i) {
+			if (confidenceLevel <= confidenceLevelThreshold[i]) {
+				phraseConfidenceLevel = confidenceLevelPhrase[i];
+			}
+		}
+		explanation = "I'm " + phraseConfidenceLevel + " confident in my decision, because " + phraseGini + " and " + phraseOverallSupport + " to do this more than anything else.";
+		ROS_INFO_STREAM(explanation);
 		return explanation;
 	}
 
