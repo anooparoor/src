@@ -126,7 +126,7 @@ public:
 	
 	void run(){
 		std_msgs::String explanationString;
-		string target, vetoedActions, chosenAction, advisorComments;
+		string vetoedActions, chosenAction, advisorComments;
 		int decisionTier;
 		ros::Rate rate(30.0);
 		while(nh_.ok()) {
@@ -137,7 +137,7 @@ public:
 				// Sense input 
 				ros::spinOnce();
 			}
-			target = "(" + parseText(current_log)[4] + ", " + parseText(current_log)[5] + ")";
+			//target = "(" + parseText(current_log)[4] + ", " + parseText(current_log)[5] + ")";
 			decisionTier = atoi(parseText(current_log)[10].c_str());
         		vetoedActions = parseText(current_log)[11];
         		chosenAction = parseText(current_log)[12]+parseText(current_log)[13];
@@ -145,7 +145,7 @@ public:
 			//ROS_INFO_STREAM(decisionTier << " " << vetoedActions << " " << chosenAction << " " << advisorComments << endl << endl);
 
 			if (decisionTier == 1){
-				explanationString.data = "I could see our " + target + " target and " + actionText[chosenAction] + " would get us closer to it.";
+				explanationString.data = "I could see our target and " + actionText[chosenAction] + " would get us closer to it.";
 			} else if (vetoedActions == "0 1;0 2;0 3;0 4;0 5;") {
 				//ROS_DEBUG(vetoedActions << endl);
 				explanationString.data = "I decided to " + actionText[chosenAction] + " because there's not enough room to move forward.";
@@ -181,23 +181,23 @@ public:
 			}
 			std::string action = (vstrings[1]+vstrings[2]);
 			if (advisorTotal.find(vstrings[0]) == advisorTotal.end()) {
-				advisorTotal[vstrings[0]] = 0;
+				advisorTotal[vstrings[0]] = atof(vstrings[3].c_str());
 			} else {
 				advisorTotal[vstrings[0]] = advisorTotal[vstrings[0]] + atof(vstrings[3].c_str());
 			}
 			if (advisorCount.find(vstrings[0]) == advisorCount.end()) {
-				advisorCount[vstrings[0]] = 0;
+				advisorCount[vstrings[0]] = 1;
 			} else {
 				advisorCount[vstrings[0]] = advisorCount[vstrings[0]] + 1;
 			}
 			advisors.insert(vstrings[0]);
 			if (actionTotal.find(action) == actionTotal.end()) {
-				actionTotal[action] = 0;
+				actionTotal[action] = atof(vstrings[3].c_str());
 			} else {
 				actionTotal[action] = actionTotal[action] + atof(vstrings[3].c_str());
 			}
 			if (actionCount.find(action) == actionCount.end()) {
-				actionCount[action] = 0;
+				actionCount[action] = 1;
 			} else {
 				actionCount[action] = actionCount[action] + 1;
 			}
@@ -225,13 +225,13 @@ public:
 			}
 			std::string action = (vstrings[1]+vstrings[2]);
 			if (advisorStandardDeviation.find(vstrings[0]) == advisorStandardDeviation.end()) {
-				advisorStandardDeviation[vstrings[0]] = 0;
+				advisorStandardDeviation[vstrings[0]] = pow((atof(vstrings[3].c_str()) - advisorMean[vstrings[0]]), 2);
 			} else {
 				advisorStandardDeviation[vstrings[0]] = advisorStandardDeviation[vstrings[0]] + pow((atof(vstrings[3].c_str()) - advisorMean[vstrings[0]]), 2);
 			}
 			
 			if (actionStandardDeviation.find(action) == actionStandardDeviation.end()) {
-				actionStandardDeviation[action] = 0;
+				actionStandardDeviation[action] = pow((atof(vstrings[3].c_str()) - actionMean[action]), 2);
 			} else {
 				actionStandardDeviation[action] = actionStandardDeviation[action] + pow((atof(vstrings[3].c_str()) - actionMean[action]), 2);
 			}
@@ -262,6 +262,7 @@ public:
 			if (action == chosenAction) {
 				if (advisorStandardDeviation[vstrings[0]] != 0) {
 					advisorTScore[vstrings[0]] = ((atof(vstrings[3].c_str()) - advisorMean[vstrings[0]]) / advisorStandardDeviation[vstrings[0]]);
+					//ROS_INFO_STREAM(vstrings[0] << " " << action << ": " << vstrings[3] << ", mean: " << advisorMean[vstrings[0]] << ", stdev: " << advisorStandardDeviation[vstrings[0]] << ", t score: " << (atof(vstrings[3].c_str()) - advisorMean[vstrings[0]]) / advisorStandardDeviation[vstrings[0]]);
 				} else {
 					advisorTScore[vstrings[0]] = 0;
 				}
@@ -287,81 +288,107 @@ public:
 		std::vector<std::string> opposePhrases, slightOpposePhrases;
 		
 		std::map <std::string, double>::iterator itr;
+		//ROS_INFO_STREAM(advisorTScore.size());
 		for (itr = advisorTScore.begin(); itr != advisorTScore.end(); itr++) {
-			if (itr->second <= -0.75) {
-				opposePhrases.push_back("I " + tier3TScoretoPhrase(itr->second) + " to " + advOpposeRationales[itr->first]);
-			}
-			else if (itr->second > 0.75) {
+			if (itr->second > (0.75)) {
 				supportPhrases.push_back("I " + tier3TScoretoPhrase(itr->second) + " to " + advSupportRationales[itr->first]);
+				//ROS_INFO_STREAM(itr->first << ": " << itr->second);
+				//ROS_INFO_STREAM("I " + tier3TScoretoPhrase(itr->second) + " to " + advSupportRationales[itr->first]);
 			}
-			else if (itr->second > -0.75 and itr->second <= 0) {
-				slightOpposePhrases.push_back("I " + tier3TScoretoPhrase(itr->second) + " to " + advOpposeRationales[itr->first]);
-			}
-			else if (itr->second > 0 and itr->second <= 0.75) {
+			else if (itr->second > (0)) {
 				slightSupportPhrases.push_back("I " + tier3TScoretoPhrase(itr->second) + " to " + advSupportRationales[itr->first]);
+				//ROS_INFO_STREAM(itr->first << ": " << itr->second);
+				//ROS_INFO_STREAM("I " + tier3TScoretoPhrase(itr->second) + " to " + advSupportRationales[itr->first]);
+			}
+			else if (itr->second > (-0.75)) {
+				slightOpposePhrases.push_back("I " + tier3TScoretoPhrase(itr->second) + " to " + advOpposeRationales[itr->first]);
+				//ROS_INFO_STREAM(itr->first << ": " << itr->second);
+				//ROS_INFO_STREAM("I " + tier3TScoretoPhrase(itr->second) + " to " + advOpposeRationales[itr->first]);
+			}
+			else {
+				opposePhrases.push_back("I " + tier3TScoretoPhrase(itr->second) + " to " + advOpposeRationales[itr->first]);
+				//ROS_INFO_STREAM(itr->first << ": " << itr->second);
+				//ROS_INFO_STREAM("I " + tier3TScoretoPhrase(itr->second) + " to " + advOpposeRationales[itr->first]);
 			}
 		}
 		
 		if (supportPhrases.size() > 2) {
-			for (int i = 1; i < supportPhrases.size()-1; i++) {
+			for (int i = 0; i < supportPhrases.size()-1; i++) {
 				supportConcat = supportConcat + supportPhrases[i] + ", ";
 			}
 			supportConcat = supportConcat + "and " + supportPhrases[supportPhrases.size()-1];
+			//ROS_INFO_STREAM("Greater than 2: " << supportConcat);
 		}
 		else if (supportPhrases.size() == 2) {
 			supportConcat = supportPhrases[0] + " and " + supportPhrases[1];
+			//ROS_INFO_STREAM("Equals 2: " << supportConcat);
 		}
 		else if (supportPhrases.size() == 1) {
 			supportConcat = supportPhrases[0];
+			//ROS_INFO_STREAM("Equals 1: " << supportConcat);
 		}
 		else if (supportPhrases.size() == 0) {
 			if (slightSupportPhrases.size() > 2) {
-				for (int i = 1; i < slightSupportPhrases.size()-1; i++) {
+				for (int i = 0; i < slightSupportPhrases.size()-1; i++) {
 					supportConcat = supportConcat + slightSupportPhrases[i] + ", ";
 				}
 				supportConcat = supportConcat + "and " + slightSupportPhrases[slightSupportPhrases.size()-1];
+				//ROS_INFO_STREAM("Greater than 2 Slightly: " << supportConcat);
 			}
 			else if (slightSupportPhrases.size() == 2) {
 				supportConcat = slightSupportPhrases[0] + " and " + slightSupportPhrases[1];
+				//ROS_INFO_STREAM("Equals 2 Slightly: " << supportConcat);
 			}
 			else if (slightSupportPhrases.size() == 1) {
 				supportConcat = slightSupportPhrases[0];
+				//ROS_INFO_STREAM("Equals 1 Slightly: " << supportConcat);
 			}
 		}
 		
 		if (opposePhrases.size() > 2) {
-			for (int i = 1; i < opposePhrases.size()-1; i++) {
+			for (int i = 0; i < opposePhrases.size()-1; i++) {
 				opposeConcat = opposeConcat + opposePhrases[i] + ", ";
 			}
 			opposeConcat = opposeConcat + "and " + opposePhrases[opposePhrases.size()-1];
+			//ROS_INFO_STREAM("Greater than 2 Oppose: " << opposeConcat);
 			explanation = "Although " + opposeConcat + ", I decided to " + actionText[chosenAction] + " because " + supportConcat + ".";
+			//ROS_INFO_STREAM(explanation);
 		}
 		else if (opposePhrases.size() == 2) {
 			opposeConcat = opposePhrases[0] + " and " + opposePhrases[1];
+			//ROS_INFO_STREAM("Equals 2 Oppose: " << opposeConcat);
 			explanation = "Although " + opposeConcat + ", I decided to " + actionText[chosenAction] + " because " + supportConcat + ".";
+			//ROS_INFO_STREAM(explanation);
 		}
 		else if (opposePhrases.size() == 1) {
 			opposeConcat = opposePhrases[0];
+			//ROS_INFO_STREAM("Equals 1 Oppose: " << opposeConcat);
 			explanation = "Although " + opposeConcat + ", I decided to " + actionText[chosenAction] + " because " + supportConcat + ".";
+			//ROS_INFO_STREAM(explanation);
 		}
 		else if (opposePhrases.size() == 0) {
 			if (supportPhrases.size() == 0) {
 				if (slightOpposePhrases.size() > 2) {
-					for (int i = 1; i < slightOpposePhrases.size()-1; i++) {
+					for (int i = 0; i < slightOpposePhrases.size()-1; i++) {
 						opposeConcat = opposeConcat + slightOpposePhrases[i] + ", ";
 					}
 					opposeConcat = opposeConcat + "and " + slightOpposePhrases[slightOpposePhrases.size()-1];
+					//ROS_INFO_STREAM("Greater than 2 Slightly Oppose: " << opposeConcat);
 				}
 				else if (slightOpposePhrases.size() == 2) {
 					opposeConcat = slightOpposePhrases[0] + " and " + slightOpposePhrases[1];
+					//ROS_INFO_STREAM("Equals 2 Slightly Oppose: " << opposeConcat);
 				}
 				else if (slightOpposePhrases.size() == 1) {
 					opposeConcat = slightOpposePhrases[0];
+					//ROS_INFO_STREAM("Equals 1 Slightly Oppose: " << opposeConcat);
 				}
 				explanation = "Although " + opposeConcat + ", I decided to " + actionText[chosenAction] + " because " + supportConcat + ".";
+				//ROS_INFO_STREAM(explanation);
 			}
 			else {
 				explanation = "I decided to " + actionText[chosenAction] + " because " + supportConcat + ".";
+				//ROS_INFO_STREAM(explanation);
 			}
 		}
 		

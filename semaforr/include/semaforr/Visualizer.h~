@@ -82,10 +82,9 @@ public:
 	//publish_edges();
 	//publish_edges_cost();
 	publish_conveyor();
-	//publish_region();
+	publish_region();
 	publish_trails();
 	publish_doors();
-	//publish_log();
   }
 
 
