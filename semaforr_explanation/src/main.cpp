@@ -31,6 +31,8 @@ private:
 	ros::NodeHandle nh_;
 	//! We will be publishing to the "explanations" topic
 	ros::Publisher explanations_pub_;
+	//! We will be publishing to the "explanations_log" topic
+	ros::Publisher explanations_log_pub_;
 	//! We will be listening to \decision_log topic
 	ros::Subscriber sub_decisionLog_;
 	// Current log
@@ -73,6 +75,7 @@ public:
 		nh_ = nh;
 		//set up the publisher for the explanations topic
 		explanations_pub_ = nh_.advertise<std_msgs::String>("explanations", 1);
+		explanations_log_pub_ = nh_.advertise<std_msgs::String>("explanations_log", 1);
 		sub_decisionLog_ = nh.subscribe("decision_log", 1000, &Explanation::updateLog, this);
 		init_message_received = false;
 	}
@@ -189,6 +192,7 @@ public:
 				computeTier3TScores(advisorComments, chosenAction);
 				computeConfidence(chosenAction);
 				explanationString.data = tier3Explanation(chosenAction) + "\n" + confidenceExplanation();
+				logExplanationData();
 			}
 			//explanationString.data = parseText(current_log)[10];
 			//send the explanation
@@ -457,23 +461,29 @@ public:
 	}
 	
 	std::string confidenceExplanation() {
-		std::string explanation, phraseGini, phraseOverallSupport, phraseConfidenceLevel;	
+		std::string explanation, phraseGini, phraseOverallSupport, phraseConfidenceLevel;
+		int giniPhaseID = giniThreshold.size(), overallSupportPhraseID = overallSupportThreshold.size(), confidenceLevelPhraseID = confidenceLevelThreshold.size();
 		for (int i = giniThreshold.size()-1; i >= 0; --i) {
 			if (gini <= giniThreshold[i]) {
 				phraseGini = giniPhrase[i];
+				giniPhaseID--;
 			}
 		}
 		for (int i = overallSupportThreshold.size()-1; i >= 0; --i) {
 			if (overallSupport <= overallSupportThreshold[i]) {
 				phraseOverallSupport = overallSupportPhrase[i];
+				overallSupportPhraseID--;
 			}
 		}
 		for (int i = confidenceLevelThreshold.size()-1; i >= 0; --i) {
 			if (confidenceLevel <= confidenceLevelThreshold[i]) {
 				phraseConfidenceLevel = confidenceLevelPhrase[i];
+				confidenceLevelPhraseID--;
 			}
 		}
-		explanation = "I'm " + phraseConfidenceLevel + " confident in my decision, because " + phraseGini + " and " + phraseOverallSupport + " to do this more than anything else.";
+		
+		
+		explanation = "I'm " + phraseConfidenceLevel + " confident in my decision, because " + phraseGini + " and I " + phraseOverallSupport + " to do this more than anything else.";
 		ROS_INFO_STREAM(explanation);
 		return explanation;
 	}
@@ -507,6 +517,22 @@ public:
 		actionCount.clear();
 		actionMean.clear();
 		actionStandardDeviation.clear();
+	}
+	
+	void logExplanationData() {
+		std_msgs::String logData;
+		
+		std::stringstream tscorestream;
+		std::map <std::string, double>::iterator itr;
+		for (itr = advisorTScore.begin(); itr != advisorTScore.end(); itr++) {
+			tscorestream << itr->second << " ";
+		}
+		
+		std::stringstream output;
+		output << tscorestream.str() << "\t" << gini << "\t" << overallSupport << "\t" << confidenceLevel;
+		
+		logData.data = output.str();
+		explanations_log_pub_.publish(logData);
 	}
 };
 

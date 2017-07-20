@@ -525,7 +525,7 @@ public:
 	ROS_DEBUG("After trails");
 	
 	std::stringstream conveyorStream;
-	for(int j = 0; j < waypoints.size(); j++){
+	for(int j = 0; j < waypoints.size()-1; j++){
 		for(int i = 0; i < waypoints[j].size(); i++){
 			conveyorStream << waypoints[i][j] << " ";
 		}
