@@ -222,8 +222,8 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 FORRAction AgentState::maxForwardAction(){
  	ROS_DEBUG("In maxforwardaction");
 	double error_margin = 1; // margin from obstacles
-	double view = 1.0472; // +view radians to -view radians view
-
+	//double view = 1.0472; // +view radians to -view radians view
+	double view = 0.5236;
 	double min_distance = getDistanceToObstacle(view);
 
 	for(double angle = (-1)*view; angle > view; angle = angle + 0.005){

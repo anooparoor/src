@@ -25,7 +25,7 @@
 	</AgentProfile>
 
 	<AgentProfile name="group2" inherits="group1" >
-		<Common class="2" r="0.39" external="0"/>
+		<Common class="2" r="0.2" external="0"/>
 		<Helbing mass="320"/>
 	</AgentProfile>
 

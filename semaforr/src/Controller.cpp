@@ -147,7 +147,8 @@ Controller::Controller(string advisor_config, string task_config, string action_
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
             //beliefs = new Beliefs(120,120,2);
-            beliefs = new Beliefs(90,60,2);
+            beliefs = new Beliefs(90,60,2); // Hunter Fourth
+            //beliefs = new Beliefs(32,28,2); // Map A
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
@@ -193,6 +194,7 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
 	//********************* Task Decision limit reached, skip task ********************
 	else if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
 		ROS_DEBUG("Controller.cpp decisionCount > 500 , skipping task");
+		//learnSpatialModel(beliefs->getAgentState());
 	    	beliefs->getAgentState()->skipTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());

@@ -537,7 +537,7 @@ public:
 		std::string alternateExplanations;
 		std::map <std::string, std::string>::iterator itr;
 		for (itr = actionText.begin(); itr != actionText.end(); itr++) {
-			if (itr->first != chosenAction and itr->first != "30" and itr->first != "") {
+			if (itr->first != chosenAction and itr->first != "30" and (itr->first).length() >0) {
 				alternateExplanations = alternateExplanations + "I decided not to " + itr->second + " because I sense our goal and another action would get us closer to it.\n";
 			}
 		}
