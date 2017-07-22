@@ -24,8 +24,8 @@ BaseLineRotation        Advisor-that-gives-random-comments                      
 ExitFinderLinear        Advisor-that-moves-towards-exit                             f  0.05 0 0 0 0
 ExitFinderRotation      Advisor-that-moves-towards-exits                            f  0.05 0 0 0 0
 #
-ExitFinderFieldLinear   Advisor-that-moves-towards-closer-exits                     t  0.05 0 0 0 0
-ExitFinderFieldRotation Advisor-that-moves-towards-closer-exits                     t  0.05 0 0 0 0
+ExitFinderFieldLinear   Advisor-that-moves-towards-closer-exits                     f  0.05 0 0 0 0
+ExitFinderFieldRotation Advisor-that-moves-towards-closer-exits                     f  0.05 0 0 0 0
 #
 RegionLeaverLinear      Advisor-that-leaves-a-region-without-the-target             f  0.05 0 0 0 0
 RegionLeaverRotation    Advisor-that-leaves-a-region-without-the-target             f  0.05 0 0 0 0
@@ -47,14 +47,14 @@ WaypointFinderRotation  Advisor-that-follows-waypoints-generated-from-path      
 TrailFinderLinear       Advisor-that-follows-previous-paths                         t  0.05 0 0 0 0
 TrailFinderRotation     Advisor-that-follows-previous-paths                         t  0.05 0 0 0 0
 #
-EnterDoorLinear         Advisor-that-enters-region-with-target-through-doors        f  0.05 0 0 0 0
-EnterDoorRotation       Advisor-that-enters-region-with-target-through-doors        f  0.05 0 0 0 0
+EnterDoorLinear         Advisor-that-enters-region-with-target-through-doors        t  0.05 0 0 0 0
+EnterDoorRotation       Advisor-that-enters-region-with-target-through-doors        t  0.05 0 0 0 0
 #
 ExitDoorLinear          Advisor-that-exits-region-without-target-through-doors      t  0.05 0 0 0 0
 ExitDoorRotation        Advisor-that-exits-region-without-target-through-doors      t  0.05 0 0 0 0
 #
-DoorAttractorLinear     Advisor-that-goes-toward-regions-with-many-doors            f  0.05 0 0 0 0
-DoorAttractorRotation   Advisor-that-goes-toward-regions-with-many-doors            f  0.05 0 0 0 0
+DoorAttractorLinear     Advisor-that-goes-toward-regions-with-many-doors            t  0.05 0 0 0 0
+DoorAttractorRotation   Advisor-that-goes-toward-regions-with-many-doors            t  0.05 0 0 0 0
 #
-NeighborDoorLinear      Advisor-that-goes-toward-targets-neighbor-with-doors        t  0.05 0 0 0 0
-NeighborDoorRotation    Advisor-that-goes-toward-targets-neighbor-with-doors        t  0.05 0 0 0 0
+NeighborDoorLinear      Advisor-that-goes-toward-targets-neighbor-with-doors        f  0.05 0 0 0 0
+NeighborDoorRotation    Advisor-that-goes-toward-targets-neighbor-with-doors        f  0.05 0 0 0 0

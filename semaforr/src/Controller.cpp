@@ -147,7 +147,7 @@ Controller::Controller(string advisor_config, string task_config, string action_
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
             //beliefs = new Beliefs(120,120,2);
-            beliefs = new Beliefs(31,28,2);
+            beliefs = new Beliefs(90,60,2);
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
