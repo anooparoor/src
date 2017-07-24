@@ -12,8 +12,8 @@ ObstacleAvoidRotation   Advisor-that-does-not-like-robot-to-be-too-close-to-wall
 #CloseIn                Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
 #CloseInRotation        Advisor-that-does-not-want-to-overshoot-target              f  0.05 80 0 0 0
 #
-BigStep                 Advisor-that-favors-making-biggest-possible-steps           f  0.05 0 0 0 0
-BigStepRotation         Advisor-that-favors-making-biggest-possible-steps           f  0.05 0 0 0 0
+BigStep                 Advisor-that-favors-making-biggest-possible-steps           t  0.05 0 0 0 0
+BigStepRotation         Advisor-that-favors-making-biggest-possible-steps           t  0.05 0 0 0 0
 #
 Explorer                Advisor-that-favors-places-that-have-not-been-visited       t  0.05 .05 0 0 0
 ExplorerRotation        Advisor-that-favors-places-that-have-not-been-visited       t  0.05 1.25 0 0 0

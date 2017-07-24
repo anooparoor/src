@@ -213,8 +213,8 @@ public:
 			//ROS_INFO_STREAM(decisionTier << " " << vetoedActions << " " << chosenAction << " " << advisorComments << endl << endl);
 
 			if (decisionTier == 1){
-				explanationString.data = "I could see our target and " + actionText[chosenAction] + " would get us closer to it.\n" + "Highly confident, since our target is in sensory range and this would get us closer to it.\n" + victoryAlternateActions(chosenAction);
-			} else if (vetoedActions == "0 1;0 2;0 3;0 4;0 5;") {
+				explanationString.data = "I could see our target and " + actioningText[chosenAction] + " would get us closer to it.\n" + "Highly confident, since our target is in sensory range and this would get us closer to it.\n" + victoryAlternateActions(chosenAction);
+			} else if (vetoedActions == "0 1;0 2;0 3;0 4;0 5;" and chosenAction == "30") {
 				//ROS_DEBUG(vetoedActions << endl);
 				explanationString.data = "I decided to " + actionText[chosenAction] + " because there's not enough room to move forward.\n" + "Highly confident, since there is not enough room to move forward.\n" + vetoedAlternateActions(vetoedActions);
 			} else {
@@ -518,7 +518,7 @@ public:
 		//ROS_INFO_STREAM(giniPhaseID << " " << overallSupportPhraseID << " " << confidenceLevelPhraseID);
 		
 		if (giniPhaseID == confidenceLevelPhraseID and overallSupportPhraseID == confidenceLevelPhraseID) {
-			explanation = "I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + " and I " + phraseOverallSupport + " to do this more than anything else.";
+			explanation = "I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + ". I " + phraseOverallSupport + " to do this more than anything else.";
 		}
 		else if (overallSupportPhraseID >= confidenceLevelPhraseID and giniPhaseID <= confidenceLevelPhraseID) {
 			explanation = "Even though I " + phraseOverallSupport + " to do this more than anything else, I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + ".";
@@ -527,7 +527,7 @@ public:
 			explanation = "Even though " + phraseGini + ", I'm " + phraseConfidenceLevel + " confident in my decision because I " + phraseOverallSupport + " to do this more than anything else.";
 		}
 		else {
-			explanation = "I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + " and I " + phraseOverallSupport + " to do this more than anything else.";
+			explanation = "I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + ". I " + phraseOverallSupport + " to do this more than anything else.";
 		}		
 		//ROS_INFO_STREAM(explanation);
 		return explanation + "\n";

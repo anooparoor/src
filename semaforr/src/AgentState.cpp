@@ -114,7 +114,7 @@ bool AgentState::canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, Carte
 bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point){
   ROS_DEBUG_STREAM("AgentState:canSeePoint() , robot pos " << laserPos.get_x() << "," << laserPos.get_y() << " target " <<
 	point.get_x() << "," << point.get_y()); 
-  double epsilon = 0.01;
+  double epsilon = 0.05;
   ROS_DEBUG_STREAM("Number of laser endpoints " << givenLaserEndpoints.size()); 
   bool canSeePoint = false;
   for(int i = 0; i < givenLaserEndpoints.size(); i++){
@@ -215,18 +215,59 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 	//cout << index << " " << currentLaserScan.ranges.size() << endl;
 	if(currentLaserScan.ranges.size() == 0) { return 25; }
 	//cout << currentLaserScan.ranges[index] << endl;
-	return currentLaserScan.ranges[index];
+	
+	double r_x = currentPosition.getX();
+	double r_y = currentPosition.getY();
+	double r_ang = currentPosition.getTheta();
+	CartesianPoint current_point(r_x,r_y);
+	double r = 0.2794+0.1;
+	
+	Vector v1 = Vector(current_point, r_ang+(M_PI/2), r);
+	Vector v2 = Vector(current_point, r_ang-(M_PI/2), r);
+	
+	Vector parallel1 = Vector(v1.get_endpoint(), r_ang, 25);
+	Vector parallel2 = Vector(v2.get_endpoint(), r_ang, 25);
+	
+	Vector laserVector = Vector(current_point, r_ang+rotation_angle, 25);
+	
+	CartesianPoint intersectionPoint = CartesianPoint();
+	
+	if(do_intersect(parallel1, laserVector, intersectionPoint)){
+		if(intersectionPoint.get_distance(current_point) < currentLaserScan.ranges[index]){
+			//cout << "25" << endl;
+			return 25;
+		}
+		else {
+			//cout << currentLaserScan.ranges[index] << endl;
+			return currentLaserScan.ranges[index];
+		}
+	}
+	else if(do_intersect(parallel2, laserVector, intersectionPoint)){
+		if(intersectionPoint.get_distance(current_point) < currentLaserScan.ranges[index]){
+			//cout << "25" << endl;
+			return 25;
+		}
+		else {
+			//cout << currentLaserScan.ranges[index] << endl;
+			return currentLaserScan.ranges[index];
+		}
+	}
+	else {
+		//cout << currentLaserScan.ranges[index] << endl;
+		return currentLaserScan.ranges[index];
+	}
 }
 
 
 FORRAction AgentState::maxForwardAction(){
  	ROS_DEBUG("In maxforwardaction");
 	double error_margin = 1; // margin from obstacles
-	//double view = 1.0472; // +view radians to -view radians view
-	double view = 0.5236;
+	double view = 1.0472; // +view radians to -view radians view
+	//double view = 0.7854;
 	double min_distance = getDistanceToObstacle(view);
-
-	for(double angle = (-1)*view; angle > view; angle = angle + 0.005){
+	//cout << min_distance << endl;
+	for(double angle = (-1)*view; angle < view; angle = angle + 0.005){
+		//cout << angle << endl;
 		double distance = getDistanceToObstacle(angle);
 		if(distance < min_distance){
 			min_distance = distance;
@@ -321,10 +362,10 @@ FORRAction AgentState::moveTowards(){
 	intensity = 4;
       else
 	intensity = 5;
-      //int max_allowed = maxForwardAction().parameter;
-      //if(intensity > max_allowed){
-	// intensity = max_allowed;
-      //}
+      int max_allowed = maxForwardAction().parameter;
+      if(intensity > max_allowed){
+	intensity = max_allowed;
+      }
       decision = FORRAction(FORWARD, intensity);
     }
     
