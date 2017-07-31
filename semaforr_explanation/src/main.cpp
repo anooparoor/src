@@ -216,6 +216,7 @@ public:
 				explanationString.data = "I could see our target and " + actioningText[chosenAction] + " would get us closer to it.\n" + "Highly confident, since our target is in sensory range and this would get us closer to it.\n" + victoryAlternateActions(chosenAction);
 			} else if (vetoedActions == "0 1;0 2;0 3;0 4;0 5;" and chosenAction == "30") {
 				//ROS_DEBUG(vetoedActions << endl);
+				decisionTier = 1;
 				explanationString.data = "I decided to " + actionText[chosenAction] + " because there's not enough room to move forward.\n" + "Highly confident, since there is not enough room to move forward.\n" + vetoedAlternateActions(vetoedActions);
 			} else {
 				parseTier3Comments(advisorComments);
