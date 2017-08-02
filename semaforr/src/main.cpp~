@@ -118,7 +118,7 @@ public:
      geometry_msgs::Twist base_cmd;
 
      ros::Rate rate(30.0);
-     double epsilon_move = 0.2; //Meters
+     double epsilon_move = 0.5; //Meters
      double epsilon_turn = 0.1; //Radians
      bool action_complete = true;
      bool mission_complete = false;

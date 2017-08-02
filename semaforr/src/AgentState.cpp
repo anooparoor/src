@@ -201,7 +201,7 @@ void AgentState::transformToEndpoints(){
 }
 
 double AgentState::getDistanceToObstacle(double rotation_angle){
-	ROS_DEBUG("In getDistanceToObstacle");
+	//ROS_DEBUG("In getDistanceToObstacle");
 	// one increment in the laser range scan is 1/3 degrees, i.e 0.005817 in radians  
 	int index = (int)(rotation_angle/(0.005817));
 	//ROS_DEBUG("In getDistanceToObstacle after index");

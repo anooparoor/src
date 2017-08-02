@@ -64,9 +64,9 @@ void Controller::initialize_advisors(string filename){
      for(unsigned i = 0; i < tier3Advisors.size(); ++i)
       	ROS_DEBUG_STREAM("Created advisor " << tier3Advisors[i]->get_name() << " with weight: " << tier3Advisors[i]->get_weight());
 
-     //CONVEYORS = isAdvisorActive("WaypointFinderLinear");
-     //REGIONS = isAdvisorActive("ExitFinderLinear");
-     //TRAILS = isAdvisorActive("TrailLinear");
+     //CONVEYORS = isAdvisorActive("ConveyLinear");
+     //REGIONS = isAdvisorActive("ExitLinear");
+     //TRAILS = isAdvisorActive("TrailerLinear");
 }
 
 
@@ -230,29 +230,29 @@ void Controller::learnSpatialModel(AgentState* agentState){
  vector<Position> *pos_hist = completedTask->getPositionHistory();
  vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
- bool trails = true;
- bool conveyors = true;
- bool regions = true;
- bool doors = true;
+ bool trailsOn = true;
+ bool conveyorsOn = true;
+ bool regionsOn = true;
+ bool doorsOn = true;
  
-  if(trails){
+  if(trailsOn){
     	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
 	beliefs->getSpatialModel()->getTrails()->resetChosenTrail();
   }
-  if(conveyors){
-	beliefs->getSpatialModel()->getWaypoints()->populateGridFromPositionHistory(pos_hist);
+  if(conveyorsOn){
+	beliefs->getSpatialModel()->getConveyors()->populateGridFromPositionHistory(pos_hist);
   }
  vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
-  if(regions){
-	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist);
-	beliefs->getSpatialModel()->getAbstractMap()->clearAllExits();
-	beliefs->getSpatialModel()->getAbstractMap()->learnExits(all_trace);
-	beliefs->getSpatialModel()->getAbstractMap()->learnExits(trails_trace);
+  if(regionsOn){
+	beliefs->getSpatialModel()->getRegionList()->learnRegions(pos_hist, laser_hist);
+	beliefs->getSpatialModel()->getRegionList()->clearAllExits();
+	beliefs->getSpatialModel()->getRegionList()->learnExits(all_trace);
+	beliefs->getSpatialModel()->getRegionList()->learnExits(trails_trace);
   }
-  vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
-  if(doors){
+  vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  if(doorsOn){
 	beliefs->getSpatialModel()->getDoors()->clearAllDoors();
-	beliefs->getSpatialModel()->getDoors()->learnDoors(circles);
+	beliefs->getSpatialModel()->getDoors()->learnDoors(regions);
   }
 }
 

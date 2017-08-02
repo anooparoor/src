@@ -1,22 +1,22 @@
 /**************
-Implementation file for FORRWaypoints class, see
-FORRWaypoints.h for function and variable descriptions
+Implementation file for FORRConveyors class, see
+FORRConveyors.h for function and variable descriptions
 
 Written by Matthew Evanusa, 2014
 ***************/
 
-#include "FORRWaypoints.h"
+#include "FORRConveyors.h"
 
 
 using namespace std;
 
 
-int FORRWaypoints::getMaxGridValue(){
+int FORRConveyors::getMaxGridValue(){
   int max_value = 0;
   for(int x = 0; x < boxes_width; x++){
     for(int y = 0; y < boxes_height; y++){
-      if(waypoints[x][y] > max_value)
-	max_value = waypoints[x][y];
+      if(conveyors[x][y] > max_value)
+	max_value = conveyors[x][y];
     }
   }
   return max_value;
@@ -24,15 +24,15 @@ int FORRWaypoints::getMaxGridValue(){
 
 
 // Return the value in the given grid position
-int FORRWaypoints::getGridValue(double map_x, double map_y){
+int FORRConveyors::getGridValue(double map_x, double map_y){
   pair<int,int> grid_coords = convertToGridCoordinates(map_x, map_y);
-  return waypoints[grid_coords.first][grid_coords.second];
+  return conveyors[grid_coords.first][grid_coords.second];
 }
 
 
 
 //Populate grid by walking along the path of robot travel
-void FORRWaypoints::populateGridFromPositionHistory(vector<Position> *pos_hist){
+void FORRConveyors::populateGridFromPositionHistory(vector<Position> *pos_hist){
 	vector<Position> position = *pos_hist;
 	pair<int,int> prev, next;
 	prev.first = -1;
@@ -44,7 +44,7 @@ void FORRWaypoints::populateGridFromPositionHistory(vector<Position> *pos_hist){
 }
 
 //Populate grid by walking along a line segment
-pair<int,int> FORRWaypoints::updateGridFromLine(double x1, double y1, double x2, double y2, pair<int,int> prev){
+pair<int,int> FORRConveyors::updateGridFromLine(double x1, double y1, double x2, double y2, pair<int,int> prev){
 	double step_size = 0.1;
 	double tx,ty;
 	pair<int,int> grid_point;
@@ -58,7 +58,7 @@ pair<int,int> FORRWaypoints::updateGridFromLine(double x1, double y1, double x2,
 		grid_point = convertToGridCoordinates(tx, ty);
 		//cout << "Grid index : " << grid_point.first << "," << grid_point.second << endl;
 		if(grid_point != prev){
-			waypoints[grid_point.first][grid_point.second] += 1;
+			conveyors[grid_point.first][grid_point.second] += 1;
 		}
 		prev = grid_point;
 	}
@@ -66,7 +66,7 @@ pair<int,int> FORRWaypoints::updateGridFromLine(double x1, double y1, double x2,
 }
 
 
-void FORRWaypoints::outputWaypoints(string filename){
+void FORRConveyors::outputConveyors(string filename){
   ofstream output;
   
 
@@ -74,7 +74,7 @@ void FORRWaypoints::outputWaypoints(string filename){
   for(int j = boxes_height-1; j >=0; j--){
     
     for(int i = 0; i < boxes_width; i++){
-      output << waypoints[i][j] << " ";
+      output << conveyors[i][j] << " ";
     }
     output << endl;
   }
@@ -85,14 +85,14 @@ void FORRWaypoints::outputWaypoints(string filename){
 
 
 //converts from map coordinates to grid coordinates
-pair<int,int> FORRWaypoints::convertToGridCoordinates(double x, double y){
+pair<int,int> FORRConveyors::convertToGridCoordinates(double x, double y){
   return make_pair((int)((x/(map_width*1.0)) * boxes_width), (int)((y/(map_height * 1.0)) * boxes_height));
 }
 
 
 //returns the midpoint of the block that has the highest count and is adjacent
 //to the current block
-pair<int, int> FORRWaypoints::getNextGridPosition(double curr_x, double curr_y){
+pair<int, int> FORRConveyors::getNextGridPosition(double curr_x, double curr_y){
   int converted_x, converted_y;
   int count = 0;
   int new_x, new_y;
@@ -102,30 +102,30 @@ pair<int, int> FORRWaypoints::getNextGridPosition(double curr_x, double curr_y){
   //also, if previous count is set, will update in the following 
   //if conditions
   if(converted_x < (boxes_width-1)){
-    if(waypoints[converted_x+1][converted_y] > count){
-      count = waypoints[converted_x+1][converted_y];
+    if(conveyors[converted_x+1][converted_y] > count){
+      count = conveyors[converted_x+1][converted_y];
       new_x = converted_x+1;
       new_y = converted_y;
     }
   }
   if(converted_x > 0){
-    if(waypoints[converted_x-1][converted_y] > count){
-      count = waypoints[converted_x-1][converted_y];
+    if(conveyors[converted_x-1][converted_y] > count){
+      count = conveyors[converted_x-1][converted_y];
       new_x = converted_x-1;
       new_y = converted_y;
     }
   }
   if(converted_y < (boxes_height-1)){
-    if(waypoints[converted_x][converted_y+1] > count){
-      count = waypoints[converted_x][converted_y+1];
+    if(conveyors[converted_x][converted_y+1] > count){
+      count = conveyors[converted_x][converted_y+1];
       new_x = converted_x;
       new_y = converted_y+1;
     }
     
   }
   if(converted_y > 0){
-    if(waypoints[converted_x][converted_y-1] > count){
-      //count = waypoints[curr_x][curr_y-1];
+    if(conveyors[converted_x][converted_y-1] > count){
+      //count = conveyors[curr_x][curr_y-1];
       new_x = converted_x;
       new_y = converted_y-1;
     }
@@ -140,9 +140,9 @@ pair<int, int> FORRWaypoints::getNextGridPosition(double curr_x, double curr_y){
 
 
 
-void FORRWaypoints::clearWaypoints(){
+void FORRConveyors::clearConveyors(){
   for(int i = 0; i < boxes_width; i++)
     for(int j = 0; j < boxes_height; j++)
-      waypoints[i][j] = 0;
+      conveyors[i][j] = 0;
 }
 

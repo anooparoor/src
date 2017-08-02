@@ -10,18 +10,18 @@ Written by Anoop Aroor, 2014
 
 #include <iostream>
 #include <FORRGeometry.h>
-#include <FORRCircle.h>
+#include <FORRRegion.h>
 
 class FORRExit{
  public:
   FORRExit(){};
-  FORRExit(CartesianPoint point, int circle_id ){
+  FORRExit(CartesianPoint point, int region_id ){
     exitPoint = point;
-    exitCircle = circle_id;
+    exitRegion = region_id;
   }
 
   void print(){
-    cout << exitPoint.get_x() << " " << exitPoint.get_y() << " " << exitCircle << endl;
+    cout << exitPoint.get_x() << " " << exitPoint.get_y() << " " << exitRegion << endl;
   }
     
   double distance(CartesianPoint point1, CartesianPoint point2){
@@ -33,8 +33,8 @@ class FORRExit{
   CartesianPoint getExitPoint(){ return exitPoint;}
   void setExitPoint(CartesianPoint point) { exitPoint = point;}
 
-  void setExitCircle(int circle_id) { exitCircle = circle_id;}
-  int getExitCircle(){ return exitCircle; }
+  void setExitRegion(int region_id) { exitRegion = region_id;}
+  int getExitRegion(){ return exitRegion; }
 
   bool operator < (const FORRExit &exit) const{
     return false;
@@ -42,7 +42,7 @@ class FORRExit{
 
  private:
   CartesianPoint exitPoint;
-  int exitCircle;
+  int exitRegion;
 };
 
 

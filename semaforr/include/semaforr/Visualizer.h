@@ -283,14 +283,14 @@ public:
 	grid.info.map_load_time = ros::Time::now();
 
 	grid.info.origin.orientation.w = 0;
-	grid.info.resolution = beliefs->getSpatialModel()->getWaypoints()->getGranularity();
-	grid.info.width = beliefs->getSpatialModel()->getWaypoints()->getBoxWidth();
-	grid.info.height = beliefs->getSpatialModel()->getWaypoints()->getBoxHeight();
+	grid.info.resolution = beliefs->getSpatialModel()->getConveyors()->getGranularity();
+	grid.info.width = beliefs->getSpatialModel()->getConveyors()->getBoxWidth();
+	grid.info.height = beliefs->getSpatialModel()->getConveyors()->getBoxHeight();
 	
-	vector< vector<int> > waypoints = beliefs->getSpatialModel()->getWaypoints()->getWaypoints();
+	vector< vector<int> > conveyors = beliefs->getSpatialModel()->getConveyors()->getConveyors();
 	for(int j = 0; j < grid.info.height; j++){
 	    for(int i = 0; i < grid.info.width; i++){
-      		grid.data.push_back(waypoints[i][j]);
+      		grid.data.push_back(conveyors[i][j]);
     	    }
   	}
 	conveyor_pub_.publish(grid);	
@@ -300,10 +300,10 @@ public:
 	ROS_DEBUG("Inside publish regions");
 
 	visualization_msgs::MarkerArray markerArray;
-	vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
-	cout << "There are currently " << circles.size() << " circles" << endl;
-	for(int i = 0 ; i < circles.size(); i++){	
-		//circles[i].print();
+	vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+	cout << "There are currently " << regions.size() << " regions" << endl;
+	for(int i = 0 ; i < regions.size(); i++){	
+		//regions[i].print();
 		visualization_msgs::Marker marker;	
 		marker.header.frame_id = "map";
     		marker.header.stamp = ros::Time::now();
@@ -311,8 +311,8 @@ public:
     		marker.id = i;
 		marker.type = visualization_msgs::Marker::CYLINDER;
     	
-		marker.pose.position.x = circles[i].getCenter().get_x();
-    		marker.pose.position.y = circles[i].getCenter().get_y();
+		marker.pose.position.x = regions[i].getCenter().get_x();
+    		marker.pose.position.y = regions[i].getCenter().get_y();
     		marker.pose.position.z = 0;
     		marker.pose.orientation.x = 0.0;
     		marker.pose.orientation.y = 0.0;
@@ -320,7 +320,7 @@ public:
     		marker.pose.orientation.w = 1.0;
 
     		// Set the scale of the marker -- 1x1x1 here means 1m on a side
-    		marker.scale.x = marker.scale.y = circles[i].getRadius()*2;
+    		marker.scale.x = marker.scale.y = regions[i].getRadius()*2;
     		marker.scale.z = 1.0;
 
     		// Set the color -- be sure to set alpha to something non-zero!
@@ -365,7 +365,7 @@ public:
 	ROS_DEBUG("Inside publish doors");
 
 	std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
-	cout << "There are currently " << doors.size() << " circles" << endl;
+	cout << "There are currently " << doors.size() << " regions" << endl;
 	visualization_msgs::Marker line_list;	
 	line_list.header.frame_id = "map";
     	line_list.header.stamp = ros::Time::now();
@@ -455,7 +455,7 @@ public:
 	list<Task*>& agenda = beliefs->getAgentState()->getAgenda();
 	list<Task*>& all_agenda = beliefs->getAgentState()->getAllAgenda();
 	ROS_DEBUG("After all_agenda");
-	vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
+	vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
 	vector< vector< CartesianPoint> > trails =  beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
 	ROS_DEBUG("After trails");
 	FORRActionType chosenActionType = decision.type;
@@ -465,7 +465,7 @@ public:
 	string advisors = con->getCurrentDecisionStats()->advisors;
 	string advisorComments = con->getCurrentDecisionStats()->advisorComments;
 	cout << "vetoedActions = " << vetoedActions << " decisionTier = " << decisionTier << " advisors = " << advisors << " advisorComments = " << advisorComments << endl;
-	vector< vector<int> > waypoints = beliefs->getSpatialModel()->getWaypoints()->getWaypoints();
+	vector< vector<int> > conveyors = beliefs->getSpatialModel()->getConveyors()->getConveyors();
 	std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
 
 	ROS_DEBUG("After decision statistics");
@@ -503,14 +503,14 @@ public:
 	}*/
 
 	
-	std::stringstream regions;
-	for(int i = 0; i < circles.size(); i++){
-		regions << circles[i].getCenter().get_x() << " " << circles[i].getCenter().get_y() << " " << circles[i].getRadius();
-		vector<FORRExit> exits = circles[i].getExits();
+	std::stringstream regionsstream;
+	for(int i = 0; i < regions.size(); i++){
+		regionsstream << regions[i].getCenter().get_x() << " " << regions[i].getCenter().get_y() << " " << regions[i].getRadius();
+		vector<FORRExit> exits = regions[i].getExits();
 		for(int j = 0; j < exits.size() ; j++){
-			regions << " " << exits[j].getExitPoint().get_x() << " "  << exits[j].getExitPoint().get_y() << " "  << exits[j].getExitCircle();
+			regionsstream << " " << exits[j].getExitPoint().get_x() << " "  << exits[j].getExitPoint().get_y() << " "  << exits[j].getExitRegion();
 		}
-		regions << ";";
+		regionsstream << ";";
 	}
 	ROS_DEBUG("After regions");
 
@@ -525,9 +525,9 @@ public:
 	ROS_DEBUG("After trails");
 	
 	std::stringstream conveyorStream;
-	for(int j = 0; j < waypoints.size()-1; j++){
-		for(int i = 0; i < waypoints[j].size(); i++){
-			conveyorStream << waypoints[j][i] << " ";
+	for(int j = 0; j < conveyors.size()-1; j++){
+		for(int i = 0; i < conveyors[j].size(); i++){
+			conveyorStream << conveyors[j][i] << " ";
 		}
 		conveyorStream << ";";
 	}
@@ -545,7 +545,7 @@ public:
 
 	std::stringstream output;
 
-	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regions.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << regionsstream.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << lep.str() << "\t" << ls.str();
 	
 
 	/*std::stringstream output;

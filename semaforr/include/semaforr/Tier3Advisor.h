@@ -131,59 +131,59 @@ class Tier3GreedyRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-class Tier3ExitFinderLinear : public Tier3Advisor{
+class Tier3ExitLinear : public Tier3Advisor{
   public:
-  // this is constructor for exitfinder advisor
-  Tier3ExitFinderLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // this is constructor for Exit advisor
+  Tier3ExitLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3ExitFinderLinear();
+  Tier3ExitLinear();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3ExitFinderLinear() {};
-  // TierExitFinder should inherit constructor of the Tier3Advisor class, nothing more is needed
+  virtual ~Tier3ExitLinear() {};
+  // TierExit should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
 
-class Tier3ExitFinderRotation : public Tier3Advisor{
+class Tier3ExitRotation : public Tier3Advisor{
   public:
-  // this is constructor for exitfinder advisor
-  Tier3ExitFinderRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // this is constructor for Exit advisor
+  Tier3ExitRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3ExitFinderRotation();
+  Tier3ExitRotation();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3ExitFinderRotation() {};
+  virtual ~Tier3ExitRotation() {};
   // Tier3Greedy should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
-class Tier3ExitFinderFieldLinear : public Tier3Advisor{
+class Tier3ExitFieldLinear : public Tier3Advisor{
   public:
-  // this is constructor for exitfinderfield advisor
-  Tier3ExitFinderFieldLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // this is constructor for Exitfield advisor
+  Tier3ExitFieldLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3ExitFinderFieldLinear();
+  Tier3ExitFieldLinear();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3ExitFinderFieldLinear() {};
-  // TierExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  virtual ~Tier3ExitFieldLinear() {};
+  // TierExitField should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
 
-class Tier3ExitFinderFieldRotation : public Tier3Advisor{
+class Tier3ExitFieldRotation : public Tier3Advisor{
   public:
-  // this is constructor for exitfinderfield advisor
-  Tier3ExitFinderFieldRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // this is constructor for Exitfield advisor
+  Tier3ExitFieldRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3ExitFinderFieldRotation();
+  Tier3ExitFieldRotation();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3ExitFinderFieldRotation() {};
-  // Tier3ExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  virtual ~Tier3ExitFieldRotation() {};
+  // Tier3ExitField should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
@@ -218,30 +218,30 @@ class Tier3RegionLeaverRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-class Tier3RegionFinderLinear : public Tier3Advisor{
+class Tier3EnterLinear : public Tier3Advisor{
   public:
-  // this is constructor for regionfinder advisor
-  Tier3RegionFinderLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // this is constructor for Enter advisor
+  Tier3EnterLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3RegionFinderLinear();
+  Tier3EnterLinear();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3RegionFinderLinear() {};
-  // TierRegionFinder should inherit constructor of the Tier3Advisor class, nothing more is needed
+  virtual ~Tier3EnterLinear() {};
+  // TierEnter should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
 
-class Tier3RegionFinderRotation : public Tier3Advisor{
+class Tier3EnterRotation : public Tier3Advisor{
   public:
   // this is constructor for rotationfinder advisor
-  Tier3RegionFinderRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  Tier3EnterRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Here is dummy default constructor
-  Tier3RegionFinderRotation();
+  Tier3EnterRotation();
   // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
-  virtual ~Tier3RegionFinderRotation() {};
-  // Tier3RegionFinderRotation should inherit constructor of the Tier3Advisor class, nothing more is needed
+  virtual ~Tier3EnterRotation() {};
+  // Tier3EnterRotation should inherit constructor of the Tier3Advisor class, nothing more is needed
   // only difference is implementation of action comment function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
@@ -276,25 +276,25 @@ class Tier3AvoidRobotRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
-class Tier3AvoidObstacle : public Tier3Advisor{
+class Tier3ElbowRoom : public Tier3Advisor{
  public:
-  Tier3AvoidObstacle(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  Tier3ElbowRoom(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Default constructor
-  Tier3AvoidObstacle();
+  Tier3ElbowRoom();
   // Same as for Tier3Greedy, need to define destructor
-  virtual ~Tier3AvoidObstacle () {};
+  virtual ~Tier3ElbowRoom () {};
   // This type of advisor will avoid obstacles by implementing Gompertz function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
-class Tier3AvoidObstacleRotation : public Tier3Advisor{
+class Tier3ElbowRoomRotation : public Tier3Advisor{
  public:
-  Tier3AvoidObstacleRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  Tier3ElbowRoomRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
   // Default constructor
-  Tier3AvoidObstacleRotation();
+  Tier3ElbowRoomRotation();
   // Same as for Tier3Greedy, need to define destructor
-  virtual ~Tier3AvoidObstacleRotation () {};
+  virtual ~Tier3ElbowRoomRotation () {};
   // This type of advisor will avoid obstacles by implementing Gompertz function
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
@@ -379,49 +379,49 @@ class Tier3GoAroundRotation : public Tier3Advisor{
  * And this advisor does not like moves that are away from the target so
  * it gives -5 to those actions.
  */ 
-class Tier3AvoidLeaf : public Tier3Advisor{
+class Tier3Unlikely : public Tier3Advisor{
  public:
-  Tier3AvoidLeaf(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3Unlikely(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
   
-  Tier3AvoidLeaf();
+  Tier3Unlikely();
   
-  virtual ~Tier3AvoidLeaf() {};
+  virtual ~Tier3Unlikely() {};
   
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
-class Tier3AvoidLeafRotation : public Tier3Advisor{
+class Tier3UnlikelyRotation : public Tier3Advisor{
  public:
-  Tier3AvoidLeafRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3UnlikelyRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
   
-  Tier3AvoidLeafRotation();
+  Tier3UnlikelyRotation();
   
-  virtual ~Tier3AvoidLeafRotation() {};
+  virtual ~Tier3UnlikelyRotation() {};
   
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
-class Tier3AvoidLeafField : public Tier3Advisor{
+class Tier3UnlikelyField : public Tier3Advisor{
  public:
-  Tier3AvoidLeafField(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3UnlikelyField(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
   
-  Tier3AvoidLeafField();
+  Tier3UnlikelyField();
   
-  virtual ~Tier3AvoidLeafField() {};
+  virtual ~Tier3UnlikelyField() {};
   
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 };
 
-class Tier3AvoidLeafFieldRotation : public Tier3Advisor{
+class Tier3UnlikelyFieldRotation : public Tier3Advisor{
  public:
-  Tier3AvoidLeafFieldRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3UnlikelyFieldRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
   
-  Tier3AvoidLeafFieldRotation();
+  Tier3UnlikelyFieldRotation();
   
-  virtual ~Tier3AvoidLeafFieldRotation() {};
+  virtual ~Tier3UnlikelyFieldRotation() {};
   
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
@@ -478,12 +478,12 @@ class Tier3BaseLineRotation : public Tier3Advisor{
 
 
 
-class Tier3WaypointFinderLinear : public Tier3Advisor{
+class Tier3ConveyLinear : public Tier3Advisor{
  public: 
-  Tier3WaypointFinderLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3WaypointFinderLinear();
+  Tier3ConveyLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3ConveyLinear();
   
-  virtual ~Tier3WaypointFinderLinear(){};
+  virtual ~Tier3ConveyLinear(){};
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 
@@ -491,12 +491,12 @@ class Tier3WaypointFinderLinear : public Tier3Advisor{
 
 
 
-class Tier3WaypointFinderRotation : public Tier3Advisor{
+class Tier3ConveyRotation : public Tier3Advisor{
  public: 
-  Tier3WaypointFinderRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3WaypointFinderRotation();
+  Tier3ConveyRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3ConveyRotation();
   
-  virtual ~Tier3WaypointFinderRotation(){};
+  virtual ~Tier3ConveyRotation(){};
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 
@@ -504,12 +504,12 @@ class Tier3WaypointFinderRotation : public Tier3Advisor{
 
 
 
-class Tier3TrailFinderLinear : public Tier3Advisor{
+class Tier3TrailerLinear : public Tier3Advisor{
  public: 
-  Tier3TrailFinderLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3TrailFinderLinear();
+  Tier3TrailerLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3TrailerLinear();
   
-  virtual ~Tier3TrailFinderLinear(){};
+  virtual ~Tier3TrailerLinear(){};
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 
@@ -517,12 +517,12 @@ class Tier3TrailFinderLinear : public Tier3Advisor{
 
 
 
-class Tier3TrailFinderRotation : public Tier3Advisor{
+class Tier3TrailerRotation : public Tier3Advisor{
  public: 
-  Tier3TrailFinderRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3TrailFinderRotation();
+  Tier3TrailerRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3TrailerRotation();
   
-  virtual ~Tier3TrailFinderRotation(){};
+  virtual ~Tier3TrailerRotation(){};
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 
@@ -577,30 +577,30 @@ class Tier3ExitDoorRotation : public Tier3Advisor{
 };
 
 
-class Tier3DoorAttractorLinear : public Tier3Advisor{
+class Tier3AccessLinear : public Tier3Advisor{
  public: 
-  Tier3DoorAttractorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3DoorAttractorLinear();
+  Tier3AccessLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3AccessLinear();
   
-  virtual ~Tier3DoorAttractorLinear(){};
+  virtual ~Tier3AccessLinear(){};
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 
 };
 
 
-class Tier3DoorAttractorRotation : public Tier3Advisor{
+class Tier3AccessRotation : public Tier3Advisor{
  public: 
-  Tier3DoorAttractorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3DoorAttractorRotation();
+  Tier3AccessRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3AccessRotation();
   
-  virtual ~Tier3DoorAttractorRotation(){};
+  virtual ~Tier3AccessRotation(){};
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 
 };
 
-
+/*
 class Tier3NeighborDoorLinear : public Tier3Advisor{
  public: 
   Tier3NeighborDoorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
@@ -622,7 +622,7 @@ class Tier3NeighborDoorRotation : public Tier3Advisor{
   virtual double actionComment(FORRAction action);
   virtual void set_commenting();
 
-};
+};*/
 
 
 #endif
