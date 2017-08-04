@@ -54,9 +54,9 @@ Position AgentState::afterAngularMove(Position initialPosition, double angle){
 
   double new_angle = (angle + initialPosition.getTheta());
   
-  double distance = getDistanceToObstacle(angle);
+  double distance = getDistanceToObstacle(new_angle);
   //max is the maximum look ahead in meters 
-  double max = 5;
+  double max = move[5];
   if(distance > max) distance = max;
 
   double new_x = initialPosition.getX() + (distance * cos(new_angle));
@@ -220,7 +220,7 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 	double r_y = currentPosition.getY();
 	double r_ang = currentPosition.getTheta();
 	CartesianPoint current_point(r_x,r_y);
-	double r = 0.2794+0.1;
+	double r = 0.2794+0.1; // fetch robot's footprint plus 0.1 meter buffer
 	
 	Vector v1 = Vector(current_point, r_ang+(M_PI/2), r);
 	Vector v2 = Vector(current_point, r_ang-(M_PI/2), r);

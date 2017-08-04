@@ -22,16 +22,17 @@ class FORRRegionList{
   void setRegions(vector<FORRRegion> regions_para) { regions = regions_para; }
   //void addRegion(vector<FORRRegion> region) { regions.push_back(region);}
 
-  bool isExitToLeaf(FORRExit exit){
-    return isLeaf(regions[exit.getExitRegion()]);
-  }
+  //bool isExitToLeaf(FORRExit exit){
+  //  return isLeaf(regions[exit.getExitRegion()]);
+  //}
     
-  bool isLeaf(FORRRegion region){
-    //cout << "In isleaf" << endl;
+  bool isLeaf(FORRRegion region, int numDoors){
+    cout << "In isleaf" << endl;
     vector<FORRExit> exits = region.getExits();
     bool isLeaf = false;
-    if(exits.size() <= 1){
+    if(exits.size() <= 1 or numDoors <= 1){
       isLeaf = true;
+      cout << "exits.size = " << exits.size() << " numDoors = " << numDoors << endl;
       //region.setIsLeaf(isLeaf);
       return isLeaf;
     }
@@ -40,7 +41,7 @@ class FORRRegionList{
     for(int i = 0 ; i < exits.size(); i++){
       double angle = atan2(exits[i].getExitPoint().get_y() - region.getCenter().get_y(), exits[i].getExitPoint().get_x() - region.getCenter().get_x());
       if(angle < 0){
-	angle += 2*3.14;
+	angle += 2*M_PI;
       }
       //cout << "Exit no : " << i << " Angle : " << angle << endl; 
       if(angle < min_angle) min_angle = angle;
@@ -48,7 +49,7 @@ class FORRRegionList{
     }
     //cout << "min_angle :" << min_angle << endl;
     //cout << "max_angle :" << max_angle << endl;
-    if(max_angle - min_angle < (3.14)/2){
+    if(max_angle - min_angle < (M_PI)/2){
       isLeaf = true;
       //region.setIsLeaf(isLeaf);
       //cout << "In isLeaf setting is leaf to true " << endl; 

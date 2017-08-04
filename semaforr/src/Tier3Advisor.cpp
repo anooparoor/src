@@ -1061,6 +1061,7 @@ double Tier3Unlikely::actionComment(FORRAction action){
   //cout << "In Avoid leaf " << endl;
   double result;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
   int robotRegion=-1,targetRegion=-1;
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
   Task *task = beliefs->getAgentState()->getCurrentTask();
@@ -1081,6 +1082,7 @@ double Tier3Unlikely::actionComment(FORRAction action){
   }
   
   vector<FORRExit> exits = regions[robotRegion].getExits();
+  std::vector<Door> robotRegionDoors = doors[robotRegion];
   //cout << "Robot Region : " << regions[robotRegion].getCenter().get_x() << " " << regions[robotRegion].getCenter().get_y() << endl;
 
   vector<FORRRegion> nearRegions;
@@ -1097,7 +1099,7 @@ double Tier3Unlikely::actionComment(FORRAction action){
 
   double metric = 0;
   for(int i = 0; i < nearRegions.size(); i++){
-    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i]) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
+    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i], robotRegionDoors.size()) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
       //cout << "Avoid Leaf: Found deadend !" << endl;
       metric += pow(expectedPosition.getDistance(nearRegions[i].getCenter().get_x(), nearRegions[i].getCenter().get_y()), 2);
     }
@@ -1141,6 +1143,7 @@ double Tier3UnlikelyRotation::actionComment(FORRAction action){
   //cout << "In Avoid leaf Rotation" << endl;
   double result;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
   int robotRegion=-1,targetRegion=-1;
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
   Task *task = beliefs->getAgentState()->getCurrentTask();
@@ -1161,6 +1164,7 @@ double Tier3UnlikelyRotation::actionComment(FORRAction action){
   }
   
   vector<FORRExit> exits = regions[robotRegion].getExits();
+  std::vector<Door> robotRegionDoors = doors[robotRegion];
   //cout << "Robot Region : " << regions[robotRegion].getCenter().get_x() << " " << regions[robotRegion].getCenter().get_y() << endl;
 
   vector<FORRRegion> nearRegions;
@@ -1177,7 +1181,7 @@ double Tier3UnlikelyRotation::actionComment(FORRAction action){
 
   double metric = 0;
   for(int i = 0; i < nearRegions.size(); i++){
-    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i]) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
+    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i], robotRegionDoors.size()) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
       //cout << "Avoid leaf Rotation: Found deadend !" << endl;
       metric += pow(expectedPosition.getDistance(nearRegions[i].getCenter().get_x(), nearRegions[i].getCenter().get_y()), 2);
     }
@@ -1221,6 +1225,7 @@ double Tier3UnlikelyField::actionComment(FORRAction action){
   //cout << "In Avoid leaf " << endl;
   double result;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
   int robotRegion=-1,targetRegion=-1;
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
   Task *task = beliefs->getAgentState()->getCurrentTask();
@@ -1241,6 +1246,7 @@ double Tier3UnlikelyField::actionComment(FORRAction action){
   }
   
   vector<FORRExit> exits = regions[robotRegion].getExits();
+  std::vector<Door> robotRegionDoors = doors[robotRegion];
   //cout << "Robot Region : " << regions[robotRegion].getCenter().get_x() << " " << regions[robotRegion].getCenter().get_y() << endl;
 
   vector<FORRRegion> nearRegions;
@@ -1257,7 +1263,7 @@ double Tier3UnlikelyField::actionComment(FORRAction action){
 
   double metric = 0;
   for(int i = 0; i < nearRegions.size(); i++){
-    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i]) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
+    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i], robotRegionDoors.size()) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
       //cout << "Avoid Leaf: Found deadend !" << endl;
       metric += 1/(expectedPosition.getDistance(nearRegions[i].getCenter().get_x(), nearRegions[i].getCenter().get_y()));
     }
@@ -1301,6 +1307,7 @@ double Tier3UnlikelyFieldRotation::actionComment(FORRAction action){
   //cout << "In Avoid leaf Rotation" << endl;
   double result;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
   int robotRegion=-1,targetRegion=-1;
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
   Task *task = beliefs->getAgentState()->getCurrentTask();
@@ -1321,6 +1328,7 @@ double Tier3UnlikelyFieldRotation::actionComment(FORRAction action){
   }
   
   vector<FORRExit> exits = regions[robotRegion].getExits();
+  std::vector<Door> robotRegionDoors = doors[robotRegion];
   //cout << "Robot Region : " << regions[robotRegion].getCenter().get_x() << " " << regions[robotRegion].getCenter().get_y() << endl;
 
   vector<FORRRegion> nearRegions;
@@ -1337,7 +1345,7 @@ double Tier3UnlikelyFieldRotation::actionComment(FORRAction action){
 
   double metric = 0;
   for(int i = 0; i < nearRegions.size(); i++){
-    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i]) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
+    if(beliefs->getSpatialModel()->getRegionList()->isLeaf(nearRegions[i], robotRegionDoors.size()) and !(nearRegions[i].inRegion(targetPoint.get_x(), targetPoint.get_y()))){
       //cout << "Avoid leaf Rotation: Found deadend !" << endl;
       metric += 1/(expectedPosition.getDistance(nearRegions[i].getCenter().get_x(), nearRegions[i].getCenter().get_y()));
     }
