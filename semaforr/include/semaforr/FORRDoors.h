@@ -224,6 +224,26 @@ public:
         return fixedAngle;
     }
 
+    double distanceToDoor(CartesianPoint point, FORRRegion region, Door door) {
+        double pointX = point.get_x();
+        double pointY = point.get_y();
+        double regionX = region.getCenter().get_x();
+        double regionY = region.getCenter().get_y();
+        double regionR = region.getRadius();
+        double startPointAngle = calculateFixedAngle(regionX, regionY, door.startPoint.getExitPoint().get_x(), door.startPoint.getExitPoint().get_y());
+        double endPointAngle = calculateFixedAngle(regionX, regionY, door.endPoint.getExitPoint().get_x(), door.endPoint.getExitPoint().get_y());
+        double pointAngle = calculateFixedAngle(regionX, regionY, pointX, pointY);
+        if(pointAngle <= endPointAngle and pointAngle >= startPointAngle) {
+            return (point.get_distance(region.getCenter()) - regionR);
+        }
+        else if (point.get_distance(door.startPoint.getExitPoint()) <= point.get_distance(door.endPoint.getExitPoint())) {
+            return point.get_distance(door.startPoint.getExitPoint());
+        }
+        else {
+            return point.get_distance(door.endPoint.getExitPoint());
+        }
+    }
+
 private:
     std::vector< std::vector<Door> > doors;
 };

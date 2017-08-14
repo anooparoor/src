@@ -226,33 +226,34 @@ FORRAction Controller::decide() {
 //
 
 void Controller::learnSpatialModel(AgentState* agentState){
- Task* completedTask = agentState->getCurrentTask();
- vector<Position> *pos_hist = completedTask->getPositionHistory();
- vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
- vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
- bool trailsOn = true;
- bool conveyorsOn = true;
- bool regionsOn = true;
- bool doorsOn = true;
+  Task* completedTask = agentState->getCurrentTask();
+  vector<Position> *pos_hist = completedTask->getPositionHistory();
+  vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
+  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
+  bool trailsOn = true;
+  bool conveyorsOn = true;
+  bool regionsOn = true;
+  bool doorsOn = true;
  
   if(trailsOn){
-    	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
-	beliefs->getSpatialModel()->getTrails()->resetChosenTrail();
+    beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
+    beliefs->getSpatialModel()->getTrails()->resetChosenTrail();
   }
+  vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
   if(conveyorsOn){
-	beliefs->getSpatialModel()->getConveyors()->populateGridFromPositionHistory(pos_hist);
+    //beliefs->getSpatialModel()->getConveyors()->populateGridFromPositionHistory(pos_hist);
+    beliefs->getSpatialModel()->getConveyors()->populateGridFromTrailTrace(trails_trace.back());
   }
- vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
   if(regionsOn){
-	beliefs->getSpatialModel()->getRegionList()->learnRegions(pos_hist, laser_hist);
-	beliefs->getSpatialModel()->getRegionList()->clearAllExits();
-	beliefs->getSpatialModel()->getRegionList()->learnExits(all_trace);
-	beliefs->getSpatialModel()->getRegionList()->learnExits(trails_trace);
+    beliefs->getSpatialModel()->getRegionList()->learnRegions(pos_hist, laser_hist);
+    beliefs->getSpatialModel()->getRegionList()->clearAllExits();
+    beliefs->getSpatialModel()->getRegionList()->learnExits(all_trace);
+    beliefs->getSpatialModel()->getRegionList()->learnExits(trails_trace);
   }
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
   if(doorsOn){
-	beliefs->getSpatialModel()->getDoors()->clearAllDoors();
-	beliefs->getSpatialModel()->getDoors()->learnDoors(regions);
+    beliefs->getSpatialModel()->getDoors()->clearAllDoors();
+    beliefs->getSpatialModel()->getDoors()->learnDoors(regions);
   }
 }
 

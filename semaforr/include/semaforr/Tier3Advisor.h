@@ -189,6 +189,35 @@ class Tier3ExitFieldRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
+class Tier3ExitClosest : public Tier3Advisor{
+  public:
+  // this is constructor for Exitfield advisor
+  Tier3ExitClosest (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitClosest();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitClosest() {};
+  // Tier3ExitClosest should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3ExitClosestRotation : public Tier3Advisor{
+  public:
+  // this is constructor for Exitfield advisor
+  Tier3ExitClosestRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitClosestRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitClosestRotation() {};
+  // Tier3ExitClosestRotation should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
 class Tier3RegionLeaverLinear : public Tier3Advisor{
   public:
   // this is constructor for RegionLeaver advisor
@@ -451,6 +480,29 @@ class Tier3ExplorerRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
+class Tier3ExplorerEndPoints : public Tier3Advisor{
+ public:
+  Tier3ExplorerEndPoints(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  
+  Tier3ExplorerEndPoints();
+  
+  virtual ~Tier3ExplorerEndPoints() {};
+  
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3ExplorerEndPointsRotation : public Tier3Advisor{
+ public:
+  Tier3ExplorerEndPointsRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  
+  Tier3ExplorerEndPointsRotation();
+  
+  virtual ~Tier3ExplorerEndPointsRotation() {};
+  
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
 
 class Tier3BaseLine : public Tier3Advisor{
  public:
@@ -624,6 +676,52 @@ class Tier3NeighborDoorRotation : public Tier3Advisor{
 
 };*/
 
+class Tier3LearnSpatialModel : public Tier3Advisor{
+ public: 
+  Tier3LearnSpatialModel(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3LearnSpatialModel();
+  
+  virtual ~Tier3LearnSpatialModel(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3LearnSpatialModelRotation : public Tier3Advisor{
+ public: 
+  Tier3LearnSpatialModelRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3LearnSpatialModelRotation();
+  
+  virtual ~Tier3LearnSpatialModelRotation(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3ActiveLearner : public Tier3Advisor{
+ public: 
+  Tier3ActiveLearner(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3ActiveLearner();
+  
+  virtual ~Tier3ActiveLearner(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3ActiveLearnerRotation : public Tier3Advisor{
+ public: 
+  Tier3ActiveLearnerRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3ActiveLearnerRotation();
+  
+  virtual ~Tier3ActiveLearnerRotation(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
 
 #endif
 

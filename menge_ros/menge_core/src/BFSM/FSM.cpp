@@ -503,8 +503,8 @@ namespace Menge {
 						tf::Vector3(pose.position.x, pose.position.y, 0.0)),
         					ros::Time::now() + ros::Duration(0),"pose", "base_scan"));
 
-					std::cout << "Robot position : (" << pose.position.x << "," << pose.position.y << ")" << std::endl;  
-					std::cout << "Robot orientation : (" << agt->_orient._x << "," << agt->_orient._y << ") : " << atan2(agt->_orient._y, agt->_orient._x) << std::endl;  
+					//std::cout << "Robot position : (" << pose.position.x << "," << pose.position.y << ")" << std::endl;  
+					//std::cout << "Robot orientation : (" << agt->_orient._x << "," << agt->_orient._y << ") : " << atan2(agt->_orient._y, agt->_orient._x) << std::endl;  
 
 					poseStamped.header.stamp = ros::Time::now();
 					//Change it to odom frame for IMU measurements

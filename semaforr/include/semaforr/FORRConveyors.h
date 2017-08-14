@@ -49,6 +49,9 @@ class FORRConveyors{
   //populate grid from position history
   void populateGridFromPositionHistory(vector<Position> *pos_hist);
 
+  //populate grid from position history
+  void populateGridFromTrailTrace(vector<CartesianPoint> trails_points);
+
   //populate grid from a line segment
   pair<int,int> updateGridFromLine(double x1, double y1, double x2, double y2, pair<int,int> prev);
 
@@ -65,6 +68,9 @@ class FORRConveyors{
   int getMaxGridValue();
   
   pair<int,int> convertToGridCoordinates(double x, double y);
+
+  //returns the average grid value of the cell [x][y] and its surrounding cells
+  double getAverageGridValue(double map_x, double map_y);
 
   //clears grid after each population to repopulate
   void clearConveyors();

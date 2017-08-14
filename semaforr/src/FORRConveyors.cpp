@@ -43,6 +43,17 @@ void FORRConveyors::populateGridFromPositionHistory(vector<Position> *pos_hist){
 	}
 }
 
+//Populate grid by walking along learned trails
+void FORRConveyors::populateGridFromTrailTrace(vector<CartesianPoint> trails_points){
+  pair<int,int> prev, next;
+  prev.first = -1;
+  prev.second = -2;
+  for(int i = 0 ; i < trails_points.size() - 1; i++){
+    next = updateGridFromLine(trails_points[i].get_x(), trails_points[i].get_y(), trails_points[i+1].get_x(), trails_points[i+1].get_y(), prev);
+    prev = next;
+  }
+}
+
 //Populate grid by walking along a line segment
 pair<int,int> FORRConveyors::updateGridFromLine(double x1, double y1, double x2, double y2, pair<int,int> prev){
 	double step_size = 0.1;
@@ -125,7 +136,7 @@ pair<int, int> FORRConveyors::getNextGridPosition(double curr_x, double curr_y){
   }
   if(converted_y > 0){
     if(conveyors[converted_x][converted_y-1] > count){
-      //count = conveyors[curr_x][curr_y-1];
+      count = conveyors[converted_x][converted_y-1];
       new_x = converted_x;
       new_y = converted_y-1;
     }
@@ -137,6 +148,46 @@ pair<int, int> FORRConveyors::getNextGridPosition(double curr_x, double curr_y){
 
 }
 
+// Return the average value of the given grid position and its surrounding grid cells
+double FORRConveyors::getAverageGridValue(double map_x, double map_y){
+  double average = 0, count = 1;
+  pair<int,int> grid_coords = convertToGridCoordinates(map_x, map_y);
+  average += conveyors[grid_coords.first][grid_coords.second];
+  if(grid_coords.first < (boxes_width-1)){
+    average += conveyors[grid_coords.first+1][grid_coords.second];
+    count++;
+  }
+  if(grid_coords.first > 0){
+    average += conveyors[grid_coords.first-1][grid_coords.second];
+    count++;
+  }
+  if(grid_coords.second < (boxes_height-1)){
+    average += conveyors[grid_coords.first][grid_coords.second+1];
+    count++; 
+  }
+  if(grid_coords.second > 0){
+    average += conveyors[grid_coords.first][grid_coords.second-1];
+    count++;
+  }
+  if((grid_coords.first < (boxes_width-1)) and (grid_coords.second < (boxes_height-1))){
+    average += conveyors[grid_coords.first+1][grid_coords.second+1];
+    count++;
+  }
+  if((grid_coords.first > 0) and (grid_coords.second > 0)){
+    average += conveyors[grid_coords.first-1][grid_coords.second-1];
+    count++;
+  }
+  if((grid_coords.first < (boxes_width-1)) and (grid_coords.second > 0)){
+    average += conveyors[grid_coords.first+1][grid_coords.second-1];
+    count++;
+  }
+  if((grid_coords.first > 0) and (grid_coords.second < (boxes_height-1))){
+    average += conveyors[grid_coords.first-1][grid_coords.second+1];
+    count++;
+  }
+  average = average / count;
+  return average;
+}
 
 
 
