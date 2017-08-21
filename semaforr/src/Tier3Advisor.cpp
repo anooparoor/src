@@ -49,9 +49,11 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
   cout << "Decision Count : " << beliefs->getAgentState()->getCurrentTask()->getDecisionCount() << endl;
   
   cout << "Rotation mode : " << inRotateMode << endl;
-
+  /*action_set = beliefs->getAgentState()->getActionSet();
+  inRotateMode = true;*/
   if(inRotateMode){
 	action_set = beliefs->getAgentState()->getRotationActionSet();
+    action_set = beliefs->getAgentState()->getActionSet();
   }
   else{
 	action_set = beliefs->getAgentState()->getForwardActionSet();
@@ -229,6 +231,10 @@ Tier3Advisor* Tier3Advisor::makeAdvisor(Beliefs *beliefs, string name, string de
     return new Tier3EnterLinear(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "EnterRotation")
     return new Tier3EnterRotation(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "EnterExit")
+    return new Tier3EnterExit(beliefs, name, description, weight, magic_init, is_active);
+  else if(name == "EnterExitRotation")
+    return new Tier3EnterExitRotation(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ConveyLinear")
     return new Tier3ConveyLinear(beliefs, name, description, weight, magic_init, is_active);
   else if(name == "ConveyRotation")
@@ -298,6 +304,8 @@ Tier3RegionLeaverLinear::Tier3RegionLeaverLinear (Beliefs *beliefs, string name,
 Tier3RegionLeaverRotation::Tier3RegionLeaverRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3EnterLinear::Tier3EnterLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3EnterRotation::Tier3EnterRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3EnterExit::Tier3EnterExit (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
+Tier3EnterExitRotation::Tier3EnterExitRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3ConveyLinear::Tier3ConveyLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
 Tier3ConveyRotation::Tier3ConveyRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {}; 
 Tier3TrailerLinear::Tier3TrailerLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active): Tier3Advisor(beliefs, name, description, weight, magic_init, is_active) {};
@@ -350,6 +358,8 @@ Tier3RegionLeaverLinear::Tier3RegionLeaverLinear(): Tier3Advisor() {};
 Tier3RegionLeaverRotation::Tier3RegionLeaverRotation(): Tier3Advisor() {};
 Tier3EnterLinear::Tier3EnterLinear(): Tier3Advisor() {};
 Tier3EnterRotation::Tier3EnterRotation(): Tier3Advisor() {};
+Tier3EnterExit::Tier3EnterExit(): Tier3Advisor() {};
+Tier3EnterExitRotation::Tier3EnterExitRotation(): Tier3Advisor() {};
 Tier3ConveyLinear::Tier3ConveyLinear(): Tier3Advisor() {};
 Tier3ConveyRotation::Tier3ConveyRotation(): Tier3Advisor() {};
 Tier3TrailerLinear::Tier3TrailerLinear(): Tier3Advisor() {};
@@ -371,7 +381,7 @@ Tier3ActiveLearnerRotation::Tier3ActiveLearnerRotation(): Tier3Advisor() {};
 // vote to go through an extrance to a region containing the target
 
 double Tier3EnterLinear::actionComment(FORRAction action){
-  cout << "In region finder linear " << endl;
+  cout << "In enter linear " << endl;
   double result;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
   int robotRegion=-1,targetRegion=-1;
@@ -422,7 +432,7 @@ double Tier3EnterLinear::actionComment(FORRAction action){
 
 void Tier3EnterLinear::set_commenting(){
 
-  cout << "In region finder linear set commenting " << endl;
+  cout << "In enter linear set commenting " << endl;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
   Task *task = beliefs->getAgentState()->getCurrentTask();
@@ -455,7 +465,7 @@ void Tier3EnterLinear::set_commenting(){
 
 double Tier3EnterRotation::actionComment(FORRAction action){
 
-  cout << "In region finder rotation " << endl;
+  cout << "In enter rotation " << endl;
 
   double result;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
@@ -503,7 +513,7 @@ double Tier3EnterRotation::actionComment(FORRAction action){
 
 void Tier3EnterRotation::set_commenting(){
 
-  cout << "In region finder rotation set commenting " << endl;
+  cout << "In enter rotation set commenting " << endl;
   vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
   Task *task = beliefs->getAgentState()->getCurrentTask();
@@ -528,6 +538,128 @@ void Tier3EnterRotation::set_commenting(){
   }
 
   if(targetInRegion == true and currPosInRegionWithExit == true and robotRegion != targetRegion)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+double Tier3EnterExit::actionComment(FORRAction action){
+  cout << "In enter exit linear " << endl;
+  vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  int targetRegion=-1;
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < regions.size() ; i++){
+    // check if the target point is in region
+    if(regions[i].inRegion(targetPoint.get_x(), targetPoint.get_y())){
+      targetRegion = i;
+    }
+  }
+
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+      
+  vector<FORRExit> exits = regions[targetRegion].getExits();
+
+  double metric = std::numeric_limits<double>::infinity();
+  for(int i = 0; i < exits.size(); i++){
+    if (expectedPosition.getDistance(exits[i].getExitPoint().get_x(), exits[i].getExitPoint().get_y()) < metric) {
+      metric = expectedPosition.getDistance(exits[i].getExitPoint().get_x(), exits[i].getExitPoint().get_y());
+    }
+  }
+  return metric * (-1);
+}
+
+
+void Tier3EnterExit::set_commenting(){
+
+  cout << "In enter exit linear set commenting " << endl;
+  vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInRegion = false;
+  bool currPosInRegionWithExit = false;
+  int robotRegion=-1, targetRegion = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < regions.size() ; i++){
+    // check if the target point is in region
+    if(regions[i].inRegion(targetPoint.get_x(), targetPoint.get_y())){
+      targetInRegion = true;
+      targetRegion = i;
+    }
+    // check if the rob_pos is in a region and the region has atleast one exit
+    if(regions[i].inRegion(curr_pos.getX(), curr_pos.getY()) and ((regions[i]).getExits().size() >= 1)){
+      currPosInRegionWithExit = true;
+      robotRegion = i;
+    }
+  }
+
+  if(targetInRegion == true and robotRegion != targetRegion)
+    advisor_commenting = true;
+  else
+    advisor_commenting = false;
+}
+
+
+double Tier3EnterExitRotation::actionComment(FORRAction action){
+  cout << "In enter exit rotation " << endl;
+  vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  int targetRegion=-1;
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < regions.size() ; i++){
+    // check if the target point is in region
+    if(regions[i].inRegion(targetPoint.get_x(), targetPoint.get_y())){
+      targetRegion = i;
+    }
+  }
+
+  Position expectedPosition = beliefs->getAgentState()->getExpectedPositionAfterAction(action);
+      
+  vector<FORRExit> exits = regions[targetRegion].getExits();
+
+  double metric = std::numeric_limits<double>::infinity();
+  for(int i = 0; i < exits.size(); i++){
+    if (expectedPosition.getDistance(exits[i].getExitPoint().get_x(), exits[i].getExitPoint().get_y()) < metric) {
+      metric = expectedPosition.getDistance(exits[i].getExitPoint().get_x(), exits[i].getExitPoint().get_y());
+    }
+  }
+  return metric * (-1);
+}
+
+void Tier3EnterExitRotation::set_commenting(){
+
+  cout << "In region finder rotation set commenting " << endl;
+  vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
+  Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
+  Task *task = beliefs->getAgentState()->getCurrentTask();
+  CartesianPoint targetPoint (task->getX() , task->getY());
+  CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
+  bool targetInRegion = false;
+  bool currPosInRegionWithExit = false;
+  int robotRegion=-1, targetRegion = -1;
+  
+  // check the preconditions for activating the advisor
+  for(int i = 0; i < regions.size() ; i++){
+    // check if the target point is in region
+    if(regions[i].inRegion(targetPoint.get_x(), targetPoint.get_y())){
+      targetInRegion = true;
+      targetRegion = i;
+    }
+    // check if the rob_pos is in a region and the region has atleast one exit
+    if(regions[i].inRegion(curr_pos.getX(), curr_pos.getY()) and ((regions[i]).getExits().size() >= 1)){
+      currPosInRegionWithExit = true;
+      robotRegion = i;
+    }
+  }
+
+  if(targetInRegion == true and robotRegion != targetRegion)
     advisor_commenting = true;
   else
     advisor_commenting = false;
@@ -1543,7 +1675,9 @@ double Tier3ExplorerEndPoints::actionComment(FORRAction action){
   		//cout << ((*laserHis)[i]).size() << endl;
   		distance = expectedPosition.getDistance(((*laserHis)[i])[j].get_x(), ((*laserHis)[i])[j].get_y());
     	if(distance < 1)     distance = 1;
-    	totalForce += (1/distance);
+    	if(distance < 25) {
+        totalForce += (1/distance);
+      }
   	}
   }
   return totalForce * (-1);
@@ -1600,7 +1734,9 @@ double Tier3ExplorerEndPointsRotation::actionComment(FORRAction action){
   		//cout << ((*laserHis)[i]).size() << endl;
   		distance = expectedPosition.getDistance(((*laserHis)[i])[j].get_x(), ((*laserHis)[i])[j].get_y());
     	if(distance < 1)     distance = 1;
-    	totalForce += (1/distance);
+      if(distance < 25) {
+        totalForce += (1/distance);
+      }
   	}
   }
   return totalForce * (-1);
@@ -1792,7 +1928,7 @@ double Tier3EnterDoorLinear::actionComment(FORRAction action){
       double startPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(regions[targetRegion].getCenter().get_x(), regions[targetRegion].getCenter().get_y(), doors[targetRegion][i].startPoint.getExitPoint().get_x(), doors[targetRegion][i].startPoint.getExitPoint().get_y());
       double endPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(regions[targetRegion].getCenter().get_x(), regions[targetRegion].getCenter().get_y(), doors[targetRegion][i].endPoint.getExitPoint().get_x(), doors[targetRegion][i].endPoint.getExitPoint().get_y());
       if(intersectPointAngle <= endPointAngle and intersectPointAngle >= startPointAngle){
-        comment_strength = 1;
+        comment_strength = -expPosition.get_distance(targetPoint);
       }
     }
   }
@@ -1856,7 +1992,7 @@ double Tier3EnterDoorRotation::actionComment(FORRAction action){
       double startPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(regions[targetRegion].getCenter().get_x(), regions[targetRegion].getCenter().get_y(), doors[targetRegion][i].startPoint.getExitPoint().get_x(), doors[targetRegion][i].startPoint.getExitPoint().get_y());
       double endPointAngle = beliefs->getSpatialModel()->getDoors()->calculateFixedAngle(regions[targetRegion].getCenter().get_x(), regions[targetRegion].getCenter().get_y(), doors[targetRegion][i].endPoint.getExitPoint().get_x(), doors[targetRegion][i].endPoint.getExitPoint().get_y());
       if(intersectPointAngle <= endPointAngle and intersectPointAngle >= startPointAngle){
-        comment_strength = 1;
+        comment_strength = -expPosition.get_distance(targetPoint);
       }
     }
   }

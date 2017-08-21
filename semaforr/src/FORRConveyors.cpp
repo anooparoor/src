@@ -25,6 +25,10 @@ int FORRConveyors::getMaxGridValue(){
 
 // Return the value in the given grid position
 int FORRConveyors::getGridValue(double map_x, double map_y){
+  if(map_x < 0) map_x=0;
+  if(map_x > map_width) map_x=map_width;
+  if(map_y < 0) map_y=0;
+  if(map_y > map_height) map_y=map_height;
   pair<int,int> grid_coords = convertToGridCoordinates(map_x, map_y);
   return conveyors[grid_coords.first][grid_coords.second];
 }
@@ -151,6 +155,10 @@ pair<int, int> FORRConveyors::getNextGridPosition(double curr_x, double curr_y){
 // Return the average value of the given grid position and its surrounding grid cells
 double FORRConveyors::getAverageGridValue(double map_x, double map_y){
   double average = 0, count = 1;
+  if(map_x < 0) map_x=0;
+  if(map_x > map_width) map_x=map_width;
+  if(map_y < 0) map_y=0;
+  if(map_y > map_height) map_y=map_height;
   pair<int,int> grid_coords = convertToGridCoordinates(map_x, map_y);
   average += conveyors[grid_coords.first][grid_coords.second];
   if(grid_coords.first < (boxes_width-1)){

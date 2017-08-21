@@ -195,7 +195,8 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
 	else if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
 		ROS_DEBUG("Controller.cpp decisionCount > 500 , skipping task");
 		//learnSpatialModel(beliefs->getAgentState());
-	    	beliefs->getAgentState()->skipTask();
+	    	//beliefs->getAgentState()->skipTask();
+        beliefs->getAgentState()->finishTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
 			//beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);

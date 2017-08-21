@@ -276,6 +276,35 @@ class Tier3EnterRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
+class Tier3EnterExit : public Tier3Advisor{
+  public:
+  // this is constructor for EnterExit advisor
+  Tier3EnterExit (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3EnterExit();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3EnterExit() {};
+  // TierEnterExit should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3EnterExitRotation : public Tier3Advisor{
+  public:
+  // this is constructor for enterexitrotation advisor
+  Tier3EnterExitRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3EnterExitRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3EnterExitRotation() {};
+  // Tier3EnterExitRotation should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
 class Tier3AvoidRobot : public Tier3Advisor{
   public:
   // this is constructor for greedy advisor

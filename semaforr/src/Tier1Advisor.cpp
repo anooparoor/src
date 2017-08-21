@@ -14,6 +14,11 @@ void Tier1Advisor::advisorNotOpposite(){
   FORRAction lastlastAction = actions[size - 2];
   FORRAction lastlastlastAction = actions[size - 3];
   ROS_DEBUG_STREAM("Controller::advisorNotOpposite > " << lastAction.type << " " << lastAction.parameter << ", " << lastlastAction.type << " " << lastlastAction.parameter << ", " << lastlastlastAction.type << " " << lastlastlastAction.parameter); 
+  /*if(((lastlastAction.type == RIGHT_TURN or lastlastAction.type == LEFT_TURN) and lastAction.type == PAUSE) or lastAction.type == RIGHT_TURN or lastAction.type == LEFT_TURN){
+    ROS_DEBUG("Not opposite active ");
+    if(lastlastAction.type == RIGHT_TURN or lastAction.type == RIGHT_TURN)    for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(LEFT_TURN, i)));
+    else                                     for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(RIGHT_TURN, i)));
+  }*/
   if(lastlastAction.type == RIGHT_TURN or lastlastAction.type == LEFT_TURN){
     if(lastAction.type == PAUSE){
       ROS_DEBUG("Not opposite active ");
