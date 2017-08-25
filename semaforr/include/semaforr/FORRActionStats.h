@@ -19,9 +19,10 @@ class FORRActionStats {
     std::string vetoedActions;
     std::string advisors;
     std::string advisorComments;
+    std::string advisorInfluence;
 
-    FORRActionStats(int decTier, std::string vActions, std::string adv, std::string advComments) : decisionTier(decTier), vetoedActions(vActions), advisors(adv), advisorComments(advComments) {};
-    FORRActionStats(): decisionTier(0), vetoedActions(" "), advisors(" "), advisorComments(" ") {};
+    FORRActionStats(int decTier, std::string vActions, std::string adv, std::string advComments, std::string advInfluence) : decisionTier(decTier), vetoedActions(vActions), advisors(adv), advisorComments(advComments), advisorInfluence(advInfluence) {};
+    FORRActionStats(): decisionTier(0), vetoedActions(" "), advisors(" "), advisorComments(" "), advisorInfluence(" ") {};
 
 };
 

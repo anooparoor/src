@@ -68,6 +68,9 @@ private:
   //Tier 3 advisors are called here
   void tierThreeDecision(FORRAction *decision);
 
+  //Check influence of tier 3 Advisors
+  void tierThreeAdvisorInfluence();
+
   // learns the spatial model and updates the beliefs
   void learnSpatialModel(AgentState *agentState);
 

@@ -274,6 +274,7 @@ FORRAction Controller::FORRDecision()
 	//decision->type = FORWARD;
 	//decision->parameter = 5;
 	tierThreeDecision(decision);
+  tierThreeAdvisorInfluence();
 	decisionStats->decisionTier = 3;
     }
     //cout << "decisionTier = " << decisionStats->decisionTier << endl;
@@ -451,3 +452,120 @@ isAdvisorActive(string advisorName){
 
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Check influence of tier 3 Advisors
+//
+//
+void Controller::tierThreeAdvisorInfluence(){
+  std::map<FORRAction, double> comments;
+  // This map will aggregate value of all advisers
+  std::map<FORRAction, double> allComments;
+
+  // typedef to make for declaration that iterates over map shorter
+  typedef map<FORRAction, double>::iterator mapIt;
+
+  // vector of all the actions that got max comment strength in iteration
+  vector<FORRAction> best_decisions;
+  
+  std::stringstream advisorsInfluence;
+  for (advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
+    Tier3Advisor *advisor = *it; 
+
+    // check if advisor should make a decision
+    advisor->set_commenting();
+    if(advisor->is_active() == false){
+      continue;
+    }
+    if(advisor->is_commenting() == false){
+      continue;
+    }
+
+    comments = advisor->allAdvice();
+    // aggregate all comments
+
+    for(mapIt iterator = comments.begin(); iterator != comments.end(); iterator++){
+      // If this is first advisor we need to initialize our final map
+      float weight;
+      weight = advisor->get_weight();
+
+      if( allComments.find(iterator->first) == allComments.end()){
+      allComments[iterator->first] =  iterator->second * weight;
+      }
+      else{
+      allComments[iterator->first] += iterator->second * weight;
+      }
+    }
+  } 
+  
+  // Loop through map advisor created and find command with the highest vote
+  double maxAdviceStrength = -1000;
+  for(mapIt iterator = allComments.begin(); iterator != allComments.end(); iterator++){
+    //cout << "Values are : " << iterator->first.type << " " << iterator->first.parameter << " with value: " << iterator->second << endl;
+    if(iterator->second > maxAdviceStrength){
+      maxAdviceStrength = iterator->second;
+    }
+  }
+  //cout << "Max vote strength " << maxAdviceStrength << endl;
+  
+  for(mapIt iterator = allComments.begin(); iterator!=allComments.end(); iterator++){
+    if(iterator->second == maxAdviceStrength)
+      best_decisions.push_back(iterator->first);
+  }
+  
+  std::map<FORRAction, double> takeOneOutComments;
+  for (advisor3It it = tier3Advisors.begin(); it != tier3Advisors.end(); ++it){
+    takeOneOutComments = allComments;
+    Tier3Advisor *advisor = *it; 
+
+    // check if advisor should make a decision
+    advisor->set_commenting();
+    if(advisor->is_active() == false){
+      continue;
+    }
+    if(advisor->is_commenting() == false){
+      advisorsInfluence << advisor->get_name() << " -1;";
+      continue;
+    }
+
+    comments = advisor->allAdvice();
+    // aggregate all comments
+    if (comments.size() > 1) {
+      for(mapIt iterator = comments.begin(); iterator != comments.end(); iterator++){
+        // If this is first advisor we need to initialize our final map
+        float weight;
+        weight = advisor->get_weight();
+        takeOneOutComments[iterator->first]-= iterator->second * weight;
+      }
+      double maxAdviceStrength = -1000;
+      for(mapIt iterator = takeOneOutComments.begin(); iterator != takeOneOutComments.end(); iterator++){
+        if(iterator->second > maxAdviceStrength){
+          maxAdviceStrength = iterator->second;
+        }
+      }
+      bool same=0;
+      for(mapIt iterator = takeOneOutComments.begin(); iterator!=takeOneOutComments.end(); iterator++){
+        if(iterator->second == maxAdviceStrength){
+          for(unsigned i = 0; i < best_decisions.size(); ++i){
+            if(iterator->first.type == best_decisions.at(i).type and iterator->first.parameter == best_decisions.at(i).parameter) {
+              same = 0;
+            }
+            else{
+              same = 1;
+            }
+          }
+        }
+      }
+      if (same == 0){
+        advisorsInfluence << advisor->get_name() << " 0;";
+      }
+      else{
+        advisorsInfluence << advisor->get_name() << " 1;";
+      }
+    }
+    else {
+      advisorsInfluence << advisor->get_name() << " -1;";
+    }
+  }
+  decisionStats->advisorInfluence = advisorsInfluence.str();
+  cout << "advisorInfluence = " << decisionStats->advisorInfluence << endl;
+}

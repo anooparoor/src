@@ -53,7 +53,6 @@ std::map <FORRAction, double> Tier3Advisor::allAdvice(){
   inRotateMode = true;*/
   if(inRotateMode){
 	action_set = beliefs->getAgentState()->getRotationActionSet();
-    action_set = beliefs->getAgentState()->getActionSet();
   }
   else{
 	action_set = beliefs->getAgentState()->getForwardActionSet();
