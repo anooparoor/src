@@ -76,7 +76,7 @@ private:
 
   void initialize_advisors(std::string);
   void initialize_tasks(std::string);
-  void initialize_actions(std::string);
+  void initialize_params(std::string);
   void initialize_planner(std::string);
   
   // Knowledge component of robot
@@ -90,6 +90,11 @@ private:
   // Checks if a given advisor is active
   bool isAdvisorActive(string advisorName);
 
+  double width, height, granularity, initialX, initialY, initialTheta;
+  double arrMove[100];
+  double arrRotate[100];
+  int moveArrMax, rotateArrMax;
+  int taskDecisionLimit;
 };
   
 #endif /* CONTROLLER_H */

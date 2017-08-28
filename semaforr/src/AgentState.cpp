@@ -56,7 +56,7 @@ Position AgentState::afterAngularMove(Position initialPosition, double angle){
   
   double distance = getDistanceToObstacle(new_angle);
   //max is the maximum look ahead in meters 
-  double max = move[5];
+  double max = move[numMoves-1];
   if(distance > max) distance = max;
 
   double new_x = initialPosition.getX() + (distance * cos(new_angle));
@@ -277,7 +277,13 @@ FORRAction AgentState::maxForwardAction(){
 	min_distance = min_distance - error_margin;
 
 	ROS_DEBUG_STREAM("Forward obstacle distance " << min_distance);
-	if(min_distance > move[5])
+  for (int i = numMoves-1; i > 0; i--) {
+    if(min_distance > move[i]) {
+      return FORRAction(FORWARD,i);
+    }
+  }
+  return FORRAction(FORWARD,0);
+	/*if(min_distance > move[5])
 		return FORRAction(FORWARD,5);
 	else if(min_distance > move[4] && min_distance <= move[5])
 		return FORRAction(FORWARD,4);
@@ -288,15 +294,15 @@ FORRAction AgentState::maxForwardAction(){
 	else if(min_distance > move[1] && min_distance <= move[2])
 		return FORRAction(FORWARD,1);
 	else
-		return FORRAction(FORWARD,0);
+		return FORRAction(FORWARD,0);*/
 
 }
 
 
 FORRAction AgentState::get_max_allowed_forward_move(){
-  FORRAction max_forward(FORWARD, 5);
+  FORRAction max_forward(FORWARD, numMoves-1);
   cout << " Number of vetoed actions : " << vetoedActions->size() << endl;
-  for(int intensity = 1; intensity <= 5; intensity++){
+  for(int intensity = 1; intensity <= numMoves; intensity++){
     if(vetoedActions->find(FORRAction(FORWARD,intensity)) != vetoedActions->end()){
       max_forward.type = FORWARD;
       max_forward.parameter = intensity - 1;
@@ -319,52 +325,66 @@ FORRAction AgentState::moveTowards(){
     double required_rotation = goal_direction - robot_direction;
 
     ROS_DEBUG_STREAM("Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation);
-    if(required_rotation > 3.1416)
-      required_rotation = required_rotation - 6.283;
-    if(required_rotation < -3.1416)
-      required_rotation = required_rotation + 6.283;
+    if(required_rotation > M_PI)
+      required_rotation = required_rotation - (2*M_PI);
+    if(required_rotation < -M_PI)
+      required_rotation = required_rotation + (2*M_PI);
     //cout << "Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation << endl;
     ROS_DEBUG_STREAM("Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation);
     // if the angular difference is greater than smallest turn possible 
     // pick the right turn to allign itself to the target
     
     FORRAction decision;
+    int rotIntensity=0;
+    while(fabs(required_rotation) > rotate[rotIntensity] and rotIntensity < numRotates) {
+      
+    }
+
+    int intensity=0;
+    while(distance_from_target <= move[intensity] and intensity < numMoves) {
+      intensity++;
+    }
+    int max_allowed = maxForwardAction().parameter;
+    if(intensity > max_allowed){
+        intensity = max_allowed;
+    }
+    decision = FORRAction(FORWARD, intensity);
 
     if(fabs(required_rotation) > rotate[1]){
       if( required_rotation > rotate[1] && required_rotation <= rotate[2])
-	decision = FORRAction(LEFT_TURN, 1);
+        decision = FORRAction(LEFT_TURN, 1);
       else if( required_rotation > rotate[2] && required_rotation <= rotate[3])
-	decision = FORRAction(LEFT_TURN, 2);
+        decision = FORRAction(LEFT_TURN, 2);
       else if(required_rotation > rotate[3] && required_rotation <= rotate[4])
-	decision = FORRAction(LEFT_TURN, 3);
+        decision = FORRAction(LEFT_TURN, 3);
       else if(required_rotation > rotate[4])
-	decision = FORRAction(LEFT_TURN, 4);
+        decision = FORRAction(LEFT_TURN, 4);
       else if( required_rotation < -rotate[1] && required_rotation >= -rotate[2])
-	decision = FORRAction(RIGHT_TURN, 1);
+        decision = FORRAction(RIGHT_TURN, 1);
       else if( required_rotation < -rotate[2] && required_rotation >= -rotate[3])
-	decision = FORRAction(RIGHT_TURN, 2);
+        decision = FORRAction(RIGHT_TURN, 2);
       else if(required_rotation < -rotate[3] && required_rotation >= -rotate[4])
-	decision = FORRAction(RIGHT_TURN, 3);
+        decision = FORRAction(RIGHT_TURN, 3);
       else if(required_rotation < -rotate[4])
-	decision = FORRAction(RIGHT_TURN, 4);
+        decision = FORRAction(RIGHT_TURN, 4);
     }
     else{
       int intensity;
       if(distance_from_target <= move[1])
-	intensity = 0;
+        intensity = 0;
       else if(distance_from_target <= move[2])
-	intensity = 1;
+        intensity = 1;
       else if(distance_from_target <= move[3])
-	intensity = 2;
+        intensity = 2;
       else if(distance_from_target <= move[4])
-	intensity = 3;
+        intensity = 3;
       else if(distance_from_target <= move[5])
-	intensity = 4;
+        intensity = 4;
       else
-	intensity = 5;
+        intensity = 5;
       int max_allowed = maxForwardAction().parameter;
       if(intensity > max_allowed){
-	intensity = max_allowed;
+        intensity = max_allowed;
       }
       decision = FORRAction(FORWARD, intensity);
     }
