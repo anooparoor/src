@@ -33,15 +33,7 @@
         <ProfileSelector type="const" name="group1" />
 		<StateSelector type="const" name="Walk1" />
 		<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="1.0" >
-			<Agent p_x="10" p_y="20"/>
-		</Generator>
-    </AgentGroup>
-
-    <AgentGroup>
-        <StateSelector type="const" name="Walk2" />
-		<ProfileSelector type="const" name="group2" />
-		<Generator type="explicit">
-			<Agent p_x="10" p_y="30" />
+			<Agent p_x="25" p_y="20"/>
 		</Generator>
     </AgentGroup>
 

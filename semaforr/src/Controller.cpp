@@ -133,6 +133,94 @@ void Controller::initialize_params(string filename){
       taskDecisionLimit = atof(vstrings[1].c_str());
       ROS_DEBUG_STREAM("decisionlimit " << taskDecisionLimit);
     }
+    else if (fileLine.find("canSeePointEpsilon") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      canSeePointEpsilon = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("canSeePointEpsilon " << canSeePointEpsilon);
+    }
+    else if (fileLine.find("laserScanRadianIncrement") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      laserScanRadianIncrement = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("laserScanRadianIncrement " << laserScanRadianIncrement);
+    }
+    else if (fileLine.find("robotFootPrint") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      robotFootPrint = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("robotFootPrint " << robotFootPrint);
+    }
+    else if (fileLine.find("bufferForRobot") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      robotFootPrintBuffer = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("bufferForRobot " << robotFootPrintBuffer);
+    }
+    else if (fileLine.find("maxLaserRange") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      maxLaserRange = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("maxLaserRange " << maxLaserRange);
+    }
+    else if (fileLine.find("maxForwardActionBuffer") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      maxForwardActionBuffer = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("maxForwardActionBuffer " << maxForwardActionBuffer);
+    }
+    else if (fileLine.find("maxForwardActionSweepAngle") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      maxForwardActionSweepAngle = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("maxForwardActionSweepAngle " << maxForwardActionSweepAngle);
+    }
+    else if (fileLine.find("trailsOn") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      trailsOn = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("trailsOn " << trailsOn);
+    }
+    else if (fileLine.find("conveyorsOn") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      conveyorsOn = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("conveyorsOn " << conveyorsOn);
+    }
+    else if (fileLine.find("regionsOn") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      regionsOn = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("regionsOn " << regionsOn);
+    }
+    else if (fileLine.find("doorsOn") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      doorsOn = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("doorsOn " << doorsOn);
+    }
     else if (fileLine.find("move") != std::string::npos) {
       std::stringstream ss(fileLine);
       std::istream_iterator<std::string> begin(ss);
@@ -250,7 +338,8 @@ Controller::Controller(string advisor_config, string task_config, string params_
   //initialize_planner(planner_config);
 
   // Initialize current task, and robot initial position
-  Position initialPosition(initialX, initialY, initialTheta);
+  // Position initialPosition(initialX, initialY, initialTheta);
+  beliefs->getAgentState()->setAgentStateParameters(canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle);
   beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
   //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(initialPosition, planner);
   tier1 = new Tier1Advisor(beliefs);
@@ -318,10 +407,6 @@ void Controller::learnSpatialModel(AgentState* agentState){
   vector<Position> *pos_hist = completedTask->getPositionHistory();
   vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
   vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
-  bool trailsOn = true;
-  bool conveyorsOn = true;
-  bool regionsOn = true;
-  bool doorsOn = true;
  
   if(trailsOn){
     beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);

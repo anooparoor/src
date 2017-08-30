@@ -185,6 +185,7 @@ public:
   bool getRotateMode(){return rotateMode;}
   void setRotateMode(bool mode){rotateMode = mode;}
  
+  void setAgentStateParameters(double val1, double val2, double val3, double val4, double val5, double val6, double val7);
 
  private:
 
@@ -253,6 +254,9 @@ public:
   //after linear move
   Position afterLinearMove(Position initialPosition, double distance);
   Position afterAngularMove(Position initialPosition, double angle);
+
+  // Parameters
+  double canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle;
 
 };
 

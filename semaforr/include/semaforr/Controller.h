@@ -90,11 +90,15 @@ private:
   // Checks if a given advisor is active
   bool isAdvisorActive(string advisorName);
 
-  double width, height, granularity, initialX, initialY, initialTheta;
+  double width, height, granularity, initialX, initialY, initialTheta, canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle;
   double arrMove[100];
   double arrRotate[100];
   int moveArrMax, rotateArrMax;
   int taskDecisionLimit;
+  bool trailsOn;
+  bool conveyorsOn;
+  bool regionsOn;
+  bool doorsOn;
 };
   
 #endif /* CONTROLLER_H */

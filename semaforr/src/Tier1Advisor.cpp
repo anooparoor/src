@@ -5,7 +5,7 @@
 void Tier1Advisor::advisorNotOpposite(){
   ROS_DEBUG("COntroller::advisorNotOpposite > Entering function");
   vector<FORRAction> actions = beliefs->getAgentState()->getCurrentTask()->getPreviousDecisions();
-  set<FORRAction> *rotation_set = beliefs->getAgentState()->getCurrentTask()->getRotationActionSet();
+  set<FORRAction> *rotation_set = beliefs->getAgentState()->getRotationActionSet();
   int size = actions.size();
   if(actions.size() < 2){
     ROS_DEBUG("actions list less than 2. Exiting not opposite");
@@ -143,8 +143,8 @@ bool Tier1Advisor::advisorAvoidWalls(){
   ROS_DEBUG_STREAM("Max allowed forward action : " << max_forward.type << " " << max_forward.parameter);
   int intensity = max_forward.parameter;
   set<FORRAction> *vetoedActions = beliefs->getAgentState()->getVetoedActions();
-  set<FORRAction> *forward_set = beliefs->getAgentState()->getCurrentTask()->getForwardActionSet();
-  for(int i = forward_set->size() ; i > 0; i--){
+  set<FORRAction> *forward_set = beliefs->getAgentState()->getForwardActionSet();
+  for(int i = forward_set->size()-1 ; i > 0; i--){
 	FORRAction a(FORWARD,i);
 	if(i > intensity){
 		ROS_DEBUG_STREAM("Vetoed action : " << a.type << " " << a.parameter);
