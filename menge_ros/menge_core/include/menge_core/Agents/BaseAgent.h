@@ -206,6 +206,13 @@ namespace Menge {
 			 *	@brief		The preferred speed of the agent
 			 */
 			float _prefSpeed;	
+			/*!
+			 *	@brief		The laser config of the robot agent
+			 */
+			float _range_max;
+			float _start_angle;
+			float _end_angle;
+			float _increment;	
 
 			/*!
 			 *	@brief		The current 2D position of the agent

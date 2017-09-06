@@ -42,18 +42,6 @@
 		<ProfileSelector type="const" name="crowd" />
                 <StateSelector type="const" name="wait" />
 		<Generator type="explicit">
-			<Agent p_x="10" p_y="30" />
-			<Agent p_x="10" p_y="31" />
-			<Agent p_x="10" p_y="32" />
-			<Agent p_x="10" p_y="33" />
-			<Agent p_x="10" p_y="34" />
-			<Agent p_x="10" p_y="35" />
-			<Agent p_x="11" p_y="30" />
-			<Agent p_x="11" p_y="31" />
-			<Agent p_x="12" p_y="32" />
-			<Agent p_x="13" p_y="33" />
-			<Agent p_x="14" p_y="34" />
-			<Agent p_x="15" p_y="35" />
 			<Agent p_x="1" p_y="30" />
 			<Agent p_x="1" p_y="31" />
 			<Agent p_x="1" p_y="32" />
@@ -102,6 +90,48 @@
 			<Agent p_x="8" p_y="33" />
 			<Agent p_x="8" p_y="34" />
 			<Agent p_x="8" p_y="35" />
+			<Agent p_x="9" p_y="30" />
+			<Agent p_x="9" p_y="31" />
+			<Agent p_x="9" p_y="32" />
+			<Agent p_x="9" p_y="33" />
+			<Agent p_x="9" p_y="34" />
+			<Agent p_x="9" p_y="35" />
+			<Agent p_x="10" p_y="30" />
+			<Agent p_x="10" p_y="31" />
+			<Agent p_x="10" p_y="32" />
+			<Agent p_x="10" p_y="33" />
+			<Agent p_x="10" p_y="34" />
+			<Agent p_x="10" p_y="35" />
+			<Agent p_x="11" p_y="30" />
+			<Agent p_x="11" p_y="31" />
+			<Agent p_x="11" p_y="32" />
+			<Agent p_x="11" p_y="33" />
+			<Agent p_x="11" p_y="34" />
+			<Agent p_x="11" p_y="35" />
+			<Agent p_x="12" p_y="30" />
+			<Agent p_x="12" p_y="31" />
+			<Agent p_x="12" p_y="32" />
+			<Agent p_x="12" p_y="33" />
+			<Agent p_x="12" p_y="34" />
+			<Agent p_x="12" p_y="35" />
+			<Agent p_x="13" p_y="30" />
+			<Agent p_x="13" p_y="31" />
+			<Agent p_x="13" p_y="32" />
+			<Agent p_x="13" p_y="33" />
+			<Agent p_x="13" p_y="34" />
+			<Agent p_x="13" p_y="35" />
+			<Agent p_x="14" p_y="30" />
+			<Agent p_x="14" p_y="31" />
+			<Agent p_x="14" p_y="32" />
+			<Agent p_x="14" p_y="33" />
+			<Agent p_x="14" p_y="34" />
+			<Agent p_x="14" p_y="35" />
+			<Agent p_x="15" p_y="30" />
+			<Agent p_x="15" p_y="31" />
+			<Agent p_x="15" p_y="32" />
+			<Agent p_x="15" p_y="33" />
+			<Agent p_x="15" p_y="34" />
+			<Agent p_x="15" p_y="35" />
 		</Generator>
         </AgentGroup>
 

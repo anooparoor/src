@@ -215,12 +215,38 @@ namespace Menge {
 			
 			Vector2 pos = agent->_pos;
 			//In radians to represent a 220 degree scan with 1/3 degree increment for a total of 660 ray scans
-			float start_angle = -1.91986; 
-			float end_angle = 1.918;
-			float increment = 0.005817;
-			float range_max = 25; 
-			//In meters  
-			int i = 0;
+			float start_angle = agent->_start_angle; 
+			float end_angle = agent->_end_angle;
+			float increment = agent->_increment;
+			float range_max = agent->_range_max; 
+			//In meters 
+			/* 
+			for(int i = 0;i < 660;i++){
+				ls.ranges.push_back(0);
+			}
+
+			// parallel implementati
+			//std::cout << "Parallelization " << ls.ranges.size() << std::endl; 
+			#pragma omp parallel for
+			for(int i = 0; i < 660; i++){
+				//std::cout << "Generating obstacle distance " << angle; 
+				//for each angle compute the distance from the obstacle
+				float angle = start_angle + (increment * i);
+				float distance =  distanceFromObstacle(angle,range_max, agent);
+				float distance_agent = distanceFromAgent(angle, range_max, agent);
+				if(distance > distance_agent){
+					distance = distance_agent;
+				}
+				ls.ranges[i] = distance;
+				//std::cout << " distance : " << distance << std::endl; 
+			}
+			ls.angle_min = start_angle;
+			ls.angle_max = end_angle;
+			ls.angle_increment = increment;
+			ls.range_max = range_max;
+			*/
+			// serial implementation
+			
 			for(float angle = start_angle; angle <= end_angle ; angle += increment){
 				//std::cout << "Generating obstacle distance " << angle; 
 				//for each angle compute the distance from the obstacle
@@ -231,7 +257,6 @@ namespace Menge {
 				}
 				ls.ranges.push_back(distance);
 				//std::cout << " distance : " << distance << std::endl; 
-				i++;
 			}
 			ls.angle_min = start_angle;
 			ls.angle_max = end_angle;
@@ -256,7 +281,6 @@ namespace Menge {
 			laser_end._y += sin(new_angle) * range_max;
 			return nearAgentDistance(laser_begin, laser_end);
 		}
-
 	
 		float FSM::distanceFromObstacle(float angle, float range_max, Agents::BaseAgent * agent){
 			// find the vector to represent the ray 
@@ -300,7 +324,8 @@ namespace Menge {
 				if(agt->_isExternal == false){
 					//the agent in question is a crowd agent
 					Vector2 agent_pos = agt->_pos;
-					float current = intersect(start, end, agent_pos, 0.6);
+					float radius = agt->_radius * 1.1;
+					float current = intersect(start, end, agent_pos, radius);
 					if(current < distance) 
 						distance = current;				
 				}
@@ -453,7 +478,6 @@ namespace Menge {
 			EVENT_SYSTEM->evaluateEvents();
 			int agtCount = (int)this->_sim->getNumAgents();
 			size_t exceptionCount = 0;
-			#pragma omp parallel for reduction(+:exceptionCount)
 			ros::Time current_time;
   			current_time = ros::Time::now();
 			geometry_msgs::PoseArray crowd;
@@ -461,6 +485,7 @@ namespace Menge {
 			Vector2 robot_orient;
 			float robot_angle;
 			// Compute preference velocities for each agent and also send the base_scan and robot position estimates
+			#pragma omp parallel for reduction(+:exceptionCount)
 			for ( int a = 0; a < agtCount; ++a ) {
 				Agents::BaseAgent * agt = this->_sim->getAgent( a );
 				try {

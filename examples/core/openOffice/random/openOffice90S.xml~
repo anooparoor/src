@@ -14,7 +14,7 @@
 
     <AgentProfile name="robot" >
 		<OpenSteer tau="3" tauObst="6" />
-        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.4" class="1" pref_speed="0.4" max_speed="2" max_accel="5" priority="0.0" external="1"/>
+        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.26" class="1" pref_speed="0.4" max_speed="2" max_accel="5" priority="0.0" external="1"/>
 		<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
         <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
         <Helbing mass="80" />
@@ -26,7 +26,7 @@
 
 	<AgentProfile name="crowd" inherits="robot" >
 		<ORCA tau="3" tauObst="0.15" />
-		<Common class="2" r="0.4" external="0"/>
+		<Common class="2" r="0.26" external="0"/>
 		<Helbing mass="320"/>
 	</AgentProfile>
 
@@ -44,6 +44,36 @@
 		<Generator type="explicit">
 			<Agent p_x="1" p_y="30" />
 			<Agent p_x="1" p_y="31" />
+			<Agent p_x="1" p_y="32" />
+			<Agent p_x="1" p_y="33" />
+			<Agent p_x="1" p_y="34" />
+			<Agent p_x="1" p_y="35" />
+			<Agent p_x="2" p_y="30" />
+			<Agent p_x="2" p_y="31" />
+			<Agent p_x="2" p_y="32" />
+			<Agent p_x="2" p_y="33" />
+			<Agent p_x="2" p_y="34" />
+			<Agent p_x="2" p_y="35" />
+			<Agent p_x="3" p_y="30" />
+			<Agent p_x="3" p_y="31" />
+			<Agent p_x="3" p_y="32" />
+			<Agent p_x="3" p_y="33" />
+			<Agent p_x="3" p_y="34" />
+			<Agent p_x="3" p_y="35" />
+			<Agent p_x="4" p_y="30" />
+			<Agent p_x="4" p_y="31" />
+			<Agent p_x="4" p_y="32" />
+			<Agent p_x="4" p_y="33" />
+			<Agent p_x="4" p_y="34" />
+			<Agent p_x="4" p_y="35" />
+			<Agent p_x="5" p_y="30" />
+			<Agent p_x="5" p_y="31" />
+			<Agent p_x="5" p_y="32" />
+			<Agent p_x="5" p_y="33" />
+			<Agent p_x="5" p_y="34" />
+			<Agent p_x="5" p_y="35" />
+			<Agent p_x="6" p_y="30" />
+			<Agent p_x="6" p_y="31" />
 			<Agent p_x="1" p_y="32" />
 			<Agent p_x="1" p_y="33" />
 			<Agent p_x="1" p_y="34" />

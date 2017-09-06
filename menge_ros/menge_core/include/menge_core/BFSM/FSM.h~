@@ -445,7 +445,7 @@ namespace Menge {
 			 *	@brief		ROS node handle
 			 */			
 			ros::NodeHandle *_nh;
-			ros::Subscriber _sub;
+			std::vector< ros::Subscriber *> _sub_list;
 			ros::Publisher _pub_crowd;
 			ros::Publisher _pub_pose;
 			ros::Publisher _pub_odom;

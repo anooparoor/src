@@ -119,7 +119,6 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${PROJECT_SOURCE_DIR}/include/semaforr/
-  ${PROJECT_SOURCE_DIR}/include/semaforr/planner/
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -129,16 +128,15 @@ file(
 	GLOB_RECURSE
 	source_files
 	${PROJECT_SOURCE_DIR}/src/*.cpp
-	${PROJECT_SOURCE_DIR}/include/semaforr/planner/*.h  
 	${PROJECT_SOURCE_DIR}/include/semaforr/*.h
 )
 
 add_executable(
-	controller
+	semaforr_controller
 	${source_files}
 )
 
-target_link_libraries (controller ${catkin_LIBRARIES})
+target_link_libraries (semaforr_controller ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -164,11 +162,11 @@ target_link_libraries (controller ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS semaforr semaforr_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS semaforr_controller
+   #ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   #LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/

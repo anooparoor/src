@@ -388,6 +388,14 @@ namespace Menge {
 			FloatGenerator * _radius;
 
 			/*!
+			 *	@brief		The agent's radius.  See Agents::BaseAgent::_radius for details.
+			 */
+			float _range_max;
+			float _start_angle;
+			float _end_angle;
+			float _increment;
+
+			/*!
 			 *	@brief		The agent's maximum angular velocity (in radians/sec) -- 
 			 *				used for controlling the changes in agent orientation.
 			 */
