@@ -54,9 +54,9 @@ Position AgentState::afterAngularMove(Position initialPosition, double angle){
 
   double new_angle = (angle + initialPosition.getTheta());
   
-  double distance = getDistanceToObstacle(angle);
+  double distance = getDistanceToObstacle(new_angle);
   //max is the maximum look ahead in meters 
-  double max = 5;
+  double max = move[numMoves-1];
   if(distance > max) distance = max;
 
   double new_x = initialPosition.getX() + (distance * cos(new_angle));
@@ -114,7 +114,7 @@ bool AgentState::canSeeSegment(vector<CartesianPoint> givenLaserEndpoints, Carte
 bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point){
   ROS_DEBUG_STREAM("AgentState:canSeePoint() , robot pos " << laserPos.get_x() << "," << laserPos.get_y() << " target " <<
 	point.get_x() << "," << point.get_y()); 
-  double epsilon = 0.05;
+  double epsilon = canSeePointEpsilon;
   ROS_DEBUG_STREAM("Number of laser endpoints " << givenLaserEndpoints.size()); 
   bool canSeePoint = false;
   for(int i = 0; i < givenLaserEndpoints.size(); i++){
@@ -201,9 +201,9 @@ void AgentState::transformToEndpoints(){
 }
 
 double AgentState::getDistanceToObstacle(double rotation_angle){
-	ROS_DEBUG("In getDistanceToObstacle");
+	//ROS_DEBUG("In getDistanceToObstacle");
 	// one increment in the laser range scan is 1/3 degrees, i.e 0.005817 in radians  
-	int index = (int)(rotation_angle/(0.005817));
+	int index = (int)(rotation_angle/(laserScanRadianIncrement));
 	//ROS_DEBUG("In getDistanceToObstacle after index");
 	//shift the index in the positive
 	index = index + 330;
@@ -213,29 +213,29 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 	if(index > 659) index = 659;
 	//ROS_DEBUG("In getDistanceToObstacle after second if");
 	//cout << index << " " << currentLaserScan.ranges.size() << endl;
-	if(currentLaserScan.ranges.size() == 0) { return 25; }
+	if(currentLaserScan.ranges.size() == 0) { return maxLaserRange; }
 	//cout << currentLaserScan.ranges[index] << endl;
 	
 	double r_x = currentPosition.getX();
 	double r_y = currentPosition.getY();
 	double r_ang = currentPosition.getTheta();
 	CartesianPoint current_point(r_x,r_y);
-	double r = 0.2794+0.1;
+	double r = robotFootPrint+robotFootPrintBuffer; // fetch robot's footprint plus 0.1 meter buffer
 	
 	Vector v1 = Vector(current_point, r_ang+(M_PI/2), r);
 	Vector v2 = Vector(current_point, r_ang-(M_PI/2), r);
 	
-	Vector parallel1 = Vector(v1.get_endpoint(), r_ang, 25);
-	Vector parallel2 = Vector(v2.get_endpoint(), r_ang, 25);
+	Vector parallel1 = Vector(v1.get_endpoint(), r_ang, maxLaserRange);
+	Vector parallel2 = Vector(v2.get_endpoint(), r_ang, maxLaserRange);
 	
-	Vector laserVector = Vector(current_point, r_ang+rotation_angle, 25);
+	Vector laserVector = Vector(current_point, r_ang+rotation_angle, maxLaserRange);
 	
 	CartesianPoint intersectionPoint = CartesianPoint();
 	
 	if(do_intersect(parallel1, laserVector, intersectionPoint)){
 		if(intersectionPoint.get_distance(current_point) < currentLaserScan.ranges[index]){
 			//cout << "25" << endl;
-			return 25;
+			return maxLaserRange;
 		}
 		else {
 			//cout << currentLaserScan.ranges[index] << endl;
@@ -245,7 +245,7 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 	else if(do_intersect(parallel2, laserVector, intersectionPoint)){
 		if(intersectionPoint.get_distance(current_point) < currentLaserScan.ranges[index]){
 			//cout << "25" << endl;
-			return 25;
+			return maxLaserRange;
 		}
 		else {
 			//cout << currentLaserScan.ranges[index] << endl;
@@ -261,8 +261,8 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 
 FORRAction AgentState::maxForwardAction(){
  	ROS_DEBUG("In maxforwardaction");
-	double error_margin = 1; // margin from obstacles
-	double view = 1.0472; // +view radians to -view radians view
+	double error_margin = maxForwardActionBuffer; // margin from obstacles
+	double view = maxForwardActionSweepAngle; // +view radians to -view radians view
 	//double view = 0.7854;
 	double min_distance = getDistanceToObstacle(view);
 	//cout << min_distance << endl;
@@ -277,7 +277,13 @@ FORRAction AgentState::maxForwardAction(){
 	min_distance = min_distance - error_margin;
 
 	ROS_DEBUG_STREAM("Forward obstacle distance " << min_distance);
-	if(min_distance > move[5])
+  for (int i = numMoves-1; i > 0; i--) {
+    if(min_distance > move[i]) {
+      return FORRAction(FORWARD,i);
+    }
+  }
+  return FORRAction(FORWARD,0);
+	/*if(min_distance > move[5])
 		return FORRAction(FORWARD,5);
 	else if(min_distance > move[4] && min_distance <= move[5])
 		return FORRAction(FORWARD,4);
@@ -288,15 +294,15 @@ FORRAction AgentState::maxForwardAction(){
 	else if(min_distance > move[1] && min_distance <= move[2])
 		return FORRAction(FORWARD,1);
 	else
-		return FORRAction(FORWARD,0);
+		return FORRAction(FORWARD,0);*/
 
 }
 
 
 FORRAction AgentState::get_max_allowed_forward_move(){
-  FORRAction max_forward(FORWARD, 5);
+  FORRAction max_forward(FORWARD, numMoves-1);
   cout << " Number of vetoed actions : " << vetoedActions->size() << endl;
-  for(int intensity = 1; intensity <= 5; intensity++){
+  for(int intensity = 1; intensity <= numMoves; intensity++){
     if(vetoedActions->find(FORRAction(FORWARD,intensity)) != vetoedActions->end()){
       max_forward.type = FORWARD;
       max_forward.parameter = intensity - 1;
@@ -319,59 +325,91 @@ FORRAction AgentState::moveTowards(){
     double required_rotation = goal_direction - robot_direction;
 
     ROS_DEBUG_STREAM("Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation);
-    if(required_rotation > 3.1416)
-      required_rotation = required_rotation - 6.283;
-    if(required_rotation < -3.1416)
-      required_rotation = required_rotation + 6.283;
+    if(required_rotation > M_PI)
+      required_rotation = required_rotation - (2*M_PI);
+    if(required_rotation < -M_PI)
+      required_rotation = required_rotation + (2*M_PI);
     //cout << "Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation << endl;
     ROS_DEBUG_STREAM("Robot direction : " << robot_direction << ", Goal Direction : " << goal_direction << ", Required rotation : " << required_rotation);
     // if the angular difference is greater than smallest turn possible 
     // pick the right turn to allign itself to the target
     
     FORRAction decision;
+    int rotIntensity=0;
+    while(fabs(required_rotation) > rotate[rotIntensity] and rotIntensity < numRotates) {
+      rotIntensity++;
+    }
+    ROS_DEBUG_STREAM("Rotation Intensity : " << rotIntensity);
+    if (rotIntensity > 1) {
+      if (required_rotation < 0){
+        decision = FORRAction(RIGHT_TURN, rotIntensity-1);
+      }
+      else {
+        decision = FORRAction(LEFT_TURN, rotIntensity-1);
+      }
+    }
+    else {
+      int intensity=0;
+      while(distance_from_target > move[intensity] and intensity < numMoves) {
+        intensity++;
+      }
+      ROS_DEBUG_STREAM("Move Intensity : " << intensity);
+      int max_allowed = maxForwardAction().parameter;
+      if(intensity > max_allowed){
+          intensity = max_allowed;
+      }
+      decision = FORRAction(FORWARD, intensity);
+    }
 
-    if(fabs(required_rotation) > rotate[1]){
+    /*if(fabs(required_rotation) > rotate[1]){
       if( required_rotation > rotate[1] && required_rotation <= rotate[2])
-	decision = FORRAction(LEFT_TURN, 1);
+        decision = FORRAction(LEFT_TURN, 1);
       else if( required_rotation > rotate[2] && required_rotation <= rotate[3])
-	decision = FORRAction(LEFT_TURN, 2);
+        decision = FORRAction(LEFT_TURN, 2);
       else if(required_rotation > rotate[3] && required_rotation <= rotate[4])
-	decision = FORRAction(LEFT_TURN, 3);
+        decision = FORRAction(LEFT_TURN, 3);
       else if(required_rotation > rotate[4])
-	decision = FORRAction(LEFT_TURN, 4);
+        decision = FORRAction(LEFT_TURN, 4);
       else if( required_rotation < -rotate[1] && required_rotation >= -rotate[2])
-	decision = FORRAction(RIGHT_TURN, 1);
+        decision = FORRAction(RIGHT_TURN, 1);
       else if( required_rotation < -rotate[2] && required_rotation >= -rotate[3])
-	decision = FORRAction(RIGHT_TURN, 2);
+        decision = FORRAction(RIGHT_TURN, 2);
       else if(required_rotation < -rotate[3] && required_rotation >= -rotate[4])
-	decision = FORRAction(RIGHT_TURN, 3);
+        decision = FORRAction(RIGHT_TURN, 3);
       else if(required_rotation < -rotate[4])
-	decision = FORRAction(RIGHT_TURN, 4);
+        decision = FORRAction(RIGHT_TURN, 4);
     }
     else{
       int intensity;
       if(distance_from_target <= move[1])
-	intensity = 0;
+        intensity = 0;
       else if(distance_from_target <= move[2])
-	intensity = 1;
+        intensity = 1;
       else if(distance_from_target <= move[3])
-	intensity = 2;
+        intensity = 2;
       else if(distance_from_target <= move[4])
-	intensity = 3;
+        intensity = 3;
       else if(distance_from_target <= move[5])
-	intensity = 4;
+        intensity = 4;
       else
-	intensity = 5;
+        intensity = 5;
       int max_allowed = maxForwardAction().parameter;
       if(intensity > max_allowed){
-	intensity = max_allowed;
+        intensity = max_allowed;
       }
       decision = FORRAction(FORWARD, intensity);
-    }
+    }*/
     
     ROS_INFO_STREAM("Action choosen : " << decision.type << "," << decision.parameter);
     return decision;
 }
 
-
-
+  void AgentState::setAgentStateParameters(double val1, double val2, double val3, double val4, double val5, double val6, double val7){
+    canSeePointEpsilon = val1;
+    laserScanRadianIncrement = val2;
+    robotFootPrint = val3;
+    robotFootPrintBuffer = val4;
+    maxLaserRange = val5;
+    maxForwardActionBuffer = val6;
+    maxForwardActionSweepAngle = val7;
+  }

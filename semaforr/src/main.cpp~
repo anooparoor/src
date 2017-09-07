@@ -287,20 +287,54 @@ public:
 // Main file : Load configuration files and create a controller, Initialize and run robot driver! 
 // Stops when the mission is complete or when a mission aborts
 int main(int argc, char **argv) {
-		//init the ROS node
-		ros::init(argc, argv, "semaforr");
-		if( ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug) ) {
-			ros::console::notifyLoggerLevelsChanged();
-		}
-		ros::NodeHandle nh;
 
-		//string path = "/home/anooparoor/catkin_ws/src/semaforr";
+<<<<<<< HEAD
+     //init the ROS node
+     ros::init(argc, argv, "semaforr_controller");
+     if( ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug) ) {
+   	ros::console::notifyLoggerLevelsChanged();
+     }
+     ros::NodeHandle nh;
+	
+     
+     string path = ros::package::getPath("semaforr");
+
+     //string path = "/home/anooparoor/catkin_ws/src/semaforr";
 
      //bool ok = ros::param::get("/semaforr_controller/semaforr_package_path",path);
      //if(!ok){
 	//ROS_DEBUG("Could not get semaforr_package_path");
 	//exit(1);
      //}
+     
+     string advisor_config = path + "/config/advisors.conf";
+     string action_config = path + "/config/action.conf";
+     string tasks_config = path + "/config/target.conf";
+     // currently not implemented
+     string planner_config = path;
+     ROS_INFO("Controller Initialized");
+     Controller *controller = new Controller(advisor_config,tasks_config,action_config,planner_config); 
+     
+     
+     RobotDriver driver(nh, controller);
+     driver.initialize();
+     ROS_INFO("Robot Driver Initialized");
+     driver.run();
+     
+     ROS_INFO("Mission Accomplished!"); 
+
+     return 0;
+}
+
+
+
+=======
+		//init the ROS node
+		ros::init(argc, argv, "semaforr");
+		if( ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug) ) {
+			ros::console::notifyLoggerLevelsChanged();
+		}
+		ros::NodeHandle nh;
 
 		string path = ros::package::getPath("semaforr");
 		string advisor_config = path + "/config/advisors.conf";
@@ -320,3 +354,4 @@ int main(int argc, char **argv) {
 
 		return 0;
 }
+>>>>>>> a24a9f2a89fd17d93cfdb9e0f933228f98831382

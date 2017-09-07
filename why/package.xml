@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>semaforr_explanation</name>
+  <name>why</name>
   <version>0.0.0</version>
-  <description>The semaforr_explanation package</description>
+  <description>The why package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/semaforr_explanation</url> -->
+  <!-- <url type="website">http://wiki.ros.org/why</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->

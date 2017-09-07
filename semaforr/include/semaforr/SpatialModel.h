@@ -7,32 +7,32 @@
  * \date 11/11/2016 Created
  */
 
-#include <FORRAbstractMap.h>
+#include <FORRRegionList.h>
 #include <FORRTrails.h>
-#include <FORRWaypoints.h>
+#include <FORRConveyors.h>
 #include <FORRDoors.h>
 
 class SpatialModel{
 
 public:
 	SpatialModel(double width, double height, double granularity){
-		abstract_map = new FORRAbstractMap();
+		abstract_map = new FORRRegionList();
 		//trace = new FORRTrace();
 		trails = new FORRTrails();
-		waypoints = new FORRWaypoints(width, height, granularity);
+		conveyors = new FORRConveyors(width, height, granularity);
 		doors = new FORRDoors();
 	};
 
-        FORRAbstractMap* getAbstractMap(){return abstract_map;}
+        FORRRegionList* getRegionList(){return abstract_map;}
 	//FORRTrace* getTrace(){return trace;}
 	FORRTrails* getTrails(){return trails;}
-	FORRWaypoints* getWaypoints(){return waypoints;}
+	FORRConveyors* getConveyors(){return conveyors;}
 	FORRDoors* getDoors(){return doors;}
 
 private:
-	FORRAbstractMap *abstract_map;
+	FORRRegionList *abstract_map;
         //FORRTrace *trace;
 	FORRTrails *trails;
-	FORRWaypoints *waypoints;
+	FORRConveyors *conveyors;
 	FORRDoors *doors;
 };
