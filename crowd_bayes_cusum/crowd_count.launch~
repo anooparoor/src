@@ -1,3 +1,0 @@
-<launch>
-<node pkg="crowd_count" type="learn.py" name="learn" launch-prefix="xterm -e"/>
-</launch>

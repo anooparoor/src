@@ -1,4 +1,0 @@
-<launch>
-<node pkg="semaforr" type="semaforr_controller" name="semaforr_controller" output="screen"/>
-<node pkg="menge_sim" type="menge_sim" name="menge_sim" output="screen"/>
-</launch>
