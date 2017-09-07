@@ -1,7 +1,7 @@
 /* \mainpage ROSiffied semaforr Documentation
  * \brief RobotDriver governs low-level actions of a robot.
  *
- * \author Anoop Aroor.
+ * \author Anoop Aroor, Raj Korpan and others.
  *
  * \version SEMAFORR ROS 1.0
  *
