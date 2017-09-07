@@ -201,15 +201,16 @@ public:
 		//ROS_DEBUG_STREAM("Previous position " << previous.getX() << " " << previous.getY() << " " << previous.getTheta());
 		bool actionComplete = false;
 		//ROS_DEBUG_STREAM("Position expected " << expected.getX() << " " << expected.getY() << " " << expected.getTheta());
-		double scalingFactor = 1.8274;
+		//double scalingFactor = 1.8274;
 		if (action.type == FORWARD){
 			double distance_travelled = previous.getDistance(current);
 			double expected_travel = controller->getBeliefs()->getAgentState()->getMovement(action.parameter);
-			double moveRate = 0.785;
+			//double moveRate = 0.785;
 			//ROS_INFO_STREAM("expected_travel : " << expected_travel << " time cut off : " << pow(scalingFactor,log(expected_travel)/log(2))*moveRate);
 			//if((abs(distance_travelled - expected_travel) < epsilon_move)){
 			//if((elapsed_time >= 0.01 and action.parameter == 0) or (elapsed_time >= 0.157 and action.parameter == 1) or (elapsed_time >= 0.291 and action.parameter == 2) or (elapsed_time >= 0.555 and action.parameter == 3) or (elapsed_time >= 1.083 and action.parameter == 4) or (elapsed_time >= 2.159 and action.parameter == 5)){
-			if ((elapsed_time >= 0.01 and action.parameter == 0) or (elapsed_time >= pow(scalingFactor,log(expected_travel)/log(2))*moveRate)){
+			//if ((elapsed_time >= 0.01 and action.parameter == 0) or (elapsed_time >= pow(scalingFactor,log(expected_travel)/log(2))*moveRate)){
+			if ((elapsed_time >= 0.01 and action.parameter == 0) or (elapsed_time >= expected_travel*0.6692+0.0111)){
 				//ROS_INFO_STREAM("elapsed_time : " << elapsed_time << " " << abs(distance_travelled - expected_travel));
 				actionComplete = true;
 			}
@@ -229,11 +230,12 @@ public:
 			double turn_expected = controller->getBeliefs()->getAgentState()->getRotation(action.parameter);
 			//if(action.type == RIGHT_TURN) 
 			//	turn_expected = (-1)*turn_expected;
-			double turnRate = 0.764;
+			//double turnRate = 0.764;
 			//ROS_INFO_STREAM("turn_expected : " << turn_expected << " time cut off : " << pow(scalingFactor,log(turn_expected)/log(2))*turnRate);
 			//if((abs(turn_completed - turn_expected) < epsilon_rotate)){
 			//if((elapsed_time >= 0.191 and action.parameter == 1) or (elapsed_time >= 0.355 and action.parameter == 2) or (elapsed_time >= 0.689 and action.parameter == 3) or (elapsed_time >= 1.331 and action.parameter == 4)){
-			if(elapsed_time >= pow(scalingFactor,log(turn_expected)/log(2))*turnRate){
+			//if(elapsed_time >= pow(scalingFactor,log(turn_expected)/log(2))*turnRate){
+			if(elapsed_time >= (-0.0385*pow(turn_expected,2))+(0.7916*turn_expected)-0.078){
 				//ROS_INFO_STREAM("elapsed_time : " << elapsed_time << " " << abs(turn_completed - turn_expected));
 				actionComplete = true;
 			}

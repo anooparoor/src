@@ -23,8 +23,8 @@ void Tier1Advisor::advisorNotOpposite(){
   if(lastlastAction.type == RIGHT_TURN or lastlastAction.type == LEFT_TURN){
     if(lastAction.type == PAUSE){
       ROS_DEBUG("Not opposite active ");
-      if(lastlastAction.type == RIGHT_TURN)    for(int i = 1; i < rotation_set->size() ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(LEFT_TURN, i)));
-      else                                     for(int i = 1; i < rotation_set->size() ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(RIGHT_TURN, i)));
+      if(lastlastAction.type == RIGHT_TURN)    for(int i = 1; i < rotation_set->size()/2+1 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(LEFT_TURN, i)));
+      else                                     for(int i = 1; i < rotation_set->size()/2+1 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(RIGHT_TURN, i)));
     }
   }
   ROS_DEBUG("leaving notOpposite");
