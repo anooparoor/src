@@ -16,7 +16,7 @@ Written by Raj Korpan, adapted from Gil Dekel, 2017
 #include <utility>      //for exit
 #include <algorithm>
 #include "FORRGeometry.h"
-#include "FORRCircle.h"
+#include "FORRRegion.h"
 #include "FORRExit.h"
 
 /*
@@ -49,8 +49,8 @@ public:
         doors.clear();
     }
 
-    void learnDoors(std::vector<FORRCircle> reg) {
-        std::vector<FORRCircle> regions = reg;
+    void learnDoors(std::vector<FORRRegion> reg) {
+        std::vector<FORRRegion> regions = reg;
         //std::cout << "Number of regions = " << regions.size() << std::endl;
 
         /*double min_radius = std::numeric_limits<double>::infinity();
@@ -158,7 +158,7 @@ public:
                     regionDoors.push_back(*doorToPush);
                     //std::cout << "regionDoors.size() = " << regionDoors.size() << std::endl;
     
-                //Take care of the last point on the circle before going back to the terminal.
+                //Take care of the last point on the region before going back to the terminal.
                 } else if (!(doorToPush->startPoint.getExitPoint() == CartesianPoint(-1,-1)) && (doorToPush->endPoint.getExitPoint() == CartesianPoint(-1,-1))) {
                     if (2*M_PI - (doorToPushStartAngle - exitAngles.begin()->first) < epsilon) {
                         doorToPush->endPoint = exitAngles.begin()->second;
@@ -198,7 +198,7 @@ public:
         }
     }
 
-    vector< std::pair<double, FORRExit> > calculateExitAngles(FORRCircle region){
+    vector< std::pair<double, FORRExit> > calculateExitAngles(FORRRegion region){
         vector<FORRExit> exits = region.getExits();
         double regionX = region.getCenter().get_x();
         double regionY = region.getCenter().get_y();
@@ -222,6 +222,26 @@ public:
             fixedAngle = angle + 2*M_PI;
         }
         return fixedAngle;
+    }
+
+    double distanceToDoor(CartesianPoint point, FORRRegion region, Door door) {
+        double pointX = point.get_x();
+        double pointY = point.get_y();
+        double regionX = region.getCenter().get_x();
+        double regionY = region.getCenter().get_y();
+        double regionR = region.getRadius();
+        double startPointAngle = calculateFixedAngle(regionX, regionY, door.startPoint.getExitPoint().get_x(), door.startPoint.getExitPoint().get_y());
+        double endPointAngle = calculateFixedAngle(regionX, regionY, door.endPoint.getExitPoint().get_x(), door.endPoint.getExitPoint().get_y());
+        double pointAngle = calculateFixedAngle(regionX, regionY, pointX, pointY);
+        if(pointAngle <= endPointAngle and pointAngle >= startPointAngle) {
+            return (point.get_distance(region.getCenter()) - regionR);
+        }
+        else if (point.get_distance(door.startPoint.getExitPoint()) <= point.get_distance(door.endPoint.getExitPoint())) {
+            return point.get_distance(door.startPoint.getExitPoint());
+        }
+        else {
+            return point.get_distance(door.endPoint.getExitPoint());
+        }
     }
 
 private:

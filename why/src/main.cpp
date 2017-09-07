@@ -207,8 +207,8 @@ public:
 			start_timecv = cv.tv_sec + (cv.tv_usec/1000000.0);
 			//target = "(" + parseText(current_log)[4] + ", " + parseText(current_log)[5] + ")";
 			decisionTier = atoi(parseText(current_log)[10].c_str());
-        		vetoedActions = parseText(current_log)[11];
-        		chosenAction = parseText(current_log)[12]+parseText(current_log)[13];
+			vetoedActions = parseText(current_log)[11];
+			chosenAction = parseText(current_log)[12]+parseText(current_log)[13];
 			advisorComments = parseText(current_log)[15];
 			//ROS_INFO_STREAM(decisionTier << " " << vetoedActions << " " << chosenAction << " " << advisorComments << endl << endl);
 
@@ -217,12 +217,12 @@ public:
 			} else if (vetoedActions == "0 1;0 2;0 3;0 4;0 5;" and chosenAction == "30") {
 				//ROS_DEBUG(vetoedActions << endl);
 				decisionTier = 1;
-				explanationString.data = "I decided to " + actionText[chosenAction] + " because there's not enough room to move forward.\n" + "Highly confident, since there is not enough room to move forward.\n" + vetoedAlternateActions(vetoedActions);
+				explanationString.data = "I decided to " + actionText[chosenAction] + " because there's not enough room to move forward.\n" + "Highly confident, since there is not enough room to move forward.\n" + vetoedAlternateActions(vetoedActions, chosenAction);
 			} else {
 				parseTier3Comments(advisorComments);
 				advisorTScore = computeTier3TScores(advisorComments, chosenAction);
 				computeConfidence(chosenAction);
-				explanationString.data = tier3Explanation(chosenAction) + "\n" + confidenceExplanation() + "\n" + vetoedAlternateActions(vetoedActions) + "\n" + tier3AlternateActions(advisorComments, chosenAction);
+				explanationString.data = tier3Explanation(chosenAction) + "\n" + confidenceExplanation() + "\n" + vetoedAlternateActions(vetoedActions, chosenAction) + "\n" + tier3AlternateActions(advisorComments, chosenAction);
 			}
 			gettimeofday(&cv,NULL);
 			end_timecv = cv.tv_sec + (cv.tv_usec/1000000.0);
@@ -496,11 +496,11 @@ public:
 	
 	std::string confidenceExplanation() {
 		std::string explanation, phraseGini, phraseOverallSupport, phraseConfidenceLevel;
-		int giniPhaseID = giniThreshold.size(), overallSupportPhraseID = overallSupportThreshold.size(), confidenceLevelPhraseID = confidenceLevelThreshold.size();
+		int giniPhraseID = giniThreshold.size(), overallSupportPhraseID = overallSupportThreshold.size(), confidenceLevelPhraseID = confidenceLevelThreshold.size();
 		for (int i = giniThreshold.size()-1; i >= 0; --i) {
 			if (gini <= giniThreshold[i]) {
 				phraseGini = giniPhrase[i];
-				giniPhaseID--;
+				giniPhraseID--;
 			}
 		}
 		for (int i = overallSupportThreshold.size()-1; i >= 0; --i) {
@@ -515,20 +515,26 @@ public:
 				confidenceLevelPhraseID--;
 			}
 		}
-		giniPhaseID = -(giniPhaseID-2);
-		//ROS_INFO_STREAM(giniPhaseID << " " << overallSupportPhraseID << " " << confidenceLevelPhraseID);
+		giniPhraseID = -(giniPhraseID-2);
+		//ROS_INFO_STREAM(giniPhraseID << " " << overallSupportPhraseID << " " << confidenceLevelPhraseID);
 		
-		if (giniPhaseID == confidenceLevelPhraseID and overallSupportPhraseID == confidenceLevelPhraseID) {
-			explanation = "I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + ". I " + phraseOverallSupport + " to do this more than anything else.";
+		if (giniPhraseID == confidenceLevelPhraseID and overallSupportPhraseID == confidenceLevelPhraseID) {
+			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because " + phraseGini + ". I " + phraseOverallSupport + " to do this most.";
 		}
-		else if (overallSupportPhraseID >= confidenceLevelPhraseID and giniPhaseID <= confidenceLevelPhraseID) {
-			explanation = "Even though I " + phraseOverallSupport + " to do this more than anything else, I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + ".";
+		else if (giniPhraseID == confidenceLevelPhraseID) {
+			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because " + phraseGini + ".";
 		}
-		else if (giniPhaseID >= confidenceLevelPhraseID and overallSupportPhraseID <= confidenceLevelPhraseID) {
-			explanation = "Even though " + phraseGini + ", I'm " + phraseConfidenceLevel + " confident in my decision because I " + phraseOverallSupport + " to do this more than anything else.";
+		else if (overallSupportPhraseID == confidenceLevelPhraseID) {
+			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because " + phraseOverallSupport + " to do this most.";
+		}
+		else if (overallSupportPhraseID > confidenceLevelPhraseID and giniPhraseID < confidenceLevelPhraseID) {
+			explanation = "I'm " + phraseOverallSupport + " sure in my decision because, even though " + phraseGini + ", " + phraseOverallSupport + " to do this most.";
+		}
+		else if (giniPhraseID > confidenceLevelPhraseID and overallSupportPhraseID < confidenceLevelPhraseID) {
+			explanation = "I'm " + phraseOverallSupport + " sure in my decision because, even though " + phraseOverallSupport + " to do this most, " + phraseGini + ".";
 		}
 		else {
-			explanation = "I'm " + phraseConfidenceLevel + " confident in my decision because " + phraseGini + ". I " + phraseOverallSupport + " to do this more than anything else.";
+			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because " + phraseGini + ". I " + phraseOverallSupport + " to do this most.";
 		}		
 		//ROS_INFO_STREAM(explanation);
 		return explanation + "\n";
@@ -538,14 +544,14 @@ public:
 		std::string alternateExplanations;
 		std::map <std::string, std::string>::iterator itr;
 		for (itr = actionText.begin(); itr != actionText.end(); itr++) {
-			if (itr->first != chosenAction and itr->first != "30" and (itr->first).length() >0) {
+			if (itr->first != chosenAction and itr->first != "30" and (itr->second).length() >0) {
 				alternateExplanations = alternateExplanations + "I decided not to " + itr->second + " because I sense our goal and another action would get us closer to it.\n";
 			}
 		}
 		return alternateExplanations;
 	}
 	
-	std::string vetoedAlternateActions(std::string vetoedActions){
+	std::string vetoedAlternateActions(std::string vetoedActions, std::string chosenAction){
 		std::string alternateExplanations;
 
 		std::vector<std::string> vstrings;
@@ -559,10 +565,10 @@ public:
 		}
 		
 		for (int i=0; i < vstrings.size(); i++) {
-			if (vstrings[i].at(0) == '0') {
+			if (vstrings[i].at(0) == '0' and (chosenAction.at(0) == '0' or chosenAction.at(0) == '3')) {
 				alternateExplanations = alternateExplanations + "I decided not to " + actionText[vstrings[i]] + " because the wall was in the way.\n";
 			}
-			else if (vstrings[i].at(0) == '1' or vstrings[i].at(0) == '2') {
+			else if ((vstrings[i].at(0) == '1' or vstrings[i].at(0) == '2') and (chosenAction.at(0) == '1' or chosenAction.at(0) == '2')) {
 				alternateExplanations = alternateExplanations + "I decided not to " + actionText[vstrings[i]] + " because I was just facing that way.\n";
 			}
 		}
@@ -633,16 +639,16 @@ public:
 				
 				
 				if (supportPhrases.size() > 0 and opposePhrases.size() > 0) {
-					alternateExplanations = alternateExplanations + "I thought about it because " + actioningText[atr->first] + " would let us " + opposeConcat + " but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + " since it lets us " + supportConcat + ".\n";
+					alternateExplanations = alternateExplanations + "I thought about " + actioningText[atr->first] + " because it would let us " + opposeConcat + ", but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + " since it lets us " + supportConcat + ".\n";
 				}
 				else if (supportPhrases.size() > 0 and opposePhrases.size() == 0) {
-					alternateExplanations = alternateExplanations + "I thought about " + actioningText[atr->first] + " but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + " since it lets us " + supportConcat + ".\n";
+					alternateExplanations = alternateExplanations + "I thought about " + actioningText[atr->first] + ", but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + " since it lets us " + supportConcat + ".\n";
 				}
 				else if (supportPhrases.size() == 0 and opposePhrases.size() > 0) {
-					alternateExplanations = alternateExplanations + "I thought about it because " + actioningText[atr->first] + " would let us " + opposeConcat + " but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + ".\n";
+					alternateExplanations = alternateExplanations + "I thought about it because " + actioningText[atr->first] + " would let us " + opposeConcat + ", but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + ".\n";
 				}
 				else if (supportPhrases.size() == 0 and opposePhrases.size() == 0) {
-					alternateExplanations = alternateExplanations + "I thought about " + actioningText[atr->first] + " but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + ".\n";
+					alternateExplanations = alternateExplanations + "I thought about " + actioningText[atr->first] + ", but I felt " + phraseDiffOverallSupport + " strongly about " + actioningText[chosenAction] + ".\n";
 				}
 				//ROS_INFO_STREAM(alternateExplanations);
 			}
@@ -721,13 +727,13 @@ public:
 int main(int argc, char **argv) {
 
 	//init the ROS node
-	ros::init(argc, argv, "semaforr_explanation");
+	ros::init(argc, argv, "why");
 	if( ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug) ) {
 		ros::console::notifyLoggerLevelsChanged();
 	}
 	ros::NodeHandle nh;
 
-	string path = ros::package::getPath("semaforr_explanation");
+	string path = ros::package::getPath("why");
 	string text_config = path + "/config/text.conf";
 	Explanation explain(nh);
 	explain.initialize(text_config);

@@ -31,33 +31,34 @@ using namespace std;
 
 class AgentState
 {
- public:
+public:
   /** \brief AgentState constructor */
-  AgentState() : currentTask(NULL) {
-	vetoedActions = new set<FORRAction>();
-        action_set = new set<FORRAction>();
-	forward_set = new set<FORRAction>();
-	rotation_set = new set<FORRAction>();
-        rotateMode = true;
+  AgentState(double arrMove[], double arrRotate[], int moveArrMax, int rotateArrMax) : currentTask(NULL) {
+    vetoedActions = new set<FORRAction>();
+    action_set = new set<FORRAction>();
+    forward_set = new set<FORRAction>();
+    rotation_set = new set<FORRAction>();
+    rotateMode = true;
+    numMoves = moveArrMax;
+    numRotates = rotateArrMax;
 
-    	for(int i = 1; i < 5; i++){
-      		action_set->insert(FORRAction(LEFT_TURN, i));
-      		action_set->insert(FORRAction(RIGHT_TURN, i));
-		rotation_set->insert(FORRAction(LEFT_TURN, i));
-      		rotation_set->insert(FORRAction(RIGHT_TURN, i));
-    	}
-    	for(int i = 1; i < 6; i++){
-      		action_set->insert(FORRAction(FORWARD, i));
-		forward_set->insert(FORRAction(FORWARD, i));
-    	}
-    	action_set->insert(FORRAction(PAUSE,0));
-	forward_set->insert(FORRAction(PAUSE,0));
-	//rotation_set->insert(FORRAction(PAUSE,0));
-	double m[] = {0, 0.2, 0.4, 0.8, 1.6, 3.2};  
-  	double r[] = {0, 0.25, 0.5, 1, 2};
-	for(int i = 0 ; i < 6 ; i++) move[i] = m[i];
-	for(int i = 0 ; i < 5 ; i++) rotate[i] = r[i];
-	
+    for(int i = 1; i < numRotates; i++){
+      action_set->insert(FORRAction(LEFT_TURN, i));
+      action_set->insert(FORRAction(RIGHT_TURN, i));
+      rotation_set->insert(FORRAction(LEFT_TURN, i));
+      rotation_set->insert(FORRAction(RIGHT_TURN, i));
+    }
+    for(int i = 1; i < numMoves; i++){
+      action_set->insert(FORRAction(FORWARD, i));
+      forward_set->insert(FORRAction(FORWARD, i));
+    }
+    action_set->insert(FORRAction(PAUSE,0));
+    forward_set->insert(FORRAction(PAUSE,0));
+    //rotation_set->insert(FORRAction(PAUSE,0));
+    //double m[] = {0, 0.2, 0.4, 0.8, 1.6, 3.2};  
+    //double r[] = {0, 0.25, 0.5, 1, 2};
+    for(int i = 0 ; i < numMoves ; i++) move[i] = arrMove[i];
+    for(int i = 0 ; i < numRotates ; i++) rotate[i] = arrRotate[i];
   }
   
   // Best possible move towards the target
@@ -184,12 +185,14 @@ class AgentState
   bool getRotateMode(){return rotateMode;}
   void setRotateMode(bool mode){rotateMode = mode;}
  
+  void setAgentStateParameters(double val1, double val2, double val3, double val4, double val5, double val6, double val7);
 
  private:
 
   // Stores the move and rotate action values
-  double move[6];  
-  double rotate[5];
+  double move[100];  
+  double rotate[100];
+  int numMoves, numRotates;
 
   FORRAction get_max_allowed_forward_move();
 
@@ -251,6 +254,9 @@ class AgentState
   //after linear move
   Position afterLinearMove(Position initialPosition, double distance);
   Position afterAngularMove(Position initialPosition, double angle);
+
+  // Parameters
+  double canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle;
 
 };
 

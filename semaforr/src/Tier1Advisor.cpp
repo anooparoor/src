@@ -5,6 +5,7 @@
 void Tier1Advisor::advisorNotOpposite(){
   ROS_DEBUG("COntroller::advisorNotOpposite > Entering function");
   vector<FORRAction> actions = beliefs->getAgentState()->getCurrentTask()->getPreviousDecisions();
+  set<FORRAction> *rotation_set = beliefs->getAgentState()->getRotationActionSet();
   int size = actions.size();
   if(actions.size() < 2){
     ROS_DEBUG("actions list less than 2. Exiting not opposite");
@@ -14,11 +15,16 @@ void Tier1Advisor::advisorNotOpposite(){
   FORRAction lastlastAction = actions[size - 2];
   FORRAction lastlastlastAction = actions[size - 3];
   ROS_DEBUG_STREAM("Controller::advisorNotOpposite > " << lastAction.type << " " << lastAction.parameter << ", " << lastlastAction.type << " " << lastlastAction.parameter << ", " << lastlastlastAction.type << " " << lastlastlastAction.parameter); 
+  /*if(((lastlastAction.type == RIGHT_TURN or lastlastAction.type == LEFT_TURN) and lastAction.type == PAUSE) or lastAction.type == RIGHT_TURN or lastAction.type == LEFT_TURN){
+    ROS_DEBUG("Not opposite active ");
+    if(lastlastAction.type == RIGHT_TURN or lastAction.type == RIGHT_TURN)    for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(LEFT_TURN, i)));
+    else                                     for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(RIGHT_TURN, i)));
+  }*/
   if(lastlastAction.type == RIGHT_TURN or lastlastAction.type == LEFT_TURN){
     if(lastAction.type == PAUSE){
       ROS_DEBUG("Not opposite active ");
-      if(lastlastAction.type == RIGHT_TURN)    for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(LEFT_TURN, i)));
-      else                                     for(int i = 1; i < 6 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(RIGHT_TURN, i)));
+      if(lastlastAction.type == RIGHT_TURN)    for(int i = 1; i < rotation_set->size()/2+1 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(LEFT_TURN, i)));
+      else                                     for(int i = 1; i < rotation_set->size()/2+1 ; i++)   (beliefs->getAgentState()->getVetoedActions()->insert(FORRAction(RIGHT_TURN, i)));
     }
   }
   ROS_DEBUG("leaving notOpposite");
@@ -137,7 +143,8 @@ bool Tier1Advisor::advisorAvoidWalls(){
   ROS_DEBUG_STREAM("Max allowed forward action : " << max_forward.type << " " << max_forward.parameter);
   int intensity = max_forward.parameter;
   set<FORRAction> *vetoedActions = beliefs->getAgentState()->getVetoedActions();
-  for(int i = 5 ; i > 0; i--){
+  set<FORRAction> *forward_set = beliefs->getAgentState()->getForwardActionSet();
+  for(int i = forward_set->size()-1 ; i > 0; i--){
 	FORRAction a(FORWARD,i);
 	if(i > intensity){
 		ROS_DEBUG_STREAM("Vetoed action : " << a.type << " " << a.parameter);

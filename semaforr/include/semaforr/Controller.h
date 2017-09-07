@@ -68,12 +68,15 @@ private:
   //Tier 3 advisors are called here
   void tierThreeDecision(FORRAction *decision);
 
+  //Check influence of tier 3 Advisors
+  void tierThreeAdvisorInfluence();
+
   // learns the spatial model and updates the beliefs
   void learnSpatialModel(AgentState *agentState);
 
   void initialize_advisors(std::string);
   void initialize_tasks(std::string);
-  void initialize_actions(std::string);
+  void initialize_params(std::string);
   void initialize_planner(std::string);
   
   // Knowledge component of robot
@@ -87,6 +90,15 @@ private:
   // Checks if a given advisor is active
   bool isAdvisorActive(string advisorName);
 
+  double width, height, granularity, initialX, initialY, initialTheta, canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle;
+  double arrMove[100];
+  double arrRotate[100];
+  int moveArrMax, rotateArrMax;
+  int taskDecisionLimit;
+  bool trailsOn;
+  bool conveyorsOn;
+  bool regionsOn;
+  bool doorsOn;
 };
   
 #endif /* CONTROLLER_H */

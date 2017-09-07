@@ -41,16 +41,16 @@ public:
      * \param m A line segment map
      */
 
-    Beliefs(double width, double height, double granularity){
-	agentState = new AgentState();
-	spatialModel = new SpatialModel(width, height, granularity);
+    Beliefs(double width, double height, double granularity, double arrMove[], double arrRotate[], int moveArrMax, int rotateArrMax){
+        agentState = new AgentState(arrMove, arrRotate, moveArrMax, rotateArrMax);
+        spatialModel = new SpatialModel(width, height, granularity);
     }
  
     AgentState* getAgentState(){return agentState;}
     SpatialModel* getSpatialModel(){return spatialModel;}
 
         
- private:
+private:
     
     /** \brief The agent's current position, its task status, decision state, and immediate sensor values*/
     AgentState *agentState;

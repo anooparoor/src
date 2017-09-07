@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(semaforr_explanation)
+project(why)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -105,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES semaforr_explanation
+#  LIBRARIES why
   CATKIN_DEPENDS roscpp rospy std_msgs roslib
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
@@ -118,13 +118,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  ${PROJECT_SOURCE_DIR}/include/semaforr_explanation/
+  ${PROJECT_SOURCE_DIR}/include/why/
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/semaforr_explanation.cpp
+#   src/${PROJECT_NAME}/why.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -140,11 +140,11 @@ file(
 	GLOB_RECURSE
 	source_files
 	${PROJECT_SOURCE_DIR}/src/*.cpp
-	${PROJECT_SOURCE_DIR}/include/semaforr_explanation/*.h
+	${PROJECT_SOURCE_DIR}/include/why/*.h
 )
 
 add_executable(
-	explainer
+	why
 	${source_files}
 )
 
@@ -159,7 +159,7 @@ add_executable(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(explainer
+target_link_libraries(why
   ${catkin_LIBRARIES}
 )
 
