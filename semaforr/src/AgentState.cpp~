@@ -234,26 +234,26 @@ double AgentState::getDistanceToObstacle(double rotation_angle){
 	
 	if(do_intersect(parallel1, laserVector, intersectionPoint)){
 		if(intersectionPoint.get_distance(current_point) < currentLaserScan.ranges[index]){
-			//cout << "25" << endl;
+			cout << "25" << endl;
 			return 25;
 		}
 		else {
-			//cout << currentLaserScan.ranges[index] << endl;
+			cout << currentLaserScan.ranges[index] << endl;
 			return currentLaserScan.ranges[index];
 		}
 	}
 	else if(do_intersect(parallel2, laserVector, intersectionPoint)){
 		if(intersectionPoint.get_distance(current_point) < currentLaserScan.ranges[index]){
-			//cout << "25" << endl;
+			cout << "25" << endl;
 			return 25;
 		}
 		else {
-			//cout << currentLaserScan.ranges[index] << endl;
+			cout << currentLaserScan.ranges[index] << endl;
 			return currentLaserScan.ranges[index];
 		}
 	}
 	else {
-		//cout << currentLaserScan.ranges[index] << endl;
+		cout << currentLaserScan.ranges[index] << endl;
 		return currentLaserScan.ranges[index];
 	}
 }
@@ -265,9 +265,9 @@ FORRAction AgentState::maxForwardAction(){
 	double view = 1.0472; // +view radians to -view radians view
 	//double view = 0.7854;
 	double min_distance = getDistanceToObstacle(view);
-	//cout << min_distance << endl;
+	cout << min_distance << endl;
 	for(double angle = (-1)*view; angle < view; angle = angle + 0.005){
-		//cout << angle << endl;
+		cout << angle << endl;
 		double distance = getDistanceToObstacle(angle);
 		if(distance < min_distance){
 			min_distance = distance;

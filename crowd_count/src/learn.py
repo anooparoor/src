@@ -352,4 +352,3 @@ class CountCrowdModel:
 
 crowd_model = CountCrowdModel(60,60,20)
 crowd_model.listen()
-

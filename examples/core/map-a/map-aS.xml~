@@ -28,14 +28,15 @@
 		<Helbing mass="320"/>
     </AgentProfile>
 
+
+
     <AgentGroup>
-        <ProfileSelector type="const" name="group1" />
-	<StateSelector type="const" name="Walk1" />
-	<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="1.0" >
-		<Agent p_x="5" p_y="5"/>
+        <StateSelector type="const" name="Walk2" />
+	<ProfileSelector type="const" name="group2" />
+	<Generator type="explicit">
+		<Agent p_x="1" p_y="1" />
 	</Generator>
     </AgentGroup>
-
 
 <ObstacleSet type="explicit" class="1">
     <Obstacle closed="1"> 

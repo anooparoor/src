@@ -194,7 +194,7 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
 	//********************* Task Decision limit reached, skip task ********************
 	else if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
 		ROS_DEBUG("Controller.cpp decisionCount > 500 , skipping task");
-		//learnSpatialModel(beliefs->getAgentState());
+		learnSpatialModel(beliefs->getAgentState());
 	    	beliefs->getAgentState()->skipTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());

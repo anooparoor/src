@@ -1916,7 +1916,6 @@ double Tier3NeighborDoorLinear::actionComment(FORRAction action){
 }
 
 void Tier3NeighborDoorLinear::set_commenting(){
-  cout << "In neighbor door linear set commenting " << endl;
   std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
   vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
@@ -1924,7 +1923,6 @@ void Tier3NeighborDoorLinear::set_commenting(){
   CartesianPoint targetPoint (task->getX() , task->getY());
   CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
   bool targetInCircle = false;
-  bool targetHasNeighbors = false;
   int targetCircle = -1;
   
   // check the preconditions for activating the advisor
@@ -1935,24 +1933,21 @@ void Tier3NeighborDoorLinear::set_commenting(){
       targetCircle = i;
     }
   }
-  if(targetInCircle == true) {
-    vector<FORRExit> exits = circles[targetCircle].getExits();
-    vector<FORRCircle> nearCircles;
-    for(int i = 0; i < exits.size() ; i++){
-      FORRCircle test = circles[exits[i].getExitCircle()];
-      std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
-      if(nearCircles.empty() or (it == nearCircles.end())){
-        nearCircles.push_back(test);
-        cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
-      }
-    }
-    cout << "#Neighbors found :" << nearCircles.size() << endl;
-    if(nearCircles.size() >= 1) {
-      targetHasNeighbors = true;
+
+  vector<FORRExit> exits = circles[targetCircle].getExits();
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
     }
   }
 
-  if(targetInCircle == true and targetHasNeighbors == true)
+  cout << "#Neighbors found :" << nearCircles.size() << endl;
+
+  if(targetInCircle == true and nearCircles.size() >= 1)
     advisor_commenting = true;
   else
     advisor_commenting = false;
@@ -1993,7 +1988,6 @@ double Tier3NeighborDoorRotation::actionComment(FORRAction action){
 }
 
 void Tier3NeighborDoorRotation::set_commenting(){
-  cout << "In neighbor door linear set commenting " << endl;
   std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
   vector<FORRCircle> circles = beliefs->getSpatialModel()->getAbstractMap()->getCircles();
   Position curr_pos = beliefs->getAgentState()->getCurrentPosition();
@@ -2001,7 +1995,6 @@ void Tier3NeighborDoorRotation::set_commenting(){
   CartesianPoint targetPoint (task->getX() , task->getY());
   CartesianPoint currentPosition (curr_pos.getX(), curr_pos.getY());
   bool targetInCircle = false;
-  bool targetHasNeighbors = false;
   int targetCircle = -1;
   
   // check the preconditions for activating the advisor
@@ -2012,24 +2005,21 @@ void Tier3NeighborDoorRotation::set_commenting(){
       targetCircle = i;
     }
   }
-  if(targetInCircle == true) {
-    vector<FORRExit> exits = circles[targetCircle].getExits();
-    vector<FORRCircle> nearCircles;
-    for(int i = 0; i < exits.size() ; i++){
-      FORRCircle test = circles[exits[i].getExitCircle()];
-      std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
-      if(nearCircles.empty() or (it == nearCircles.end())){
-        nearCircles.push_back(test);
-        cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
-      }
-    }
-    cout << "#Neighbors found :" << nearCircles.size() << endl;
-    if(nearCircles.size() >= 1) {
-      targetHasNeighbors = true;
+
+  vector<FORRExit> exits = circles[targetCircle].getExits();
+  vector<FORRCircle> nearCircles;
+  for(int i = 0; i < exits.size() ; i++){
+    FORRCircle test = circles[exits[i].getExitCircle()];
+    std::vector<FORRCircle>::iterator it = std::find(nearCircles.begin(),nearCircles.end(), test);
+    if(nearCircles.empty() or (it == nearCircles.end())){
+      nearCircles.push_back(test);
+      cout << "Neighbour Circle : " << test.getCenter().get_x() << " " << test.getCenter().get_y() << endl;
     }
   }
 
-  if(targetInCircle == true and targetHasNeighbors == true)
+  cout << "#Neighbors found :" << nearCircles.size() << endl;
+
+  if(targetInCircle == true and nearCircles.size() >= 1)
     advisor_commenting = true;
   else
     advisor_commenting = false;

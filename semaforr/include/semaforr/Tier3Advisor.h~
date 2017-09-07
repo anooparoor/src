@@ -529,100 +529,10 @@ class Tier3TrailFinderRotation : public Tier3Advisor{
 };
 
 
-class Tier3EnterDoorLinear : public Tier3Advisor{
- public: 
-  Tier3EnterDoorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3EnterDoorLinear();
-  
-  virtual ~Tier3EnterDoorLinear(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
 
 
-class Tier3EnterDoorRotation : public Tier3Advisor{
- public: 
-  Tier3EnterDoorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3EnterDoorRotation();
-  
-  virtual ~Tier3EnterDoorRotation(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
 
 
-class Tier3ExitDoorLinear : public Tier3Advisor{
- public: 
-  Tier3ExitDoorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3ExitDoorLinear();
-  
-  virtual ~Tier3ExitDoorLinear(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-class Tier3ExitDoorRotation : public Tier3Advisor{
- public: 
-  Tier3ExitDoorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3ExitDoorRotation();
-  
-  virtual ~Tier3ExitDoorRotation(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-class Tier3DoorAttractorLinear : public Tier3Advisor{
- public: 
-  Tier3DoorAttractorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3DoorAttractorLinear();
-  
-  virtual ~Tier3DoorAttractorLinear(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-class Tier3DoorAttractorRotation : public Tier3Advisor{
- public: 
-  Tier3DoorAttractorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3DoorAttractorRotation();
-  
-  virtual ~Tier3DoorAttractorRotation(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-class Tier3NeighborDoorLinear : public Tier3Advisor{
- public: 
-  Tier3NeighborDoorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3NeighborDoorLinear();
-  
-  virtual ~Tier3NeighborDoorLinear(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
-
-
-class Tier3NeighborDoorRotation : public Tier3Advisor{
- public: 
-  Tier3NeighborDoorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
-  Tier3NeighborDoorRotation();
-  
-  virtual ~Tier3NeighborDoorRotation(){};
-  virtual double actionComment(FORRAction action);
-  virtual void set_commenting();
-
-};
 
 
 #endif
