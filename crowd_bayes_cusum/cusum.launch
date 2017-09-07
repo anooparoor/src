@@ -1,0 +1,3 @@
+<launch>
+<node pkg="crowd_bayes_cusum" type="learn" name="learn" output="screen"/>
+</launch>

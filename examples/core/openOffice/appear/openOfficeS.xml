@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+
+<Experiment version="2.0">
+	<SpatialQuery type="kd-tree" test_visibility="false" />
+	
+    <OpenSteer max_force="8" leak_through="0.1" reaction_time="0.5" />
+    <Common time_step="0.1" />
+    <GCF reaction_time="0.5" max_agent_dist="2" max_agent_force="3" agent_interp_width="0.1" nu_agent="0.35" />
+    <Helbing agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" body_force="1200" friction="2400" force_distance="0.015" />
+    <Johansson agent_scale="25" obstacle_scale="35" reaction_time="0.5" force_distance="0.15" stride_time="0.5" />
+    <Karamouzas orient_weight="0.8" fov="200" reaction_time="0.4" wall_steepness="2" wall_distance="2" colliding_count="5" d_min="1" d_mid="8" d_max="10" agent_force="4" />
+    <Zanlungo agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" force_distance="0.005" />
+	<Dummy stddev="0.05" />
+
+    <AgentProfile name="robot" >
+		<OpenSteer tau="3" tauObst="6" />
+        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.28" class="1" pref_speed="0.4" max_speed="2" max_accel="5" priority="0.0" external="1"/>
+		<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="2" turningBias="1.0" />
+        <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
+        <Helbing mass="80" />
+        <Johansson fov_weight="0.16" />
+        <Karamouzas personal_space="0.69" anticipation="8" />
+        <ORCA tau="0.15" tauObst="0.15" />
+        <Zanlungo mass="80" />
+	</AgentProfile>
+
+	<AgentProfile name="crowd" inherits="robot" >
+		<ORCA tau="3" tauObst="0.15" />
+		<Common class="2" r="0.28" external="0"/>
+		<Helbing mass="320"/>
+	</AgentProfile>
+
+	<AgentGroup>
+                <ProfileSelector type="const" name="robot" />
+		<StateSelector type="const" name="wait" />
+		<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="1.0" >
+			<Agent p_x="10" p_y="20"/>
+		</Generator>
+        </AgentGroup>
+
+	<AgentGroup>
+		<ProfileSelector type="const" name="crowd" />
+                <StateSelector type="const" name="waitLong" />
+		<Generator type="explicit">
+			<Agent p_x="16" p_y="40" />
+			<Agent p_x="17" p_y="40" />
+			<Agent p_x="18" p_y="40" />
+			<Agent p_x="19" p_y="40" />
+			<Agent p_x="20" p_y="40" />
+			<Agent p_x="21" p_y="40" />			
+			<Agent p_x="22" p_y="40" />			
+			<Agent p_x="23" p_y="40" />
+			<Agent p_x="24" p_y="40" />
+			<Agent p_x="25" p_y="40" />
+			<Agent p_x="26" p_y="40" />
+			<Agent p_x="27" p_y="40" />
+			<Agent p_x="28" p_y="40" />
+			<Agent p_x="16" p_y="41" />
+			<Agent p_x="17" p_y="41" />
+			<Agent p_x="18" p_y="41" />
+			<Agent p_x="19" p_y="41" />
+			<Agent p_x="20" p_y="41" />
+			<Agent p_x="21" p_y="41" />			
+			<Agent p_x="22" p_y="41" />			
+			<Agent p_x="23" p_y="41" />
+			<Agent p_x="24" p_y="41" />
+			<Agent p_x="25" p_y="41" />
+			<Agent p_x="26" p_y="41" />
+			<Agent p_x="27" p_y="41" />
+			<Agent p_x="28" p_y="41" />
+			<Agent p_x="16" p_y="42" />
+			<Agent p_x="17" p_y="42" />
+			<Agent p_x="18" p_y="42" />
+			<Agent p_x="19" p_y="42" />
+			<Agent p_x="20" p_y="42" />
+			<Agent p_x="21" p_y="42" />			
+			<Agent p_x="22" p_y="42" />			
+			<Agent p_x="23" p_y="42" />
+			<Agent p_x="24" p_y="42" />
+			<Agent p_x="25" p_y="42" />
+			<Agent p_x="26" p_y="42" />
+			<Agent p_x="27" p_y="42" />
+			<Agent p_x="28" p_y="42" />
+			<Agent p_x="16" p_y="43" />
+			<Agent p_x="17" p_y="43" />
+			<Agent p_x="18" p_y="43" />
+			<Agent p_x="19" p_y="43" />
+			<Agent p_x="20" p_y="43" />
+			<Agent p_x="21" p_y="43" />			
+			<Agent p_x="22" p_y="43" />			
+			<Agent p_x="23" p_y="43" />
+			<Agent p_x="24" p_y="43" />
+			<Agent p_x="25" p_y="43" />
+			<Agent p_x="26" p_y="43" />
+			<Agent p_x="27" p_y="43" />
+			<Agent p_x="28" p_y="43" />
+			<Agent p_x="16" p_y="44" />
+			<Agent p_x="17" p_y="44" />
+			<Agent p_x="18" p_y="44" />
+			<Agent p_x="19" p_y="44" />
+			<Agent p_x="20" p_y="44" />
+			<Agent p_x="21" p_y="44" />			
+			<Agent p_x="22" p_y="44" />			
+			<Agent p_x="23" p_y="44" />
+			<Agent p_x="24" p_y="44" />
+			<Agent p_x="25" p_y="44" />
+			<Agent p_x="26" p_y="44" />
+			<Agent p_x="27" p_y="44" />
+			<Agent p_x="28" p_y="44" />
+			<Agent p_x="16" p_y="45" />
+			<Agent p_x="17" p_y="45" />
+			<Agent p_x="18" p_y="45" />
+			<Agent p_x="19" p_y="45" />
+			<Agent p_x="20" p_y="45" />
+			<Agent p_x="21" p_y="45" />			
+			<Agent p_x="22" p_y="45" />			
+			<Agent p_x="23" p_y="45" />
+			<Agent p_x="24" p_y="45" />
+			<Agent p_x="25" p_y="45" />
+			<Agent p_x="26" p_y="45" />
+			<Agent p_x="27" p_y="45" />
+			<Agent p_x="28" p_y="45" />
+			<Agent p_x="16" p_y="46" />
+			<Agent p_x="17" p_y="46" />
+			<Agent p_x="18" p_y="46" />
+			<Agent p_x="19" p_y="46" />
+			<Agent p_x="20" p_y="46" />
+			<Agent p_x="21" p_y="46" />			
+			<Agent p_x="22" p_y="46" />			
+			<Agent p_x="23" p_y="46" />
+			<Agent p_x="24" p_y="46" />
+			<Agent p_x="25" p_y="46" />
+			<Agent p_x="26" p_y="46" />
+			<Agent p_x="27" p_y="46" />
+			<Agent p_x="28" p_y="46" />
+		</Generator>
+        </AgentGroup>
+
+    <ObstacleSet type="explicit" class="1">
+	<Obstacle closed="1">  
+	<Vertex p_x="0" p_y="0" />
+	<Vertex p_x="48" p_y="0" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="48" p_y="0" />
+	<Vertex p_x="48" p_y="36" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="48" p_y="36" />
+	<Vertex p_x="0" p_y="36" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="0" p_y="36" />
+	<Vertex p_x="0" p_y="0" />
+	</Obstacle>
+
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12" p_y="8" />
+	<Vertex p_x="12" p_y="16" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="8" p_y="12" />
+	<Vertex p_x="16" p_y="12" />
+	</Obstacle>
+
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="24" p_y="8" />
+	<Vertex p_x="24" p_y="16" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="20" p_y="12" />
+	<Vertex p_x="28" p_y="12" />
+	</Obstacle>
+
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="36" p_y="8" />
+	<Vertex p_x="36" p_y="16" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="32" p_y="12" />
+	<Vertex p_x="40" p_y="12" />
+	</Obstacle>
+
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="12" p_y="20" />
+	<Vertex p_x="12" p_y="28" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="8" p_y="24" />
+	<Vertex p_x="16" p_y="24" />
+	</Obstacle>
+
+
+
+	<Obstacle closed="1">  
+	<Vertex p_x="24" p_y="20" />
+	<Vertex p_x="24" p_y="28" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="20" p_y="24" />
+	<Vertex p_x="28" p_y="24" />
+	</Obstacle>
+
+
+	
+	<Obstacle closed="1">  
+	<Vertex p_x="36" p_y="20" />
+	<Vertex p_x="36" p_y="28" />
+	</Obstacle>
+	<Obstacle closed="1">  
+	<Vertex p_x="32" p_y="24" />
+	<Vertex p_x="40" p_y="24" />
+	</Obstacle>
+
+	
+</ObstacleSet>
+
+
+
+
+</Experiment>

@@ -1,0 +1,8 @@
+<launch>
+<node pkg="menge_sim" type="menge_sim" name="menge_sim" output="screen">
+	<param name="menge_world" value="src/examples/core/openOffice.xml"/>
+</node>
+<node pkg="semaforr" type="semaforr_controller" name="semaforr_controller" output="screen">
+	<param name="semaforr_package_path" value="/home/anooparoor/catkin_ws/src/semaforr"/>
+</node>
+</launch>
