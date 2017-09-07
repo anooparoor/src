@@ -160,6 +160,64 @@ class Tier3ExitFinderRotation : public Tier3Advisor{
   virtual void set_commenting();
 };
 
+class Tier3ExitFinderFieldLinear : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderfield advisor
+  Tier3ExitFinderFieldLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderFieldLinear();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderFieldLinear() {};
+  // TierExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3ExitFinderFieldRotation : public Tier3Advisor{
+  public:
+  // this is constructor for exitfinderfield advisor
+  Tier3ExitFinderFieldRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3ExitFinderFieldRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3ExitFinderFieldRotation() {};
+  // Tier3ExitFinderField should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+class Tier3RegionLeaverLinear : public Tier3Advisor{
+  public:
+  // this is constructor for RegionLeaver advisor
+  Tier3RegionLeaverLinear (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3RegionLeaverLinear();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3RegionLeaverLinear() {};
+  // TierRegionLeaver should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
+
+class Tier3RegionLeaverRotation : public Tier3Advisor{
+  public:
+  // this is constructor for RegionLeaver advisor
+  Tier3RegionLeaverRotation (Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true); 
+  // Here is dummy default constructor
+  Tier3RegionLeaverRotation();
+  // Destructor have to be declared for non-virtual classes, virtual; reasons stated in the parent class
+  virtual ~Tier3RegionLeaverRotation() {};
+  // Tier3RegionLeaver should inherit constructor of the Tier3Advisor class, nothing more is needed
+  // only difference is implementation of action comment function
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+};
+
 class Tier3RegionFinderLinear : public Tier3Advisor{
   public:
   // this is constructor for regionfinder advisor
@@ -471,10 +529,100 @@ class Tier3TrailFinderRotation : public Tier3Advisor{
 };
 
 
+class Tier3EnterDoorLinear : public Tier3Advisor{
+ public: 
+  Tier3EnterDoorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3EnterDoorLinear();
+  
+  virtual ~Tier3EnterDoorLinear(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
 
 
+class Tier3EnterDoorRotation : public Tier3Advisor{
+ public: 
+  Tier3EnterDoorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3EnterDoorRotation();
+  
+  virtual ~Tier3EnterDoorRotation(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
 
 
+class Tier3ExitDoorLinear : public Tier3Advisor{
+ public: 
+  Tier3ExitDoorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3ExitDoorLinear();
+  
+  virtual ~Tier3ExitDoorLinear(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3ExitDoorRotation : public Tier3Advisor{
+ public: 
+  Tier3ExitDoorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3ExitDoorRotation();
+  
+  virtual ~Tier3ExitDoorRotation(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3DoorAttractorLinear : public Tier3Advisor{
+ public: 
+  Tier3DoorAttractorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3DoorAttractorLinear();
+  
+  virtual ~Tier3DoorAttractorLinear(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3DoorAttractorRotation : public Tier3Advisor{
+ public: 
+  Tier3DoorAttractorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3DoorAttractorRotation();
+  
+  virtual ~Tier3DoorAttractorRotation(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3NeighborDoorLinear : public Tier3Advisor{
+ public: 
+  Tier3NeighborDoorLinear(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3NeighborDoorLinear();
+  
+  virtual ~Tier3NeighborDoorLinear(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
+
+
+class Tier3NeighborDoorRotation : public Tier3Advisor{
+ public: 
+  Tier3NeighborDoorRotation(Beliefs *beliefs, string name, string description, double weight, double *magic_init, bool is_active = true);
+  Tier3NeighborDoorRotation();
+  
+  virtual ~Tier3NeighborDoorRotation(){};
+  virtual double actionComment(FORRAction action);
+  virtual void set_commenting();
+
+};
 
 
 #endif

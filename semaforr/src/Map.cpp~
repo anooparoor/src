@@ -30,12 +30,17 @@ void Map::addWall(double x1, double y1, double x2, double y2){
 
 
 bool Map::isPathObstructed(double x0, double y0, double x1, double y1 ){
+<<<<<<< HEAD
+  //compute line 1 slope and intercept
+  double m = (y0 - y1)/(x0 - x1);
+=======
   // temporary fix to avoid slope being infinity, need to find a fix
   double dx = x0 - x1;
   if(dx == 0) dx = 0.0001;
   
   //compute line 1 slope and intercept
   double m = (y0 - y1)/dx;
+>>>>>>> 4950ba15e95a25626ade4422e2dc7195c7915195
   double c = y1 - (x1 * m);
   vector<Wall>::iterator iter; 
   // for every wall in the map
@@ -54,12 +59,21 @@ bool Map::isPathObstructed(double x0, double y0, double x1, double y1 ){
 	}
     	
     	//compute wall slope and intercept
+<<<<<<< HEAD
+	double mw = (wy0 - wy1)/(wx0 - wx1); 
+	double cw = wy1 - (wx1 * m);
+ 
+	// if slope of given line and wall are equal
+	if(m == mw){
+		// check y-intercept
+=======
 	double mw = (wy0 - wy1)/(wx0 - wx1);
 	double cw = wy1 - (wx1 * mw);
  
 	//if slope of given line and wall are equal
 	if(m == mw){
 		//check y-intercept
+>>>>>>> 4950ba15e95a25626ade4422e2dc7195c7915195
 		int diff = c - cw;
 		if(abs(diff) < bufferSize){
 			return true;

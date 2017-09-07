@@ -4,11 +4,16 @@ int64 height
 int64 width
 int64 resolution
 float64[] densities
+<<<<<<< HEAD
+float64[] flows
+
+=======
 float64[] up
 float64[] down
 float64[] left
 float64[] right
-float64[] up-left
-float64[] up-right
-float64[] down-left
-float64[] down-right
+float64[] up_left
+float64[] up_right
+float64[] down_left
+float64[] down_right
+>>>>>>> 4950ba15e95a25626ade4422e2dc7195c7915195

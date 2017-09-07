@@ -94,7 +94,7 @@ void Controller::initialize_planner(string filename){
 	double bufferSize = 100;//1 meters
 	double proximity = 100;//1 meters
 	Map *map = new Map(length, height, bufferSize);
-	string address = "/home/anooparoor/catkin_ws/src/examples/core/openOffice/flow/openOfficeFlowS.xml";
+	string address = "/home/anooparoor/catkin_ws/src/examples/core/openOffice/openOfficeS.xml";
 	map->readMapFromXML(address);
 	cout << "Finished reading map"<< endl;
 	
@@ -147,7 +147,8 @@ Controller::Controller(string advisor_config, string task_config, string action_
             // Initialize the agent's 'beliefs' of the world state with the map and nav
             // graph and spatial models
             //beliefs = new Beliefs(120,120,2);
-            beliefs = new Beliefs(49,37,2);
+            beliefs = new Beliefs(90,60,2); // Hunter Fourth
+            //beliefs = new Beliefs(32,28,2); // Map A
 
             // Initialize advisors and weights from config file
             initialize_advisors(advisor_config);
@@ -159,12 +160,12 @@ Controller::Controller(string advisor_config, string task_config, string action_
 	    //initialize_actions(action_config);
 
 	    // Initialize planner
-	    initialize_planner(planner_config);
+	    //initialize_planner(planner_config);
 
 	    // Initialize current task, and robot initial position
 	    Position initialPosition(10,20,0);
 	    beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-	    beliefs->getAgentState()->getCurrentTask()->generateWaypoints(initialPosition, planner);
+	    //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(initialPosition, planner);
 	    tier1 = new Tier1Advisor(beliefs);
 }
 
@@ -172,7 +173,7 @@ Controller::Controller(string advisor_config, string task_config, string action_
 // Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
 void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
         beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
-	bool waypointReached = beliefs->getAgentState()->getCurrentTask()->isWaypointComplete(current);
+	//bool waypointReached = beliefs->getAgentState()->getCurrentTask()->isWaypointComplete(current);
 	bool taskCompleted = beliefs->getAgentState()->getCurrentTask()->isTaskComplete(current);
 
 	if(taskCompleted == true){
@@ -183,20 +184,21 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
 	    	beliefs->getAgentState()->finishTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-			beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
+			//beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
 		}
 	} 
-	else if(waypointReached == true){
+	/*else if(waypointReached == true){
 		ROS_DEBUG("Waypoint reached, but task still incomplete, switching to next waypoint!!");
 		beliefs->getAgentState()->getCurrentTask()->setupNextWaypoint();
-	}  
+	}  */
 	//********************* Task Decision limit reached, skip task ********************
 	else if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > 500){
 		ROS_DEBUG("Controller.cpp decisionCount > 500 , skipping task");
+		//learnSpatialModel(beliefs->getAgentState());
 	    	beliefs->getAgentState()->skipTask();
 		if(beliefs->getAgentState()->getAgenda().size() > 0){
 			beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-			beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
+			//beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
 		}
   	}
 }
@@ -228,11 +230,10 @@ void Controller::learnSpatialModel(AgentState* agentState){
  vector<Position> *pos_hist = completedTask->getPositionHistory();
  vector< vector<CartesianPoint> > *laser_hist = completedTask->getLaserHistory();
  vector< vector<CartesianPoint> > all_trace = beliefs->getAgentState()->getAllTrace();
- vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
  bool trails = true;
  bool conveyors = true;
- bool regions = false;
- bool doors = false;
+ bool regions = true;
+ bool doors = true;
  
   if(trails){
     	beliefs->getSpatialModel()->getTrails()->updateTrails(agentState);
@@ -241,6 +242,7 @@ void Controller::learnSpatialModel(AgentState* agentState){
   if(conveyors){
 	beliefs->getSpatialModel()->getWaypoints()->populateGridFromPositionHistory(pos_hist);
   }
+ vector< vector<CartesianPoint> > trails_trace = beliefs->getSpatialModel()->getTrails()->getTrailsPoints();
   if(regions){
 	beliefs->getSpatialModel()->getAbstractMap()->learnRegions(pos_hist, laser_hist);
 	beliefs->getSpatialModel()->getAbstractMap()->clearAllExits();
