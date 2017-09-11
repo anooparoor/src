@@ -124,7 +124,7 @@ bool Tier1Advisor::advisorVictory(FORRAction *decision) {
       ROS_DEBUG("Target in sight , victory advisor active");
       (*decision) = beliefs->getAgentState()->moveTowards();
       FORRAction forward = beliefs->getAgentState()->maxForwardAction();
-      if(forward.parameter >= decision->parameter){
+      if(forward.parameter >= decision->parameter and decision->parameter != 0){
 	ROS_DEBUG("Target in sight and no obstacles , victory advisor to take decision");
       	decisionMade = true;
       }
