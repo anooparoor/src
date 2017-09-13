@@ -3,9 +3,9 @@
 <Project 
 	scene="openOffice/appear/openOfficeS.xml" 
 	behavior="openOffice/appear/openOfficeB.xml" 
-	view="openOffice/appear/openOfficeV.xml"
 	model="pedvo"
 	dumpPath="images/test"
+	view="openOffice/random/openOfficeV.xml"
 />
 
 <!---view="openOffice/random/openOfficeV.xml"---> 

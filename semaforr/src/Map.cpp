@@ -17,6 +17,14 @@ Map::Map(double length, double height, double size) {
   this->length = length;
   this->height = height;
   this->bufferSize = size;
+  factor = 30;
+  for(int j = 0 ; j <= length/factor; j++){
+	vector<bool> column;
+  	for(int i = 0 ; i <= height/factor; i++){
+		column.push_back(false);
+  	}
+	occupancyGrid.push_back(column);
+  }
 }
 
 void Map::addWall(double x1, double y1, double x2, double y2){
@@ -26,9 +34,21 @@ void Map::addWall(double x1, double y1, double x2, double y2){
   wall.y1 = y1;
   wall.y2 = y2;
   walls.push_back(wall);
+  double distance = Map::distance(x1,y1,x2,y2);
+  double stepSize = 5; //cms
+  cout << "Wall : " << x1 << " " << y1 << " " << x2 << " " << y2 << " " << endl;
+  for(int step = 0; step <= distance; step += stepSize ){
+	double t = step/distance;
+  	double xtest = (x1 * t) + ((1-t)*x2);
+  	double ytest = (y1 * t) + ((1-t)*y2);
+	int gridx = ((int)xtest) / factor;
+	int gridy = ((int)ytest) / factor;
+	//cout << "Test : " << xtest << " " << ytest << " " << gridx << " " << gridy << " " << endl;
+	occupancyGrid[gridx][gridy] = true;
+  }
 }
 
-
+/*
 bool Map::isPathObstructed(double x0, double y0, double x1, double y1 ){
   // temporary fix to avoid slope being infinity, need to find a fix
   double dx = x0 - x1;
@@ -81,7 +101,7 @@ bool Map::isPathObstructed(double x0, double y0, double x1, double y1 ){
   // if none of the walls intersect , return false
   return false;
 }
-
+*/
 
 
 //read xml file and add walls in cms
@@ -116,12 +136,12 @@ bool Map::readMapFromXML(string filename){
 		double x2 = atof(vertexNode->Attribute("p_x")) * 100;
 		double y2 = atof(vertexNode->Attribute("p_y")) * 100;
 		addWall(x1,y1,x2,y2);
-		cout << "Adding wall ("<< x1 <<"," << y1<<")->("<<x2 <<"," << y2<<")"<<endl;		
+		//cout << "Adding wall ("<< x1 <<"," << y1<<")->("<<x2 <<"," << y2<<")"<<endl;		
 	}
 }
 
 bool Map::isWithinBorders(double x, double y){
-  if ( x > 0 && x < length && y > 0 && y < height ) 
+  if ( x >= 0 && x < length && y >= 0 && y < height ) 
     return true;
   return false; 
 }
@@ -131,13 +151,40 @@ bool Map::isWithinBorders(double x, double y){
   \brief This function returns true if a point is within a Wall buffer, meaning too close to a wall.
 */
 bool Map::isPointInBuffer(double x, double y){ 
-  for(int i = 0; i < walls.size(); i++){
-    if(distanceFromWall(x,y,i) < bufferSize){
-	return true;
-    } 
-  }
+  //cout << "is point in buffer " << x << " " << y << endl;
+  int gridx = ((int)x)/factor;
+  int gridy = ((int)y)/factor;
+  return occupancyGrid[gridx][gridy];
+  /*for(int i = gridx - 1; i <= gridx + 1; i++){
+	for(int j = gridy - 1; j <= gridx + 1; j++){
+		if(i >= 0 and j >= 0 and i <= height/10 and j <= length/10){
+			if(occupancyGrid[i][j] == true){
+				return true;		
+			}
+		}
+	}
+  }   
   return false;
+  */
 }
+
+bool Map::isPathObstructed(double x0, double y0, double x1, double y1 ){
+      //cout << "In path obstructed " << x0 << " " << y0 << "-" << x1 << " " << y1 << endl;
+      double stepSize = 5; //cms
+      double distance = Map::distance(x0,y0,x1,y1);
+      if(Map::isPointInBuffer(x0,y0)) return true;
+      if(Map::isPointInBuffer(x1,y1)) return true;
+      for(int step = 0; step <= distance; step += stepSize ){
+	double t = step/distance;
+  	double xtest = (x0 * t) + ((1-t)*x1);
+  	double ytest = (y0 * t) + ((1-t)*y1);
+	if(Map::isPointInBuffer(xtest,ytest) == true){
+		return true;
+	}
+      }
+      return false;
+}
+
 
 
 bool Map::isAccessible(double x, double y){

@@ -1,53 +1,45 @@
 <?xml version="1.0"?>
 
 <BFSM>
+
 	<GoalSet id="0">
-		<Goal type="point" id="0" x="10" y="5"/>
-		<Goal type="point" id="1" x="14" y="5"/>
-		<Goal type="point" id="2" x="14" y="8"/>
-		<Goal type="point" id="3" x="14" y="3"/>
+		<Goal type="AABB" id="0" min_x="2" max_x="4"  min_y="2" max_y="4" weight="1.0"/>
 	</GoalSet>
+
+	<GoalSet id="1">
+		<Goal type="AABB" id="2" min_x="8" max_x="10"  min_y="8" max_y="10" weight="1.0"/>
+	</GoalSet>
+
+	<GoalSet id="2">
+		<Goal type="AABB" id="2" min_x="8" max_x="10"  min_y="20" max_y="25" weight="1.0"/>
+	</GoalSet>
+
+	<State name="one" final="0" >
+		<GoalSelector type="weighted" goal_set="0"/>
+	        <VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="two" final="0" > 
+		<GoalSelector type="weighted" goal_set="1"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="three" final="0" >
+		<GoalSelector type="weighted" goal_set="2"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
 	
-	<!-- Sub-component for agent that grows -->
-	<State name="robotState" final="0" >
-		<GoalSelector type="explicit" goal_set="0" goal="0" />
-		<VelComponent type="goal" />
-	</State>
-
-	<State name="room0" final="0">
-		<GoalSelector type="explicit" goal_set="0" goal="0" />
-		<VelComponent type="goal" />
-	</State>
-
-	<State name="room1" final="0">
-		<GoalSelector type="explicit" goal_set="0" goal="1" />
-		<VelComponent type="goal" />
-	</State>
-
-	<State name="room2" final="0">
-		<GoalSelector type="explicit" goal_set="0" goal="2" />
-		<VelComponent type="goal" />
-	</State>
-
-	<State name="room3" final="0">
-		<GoalSelector type="explicit" goal_set="0" goal="3" />
-		<VelComponent type="goal" />
-	</State>
-
-	<Transition from="room0" to="room1" >
-		<Condition type="goal_reached"  distance="0.2"/>
+	<Transition from="one" to="two" >
+		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 
-	<Transition from="room1" to="room2" >
-		<Condition type="goal_reached"  distance="0.2"/>
+	<Transition from="two" to="three" >
+		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 
-	<Transition from="room2" to="room3" >
-		<Condition type="goal_reached"  distance="0.2"/>
+	<Transition from="three" to="one" >
+		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 
-	<Transition from="room3" to="room0" >
-		<Condition type="goal_reached"  distance="0.2"/>
-	</Transition>
 
 </BFSM>

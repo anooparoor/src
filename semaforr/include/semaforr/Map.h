@@ -51,6 +51,8 @@ public:
   
 protected:
   vector<Wall> walls;
+  vector< vector <bool> > occupancyGrid;
+  int factor;
   
   double length;
   double height;  

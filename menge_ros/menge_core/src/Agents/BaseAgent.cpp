@@ -49,6 +49,7 @@ namespace Menge {
 
 		BaseAgent::BaseAgent() {
 			_maxSpeed = 2.5f;
+			_robotAttraction = 0.0f;
 			_maxAccel = 2.f;
 			_prefSpeed = 1.34f;
 			_isExternal = false;

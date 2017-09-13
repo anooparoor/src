@@ -99,6 +99,8 @@ private:
   bool conveyorsOn;
   bool regionsOn;
   bool doorsOn;
+  bool aStarOn;
+  bool firstTaskAssigned;
 };
   
 #endif /* CONTROLLER_H */

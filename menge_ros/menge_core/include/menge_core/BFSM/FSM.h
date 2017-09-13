@@ -452,7 +452,7 @@ namespace Menge {
 			ros::Publisher _pub_scan;
 			ros::Publisher _pub_endpoints;
 			Agents::PrefVelocity prefVelMsg;
-
+			std::vector< size_t > _robotIDList;
 		};
 
 		/////////////////////////////////////////////////////////////////////

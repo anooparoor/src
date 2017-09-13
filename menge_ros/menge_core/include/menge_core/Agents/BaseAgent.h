@@ -309,6 +309,17 @@ namespace Menge {
 			 *	At a minimum, it is used to determine sideways clearance.
 			 */
 			float _radius;
+			/*!
+			 *	@brief		The agent's affinity to robots in the environment.  
+			 *
+			 *	If the agent is represented as a circle, then this is simply 
+			 *	the circle's radius.  If the agent is represented as an ellipse, 
+			 *	then this is the radius perpendicular to the orientation.
+			 *	Other geometries should provide their own interpretation.
+			 *
+			 *	At a minimum, it is used to determine sideways clearance.
+			 */
+			float _robotAttraction;
 
 			/*!
 			 *	@brief  a set of velocity modifiers to be set with the agent. Allows for intermediate velocity changes

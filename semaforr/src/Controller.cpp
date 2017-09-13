@@ -221,6 +221,14 @@ void Controller::initialize_params(string filename){
       doorsOn = atof(vstrings[1].c_str());
       ROS_DEBUG_STREAM("doorsOn " << doorsOn);
     }
+    else if (fileLine.find("aStarOn") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      aStarOn = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("aStarOn " << aStarOn);
+    }
     else if (fileLine.find("move") != std::string::npos) {
       std::stringstream ss(fileLine);
       std::istream_iterator<std::string> begin(ss);
@@ -264,20 +272,22 @@ void Controller::initialize_params(string filename){
 void Controller::initialize_planner(string filename){
 	//Initialize map in cms 
 	// Need to move them to a config file
-	double length = 4800;//48 meters
-	double height = 3600;//36 meters
-	double bufferSize = 100;//1 meters
+	double l = width*100;//in cms
+	double h = height*100;//in cms
+	double bufferSize = 50;//1 meters
 	double proximity = 100;//1 meters
-	Map *map = new Map(length, height, bufferSize);
-	string address = "/home/anooparoor/catkin_ws/src/examples/core/openOffice/openOfficeS.xml";
+	cout << l << h << endl;
+	Map *map = new Map(l, h, bufferSize);
+	string address = "/home/anooparoor/catkin_ws/src/examples/core/moma-4/moma-4S.xml";
 	map->readMapFromXML(address);
 	cout << "Finished reading map"<< endl;
 	
 	Graph *navGraph = new Graph(map, proximity);
 	cout << "initialized nav graph" << endl;
 	navGraph->printGraph();
+	navGraph->outputGraph();
 	Node n;
-  planner = new PathPlanner(navGraph, *map, n,n);
+        planner = new PathPlanner(navGraph, *map, n,n);
 	cout << "initialized planner" << endl;
 }
 
@@ -335,23 +345,29 @@ Controller::Controller(string advisor_config, string task_config, string params_
   initialize_tasks(task_config);
 
   // Initialize planner
-  //initialize_planner(planner_config);
+  initialize_planner(planner_config);
 
   // Initialize current task, and robot initial position
   // Position initialPosition(initialX, initialY, initialTheta);
   beliefs->getAgentState()->setAgentStateParameters(canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle);
-  beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-  //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(initialPosition, planner);
   tier1 = new Tier1Advisor(beliefs);
+  firstTaskAssigned = false;
 }
 
 
 // Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
 void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
+  cout << "inupdate state" << endl;
   beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
-  //bool waypointReached = beliefs->getAgentState()->getCurrentTask()->isWaypointComplete(current);
+  if(firstTaskAssigned == false){
+      cout << "Set first task" << endl;
+      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
+      firstTaskAssigned = true;
+  }
+  bool waypointReached = beliefs->getAgentState()->getCurrentTask()->isWaypointComplete(current);
   bool taskCompleted = beliefs->getAgentState()->getCurrentTask()->isTaskComplete(current);
 
+  //if task is complete
   if(taskCompleted == true){
     ROS_DEBUG("Target Achieved, moving on to next target!!");
     //Learn spatial model only on tasks completed successfully
@@ -359,23 +375,23 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
     //Clear existing task and associated plans
     beliefs->getAgentState()->finishTask();
     if(beliefs->getAgentState()->getAgenda().size() > 0){
-      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-      //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
+      //Tasks the next task , current position and a planner and generates a sequence of waypoints if astaron is true
+      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
     }
   } 
-  /*else if(waypointReached == true){
+  // else if subtask is complete
+  else if(waypointReached == true and aStarOn){
     ROS_DEBUG("Waypoint reached, but task still incomplete, switching to next waypoint!!");
     beliefs->getAgentState()->getCurrentTask()->setupNextWaypoint();
-  }  */
-  //********************* Task Decision limit reached, skip task ********************
+  } 
+  // otherwise if task Decision limit reached, skip task 
   else if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > taskDecisionLimit){
     ROS_DEBUG_STREAM("Controller.cpp decisionCount > " << taskDecisionLimit << " , skipping task");
     //learnSpatialModel(beliefs->getAgentState());
     //beliefs->getAgentState()->skipTask();
     beliefs->getAgentState()->finishTask();
     if(beliefs->getAgentState()->getAgenda().size() > 0){
-      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-      //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
+      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
     }
   }
 }

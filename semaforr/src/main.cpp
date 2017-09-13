@@ -50,7 +50,7 @@ private:
 	// Controller
 	Controller *controller;
 	// Pos received
-	bool init_pos_received;
+	bool init_pos_received, init_laser_received;
 	// Visualization 
 	Visualizer *viz_;
 public:
@@ -66,6 +66,7 @@ public:
 		//declare and create a controller with task, action and advisor configuration
 		controller = con;
 		init_pos_received = false;
+ 		init_laser_received = false;
 		current.setX(0);current.setY(0);current.setTheta(0);
 		previous.setX(0);previous.setY(0);previous.setTheta(0);
 		viz_ = new Visualizer(&nh_, con);
@@ -102,6 +103,7 @@ public:
 	void updateLaserScan(const sensor_msgs::LaserScan & scan){ 
 		//ROS_DEBUG("Inside callback for base_scan message");
 		laserscan = scan; 
+		init_laser_received = true;
 		//ROS_INFO_STREAM("Recieved base_scan message from menge ");
 	}
  
@@ -132,8 +134,8 @@ public:
 		// Run the loop , the input sensing and the output beaming is asynchrounous
 		while(nh_.ok()) {
 			// If pos value is not received from menge wait
-			while(init_pos_received == false){
-				ROS_DEBUG("Waiting for first message");
+			while(init_pos_received == false or init_laser_received == false){
+				ROS_DEBUG("Waiting for first message or laser");
 				//wait for some time
 				rate.sleep();
 				// Sense input 

@@ -101,8 +101,11 @@ public:
   }
   
   Task *getCurrentTask() { return currentTask; }
-  void setCurrentTask(Task *task) { 
+  void setCurrentTask(Task *task, Position current, PathPlanner *planner, bool aStarOn) { 
     currentTask = task; 
+    if(aStarOn){
+    	currentTask->generateWaypoints(current, planner);
+    } 
   }
 
 

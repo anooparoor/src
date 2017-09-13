@@ -137,6 +137,7 @@ namespace Menge {
 				graph->destroy();
 				return false;
 			}
+			//std::cout << from << " " << to << " " << vertNbr[from] << std::endl;
 			edge.setDistance( graph->_vertices[ from ].getDistance( graph->_vertices[ to ] ) );
 			edge.setNeighbor( &graph->_vertices[ to ] );
 			if (!graph->_vertices[from].setEdge(edge, vertNbr[from])) {
