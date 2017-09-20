@@ -16,7 +16,8 @@ Map::Map(){}
 Map::Map(double length, double height) {
   this->length = length;
   this->height = height;
-  factor = 30;
+  cout << length  << " " << height << " " << length/50 << " " << height/50 << endl;  
+  factor = 50;
   for(int j = 0 ; j <= length/factor; j++){
 	vector<bool> column;
   	for(int i = 0 ; i <= height/factor; i++){
@@ -40,14 +41,14 @@ void Map::addWall(double x1, double y1, double x2, double y2){
 	double t = step/distance;
   	double xtest = (x1 * t) + ((1-t)*x2);
   	double ytest = (y1 * t) + ((1-t)*y2);
-	int gridx = ((int)xtest) / factor;
-	int gridy = ((int)ytest) / factor;
+	int gridx = (int)(xtest / factor);
+	int gridy = (int)(ytest / factor);
 	if(gridx >= 0 && gridy >= 0 && gridx <= length/factor && gridy <= height/factor){
-	//cout << "Test : " << xtest << " " << ytest << " " << gridx << " " << gridy << " " << endl;
+		//cout << "Test : " << xtest << " " << ytest << " " << gridx << " " << gridy << " " << endl;
 		occupancyGrid[gridx][gridy] = true;
 	}
   }
-  occupancyGrid[((int)x2)/factor][((int)y2)/factor] = true;
+  occupancyGrid[(int)(x2/factor)][(int)(y2/factor)] = true;
 }
 
 
@@ -99,8 +100,8 @@ bool Map::isWithinBorders(double x, double y){
 */
 bool Map::isPointInBuffer(double x, double y){ 
   //cout << "is point in buffer " << x << " " << y << endl;
-  int gridx = ((int)x)/factor;
-  int gridy = ((int)y)/factor;
+  int gridx = (int)(x/factor);
+  int gridy = (int)(y/factor);
   return occupancyGrid[gridx][gridy];
   /*for(int i = gridx - 1; i <= gridx + 1; i++){
 	for(int j = gridy - 1; j <= gridx + 1; j++){

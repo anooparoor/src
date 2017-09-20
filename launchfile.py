@@ -18,7 +18,7 @@ def experiment():
     #menge files for semaforr
     map_config = map_folder+"/"+map_name+"S.xml"
     map_dimensions = map_folder+"/dimensions.conf"
-    target_set = map_folder+"/target_small.conf"
+    target_set = map_folder+"/reachable_targets.conf"
     log_name = map_name + ".txt"
 
     print target_set
@@ -67,33 +67,7 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-map_name = "hunter-2"
-experiment()
-map_name = "hunter-3"
-experiment()
-map_name = "hunter-4"
-experiment()
-map_name = "hunter-6"
-experiment()
-map_name = "hunter-7"
-experiment()
-map_name = "hunter-8"
-experiment()
-map_name = "hunter-9"
-experiment()
-map_name = "hunter-10"
-experiment()
-map_name = "hunter-11"
-experiment()
-map_name = "hunter-12"
-experiment()
-map_name = "hunter-13"
-experiment()
-map_name = "hunter-14"
-experiment()
-map_name = "hunter-15"
-experiment()
-map_name = "hunter-16"
+map_name = "moma-4"
 experiment()
 
 

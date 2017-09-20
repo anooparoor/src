@@ -150,7 +150,7 @@ class Task {
    bool isWaypointComplete(Position currentPosition){
 	bool status = false;
 	double dis = currentPosition.getDistance(wx, wy);
-	if (isPlanActive && (dis < 1)){
+	if (isPlanActive && (dis < 2)){
 		status = true;
 	}
 	return status;
