@@ -67,7 +67,8 @@ public:
     nodes2_pub_ = nh_->advertise<visualization_msgs::Marker>("nodes2", 1);
     edges_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("edges", 1);
     edges_cost_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("edges_cost", 1);
-    trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
+    //trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
+    trails_pub_ = nh_->advertise<visualization_msgs::Marker>("trail", 1);
     stats_pub_ = nh_->advertise<std_msgs::String>("decision_log", 1);
     doors_pub_ = nh_->advertise<visualization_msgs::Marker>("door", 1);
     walls_pub_ = nh_->advertise<visualization_msgs::Marker>("walls", 1);
@@ -396,9 +397,9 @@ public:
 	//Goal here is to publish all trails
 	
 	FORRTrails *trails = beliefs->getSpatialModel()->getTrails();
-	nav_msgs::Path path;
+	/*nav_msgs::Path path;
 	path.header.frame_id = "map";
-    	path.header.stamp = ros::Time::now();
+	path.header.stamp = ros::Time::now();
 
 	for(int i = 0; i < trails->getSize(); i++){
 		vector<TrailMarker> trail = trails->getTrail(i);
@@ -413,8 +414,38 @@ public:
 			poseStamped.pose.position.y = y;
 			path.poses.push_back(poseStamped);
 		}
+	}*/
+
+	visualization_msgs::Marker line_list;	
+	line_list.header.frame_id = "map";
+	line_list.header.stamp = ros::Time::now();
+	line_list.ns = "basic_shapes";
+	line_list.action = visualization_msgs::Marker::ADD;
+	line_list.id = 1;
+	line_list.type = visualization_msgs::Marker::LINE_LIST;
+	line_list.pose.orientation.w = 1.0;
+	line_list.scale.x = 0.1;
+	line_list.color.r = 1.0;
+	line_list.color.a = 1.0;
+
+	for(int i = 0 ; i < trails->getSize(); i++){
+		vector<TrailMarker> trail = trails->getTrail(i);
+		for(int j = 0; j < trail.size()-1; j++){
+			geometry_msgs::Point p1, p2;
+			p1.x = trail[j].coordinates.get_x();
+			p1.y = trail[j].coordinates.get_y();
+			p1.z = 0;
+
+			p2.x = trail[j+1].coordinates.get_x();
+			p2.y = trail[j+1].coordinates.get_y();
+			p2.z = 0;
+		
+			line_list.points.push_back(p1);
+			line_list.points.push_back(p2);
+		}
 	}
-	trails_pub_.publish(path);
+	trails_pub_.publish(line_list);
+
   }
 
   void publish_doors(){
@@ -424,10 +455,10 @@ public:
 	cout << "There are currently " << doors.size() << " regions" << endl;
 	visualization_msgs::Marker line_list;	
 	line_list.header.frame_id = "map";
-    	line_list.header.stamp = ros::Time::now();
+	line_list.header.stamp = ros::Time::now();
 	line_list.ns = "basic_shapes";
 	line_list.action = visualization_msgs::Marker::ADD;
-    	line_list.id = 1;
+	line_list.id = 1;
 	line_list.type = visualization_msgs::Marker::LINE_LIST;
 	line_list.pose.orientation.w = 1.0;
 	line_list.scale.x = 0.3;

@@ -117,9 +117,9 @@ bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, Cartesi
   double epsilon = canSeePointEpsilon;
   ROS_DEBUG_STREAM("Number of laser endpoints " << givenLaserEndpoints.size()); 
   bool canSeePoint = false;
+  double ab = laserPos.get_distance(point);
   for(int i = 0; i < givenLaserEndpoints.size(); i++){
     //ROS_DEBUG_STREAM("Laser endpoint : " << givenLaserEndpoints[i].get_x() << "," << givenLaserEndpoints[i].get_y());
-    double ab = laserPos.get_distance(point);
     double ac = laserPos.get_distance(givenLaserEndpoints[i]);
     double bc = givenLaserEndpoints[i].get_distance(point);
     if(((ab + bc) - ac) < epsilon){
@@ -133,6 +133,42 @@ bool AgentState::canSeePoint(vector<CartesianPoint> givenLaserEndpoints, Cartesi
   return canSeePoint;
 }
 
+//returns true if there is a point that is "visible" by the wall distance vectors.  
+//A point is visible if the distance to the nearest wall distance vector lines is > distance to the point.
+bool AgentState::canAccessPoint(vector<CartesianPoint> givenLaserEndpoints, CartesianPoint laserPos, CartesianPoint point){
+  ROS_DEBUG_STREAM("AgentState:canAccessPoint() , robot pos " << laserPos.get_x() << "," << laserPos.get_y() << " target " << point.get_x() << "," << point.get_y()); 
+  ROS_DEBUG_STREAM("Number of laser endpoints " << givenLaserEndpoints.size()); 
+  bool canSeePoint = false;
+  double distLaserPosToPoint = laserPos.get_distance(point);
+  double point_direction = atan2((point.get_y() - laserPos.get_y()), (point.get_x() - laserPos.get_x()));
+  int index = 0;
+  double min_angle = 100000;
+
+  for(int i = 0; i < givenLaserEndpoints.size(); i++){
+    //ROS_DEBUG_STREAM("Laser endpoint : " << givenLaserEndpoints[i].get_x() << "," << givenLaserEndpoints[i].get_y());
+    double laser_direction = atan2((givenLaserEndpoints[i].get_y() - laserPos.get_y()), (givenLaserEndpoints[i].get_x() - laserPos.get_x()));
+    if(abs(laser_direction - point_direction) < min_angle){
+      //ROS_DEBUG_STREAM("Laser Direction : " << laser_direction << ", Point Direction : " << point_direction);
+      min_angle = abs(laser_direction - point_direction);
+      index = i;
+    }
+  }
+  //ROS_DEBUG_STREAM("Min angle : " << min_angle << ", " << index);
+  int numFree = 0;
+  for(int i = -2; i < 3; i++) {
+    double distLaserEndPointToLaserPos = givenLaserEndpoints[index+i].get_distance(laserPos);
+    //ROS_DEBUG_STREAM("Distance Laser EndPoint to Laser Pos : " << distLaserEndPointToLaserPos << ", Distance Laser Pos to Point : " << distLaserPosToPoint);
+    if (distLaserEndPointToLaserPos > distLaserPosToPoint) {
+      numFree++;
+    }
+  }
+  //ROS_DEBUG_STREAM("Number farther than point : " << numFree);
+  if (numFree > 4) {
+    canSeePoint = true;
+  }
+  //else, not visible
+  return canSeePoint;
+}
 
 
 std::pair < std::vector<CartesianPoint>, std::vector< vector<CartesianPoint> > > AgentState::getCleanedTrailMarkers(){
@@ -156,17 +192,23 @@ std::pair < std::vector<CartesianPoint>, std::vector< vector<CartesianPoint> > >
 		//cout << "First point: " << pos_history[i].get_x() << " " << pos_history[i].get_y() << endl;
 		for(int j = pos_history.size()-1; j > i; j--){
 			//cout << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
-			if(canSeePoint(laser_endpoints[i], pos_history[i], pos_history[j])) {
-				//cout << "CanSeePoint is true" << endl;
-				//cout << "Next point: " << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
+			//if(canSeePoint(laser_endpoints[i], pos_history[i], pos_history[j])) {
+      //if(canSeePoint(laser_endpoints[i], pos_history[i], pos_history[j]) and canSeePoint(laser_endpoints[j], pos_history[j], pos_history[i])) {
+      if(canAccessPoint(laser_endpoints[i], pos_history[i], pos_history[j])) {
+				cout << "CanAccessPoint is true" << endl;
+				cout << "Next point: " << pos_history[j].get_x() << " " << pos_history[j].get_y() << endl;
 				trailPositions.push_back(pos_history[j]);
 				trailLaserEndpoints.push_back(laser_endpoints[j]);
 				i = j-1;
 			}
 		}
 	}
-	//cout << pos_history[pos_history.size()-1].get_x() << " " << pos_history[pos_history.size()-1].get_y() << endl;
-	//cout << trailPositions[trailPositions.size()-1].get_x() << " " << trailPositions[trailPositions.size()-1].get_y() << endl;
+  if (pos_history[pos_history.size()-1].get_x() != trailPositions[trailPositions.size()-1].get_x() or pos_history[pos_history.size()-1].get_y() != trailPositions[trailPositions.size()-1].get_y()) {
+    trailPositions.push_back(pos_history.back());
+    trailLaserEndpoints.push_back(laser_endpoints.back());
+  }
+	cout << pos_history[pos_history.size()-1].get_x() << " " << pos_history[pos_history.size()-1].get_y() << endl;
+	cout << trailPositions[trailPositions.size()-1].get_x() << " " << trailPositions[trailPositions.size()-1].get_y() << endl;
 	
 	cleanedMarker.first = trailPositions;
 	cleanedMarker.second = trailLaserEndpoints;

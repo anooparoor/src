@@ -525,13 +525,13 @@ public:
 			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because " + phraseGini + ".";
 		}
 		else if (overallSupportPhraseID == confidenceLevelPhraseID) {
-			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because " + phraseOverallSupport + " to do this most.";
+			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because I " + phraseOverallSupport + " to do this most.";
 		}
 		else if (overallSupportPhraseID > confidenceLevelPhraseID and giniPhraseID < confidenceLevelPhraseID) {
-			explanation = "I'm " + phraseOverallSupport + " sure in my decision because, even though " + phraseGini + ", " + phraseOverallSupport + " to do this most.";
+			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because, even though " + phraseGini + ", I " + phraseOverallSupport + " to do this most.";
 		}
 		else if (giniPhraseID > confidenceLevelPhraseID and overallSupportPhraseID < confidenceLevelPhraseID) {
-			explanation = "I'm " + phraseOverallSupport + " sure in my decision because, even though " + phraseOverallSupport + " to do this most, " + phraseGini + ".";
+			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because, even though I " + phraseOverallSupport + " to do this most, " + phraseGini + ".";
 		}
 		else {
 			explanation = "I'm " + phraseConfidenceLevel + " sure in my decision because " + phraseGini + ". I " + phraseOverallSupport + " to do this most.";

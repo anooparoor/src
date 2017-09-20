@@ -293,8 +293,7 @@ namespace Menge {
 		float FSM::distanceFromObstacle(float angle, float range_max, Agents::BaseAgent * agent){
 			// find the vector to represent the ray 
 			float min_range = 0.01;
-			float width = 0.001;
-			
+			float width = 0.0001;			
 			float agent_dir_angle = atan2(agent->_orient._y, agent->_orient._x);
 			//std::cout << "Calculate laser:Agent orient x:" << agent->_orient._x << " y:" << agent->_orient._y << std::endl;
 			//std::cout << "Calculate Agent direction : " << agent_dir_angle << std::endl;
