@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<Project 
+	scene="hunter-9/hunter-9S.xml" 
+	behavior="hunter-9/hunter-9B.xml" 
+	model="orca"
+	dumpPath="images/test"
+/>

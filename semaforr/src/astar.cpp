@@ -35,40 +35,37 @@ bool astar::search(int source, int target)
 
     // Add successor nodes of current to the open list
     vector<int> neighbors = graph->getNode(current->id).getNeighbors();
-    if(graph->getNode(current->id).getInBuffer() == false){
-    	for (uint i = 0; i < neighbors.size(); i++)
-    	{
-      		if(graph->getNode(neighbors[i]).getInBuffer() == false){
-      			_VNode* tmp = new _VNode(graph->getNode(neighbors[i]));
-      			//double tmpCost = graph->getNode(current->id).getCostTo(tmp->id);
+    for (uint i = 0; i < neighbors.size(); i++)
+    {
+      _VNode* tmp = new _VNode(graph->getNode(neighbors[i]));
+      //double tmpCost = graph->getNode(current->id).getCostTo(tmp->id);
 
-      			tmp->g = current->g + graph->getNode(current->id).getCostTo(tmp->id);	
-      			tmp->f = tmp->g + octile_h(tmp, goal); // Compute f for this node
-      			tmp->prev = current;
+      tmp->g = current->g + graph->getNode(current->id).getCostTo(tmp->id);
+      tmp->f = tmp->g + octile_h(tmp, goal); // Compute f for this node
+      tmp->prev = current;
 
-      			bool inClosed = false;
-      			for(uint j = 0; j < closed.size(); j++){
-        			if(closed[j]->id == tmp->id)
-        			{
-          				inClosed = true;
-          				break;
-          				if(closed[j]->g > tmp->g)
-          				{
-            					printf("closed[j].g = %f, tmp.g = %f\n", closed[j]->g, tmp->g);
-            					closed[j] = tmp;
-          				}
-        			}
-			}
-      			if(inClosed || !tmp->accessible)
-        			continue;
+      bool inClosed = false;
+      for(uint j = 0; j < closed.size(); j++)
+        if(closed[j]->id == tmp->id)
+        {
+          inClosed = true;
+          break;
+          if(closed[j]->g > tmp->g)
+          {
+            printf("closed[j].g = %f, tmp.g = %f\n", closed[j]->g, tmp->g);
+            closed[j] = tmp;
+          }
+        }
 
-      			push_update(open, tmp);
-      		}
-    	}
+      if(inClosed || !tmp->accessible)
+        continue;
+
+      push_update(open, tmp);
     }
   }
   return false;
 }
+
 
 double astar::euclidian_h(_VNode* a, _VNode* b)
 {

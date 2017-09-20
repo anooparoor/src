@@ -282,35 +282,32 @@ public:
 };
 
 
-
-
-
-
 // Main file : Load configuration files and create a controller, Initialize and run robot driver! 
 // Stops when the mission is complete or when a mission aborts
 int main(int argc, char **argv) {
 		//init the ROS node
+		ROS_INFO("Starting... semaforr ");
 		ros::init(argc, argv, "semaforr");
 		if( ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug) ) {
 			ros::console::notifyLoggerLevelsChanged();
 		}
 		ros::NodeHandle nh;
 
-		//string path = "/home/anooparoor/catkin_ws/src/semaforr";
+		std::cout << argc << endl;
 
-     //bool ok = ros::param::get("/semaforr_controller/semaforr_package_path",path);
-     //if(!ok){
-	//ROS_DEBUG("Could not get semaforr_package_path");
-	//exit(1);
-     //}
+		if(argc != 5){
+			ROS_INFO_STREAM("not have all parameters" << argc);
+		}
 
-		string path = ros::package::getPath("semaforr");
+		string path(argv[1]);
+		string target_set(argv[2]);
+		string map_config(argv[3]);
+		string map_dimensions(argv[4]);
+
 		string advisor_config = path + "/config/advisors.conf";
 		string params_config = path + "/config/params.conf";
-		string tasks_config = path + "/config/target.conf";
-		string planner_config = path;
 
-		Controller *controller = new Controller(advisor_config,tasks_config,params_config,planner_config); 
+		Controller *controller = new Controller(advisor_config, params_config, map_config, target_set, map_dimensions); 
 
 		ROS_INFO("Controller Initialized");
 		RobotDriver driver(nh, controller);

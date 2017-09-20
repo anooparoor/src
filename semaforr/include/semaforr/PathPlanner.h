@@ -65,6 +65,8 @@ public:
 
   Graph* getGraph(){ return navGraph; }
 
+  Map* getMap() { return &map;}
+
   Node getSource(){ return source; }
 
   void setSource(Node s){ source = s; } 

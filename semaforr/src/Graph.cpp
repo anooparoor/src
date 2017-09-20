@@ -1,8 +1,11 @@
 #include "Graph.h"
 
-Graph::Graph(Map * m, int p = 20): proximity(p), map(m) {
+Graph::Graph(Map * m, int p): map(m) {
 
+  // convert proximity into cms
+  this->proximity = p;
   // If p is given, but 0
+  
   if ( p == 0 )
     this->proximity = 20;
 
@@ -229,7 +232,8 @@ void Graph::outputGraph() {
   vector<Node*>::iterator iter; 
   double degree = 0;
   for( iter = nodes.begin(); iter != nodes.end(); iter++ ){
-    myfile << (*iter)->getNeighbors().size() << " " << (*iter)->getX()/100.0 << " " << (*iter)->getY()/100.0 << endl;
+    cout << (*iter)->getX() << " " << (*iter)->getX()/100.0f << endl;
+    myfile << (*iter)->getNeighbors().size() << " " << (*iter)->getX()/100.0f << " " << (*iter)->getY()/100.0f << endl;
     if((*iter)->getNeighbors().size() != (*iter)->getNodeEdges().size()){
     	cout << (*iter)->getNeighbors().size() << " : " << (*iter)->getNodeEdges().size() << endl; 
     }

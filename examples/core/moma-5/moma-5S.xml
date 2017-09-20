@@ -11,9 +11,9 @@
     <Zanlungo agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" force_distance="0.005" />
     <Dummy stddev="0.05" />
 
-    <AgentProfile name="group1" >
+    <AgentProfile name="robot" >
 	<OpenSteer tau="3" tauObst="6" />
-        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.19" class="1" pref_speed="1.04" max_speed="2" max_accel="5" priority="0.0" external="1"/>
+        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.33" class="1" pref_speed="1" max_speed="2" max_accel="5" priority="0.0" external="1" start_angle="-1.91986" end_angle="1.9194" increment="0.005817" range_max="25"/>
 	<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
         <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
         <Helbing mass="80" />
@@ -23,24 +23,151 @@
         <Zanlungo mass="80" />
     </AgentProfile>
 
-    <AgentProfile name="group2" inherits="group1" >
-		<Common class="2" r="0.39" external="0"/>
+    <AgentProfile name="visitor" inherits="robot" >
+		<Common class="2" r="0.2" external="0" robotAttraction="0.0"/>
 		<Helbing mass="320"/>
     </AgentProfile>
 
     <AgentGroup>
-        <ProfileSelector type="const" name="group1" />
-	<StateSelector type="const" name="Walk1" />
+        <ProfileSelector type="const" name="robot" />
+	<StateSelector type="const" name="a" />
 	<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="1.0" >
 		<Agent p_x="5" p_y="5"/>
 	</Generator>
     </AgentGroup>
 
     <AgentGroup>
-        <StateSelector type="const" name="Walk2" />
-	<ProfileSelector type="const" name="group2" />
+        <StateSelector type="const" name="start" />
+	<ProfileSelector type="const" name="visitor" />
 	<Generator type="explicit">
-		<Agent p_x="1" p_y="1" />
+		<Agent p_x="0" p_y="0"/>
+		<Agent p_x="0" p_y="1"/>
+		<Agent p_x="0" p_y="2"/>
+		<Agent p_x="0" p_y="3"/>
+		<Agent p_x="0" p_y="4"/>
+		<Agent p_x="0" p_y="5"/>
+		<Agent p_x="0" p_y="6"/>
+		<Agent p_x="0" p_y="7"/>
+		<Agent p_x="0" p_y="8"/>
+		<Agent p_x="0" p_y="9"/>
+		<Agent p_x="0" p_y="10"/>
+		<Agent p_x="0" p_y="11"/>
+		<Agent p_x="0" p_y="12"/>
+		<Agent p_x="0" p_y="13"/>
+		<Agent p_x="0" p_y="14"/>
+		<Agent p_x="0" p_y="15"/>
+		<Agent p_x="1" p_y="0"/>
+		<Agent p_x="1" p_y="1"/>
+		<Agent p_x="1" p_y="2"/>
+		<Agent p_x="1" p_y="3"/>
+		<Agent p_x="1" p_y="4"/>
+		<Agent p_x="1" p_y="5"/>
+		<Agent p_x="1" p_y="6"/>
+		<Agent p_x="1" p_y="7"/>
+		<Agent p_x="1" p_y="8"/>
+		<Agent p_x="1" p_y="9"/>
+		<Agent p_x="1" p_y="10"/>
+		<Agent p_x="1" p_y="11"/>
+		<Agent p_x="1" p_y="12"/>
+		<Agent p_x="1" p_y="13"/>
+		<Agent p_x="1" p_y="14"/>
+		<Agent p_x="1" p_y="15"/>
+		<Agent p_x="0.5" p_y="0"/>
+		<Agent p_x="0.5" p_y="1"/>
+		<Agent p_x="0.5" p_y="2"/>
+		<Agent p_x="0.5" p_y="3"/>
+		<Agent p_x="0.5" p_y="4"/>
+		<Agent p_x="0.5" p_y="5"/>
+		<Agent p_x="0.5" p_y="6"/>
+		<Agent p_x="0.5" p_y="7"/>
+		<Agent p_x="0.5" p_y="8"/>
+		<Agent p_x="0.5" p_y="9"/>
+		<Agent p_x="0.5" p_y="10"/>
+		<Agent p_x="0.5" p_y="11"/>
+		<Agent p_x="0.5" p_y="12"/>
+		<Agent p_x="0.5" p_y="13"/>
+		<Agent p_x="0.5" p_y="14"/>
+		<Agent p_x="0.5" p_y="15"/>
+		<Agent p_x="1.5" p_y="0"/>
+		<Agent p_x="1.5" p_y="1"/>
+		<Agent p_x="1.5" p_y="2"/>
+		<Agent p_x="1.5" p_y="3"/>
+		<Agent p_x="1.5" p_y="4"/>
+		<Agent p_x="1.5" p_y="5"/>
+		<Agent p_x="1.5" p_y="6"/>
+		<Agent p_x="1.5" p_y="7"/>
+		<Agent p_x="1.5" p_y="8"/>
+		<Agent p_x="1.5" p_y="9"/>
+		<Agent p_x="1.5" p_y="10"/>
+		<Agent p_x="1.5" p_y="11"/>
+		<Agent p_x="1.5" p_y="12"/>
+		<Agent p_x="1.5" p_y="13"/>
+		<Agent p_x="1.5" p_y="14"/>
+		<Agent p_x="1.5" p_y="15"/>
+		<Agent p_x="0" p_y="0.5"/>
+		<Agent p_x="0" p_y="1.5"/>
+		<Agent p_x="0" p_y="2.5"/>
+		<Agent p_x="0" p_y="3.5"/>
+		<Agent p_x="0" p_y="4.5"/>
+		<Agent p_x="0" p_y="5.5"/>
+		<Agent p_x="0" p_y="6.5"/>
+		<Agent p_x="0" p_y="7.5"/>
+		<Agent p_x="0" p_y="8.5"/>
+		<Agent p_x="0" p_y="9.5"/>
+		<Agent p_x="0" p_y="10.5"/>
+		<Agent p_x="0" p_y="11.5"/>
+		<Agent p_x="0" p_y="12.5"/>
+		<Agent p_x="0" p_y="13.5"/>
+		<Agent p_x="0" p_y="14.5"/>
+		<Agent p_x="0" p_y="15.5"/>
+		<Agent p_x="1" p_y="0.5"/>
+		<Agent p_x="1" p_y="1.5"/>
+		<Agent p_x="1" p_y="2.5"/>
+		<Agent p_x="1" p_y="3.5"/>
+		<Agent p_x="1" p_y="4.5"/>
+		<Agent p_x="1" p_y="5.5"/>
+		<Agent p_x="1" p_y="6.5"/>
+		<Agent p_x="1" p_y="7.5"/>
+		<Agent p_x="1" p_y="8.5"/>
+		<Agent p_x="1" p_y="9.5"/>
+		<Agent p_x="1" p_y="10.5"/>
+		<Agent p_x="1" p_y="11.5"/>
+		<Agent p_x="1" p_y="12.5"/>
+		<Agent p_x="1" p_y="13.5"/>
+		<Agent p_x="1" p_y="14.5"/>
+		<Agent p_x="1" p_y="15.5"/>
+		<Agent p_x="0.5" p_y="0.5"/>
+		<Agent p_x="0.5" p_y="1.5"/>
+		<Agent p_x="0.5" p_y="2.5"/>
+		<Agent p_x="0.5" p_y="3.5"/>
+		<Agent p_x="0.5" p_y="4.5"/>
+		<Agent p_x="0.5" p_y="5.5"/>
+		<Agent p_x="0.5" p_y="6.5"/>
+		<Agent p_x="0.5" p_y="7.5"/>
+		<Agent p_x="0.5" p_y="8.5"/>
+		<Agent p_x="0.5" p_y="9.5"/>
+		<Agent p_x="0.5" p_y="10.5"/>
+		<Agent p_x="0.5" p_y="11.5"/>
+		<Agent p_x="0.5" p_y="12.5"/>
+		<Agent p_x="0.5" p_y="13.5"/>
+		<Agent p_x="0.5" p_y="14.5"/>
+		<Agent p_x="0.5" p_y="15.5"/>
+		<Agent p_x="1.5" p_y="0.5"/>
+		<Agent p_x="1.5" p_y="1.5"/>
+		<Agent p_x="1.5" p_y="2.5"/>
+		<Agent p_x="1.5" p_y="3.5"/>
+		<Agent p_x="1.5" p_y="4.5"/>
+		<Agent p_x="1.5" p_y="5.5"/>
+		<Agent p_x="1.5" p_y="6.5"/>
+		<Agent p_x="1.5" p_y="7.5"/>
+		<Agent p_x="1.5" p_y="8.5"/>
+		<Agent p_x="1.5" p_y="9.5"/>
+		<Agent p_x="1.5" p_y="10.5"/>
+		<Agent p_x="1.5" p_y="11.5"/>
+		<Agent p_x="1.5" p_y="12.5"/>
+		<Agent p_x="1.5" p_y="13.5"/>
+		<Agent p_x="1.5" p_y="14.5"/>
+		<Agent p_x="1.5" p_y="15.5"/>
 	</Generator>
     </AgentGroup>
 

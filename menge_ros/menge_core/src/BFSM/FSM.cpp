@@ -192,7 +192,7 @@ namespace Menge {
 				double attraction = agent->_robotAttraction;
 				//std::cout << "Angle towards robot: " << angleToRobot << " Agent angle: " << agent_angle << " Turn: " << requiredTurn << std::endl;
 				double actualTurn = requiredTurn * attraction / (distance + 1);
-				newVel.turn(actualTurn);
+				//newVel.turn(actualTurn);
 			}
 
 			if(agent->_isExternal){

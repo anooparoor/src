@@ -42,6 +42,7 @@ private:
   ros::Publisher edges_cost_pub_;
   ros::Publisher stats_pub_;
   ros::Publisher doors_pub_;
+  ros::Publisher walls_pub_;
   Controller *con;
   Beliefs *beliefs;
   ros::NodeHandle *nh_;
@@ -69,6 +70,7 @@ public:
     trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
     stats_pub_ = nh_->advertise<std_msgs::String>("decision_log", 1);
     doors_pub_ = nh_->advertise<visualization_msgs::Marker>("door", 1);
+    walls_pub_ = nh_->advertise<visualization_msgs::Marker>("walls", 1);
     //declare and create a controller with task, action and advisor configuration
     con = c;
     beliefs = con->getBeliefs();
@@ -95,6 +97,7 @@ public:
 	publish_region();
 	publish_trails();
 	publish_doors();
+	publish_walls();
   }
 
 
@@ -449,6 +452,37 @@ public:
 	doors_pub_.publish(line_list);
   }
 
+  void publish_walls(){
+	ROS_DEBUG("Inside publish walls");
+	vector<Wall> walls = con->getPlanner()->getMap()->getWalls();
+	cout << "There are currently " << walls.size() << " walls" << endl;
+	visualization_msgs::Marker line_list;	
+	line_list.header.frame_id = "map";
+    	line_list.header.stamp = ros::Time::now();
+	line_list.ns = "basic_shapes";
+	line_list.action = visualization_msgs::Marker::ADD;
+    	line_list.id = 1;
+	line_list.type = visualization_msgs::Marker::LINE_LIST;
+	line_list.pose.orientation.w = 1.0;
+	line_list.scale.x = 0.3;
+	line_list.color.r = 0.5;
+	line_list.color.a = 0.5;
+
+	for(int i = 0 ; i < walls.size(); i++){	
+		geometry_msgs::Point p1, p2;
+		p1.x = walls[i].x1/100.0;
+		p1.y = walls[i].y1/100.0;
+		p1.z = 0;
+		p2.x = walls[i].x2/100.0;
+		p2.y = walls[i].y2/100.0;
+		p2.z = 0;
+		
+		line_list.points.push_back(p1);
+		line_list.points.push_back(p2);
+	}
+	walls_pub_.publish(line_list);
+  }
+
   void publish_all_targets(){
 	ROS_DEBUG("Publish All targets as pose array!!");
 	geometry_msgs::PoseArray targets;
@@ -579,7 +613,7 @@ public:
 	}
 	ROS_DEBUG("After trails");
 	
-	std::stringstream conveyorStream;
+	/*std::stringstream conveyorStream;
 	for(int j = 0; j < conveyors.size()-1; j++){
 		for(int i = 0; i < conveyors[j].size(); i++){
 			conveyorStream << conveyors[j][i] << " ";
@@ -587,6 +621,7 @@ public:
 		conveyorStream << ";";
 	}
 	ROS_DEBUG("After conveyors");
+	*/
 
 	std::stringstream doorStream;
 	for(int i = 0; i < doors.size(); i++){

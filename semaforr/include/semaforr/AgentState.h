@@ -109,7 +109,10 @@ public:
   }
 
 
-  set<FORRAction> *getVetoedActions() { return vetoedActions;}
+  set<FORRAction> *getVetoedActions() { 
+	//std::cout << "returning vetoed action list " << vetoedActions->size() << std::endl;
+	return vetoedActions;
+  }
   void clearVetoedActions() { vetoedActions->clear();}
   
   void addTask(float x, float y) {

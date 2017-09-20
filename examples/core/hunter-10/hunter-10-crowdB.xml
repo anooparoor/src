@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<BFSM>
+
+	<GoalSet id="0">
+		<Goal type="circle" id="0" x="2" y="2" radius="0.5" />
+	</GoalSet>
+
+	<GoalSet id="1">
+		<Goal type="circle" id="0" x="30" y="20" radius="0.5" />
+	</GoalSet>
+
+	<GoalSet id="2">
+		<Goal type="circle" id="0" x="2" y="20" radius="0.5" />
+	</GoalSet>
+
+	<State name="one" final="0" >
+		<GoalSelector type="explicit" goal="0" goal_set="0"/>
+	        <VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="two" final="0" > 
+		<GoalSelector type="explicit" goal="0" goal_set="1"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="three" final="0" > 
+		<GoalSelector type="explicit" goal="0" goal_set="2"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+	
+	<Transition from="one" to="two" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+	<Transition from="two" to="three" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+	<Transition from="three" to="one" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+</BFSM>

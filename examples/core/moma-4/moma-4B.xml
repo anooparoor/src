@@ -1,45 +1,135 @@
 <?xml version="1.0"?>
 
 <BFSM>
-
 	<GoalSet id="0">
-		<Goal type="AABB" id="0" min_x="2" max_x="4"  min_y="2" max_y="4" weight="1.0"/>
+		<Goal type="circle" id="0" x="23" y="10" radius="1" />
+		<Goal type="circle" id="1" x="19" y="5" radius="1" />
+		<Goal type="circle" id="2" x="16" y="10" radius="1" />
+		<Goal type="circle" id="3" x="5" y="5" radius="1" />
+		<Goal type="circle" id="4" x="6" y="11" radius="1" />
+		<Goal type="circle" id="5" x="16" y="25" radius="1" />
+		<Goal type="circle" id="6" x="16" y="19" radius="1" />
+		<Goal type="circle" id="7" x="7" y="38" radius="1" />
+		<Goal type="circle" id="8" x="10" y="28" radius="1" />
+		<Goal type="circle" id="9" x="20" y="38" radius="1" />
+		<Goal type="circle" id="10" x="21" y="28" radius="1" />
 	</GoalSet>
 
-	<GoalSet id="1">
-		<Goal type="AABB" id="2" min_x="8" max_x="10"  min_y="8" max_y="10" weight="1.0"/>
-	</GoalSet>
+	<State name="start" final="0" >
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
 
-	<GoalSet id="2">
-		<Goal type="AABB" id="2" min_x="8" max_x="10"  min_y="20" max_y="25" weight="1.0"/>
-	</GoalSet>
+	<State name="enter" final="0" >
+		<Action type="teleport" dist="u" min_x="25" max_x="26"  min_y="10" max_y="11" />
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
 
-	<State name="one" final="0" >
-		<GoalSelector type="weighted" goal_set="0"/>
+	<State name="a" final="0" >
+		<GoalSelector type="explicit" goal="0" goal_set="0"/>
 	        <VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
 	</State>
 
-	<State name="two" final="0" > 
-		<GoalSelector type="weighted" goal_set="1"/>
+	<State name="b" final="0" > 
+		<GoalSelector type="explicit" goal="1" goal_set="0"/>
 		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
 	</State>
 
-	<State name="three" final="0" >
-		<GoalSelector type="weighted" goal_set="2"/>
+	<State name="c" final="0" >
+		<GoalSelector type="explicit" goal="2" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="d" final="0" >
+		<GoalSelector type="explicit" goal="3" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="e" final="0" >
+		<GoalSelector type="explicit" goal="4" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="f" final="0" >
+		<GoalSelector type="explicit" goal="5" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="g" final="0" >
+		<GoalSelector type="explicit" goal="6" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="h" final="0" >
+		<GoalSelector type="explicit" goal="7" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="i" final="0" >
+		<GoalSelector type="explicit" goal="8" goal_set="0"/>
 		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
 	</State>
 	
-	<Transition from="one" to="two" >
+	<State name="j" final="0" >
+		<GoalSelector type="explicit" goal="9" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<State name="k" final="0" >
+		<GoalSelector type="explicit" goal="10" goal_set="0"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
+	<Transition from="start" to="enter" >
+		<Condition type="timer" dist="u" min="0" max="100" per_agent="1" />
+	</Transition>
+
+	<Transition from="enter" to="a" >
+		<Condition type="timer" dist="u" min="0" max="1" per_agent="1" />
+	</Transition>
+
+	<Transition from="a" to="b" >
 		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 
-	<Transition from="two" to="three" >
+	<Transition from="b" to="c" >
 		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 
-	<Transition from="three" to="one" >
+	<Transition from="c" to="d" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+	
+	<Transition from="d" to="e" >
 		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 
+	<Transition from="e" to="f" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
 
+	<Transition from="f" to="g" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+	
+	<Transition from="g" to="h" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="h" to="i" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="i" to="j" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="j" to="k" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="k" to="enter" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
 </BFSM>

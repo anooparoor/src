@@ -1,0 +1,6489 @@
+<?xml version="1.0"?>
+
+<Experiment version="2.0">
+	<SpatialQuery type="kd-tree" test_visibility="false" />
+	
+    <OpenSteer max_force="8" leak_through="0.1" reaction_time="0.5" />
+    <Common time_step="0.1" />
+    <GCF reaction_time="0.5" max_agent_dist="2" max_agent_force="3" agent_interp_width="0.1" nu_agent="0.35" />
+    <Helbing agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" body_force="1200" friction="2400" force_distance="0.015" />
+    <Johansson agent_scale="25" obstacle_scale="35" reaction_time="0.5" force_distance="0.15" stride_time="0.5" />
+    <Karamouzas orient_weight="0.8" fov="200" reaction_time="0.4" wall_steepness="2" wall_distance="2" colliding_count="5" d_min="1" d_mid="8" d_max="10" agent_force="4" />
+    <Zanlungo agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" force_distance="0.005" />
+	<Dummy stddev="0.05" />
+
+    <AgentProfile name="group1" >
+		<OpenSteer tau="3" tauObst="6" />
+        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.19" class="1" pref_speed="1.04" max_speed="2" max_accel="5" priority="0.0" external="1" start_angle="-1.91986" end_angle="1.9194" increment="0.005817" range_max="25"/>
+		<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
+        <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
+        <Helbing mass="80" />
+        <Johansson fov_weight="0.16" />
+        <Karamouzas personal_space="0.69" anticipation="8" />
+        <ORCA tau="3.0" tauObst="0.15" />
+        <Zanlungo mass="80" />
+	</AgentProfile>
+
+	<AgentProfile name="group2" inherits="group1" >
+		<Common class="2" r="0.2794" external="0"/>
+		<Helbing mass="320"/>
+	</AgentProfile>
+
+	<AgentGroup>
+        <ProfileSelector type="const" name="group1" />
+		<StateSelector type="const" name="Walk1" />
+		<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="0.1" >
+			<Agent p_x="25" p_y="20"/>
+		</Generator>
+    </AgentGroup>
+
+   
+<ObstacleSet type="explicit" class="1">
+
+	<Obstacle closed="1">
+	<Vertex p_x="0.237154150198" p_y="0.337711069418" />
+	<Vertex p_x="17.0750988142" p_y="0.337711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="0.337711069418" />
+	<Vertex p_x="69.1304347826" p_y="0.337711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.69169960474" p_y="6.75422138837" />
+	<Vertex p_x="62.371541502" p_y="6.75422138837" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.4347826087" p_y="6.86679174484" />
+	<Vertex p_x="15.4150197628" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="17.6679841897" p_y="6.86679174484" />
+	<Vertex p_x="22.6482213439" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.5454545455" p_y="6.86679174484" />
+	<Vertex p_x="29.5256916996" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="31.5415019763" p_y="6.86679174484" />
+	<Vertex p_x="36.5217391304" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="38.418972332" p_y="6.86679174484" />
+	<Vertex p_x="43.3992094862" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="45.4150197628" p_y="6.86679174484" />
+	<Vertex p_x="50.395256917" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.6482213439" p_y="6.86679174484" />
+	<Vertex p_x="57.628458498" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.371541502" p_y="6.86679174484" />
+	<Vertex p_x="69.1304347826" p_y="6.86679174484" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="6.97936210131" />
+	<Vertex p_x="6.40316205534" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="6.97936210131" />
+	<Vertex p_x="9.9604743083" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="6.97936210131" />
+	<Vertex p_x="16.837944664" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.3596837945" p_y="6.97936210131" />
+	<Vertex p_x="23.8339920949" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.3557312253" p_y="6.97936210131" />
+	<Vertex p_x="30.8300395257" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="6.97936210131" />
+	<Vertex p_x="37.7075098814" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.2292490119" p_y="6.97936210131" />
+	<Vertex p_x="44.7035573123" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="6.97936210131" />
+	<Vertex p_x="51.6996047431" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="6.97936210131" />
+	<Vertex p_x="58.4584980237" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="6.97936210131" />
+	<Vertex p_x="62.1343873518" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="6.97936210131" />
+	<Vertex p_x="69.1304347826" p_y="6.97936210131" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="7.09193245779" />
+	<Vertex p_x="9.604743083" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="7.09193245779" />
+	<Vertex p_x="16.3636363636" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="7.09193245779" />
+	<Vertex p_x="23.3596837945" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="7.09193245779" />
+	<Vertex p_x="30.3557312253" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.7114624506" p_y="7.09193245779" />
+	<Vertex p_x="37.233201581" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.7075098814" p_y="7.09193245779" />
+	<Vertex p_x="44.2292490119" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="7.09193245779" />
+	<Vertex p_x="51.2252964427" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="7.09193245779" />
+	<Vertex p_x="58.1027667984" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="7.09193245779" />
+	<Vertex p_x="61.6600790514" p_y="7.09193245779" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="7.31707317073" />
+	<Vertex p_x="6.75889328063" p_y="7.31707317073" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="7.31707317073" />
+	<Vertex p_x="68.5375494071" p_y="7.31707317073" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="7.4296435272" />
+	<Vertex p_x="6.75889328063" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.13043478261" p_y="7.4296435272" />
+	<Vertex p_x="10.4347826087" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="7.4296435272" />
+	<Vertex p_x="17.3122529644" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.3596837945" p_y="7.4296435272" />
+	<Vertex p_x="23.8339920949" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.3557312253" p_y="7.4296435272" />
+	<Vertex p_x="30.8300395257" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="7.4296435272" />
+	<Vertex p_x="37.7075098814" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.3992094862" p_y="7.4296435272" />
+	<Vertex p_x="45.0592885375" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.7509881423" p_y="7.4296435272" />
+	<Vertex p_x="52.4110671937" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.7470355731" p_y="7.4296435272" />
+	<Vertex p_x="58.9328063241" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.4743083004" p_y="7.4296435272" />
+	<Vertex p_x="62.4901185771" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="7.4296435272" />
+	<Vertex p_x="69.1304347826" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.13043478261" p_y="7.54221388368" />
+	<Vertex p_x="10.4347826087" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="7.54221388368" />
+	<Vertex p_x="17.3122529644" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.8853754941" p_y="7.54221388368" />
+	<Vertex p_x="24.1897233202" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.8814229249" p_y="7.54221388368" />
+	<Vertex p_x="31.3043478261" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="36.8774703557" p_y="7.54221388368" />
+	<Vertex p_x="38.3003952569" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.3992094862" p_y="7.54221388368" />
+	<Vertex p_x="45.0592885375" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.7509881423" p_y="7.54221388368" />
+	<Vertex p_x="52.4110671937" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.7470355731" p_y="7.54221388368" />
+	<Vertex p_x="58.9328063241" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.3557312253" p_y="7.54221388368" />
+	<Vertex p_x="62.4901185771" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.8853754941" p_y="7.65478424015" />
+	<Vertex p_x="24.1897233202" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.8814229249" p_y="7.65478424015" />
+	<Vertex p_x="31.3043478261" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="36.8774703557" p_y="7.65478424015" />
+	<Vertex p_x="38.3003952569" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.0632411067" p_y="7.65478424015" />
+	<Vertex p_x="68.7747035573" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.0632411067" p_y="7.76735459662" />
+	<Vertex p_x="68.7747035573" p_y="7.76735459662" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.7747035573" p_y="8.10506566604" />
+	<Vertex p_x="69.2490118577" p_y="8.10506566604" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.04743083004" p_y="8.66791744841" />
+	<Vertex p_x="6.52173913043" p_y="8.66791744841" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="9.79362101313" />
+	<Vertex p_x="16.7193675889" p_y="9.79362101313" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="9.90619136961" />
+	<Vertex p_x="16.7193675889" p_y="9.90619136961" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="10.0187617261" />
+	<Vertex p_x="52.766798419" p_y="10.0187617261" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.766798419" p_y="10.1313320826" />
+	<Vertex p_x="55.6126482213" p_y="10.1313320826" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="10.243902439" />
+	<Vertex p_x="53.0039525692" p_y="10.243902439" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.3596837945" p_y="10.243902439" />
+	<Vertex p_x="55.6126482213" p_y="10.243902439" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="11.3696060038" />
+	<Vertex p_x="16.7193675889" p_y="11.3696060038" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.7233201581" p_y="11.4821763602" />
+	<Vertex p_x="16.4822134387" p_y="11.4821763602" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.5454545455" p_y="11.8198874296" />
+	<Vertex p_x="59.2885375494" p_y="11.8198874296" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.0039525692" p_y="12.0450281426" />
+	<Vertex p_x="53.5968379447" p_y="12.0450281426" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.5454545455" p_y="12.0450281426" />
+	<Vertex p_x="59.2885375494" p_y="12.0450281426" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.09881422925" p_y="12.4953095685" />
+	<Vertex p_x="5.69169960474" p_y="12.4953095685" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="12.8330206379" />
+	<Vertex p_x="6.04743083004" p_y="12.8330206379" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.7747035573" p_y="12.8330206379" />
+	<Vertex p_x="69.2490118577" p_y="12.8330206379" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.7272727273" p_y="13.0581613508" />
+	<Vertex p_x="33.4387351779" p_y="13.0581613508" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="34.3873517787" p_y="13.0581613508" />
+	<Vertex p_x="35.3359683794" p_y="13.0581613508" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.0948616601" p_y="13.1707317073" />
+	<Vertex p_x="14.8221343874" p_y="13.1707317073" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.7272727273" p_y="13.1707317073" />
+	<Vertex p_x="33.4387351779" p_y="13.1707317073" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="34.3873517787" p_y="13.1707317073" />
+	<Vertex p_x="35.3359683794" p_y="13.1707317073" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.0948616601" p_y="13.2833020638" />
+	<Vertex p_x="14.8221343874" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="13.2833020638" />
+	<Vertex p_x="58.5770750988" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="13.3958724203" />
+	<Vertex p_x="62.2529644269" p_y="13.3958724203" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="13.5084427767" />
+	<Vertex p_x="6.40316205534" p_y="13.5084427767" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="13.5084427767" />
+	<Vertex p_x="9.9604743083" p_y="13.5084427767" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="13.5084427767" />
+	<Vertex p_x="58.5770750988" p_y="13.5084427767" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="13.5084427767" />
+	<Vertex p_x="69.1304347826" p_y="13.5084427767" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="13.8461538462" />
+	<Vertex p_x="6.40316205534" p_y="13.8461538462" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="13.8461538462" />
+	<Vertex p_x="9.9604743083" p_y="13.8461538462" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="13.8461538462" />
+	<Vertex p_x="62.2529644269" p_y="13.8461538462" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="13.8461538462" />
+	<Vertex p_x="69.1304347826" p_y="13.8461538462" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="13.9587242026" />
+	<Vertex p_x="6.40316205534" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="13.9587242026" />
+	<Vertex p_x="9.9604743083" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="13.9587242026" />
+	<Vertex p_x="62.2529644269" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="13.9587242026" />
+	<Vertex p_x="69.1304347826" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="14.296435272" />
+	<Vertex p_x="6.40316205534" p_y="14.296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="14.4090056285" />
+	<Vertex p_x="6.40316205534" p_y="14.4090056285" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.7747035573" p_y="14.521575985" />
+	<Vertex p_x="69.2490118577" p_y="14.521575985" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.4466403162" p_y="14.6341463415" />
+	<Vertex p_x="51.4624505929" p_y="14.6341463415" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.7193675889" p_y="14.7467166979" />
+	<Vertex p_x="18.6166007905" p_y="14.7467166979" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.4466403162" p_y="14.7467166979" />
+	<Vertex p_x="51.4624505929" p_y="14.7467166979" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="14.7467166979" />
+	<Vertex p_x="62.2529644269" p_y="14.7467166979" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.4505928854" p_y="14.8592870544" />
+	<Vertex p_x="14.8221343874" p_y="14.8592870544" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.4822134387" p_y="14.8592870544" />
+	<Vertex p_x="18.6166007905" p_y="14.8592870544" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.2648221344" p_y="14.9718574109" />
+	<Vertex p_x="16.6007905138" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.4980237154" p_y="15.0844277674" />
+	<Vertex p_x="32.8458498024" p_y="15.0844277674" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.5731225296" p_y="15.0844277674" />
+	<Vertex p_x="49.5652173913" p_y="15.0844277674" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.3596837945" p_y="15.0844277674" />
+	<Vertex p_x="56.0869565217" p_y="15.0844277674" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.2648221344" p_y="15.1969981238" />
+	<Vertex p_x="13.0434782609" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="15.1969981238" />
+	<Vertex p_x="16.837944664" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.4980237154" p_y="15.1969981238" />
+	<Vertex p_x="32.8458498024" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.5731225296" p_y="15.1969981238" />
+	<Vertex p_x="49.5652173913" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="15.1969981238" />
+	<Vertex p_x="58.5770750988" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="15.3095684803" />
+	<Vertex p_x="23.2411067194" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="15.3095684803" />
+	<Vertex p_x="30.2371541502" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.8260869565" p_y="15.3095684803" />
+	<Vertex p_x="44.2292490119" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="15.3095684803" />
+	<Vertex p_x="51.1067193676" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="15.3095684803" />
+	<Vertex p_x="54.9011857708" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.9249011858" p_y="15.4221388368" />
+	<Vertex p_x="13.5177865613" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="15.4221388368" />
+	<Vertex p_x="23.2411067194" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="15.4221388368" />
+	<Vertex p_x="30.2371541502" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.8260869565" p_y="15.4221388368" />
+	<Vertex p_x="44.2292490119" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="15.4221388368" />
+	<Vertex p_x="51.1067193676" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.9011857708" p_y="15.4221388368" />
+	<Vertex p_x="57.9841897233" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="15.5347091932" />
+	<Vertex p_x="6.99604743083" p_y="15.5347091932" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.94466403162" p_y="15.5347091932" />
+	<Vertex p_x="9.48616600791" p_y="15.5347091932" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="15.6472795497" />
+	<Vertex p_x="6.99604743083" p_y="15.6472795497" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.94466403162" p_y="15.6472795497" />
+	<Vertex p_x="9.48616600791" p_y="15.6472795497" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="15.6472795497" />
+	<Vertex p_x="16.837944664" p_y="15.6472795497" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="15.7598499062" />
+	<Vertex p_x="6.99604743083" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.94466403162" p_y="15.7598499062" />
+	<Vertex p_x="9.48616600791" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.162055336" p_y="15.7598499062" />
+	<Vertex p_x="16.1264822134" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="15.7598499062" />
+	<Vertex p_x="26.9169960474" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.1541501976" p_y="15.7598499062" />
+	<Vertex p_x="30.9486166008" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.1146245059" p_y="15.7598499062" />
+	<Vertex p_x="40.790513834" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="41.1462450593" p_y="15.7598499062" />
+	<Vertex p_x="47.7865612648" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="48.1422924901" p_y="15.7598499062" />
+	<Vertex p_x="55.0197628458" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="15.7598499062" />
+	<Vertex p_x="58.5770750988" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="15.8724202627" />
+	<Vertex p_x="6.99604743083" p_y="15.8724202627" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.94466403162" p_y="15.8724202627" />
+	<Vertex p_x="9.48616600791" p_y="15.8724202627" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="15.8724202627" />
+	<Vertex p_x="20.2766798419" p_y="15.8724202627" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="15.9849906191" />
+	<Vertex p_x="20.2766798419" p_y="15.9849906191" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.0975609756" />
+	<Vertex p_x="20.2766798419" p_y="16.0975609756" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.2101313321" />
+	<Vertex p_x="20.2766798419" p_y="16.2101313321" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.3227016886" />
+	<Vertex p_x="20.2766798419" p_y="16.3227016886" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.435272045" />
+	<Vertex p_x="20.2766798419" p_y="16.435272045" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.5478424015" />
+	<Vertex p_x="20.2766798419" p_y="16.5478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.660412758" />
+	<Vertex p_x="20.2766798419" p_y="16.660412758" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.7729831144" />
+	<Vertex p_x="20.2766798419" p_y="16.7729831144" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.8855534709" />
+	<Vertex p_x="20.2766798419" p_y="16.8855534709" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.3557312253" p_y="16.8855534709" />
+	<Vertex p_x="61.7786561265" p_y="16.8855534709" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="16.8855534709" />
+	<Vertex p_x="69.2490118577" p_y="16.8855534709" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="16.9981238274" />
+	<Vertex p_x="20.2766798419" p_y="16.9981238274" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.3557312253" p_y="16.9981238274" />
+	<Vertex p_x="61.7786561265" p_y="16.9981238274" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="16.9981238274" />
+	<Vertex p_x="69.2490118577" p_y="16.9981238274" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.1106941839" />
+	<Vertex p_x="20.2766798419" p_y="17.1106941839" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.2232645403" />
+	<Vertex p_x="20.2766798419" p_y="17.2232645403" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.3358348968" />
+	<Vertex p_x="20.2766798419" p_y="17.3358348968" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.4484052533" />
+	<Vertex p_x="20.2766798419" p_y="17.4484052533" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.5609756098" />
+	<Vertex p_x="20.2766798419" p_y="17.5609756098" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.6735459662" />
+	<Vertex p_x="20.2766798419" p_y="17.6735459662" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.7861163227" />
+	<Vertex p_x="20.2766798419" p_y="17.7861163227" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="17.8986866792" />
+	<Vertex p_x="9.9604743083" p_y="17.8986866792" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="17.8986866792" />
+	<Vertex p_x="20.2766798419" p_y="17.8986866792" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="18.0112570356" />
+	<Vertex p_x="20.2766798419" p_y="18.0112570356" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="18.1238273921" />
+	<Vertex p_x="12.9249011858" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.162055336" p_y="18.1238273921" />
+	<Vertex p_x="16.1264822134" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="18.1238273921" />
+	<Vertex p_x="23.2411067194" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.95256917" p_y="18.1238273921" />
+	<Vertex p_x="26.9169960474" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.1541501976" p_y="18.1238273921" />
+	<Vertex p_x="30.1185770751" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.9446640316" p_y="18.1238273921" />
+	<Vertex p_x="40.790513834" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="41.1462450593" p_y="18.1238273921" />
+	<Vertex p_x="44.1106719368" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.9407114625" p_y="18.1238273921" />
+	<Vertex p_x="47.7865612648" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="48.1422924901" p_y="18.1238273921" />
+	<Vertex p_x="51.1067193676" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="18.1238273921" />
+	<Vertex p_x="55.0197628458" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="18.2363977486" />
+	<Vertex p_x="9.9604743083" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.162055336" p_y="18.2363977486" />
+	<Vertex p_x="18.3794466403" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.209486166" p_y="18.2363977486" />
+	<Vertex p_x="21.6996047431" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.5296442688" p_y="18.2363977486" />
+	<Vertex p_x="24.6640316206" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="25.3754940711" p_y="18.2363977486" />
+	<Vertex p_x="27.9841897233" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="28.6956521739" p_y="18.2363977486" />
+	<Vertex p_x="30.7114624506" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.9486166008" p_y="18.2363977486" />
+	<Vertex p_x="32.6086956522" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.5731225296" p_y="18.2363977486" />
+	<Vertex p_x="38.6561264822" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="39.3675889328" p_y="18.2363977486" />
+	<Vertex p_x="41.8577075099" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="42.6877470356" p_y="18.2363977486" />
+	<Vertex p_x="44.347826087" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.5849802372" p_y="18.2363977486" />
+	<Vertex p_x="45.652173913" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="46.3636363636" p_y="18.2363977486" />
+	<Vertex p_x="48.8537549407" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.6837944664" p_y="18.2363977486" />
+	<Vertex p_x="53.2411067194" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.0711462451" p_y="18.2363977486" />
+	<Vertex p_x="58.3399209486" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="18.3489681051" />
+	<Vertex p_x="11.3833992095" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.7391304348" p_y="18.3489681051" />
+	<Vertex p_x="32.6086956522" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.3359683794" p_y="18.3489681051" />
+	<Vertex p_x="55.4940711462" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.7984189723" p_y="18.3489681051" />
+	<Vertex p_x="58.5770750988" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.2055335968" p_y="18.574108818" />
+	<Vertex p_x="56.7984189723" p_y="18.574108818" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.4940711462" p_y="18.799249531" />
+	<Vertex p_x="56.2055335968" p_y="18.799249531" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.7747035573" p_y="19.2495309568" />
+	<Vertex p_x="69.2490118577" p_y="19.2495309568" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="19.3621013133" />
+	<Vertex p_x="6.99604743083" p_y="19.3621013133" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="19.4746716698" />
+	<Vertex p_x="6.99604743083" p_y="19.4746716698" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.1818181818" p_y="19.4746716698" />
+	<Vertex p_x="68.7747035573" p_y="19.4746716698" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="19.5872420263" />
+	<Vertex p_x="62.1343873518" p_y="19.5872420263" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.1818181818" p_y="19.5872420263" />
+	<Vertex p_x="68.7747035573" p_y="19.5872420263" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="19.6998123827" />
+	<Vertex p_x="62.1343873518" p_y="19.6998123827" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.7233201581" p_y="19.6998123827" />
+	<Vertex p_x="74.8221343874" p_y="19.6998123827" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="76.3636363636" p_y="19.6998123827" />
+	<Vertex p_x="81.3438735178" p_y="19.6998123827" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.8853754941" p_y="19.6998123827" />
+	<Vertex p_x="87.8656126482" p_y="19.6998123827" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.1304347826" p_y="19.8123827392" />
+	<Vertex p_x="89.5256916996" p_y="19.8123827392" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="19.9249530957" />
+	<Vertex p_x="6.40316205534" p_y="19.9249530957" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.8418972332" p_y="19.9249530957" />
+	<Vertex p_x="74.8221343874" p_y="19.9249530957" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="76.3636363636" p_y="19.9249530957" />
+	<Vertex p_x="81.3438735178" p_y="19.9249530957" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.8853754941" p_y="19.9249530957" />
+	<Vertex p_x="87.8656126482" p_y="19.9249530957" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="20.0375234522" />
+	<Vertex p_x="6.40316205534" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="20.0375234522" />
+	<Vertex p_x="62.1343873518" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="20.0375234522" />
+	<Vertex p_x="69.0118577075" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="20.0375234522" />
+	<Vertex p_x="75.652173913" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="20.0375234522" />
+	<Vertex p_x="82.4110671937" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.814229249" p_y="20.0375234522" />
+	<Vertex p_x="89.2885375494" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="20.1500938086" />
+	<Vertex p_x="75.1778656126" p_y="20.1500938086" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.5335968379" p_y="20.1500938086" />
+	<Vertex p_x="82.0553359684" p_y="20.1500938086" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.4110671937" p_y="20.1500938086" />
+	<Vertex p_x="88.814229249" p_y="20.1500938086" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="20.3752345216" />
+	<Vertex p_x="6.40316205534" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="20.3752345216" />
+	<Vertex p_x="69.0118577075" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="20.3752345216" />
+	<Vertex p_x="75.652173913" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="20.3752345216" />
+	<Vertex p_x="82.4110671937" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="20.3752345216" />
+	<Vertex p_x="89.2885375494" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="20.487804878" />
+	<Vertex p_x="62.1343873518" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="20.487804878" />
+	<Vertex p_x="69.604743083" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="20.487804878" />
+	<Vertex p_x="76.3636363636" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.3438735178" p_y="20.487804878" />
+	<Vertex p_x="82.766798419" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="20.487804878" />
+	<Vertex p_x="89.2885375494" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="20.6003752345" />
+	<Vertex p_x="62.6086956522" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="20.6003752345" />
+	<Vertex p_x="69.604743083" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="20.6003752345" />
+	<Vertex p_x="76.3636363636" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="20.8255159475" />
+	<Vertex p_x="5.45454545455" p_y="20.8255159475" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.8221343874" p_y="21.2757973734" />
+	<Vertex p_x="15.5335968379" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.5296442688" p_y="21.2757973734" />
+	<Vertex p_x="23.2411067194" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="25.256916996" p_y="21.2757973734" />
+	<Vertex p_x="26.2055335968" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.5256916996" p_y="21.2757973734" />
+	<Vertex p_x="30.1185770751" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.0158102767" p_y="21.2757973734" />
+	<Vertex p_x="32.6086956522" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="39.4861660079" p_y="21.2757973734" />
+	<Vertex p_x="39.9604743083" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="47.7865612648" p_y="21.2757973734" />
+	<Vertex p_x="48.2608695652" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="21.2757973734" />
+	<Vertex p_x="51.581027668" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.5296442688" p_y="21.2757973734" />
+	<Vertex p_x="53.1225296443" p_y="21.2757973734" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="15.0592885375" p_y="21.3883677298" />
+	<Vertex p_x="15.5335968379" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.5296442688" p_y="21.3883677298" />
+	<Vertex p_x="23.2411067194" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="25.256916996" p_y="21.3883677298" />
+	<Vertex p_x="26.2055335968" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.5256916996" p_y="21.3883677298" />
+	<Vertex p_x="30.1185770751" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.0158102767" p_y="21.3883677298" />
+	<Vertex p_x="32.6086956522" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="39.4861660079" p_y="21.3883677298" />
+	<Vertex p_x="39.9604743083" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="47.7865612648" p_y="21.3883677298" />
+	<Vertex p_x="48.2608695652" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="21.3883677298" />
+	<Vertex p_x="51.581027668" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.5296442688" p_y="21.3883677298" />
+	<Vertex p_x="53.1225296443" p_y="21.3883677298" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.2055335968" p_y="21.6135084428" />
+	<Vertex p_x="58.5770750988" p_y="21.6135084428" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="21.7260787992" />
+	<Vertex p_x="11.3833992095" p_y="21.7260787992" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="21.7260787992" />
+	<Vertex p_x="68.5375494071" p_y="21.7260787992" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="21.8386491557" />
+	<Vertex p_x="11.7391304348" p_y="21.8386491557" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.442687747" p_y="21.8386491557" />
+	<Vertex p_x="58.5770750988" p_y="21.8386491557" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="21.8386491557" />
+	<Vertex p_x="68.5375494071" p_y="21.8386491557" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="80.6324110672" p_y="22.0637898687" />
+	<Vertex p_x="81.581027668" p_y="22.0637898687" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="22.1763602251" />
+	<Vertex p_x="62.6086956522" p_y="22.1763602251" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="22.1763602251" />
+	<Vertex p_x="67.7075098814" p_y="22.1763602251" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="80.6324110672" p_y="22.1763602251" />
+	<Vertex p_x="81.581027668" p_y="22.1763602251" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="22.2889305816" />
+	<Vertex p_x="67.7075098814" p_y="22.2889305816" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.0513833992" p_y="22.2889305816" />
+	<Vertex p_x="89.5256916996" p_y="22.2889305816" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="22.4015009381" />
+	<Vertex p_x="13.3992094862" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.4980237154" p_y="22.4015009381" />
+	<Vertex p_x="19.0909090909" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.9209486166" p_y="22.4015009381" />
+	<Vertex p_x="20.395256917" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.3438735178" p_y="22.4015009381" />
+	<Vertex p_x="23.8339920949" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.3083003953" p_y="22.4015009381" />
+	<Vertex p_x="26.3241106719" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.1541501976" p_y="22.4015009381" />
+	<Vertex p_x="28.4584980237" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.4071146245" p_y="22.4015009381" />
+	<Vertex p_x="32.8458498024" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="33.7944664032" p_y="22.4015009381" />
+	<Vertex p_x="34.2687747036" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.2173913043" p_y="22.4015009381" />
+	<Vertex p_x="41.8577075099" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="42.8063241107" p_y="22.4015009381" />
+	<Vertex p_x="46.6007905138" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.6640316206" p_y="22.4015009381" />
+	<Vertex p_x="56.2055335968" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.442687747" p_y="22.4015009381" />
+	<Vertex p_x="58.5770750988" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="22.5140712946" />
+	<Vertex p_x="9.9604743083" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="22.5140712946" />
+	<Vertex p_x="17.0750988142" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.4980237154" p_y="22.5140712946" />
+	<Vertex p_x="19.0909090909" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.6996047431" p_y="22.5140712946" />
+	<Vertex p_x="23.8339920949" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.3083003953" p_y="22.5140712946" />
+	<Vertex p_x="26.3241106719" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.1541501976" p_y="22.5140712946" />
+	<Vertex p_x="28.4584980237" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.4071146245" p_y="22.5140712946" />
+	<Vertex p_x="32.8458498024" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="33.7944664032" p_y="22.5140712946" />
+	<Vertex p_x="34.2687747036" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.2173913043" p_y="22.5140712946" />
+	<Vertex p_x="41.8577075099" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="42.8063241107" p_y="22.5140712946" />
+	<Vertex p_x="43.6363636364" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.1106719368" p_y="22.5140712946" />
+	<Vertex p_x="46.6007905138" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="22.5140712946" />
+	<Vertex p_x="51.6996047431" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.6640316206" p_y="22.5140712946" />
+	<Vertex p_x="56.2055335968" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.442687747" p_y="22.5140712946" />
+	<Vertex p_x="58.5770750988" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="22.626641651" />
+	<Vertex p_x="13.3992094862" p_y="22.626641651" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.3913043478" p_y="22.7392120075" />
+	<Vertex p_x="28.4584980237" p_y="22.7392120075" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.3913043478" p_y="22.851782364" />
+	<Vertex p_x="28.4584980237" p_y="22.851782364" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="22.9643527205" />
+	<Vertex p_x="9.9604743083" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="22.9643527205" />
+	<Vertex p_x="17.0750988142" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.3596837945" p_y="22.9643527205" />
+	<Vertex p_x="25.0197628458" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.2371541502" p_y="22.9643527205" />
+	<Vertex p_x="30.8300395257" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="22.9643527205" />
+	<Vertex p_x="37.8260869565" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.0434782609" p_y="22.9643527205" />
+	<Vertex p_x="44.7035573123" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.6324110672" p_y="22.9643527205" />
+	<Vertex p_x="56.2055335968" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="22.9643527205" />
+	<Vertex p_x="58.5770750988" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.7154150198" p_y="23.0769230769" />
+	<Vertex p_x="25.0197628458" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.0434782609" p_y="23.0769230769" />
+	<Vertex p_x="44.4664031621" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.6205533597" p_y="23.1894934334" />
+	<Vertex p_x="16.837944664" p_y="23.1894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.6324110672" p_y="23.1894934334" />
+	<Vertex p_x="56.2055335968" p_y="23.1894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.6205533597" p_y="23.3020637899" />
+	<Vertex p_x="16.837944664" p_y="23.3020637899" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="23.4146341463" />
+	<Vertex p_x="6.99604743083" p_y="23.4146341463" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="23.4146341463" />
+	<Vertex p_x="16.2450592885" p_y="23.4146341463" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="23.5272045028" />
+	<Vertex p_x="6.99604743083" p_y="23.5272045028" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.395256917" p_y="23.8649155722" />
+	<Vertex p_x="21.4624505929" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.6996047431" p_y="23.8649155722" />
+	<Vertex p_x="26.442687747" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.0434782609" p_y="23.8649155722" />
+	<Vertex p_x="47.9051383399" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="24.0900562852" />
+	<Vertex p_x="16.6007905138" p_y="24.0900562852" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.1581027668" p_y="24.0900562852" />
+	<Vertex p_x="26.442687747" p_y="24.0900562852" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.0434782609" p_y="24.0900562852" />
+	<Vertex p_x="47.9051383399" p_y="24.0900562852" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="24.0900562852" />
+	<Vertex p_x="54.6640316206" p_y="24.0900562852" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="24.8780487805" />
+	<Vertex p_x="16.837944664" p_y="24.8780487805" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="24.8780487805" />
+	<Vertex p_x="54.5454545455" p_y="24.8780487805" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="24.990619137" />
+	<Vertex p_x="16.837944664" p_y="24.990619137" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="24.990619137" />
+	<Vertex p_x="54.5454545455" p_y="24.990619137" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="25.2157598499" />
+	<Vertex p_x="62.4901185771" p_y="25.2157598499" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="25.3283302064" />
+	<Vertex p_x="62.4901185771" p_y="25.3283302064" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.9011857708" p_y="25.4409005629" />
+	<Vertex p_x="26.442687747" p_y="25.4409005629" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="63.4387351779" p_y="25.6660412758" />
+	<Vertex p_x="67.7075098814" p_y="25.6660412758" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="63.4387351779" p_y="25.7786116323" />
+	<Vertex p_x="69.1304347826" p_y="25.7786116323" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="25.8911819887" />
+	<Vertex p_x="6.99604743083" p_y="25.8911819887" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="25.8911819887" />
+	<Vertex p_x="17.1936758893" p_y="25.8911819887" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="25.8911819887" />
+	<Vertex p_x="54.6640316206" p_y="25.8911819887" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="25.8911819887" />
+	<Vertex p_x="69.1304347826" p_y="25.8911819887" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="26.0037523452" />
+	<Vertex p_x="5.45454545455" p_y="26.0037523452" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="26.0037523452" />
+	<Vertex p_x="89.5256916996" p_y="26.0037523452" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="26.1163227017" />
+	<Vertex p_x="6.99604743083" p_y="26.1163227017" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="36.8774703557" p_y="26.2288930582" />
+	<Vertex p_x="38.1818181818" p_y="26.2288930582" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="26.2288930582" />
+	<Vertex p_x="75.7707509881" p_y="26.2288930582" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.8814229249" p_y="26.3414634146" />
+	<Vertex p_x="31.3043478261" p_y="26.3414634146" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="36.8774703557" p_y="26.3414634146" />
+	<Vertex p_x="38.1818181818" p_y="26.3414634146" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.8023715415" p_y="26.3414634146" />
+	<Vertex p_x="82.8853754941" p_y="26.3414634146" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="26.4540337711" />
+	<Vertex p_x="6.40316205534" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="26.4540337711" />
+	<Vertex p_x="9.9604743083" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.6482213439" p_y="26.4540337711" />
+	<Vertex p_x="25.0197628458" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.8814229249" p_y="26.4540337711" />
+	<Vertex p_x="31.3043478261" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="26.4540337711" />
+	<Vertex p_x="37.7075098814" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.0434782609" p_y="26.4540337711" />
+	<Vertex p_x="45.0592885375" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="26.4540337711" />
+	<Vertex p_x="58.5770750988" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="26.4540337711" />
+	<Vertex p_x="62.1343873518" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="26.4540337711" />
+	<Vertex p_x="69.1304347826" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="26.4540337711" />
+	<Vertex p_x="75.7707509881" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.8023715415" p_y="26.4540337711" />
+	<Vertex p_x="82.8853754941" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="26.4540337711" />
+	<Vertex p_x="89.2885375494" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="26.6791744841" />
+	<Vertex p_x="16.7193675889" p_y="26.6791744841" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="26.6791744841" />
+	<Vertex p_x="54.5454545455" p_y="26.6791744841" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="26.7917448405" />
+	<Vertex p_x="23.3596837945" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="26.7917448405" />
+	<Vertex p_x="30.3557312253" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.7114624506" p_y="26.7917448405" />
+	<Vertex p_x="37.233201581" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.7075098814" p_y="26.7917448405" />
+	<Vertex p_x="44.2292490119" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="26.7917448405" />
+	<Vertex p_x="56.2055335968" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.442687747" p_y="26.7917448405" />
+	<Vertex p_x="58.1027667984" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="26.904315197" />
+	<Vertex p_x="6.40316205534" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="26.904315197" />
+	<Vertex p_x="16.837944664" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.3596837945" p_y="26.904315197" />
+	<Vertex p_x="23.8339920949" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.3557312253" p_y="26.904315197" />
+	<Vertex p_x="30.8300395257" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="26.904315197" />
+	<Vertex p_x="37.7075098814" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.2292490119" p_y="26.904315197" />
+	<Vertex p_x="44.7035573123" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="26.904315197" />
+	<Vertex p_x="58.5770750988" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="26.904315197" />
+	<Vertex p_x="62.1343873518" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="26.904315197" />
+	<Vertex p_x="69.1304347826" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="26.904315197" />
+	<Vertex p_x="75.7707509881" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="26.904315197" />
+	<Vertex p_x="83.7154150198" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="26.904315197" />
+	<Vertex p_x="89.2885375494" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="17.5494071146" p_y="27.0168855535" />
+	<Vertex p_x="21.2252964427" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="25.0197628458" p_y="27.0168855535" />
+	<Vertex p_x="29.8814229249" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="31.5415019763" p_y="27.0168855535" />
+	<Vertex p_x="36.4031620553" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="38.1818181818" p_y="27.0168855535" />
+	<Vertex p_x="43.0434782609" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="46.837944664" p_y="27.0168855535" />
+	<Vertex p_x="50.5138339921" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="27.0168855535" />
+	<Vertex p_x="75.7707509881" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="27.0168855535" />
+	<Vertex p_x="83.7154150198" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="17.0750988142" p_y="27.1294559099" />
+	<Vertex p_x="50.9881422925" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="27.1294559099" />
+	<Vertex p_x="69.1304347826" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="27.2420262664" />
+	<Vertex p_x="6.40316205534" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="27.2420262664" />
+	<Vertex p_x="16.837944664" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="27.2420262664" />
+	<Vertex p_x="51.6996047431" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="27.2420262664" />
+	<Vertex p_x="89.5256916996" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="27.3545966229" />
+	<Vertex p_x="6.40316205534" p_y="27.3545966229" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="28.4803001876" />
+	<Vertex p_x="79.9209486166" p_y="28.4803001876" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="78.9723320158" p_y="28.5928705441" />
+	<Vertex p_x="79.9209486166" p_y="28.5928705441" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="28.818011257" />
+	<Vertex p_x="16.6007905138" p_y="28.818011257" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="28.818011257" />
+	<Vertex p_x="58.5770750988" p_y="28.818011257" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="28.9305816135" />
+	<Vertex p_x="16.6007905138" p_y="28.9305816135" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="28.9305816135" />
+	<Vertex p_x="58.5770750988" p_y="28.9305816135" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="29.1557223265" />
+	<Vertex p_x="79.0909090909" p_y="29.1557223265" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="78.9723320158" p_y="29.2682926829" />
+	<Vertex p_x="79.9209486166" p_y="29.2682926829" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="78.9723320158" p_y="29.3808630394" />
+	<Vertex p_x="79.9209486166" p_y="29.3808630394" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="29.6060037523" />
+	<Vertex p_x="89.5256916996" p_y="29.6060037523" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="29.8311444653" />
+	<Vertex p_x="69.0118577075" p_y="29.8311444653" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="29.9437148218" />
+	<Vertex p_x="17.0750988142" p_y="29.9437148218" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="29.9437148218" />
+	<Vertex p_x="51.4624505929" p_y="29.9437148218" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="29.9437148218" />
+	<Vertex p_x="69.0118577075" p_y="29.9437148218" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="29.9437148218" />
+	<Vertex p_x="89.2885375494" p_y="29.9437148218" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="85.256916996" p_y="30.1688555347" />
+	<Vertex p_x="88.814229249" p_y="30.1688555347" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="30.2814258912" />
+	<Vertex p_x="68.5375494071" p_y="30.2814258912" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="85.256916996" p_y="30.2814258912" />
+	<Vertex p_x="88.814229249" p_y="30.2814258912" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="30.3939962477" />
+	<Vertex p_x="69.0118577075" p_y="30.3939962477" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="30.3939962477" />
+	<Vertex p_x="89.2885375494" p_y="30.3939962477" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.7233201581" p_y="30.5065666041" />
+	<Vertex p_x="15.2964426877" p_y="30.5065666041" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="30.7317073171" />
+	<Vertex p_x="9.7233201581" p_y="30.7317073171" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="30.8442776735" />
+	<Vertex p_x="89.5256916996" p_y="30.8442776735" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="30.95684803" />
+	<Vertex p_x="9.7233201581" p_y="30.95684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.8023715415" p_y="31.0694183865" />
+	<Vertex p_x="84.0711462451" p_y="31.0694183865" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="31.181988743" />
+	<Vertex p_x="9.7233201581" p_y="31.181988743" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.8023715415" p_y="31.181988743" />
+	<Vertex p_x="84.0711462451" p_y="31.181988743" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="31.2945590994" />
+	<Vertex p_x="63.0830039526" p_y="31.2945590994" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="64.1501976285" p_y="31.2945590994" />
+	<Vertex p_x="67.7075098814" p_y="31.2945590994" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="31.4071294559" />
+	<Vertex p_x="16.6007905138" p_y="31.4071294559" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="31.4071294559" />
+	<Vertex p_x="63.0830039526" p_y="31.4071294559" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="64.1501976285" p_y="31.4071294559" />
+	<Vertex p_x="67.7075098814" p_y="31.4071294559" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="31.5196998124" />
+	<Vertex p_x="9.7233201581" p_y="31.5196998124" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="31.7448405253" />
+	<Vertex p_x="10.5533596838" p_y="31.7448405253" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.5533596838" p_y="32.3076923077" />
+	<Vertex p_x="17.0750988142" p_y="32.3076923077" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="32.3076923077" />
+	<Vertex p_x="51.4624505929" p_y="32.3076923077" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="32.5328330206" />
+	<Vertex p_x="5.45454545455" p_y="32.5328330206" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="32.6454033771" />
+	<Vertex p_x="6.40316205534" p_y="32.6454033771" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="32.6454033771" />
+	<Vertex p_x="58.5770750988" p_y="32.6454033771" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="32.7579737336" />
+	<Vertex p_x="6.40316205534" p_y="32.7579737336" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="32.7579737336" />
+	<Vertex p_x="9.9604743083" p_y="32.7579737336" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="32.7579737336" />
+	<Vertex p_x="58.5770750988" p_y="32.7579737336" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="32.8705440901" />
+	<Vertex p_x="9.9604743083" p_y="32.8705440901" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="32.9831144465" />
+	<Vertex p_x="6.40316205534" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="32.9831144465" />
+	<Vertex p_x="9.9604743083" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="32.9831144465" />
+	<Vertex p_x="16.837944664" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="32.9831144465" />
+	<Vertex p_x="51.8181818182" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="32.9831144465" />
+	<Vertex p_x="58.5770750988" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="32.9831144465" />
+	<Vertex p_x="62.1343873518" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="33.2082551595" />
+	<Vertex p_x="9.604743083" p_y="33.2082551595" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="33.2082551595" />
+	<Vertex p_x="16.3636363636" p_y="33.2082551595" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="33.4333958724" />
+	<Vertex p_x="6.40316205534" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="33.4333958724" />
+	<Vertex p_x="9.9604743083" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="33.4333958724" />
+	<Vertex p_x="16.837944664" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="33.4333958724" />
+	<Vertex p_x="51.8181818182" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="33.4333958724" />
+	<Vertex p_x="58.5770750988" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="33.4333958724" />
+	<Vertex p_x="62.1343873518" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="33.6585365854" />
+	<Vertex p_x="6.40316205534" p_y="33.6585365854" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="33.7711069418" />
+	<Vertex p_x="6.40316205534" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="33.7711069418" />
+	<Vertex p_x="58.5770750988" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="33.8836772983" />
+	<Vertex p_x="5.45454545455" p_y="33.8836772983" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="33.8836772983" />
+	<Vertex p_x="58.5770750988" p_y="33.8836772983" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="34.1088180113" />
+	<Vertex p_x="17.0750988142" p_y="34.1088180113" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="34.1088180113" />
+	<Vertex p_x="51.4624505929" p_y="34.1088180113" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="34.5590994371" />
+	<Vertex p_x="67.7075098814" p_y="34.5590994371" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.0513833992" p_y="34.5590994371" />
+	<Vertex p_x="89.5256916996" p_y="34.5590994371" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="34.6716697936" />
+	<Vertex p_x="62.6086956522" p_y="34.6716697936" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="34.6716697936" />
+	<Vertex p_x="67.7075098814" p_y="34.6716697936" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="34.8968105066" />
+	<Vertex p_x="68.5375494071" p_y="34.8968105066" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="35.009380863" />
+	<Vertex p_x="16.6007905138" p_y="35.009380863" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="35.009380863" />
+	<Vertex p_x="68.5375494071" p_y="35.009380863" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="35.9099437148" />
+	<Vertex p_x="16.6007905138" p_y="35.9099437148" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.8498023715" p_y="35.9099437148" />
+	<Vertex p_x="58.5770750988" p_y="35.9099437148" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.8498023715" p_y="36.0225140713" />
+	<Vertex p_x="58.5770750988" p_y="36.0225140713" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.1818181818" p_y="36.2476547842" />
+	<Vertex p_x="69.7233201581" p_y="36.2476547842" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.4624505929" p_y="36.2476547842" />
+	<Vertex p_x="82.766798419" p_y="36.2476547842" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="36.3602251407" />
+	<Vertex p_x="59.4071146245" p_y="36.3602251407" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.4743083004" p_y="36.3602251407" />
+	<Vertex p_x="62.6086956522" p_y="36.3602251407" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="36.3602251407" />
+	<Vertex p_x="69.0118577075" p_y="36.3602251407" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="36.3602251407" />
+	<Vertex p_x="76.1264822134" p_y="36.3602251407" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.4624505929" p_y="36.3602251407" />
+	<Vertex p_x="82.766798419" p_y="36.3602251407" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.3399209486" p_y="36.3602251407" />
+	<Vertex p_x="89.2885375494" p_y="36.3602251407" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="36.4727954972" />
+	<Vertex p_x="59.4071146245" p_y="36.4727954972" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.4743083004" p_y="36.4727954972" />
+	<Vertex p_x="62.1343873518" p_y="36.4727954972" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="36.4727954972" />
+	<Vertex p_x="69.0118577075" p_y="36.4727954972" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="36.4727954972" />
+	<Vertex p_x="75.652173913" p_y="36.4727954972" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="36.4727954972" />
+	<Vertex p_x="82.4110671937" p_y="36.4727954972" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.814229249" p_y="36.4727954972" />
+	<Vertex p_x="89.2885375494" p_y="36.4727954972" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="36.6979362101" />
+	<Vertex p_x="16.6007905138" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="36.6979362101" />
+	<Vertex p_x="68.5375494071" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="36.6979362101" />
+	<Vertex p_x="75.1778656126" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.5335968379" p_y="36.6979362101" />
+	<Vertex p_x="82.0553359684" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.4110671937" p_y="36.6979362101" />
+	<Vertex p_x="88.814229249" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="36.8105065666" />
+	<Vertex p_x="62.1343873518" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="36.8105065666" />
+	<Vertex p_x="69.0118577075" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="36.8105065666" />
+	<Vertex p_x="75.652173913" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="36.8105065666" />
+	<Vertex p_x="82.4110671937" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.814229249" p_y="36.8105065666" />
+	<Vertex p_x="89.2885375494" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="63.2015810277" p_y="36.9230769231" />
+	<Vertex p_x="68.1818181818" p_y="36.9230769231" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.8418972332" p_y="36.9230769231" />
+	<Vertex p_x="74.8221343874" p_y="36.9230769231" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="76.3636363636" p_y="36.9230769231" />
+	<Vertex p_x="81.3438735178" p_y="36.9230769231" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.8853754941" p_y="36.9230769231" />
+	<Vertex p_x="87.8656126482" p_y="36.9230769231" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.371541502" p_y="37.0356472795" />
+	<Vertex p_x="89.5256916996" p_y="37.0356472795" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="63.2015810277" p_y="37.148217636" />
+	<Vertex p_x="68.1818181818" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.7233201581" p_y="37.148217636" />
+	<Vertex p_x="74.8221343874" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="76.3636363636" p_y="37.148217636" />
+	<Vertex p_x="81.3438735178" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.8853754941" p_y="37.148217636" />
+	<Vertex p_x="87.8656126482" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="37.5984990619" />
+	<Vertex p_x="16.6007905138" p_y="37.5984990619" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="37.5984990619" />
+	<Vertex p_x="62.0158102767" p_y="37.5984990619" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="37.7110694184" />
+	<Vertex p_x="62.371541502" p_y="37.7110694184" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="38.8367729831" />
+	<Vertex p_x="17.0750988142" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="38.8367729831" />
+	<Vertex p_x="51.4624505929" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="38.8367729831" />
+	<Vertex p_x="62.371541502" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="38.9493433396" />
+	<Vertex p_x="51.9367588933" p_y="38.9493433396" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="38.9493433396" />
+	<Vertex p_x="62.0158102767" p_y="38.9493433396" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="39.0619136961" />
+	<Vertex p_x="5.45454545455" p_y="39.0619136961" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="39.0619136961" />
+	<Vertex p_x="51.9367588933" p_y="39.0619136961" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="39.1744840525" />
+	<Vertex p_x="58.814229249" p_y="39.1744840525" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="39.287054409" />
+	<Vertex p_x="6.40316205534" p_y="39.287054409" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="39.3996247655" />
+	<Vertex p_x="5.92885375494" p_y="39.3996247655" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="39.512195122" />
+	<Vertex p_x="6.87747035573" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="39.512195122" />
+	<Vertex p_x="9.9604743083" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="39.512195122" />
+	<Vertex p_x="16.837944664" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="39.512195122" />
+	<Vertex p_x="51.9367588933" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="39.512195122" />
+	<Vertex p_x="58.4584980237" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="39.512195122" />
+	<Vertex p_x="62.1343873518" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="39.6247654784" />
+	<Vertex p_x="6.87747035573" p_y="39.6247654784" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="39.6247654784" />
+	<Vertex p_x="9.604743083" p_y="39.6247654784" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="39.9624765478" />
+	<Vertex p_x="6.40316205534" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="39.9624765478" />
+	<Vertex p_x="9.9604743083" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="39.9624765478" />
+	<Vertex p_x="16.837944664" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="39.9624765478" />
+	<Vertex p_x="51.9367588933" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="39.9624765478" />
+	<Vertex p_x="58.4584980237" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="39.9624765478" />
+	<Vertex p_x="62.1343873518" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.8300395257" p_y="40.0750469043" />
+	<Vertex p_x="61.6600790514" p_y="40.0750469043" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.8300395257" p_y="40.1876172608" />
+	<Vertex p_x="61.6600790514" p_y="40.1876172608" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="40.4127579737" />
+	<Vertex p_x="5.45454545455" p_y="40.4127579737" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="40.4127579737" />
+	<Vertex p_x="6.40316205534" p_y="40.4127579737" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="40.5253283302" />
+	<Vertex p_x="6.40316205534" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="40.5253283302" />
+	<Vertex p_x="16.6007905138" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="40.5253283302" />
+	<Vertex p_x="51.9367588933" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="40.5253283302" />
+	<Vertex p_x="59.1699604743" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.8300395257" p_y="40.5253283302" />
+	<Vertex p_x="62.0158102767" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="40.6378986867" />
+	<Vertex p_x="17.0750988142" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="40.6378986867" />
+	<Vertex p_x="51.9367588933" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.8300395257" p_y="40.6378986867" />
+	<Vertex p_x="62.371541502" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="40.7504690432" />
+	<Vertex p_x="16.6007905138" p_y="40.7504690432" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="40.8630393996" />
+	<Vertex p_x="11.5019762846" p_y="40.8630393996" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="42.4390243902" />
+	<Vertex p_x="7.47035573123" p_y="42.4390243902" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="42.5515947467" />
+	<Vertex p_x="7.47035573123" p_y="42.5515947467" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="42.8893058161" />
+	<Vertex p_x="5.57312252964" p_y="42.8893058161" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="43.0018761726" />
+	<Vertex p_x="5.57312252964" p_y="43.0018761726" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="44.9155722326" />
+	<Vertex p_x="8.53754940711" p_y="44.9155722326" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="45.0281425891" />
+	<Vertex p_x="8.53754940711" p_y="45.0281425891" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="45.3658536585" />
+	<Vertex p_x="17.0750988142" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="45.3658536585" />
+	<Vertex p_x="59.0513833992" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.4743083004" p_y="45.3658536585" />
+	<Vertex p_x="62.371541502" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="45.478424015" />
+	<Vertex p_x="59.0513833992" p_y="45.478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.4743083004" p_y="45.478424015" />
+	<Vertex p_x="61.5415019763" p_y="45.478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="45.5909943715" />
+	<Vertex p_x="5.57312252964" p_y="45.5909943715" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="45.703564728" />
+	<Vertex p_x="6.40316205534" p_y="45.703564728" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="45.8161350844" />
+	<Vertex p_x="6.40316205534" p_y="45.8161350844" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="46.0412757974" />
+	<Vertex p_x="6.40316205534" p_y="46.0412757974" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="46.0412757974" />
+	<Vertex p_x="16.837944664" p_y="46.0412757974" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="46.0412757974" />
+	<Vertex p_x="51.8181818182" p_y="46.0412757974" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="46.0412757974" />
+	<Vertex p_x="62.1343873518" p_y="46.0412757974" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="46.3789868668" />
+	<Vertex p_x="6.40316205534" p_y="46.3789868668" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="46.3789868668" />
+	<Vertex p_x="16.837944664" p_y="46.3789868668" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="46.3789868668" />
+	<Vertex p_x="51.8181818182" p_y="46.3789868668" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="46.3789868668" />
+	<Vertex p_x="62.1343873518" p_y="46.3789868668" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="46.4915572233" />
+	<Vertex p_x="6.40316205534" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="46.4915572233" />
+	<Vertex p_x="16.837944664" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="46.4915572233" />
+	<Vertex p_x="51.8181818182" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="46.4915572233" />
+	<Vertex p_x="62.1343873518" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="46.6041275797" />
+	<Vertex p_x="6.40316205534" p_y="46.6041275797" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="46.7166979362" />
+	<Vertex p_x="6.40316205534" p_y="46.7166979362" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="47.1669793621" />
+	<Vertex p_x="5.45454545455" p_y="47.1669793621" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="47.1669793621" />
+	<Vertex p_x="17.0750988142" p_y="47.1669793621" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="47.1669793621" />
+	<Vertex p_x="51.4624505929" p_y="47.1669793621" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.8972332016" p_y="47.1669793621" />
+	<Vertex p_x="62.371541502" p_y="47.1669793621" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.8972332016" p_y="48.2926829268" />
+	<Vertex p_x="62.371541502" p_y="48.2926829268" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.8972332016" p_y="48.4052532833" />
+	<Vertex p_x="62.371541502" p_y="48.4052532833" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="51.894934334" />
+	<Vertex p_x="5.45454545455" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="51.894934334" />
+	<Vertex p_x="17.0750988142" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="51.894934334" />
+	<Vertex p_x="51.4624505929" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.8972332016" p_y="51.894934334" />
+	<Vertex p_x="62.371541502" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="52.7954971857" />
+	<Vertex p_x="16.6007905138" p_y="52.7954971857" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.4229249012" p_y="52.7954971857" />
+	<Vertex p_x="61.8972332016" p_y="52.7954971857" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="52.9080675422" />
+	<Vertex p_x="16.6007905138" p_y="52.9080675422" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.4229249012" p_y="52.9080675422" />
+	<Vertex p_x="61.8972332016" p_y="52.9080675422" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="53.0206378987" />
+	<Vertex p_x="6.40316205534" p_y="53.0206378987" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="53.0206378987" />
+	<Vertex p_x="52.0553359684" p_y="53.0206378987" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="53.1332082552" />
+	<Vertex p_x="6.40316205534" p_y="53.1332082552" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.2727272727" p_y="53.1332082552" />
+	<Vertex p_x="58.5770750988" p_y="53.1332082552" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="53.2457786116" />
+	<Vertex p_x="6.75889328063" p_y="53.2457786116" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.13043478261" p_y="53.2457786116" />
+	<Vertex p_x="10.4347826087" p_y="53.2457786116" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="53.2457786116" />
+	<Vertex p_x="16.837944664" p_y="53.2457786116" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="53.2457786116" />
+	<Vertex p_x="51.6996047431" p_y="53.2457786116" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.2727272727" p_y="53.2457786116" />
+	<Vertex p_x="58.5770750988" p_y="53.2457786116" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="53.2457786116" />
+	<Vertex p_x="62.1343873518" p_y="53.2457786116" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="53.3583489681" />
+	<Vertex p_x="6.75889328063" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="53.3583489681" />
+	<Vertex p_x="9.9604743083" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="53.3583489681" />
+	<Vertex p_x="16.837944664" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="53.3583489681" />
+	<Vertex p_x="51.6996047431" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="53.3583489681" />
+	<Vertex p_x="58.5770750988" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="53.3583489681" />
+	<Vertex p_x="62.1343873518" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="53.5834896811" />
+	<Vertex p_x="5.92885375494" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="53.5834896811" />
+	<Vertex p_x="9.604743083" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="53.5834896811" />
+	<Vertex p_x="16.3636363636" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="53.5834896811" />
+	<Vertex p_x="58.1027667984" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="53.5834896811" />
+	<Vertex p_x="61.6600790514" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="53.6960600375" />
+	<Vertex p_x="6.40316205534" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="53.6960600375" />
+	<Vertex p_x="9.9604743083" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="53.6960600375" />
+	<Vertex p_x="16.837944664" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="53.6960600375" />
+	<Vertex p_x="51.6996047431" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="53.6960600375" />
+	<Vertex p_x="58.5770750988" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="53.6960600375" />
+	<Vertex p_x="62.1343873518" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.82608695652" p_y="53.808630394" />
+	<Vertex p_x="9.13043478261" p_y="53.808630394" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.4347826087" p_y="53.808630394" />
+	<Vertex p_x="14.2292490119" p_y="53.808630394" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.4782608696" p_y="53.808630394" />
+	<Vertex p_x="57.2727272727" p_y="53.808630394" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="53.808630394" />
+	<Vertex p_x="59.8814229249" p_y="53.808630394" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.09881422925" p_y="53.9212007505" />
+	<Vertex p_x="17.0750988142" p_y="53.9212007505" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="53.9212007505" />
+	<Vertex p_x="62.371541502" p_y="53.9212007505" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.82608695652" p_y="54.0337711069" />
+	<Vertex p_x="9.13043478261" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.3162055336" p_y="54.0337711069" />
+	<Vertex p_x="14.347826087" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.3596837945" p_y="54.0337711069" />
+	<Vertex p_x="57.3913043478" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="54.0337711069" />
+	<Vertex p_x="59.8814229249" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="0.237154150198" p_y="59.5497185741" />
+	<Vertex p_x="17.0750988142" p_y="59.5497185741" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="59.5497185741" />
+	<Vertex p_x="69.1304347826" p_y="59.5497185741" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="0.237154150198" p_y="0.337711069418" />
+	<Vertex p_x="0.237154150198" p_y="59.5497185741" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="14.296435272" />
+	<Vertex p_x="4.98023715415" p_y="19.5872420263" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="20.8255159475" />
+	<Vertex p_x="4.98023715415" p_y="26.0037523452" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="27.3545966229" />
+	<Vertex p_x="4.98023715415" p_y="32.5328330206" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="33.8836772983" />
+	<Vertex p_x="4.98023715415" p_y="39.0619136961" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="40.4127579737" />
+	<Vertex p_x="4.98023715415" p_y="45.5909943715" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="4.98023715415" p_y="47.0544090056" />
+	<Vertex p_x="4.98023715415" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.09881422925" p_y="12.4953095685" />
+	<Vertex p_x="5.09881422925" p_y="53.9212007505" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.21739130435" p_y="14.4090056285" />
+	<Vertex p_x="5.21739130435" p_y="19.4746716698" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.21739130435" p_y="20.8255159475" />
+	<Vertex p_x="5.21739130435" p_y="26.0037523452" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.21739130435" p_y="27.3545966229" />
+	<Vertex p_x="5.21739130435" p_y="32.5328330206" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.21739130435" p_y="33.8836772983" />
+	<Vertex p_x="5.21739130435" p_y="39.0619136961" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.21739130435" p_y="40.4127579737" />
+	<Vertex p_x="5.21739130435" p_y="45.5909943715" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.21739130435" p_y="47.1669793621" />
+	<Vertex p_x="5.21739130435" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="12.8330206379" />
+	<Vertex p_x="5.45454545455" p_y="26.0037523452" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="27.3545966229" />
+	<Vertex p_x="5.45454545455" p_y="32.6454033771" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.45454545455" p_y="33.7711069418" />
+	<Vertex p_x="5.45454545455" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.57312252964" p_y="42.4390243902" />
+	<Vertex p_x="5.57312252964" p_y="43.0018761726" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.57312252964" p_y="44.9155722326" />
+	<Vertex p_x="5.57312252964" p_y="45.8161350844" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.69169960474" p_y="6.75422138837" />
+	<Vertex p_x="5.69169960474" p_y="12.4953095685" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="9.56848030019" />
+	<Vertex p_x="5.81027667984" p_y="11.9324577861" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="19.3621013133" />
+	<Vertex p_x="5.81027667984" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="25.8911819887" />
+	<Vertex p_x="5.81027667984" p_y="27.3545966229" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="32.6454033771" />
+	<Vertex p_x="5.81027667984" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.81027667984" p_y="39.287054409" />
+	<Vertex p_x="5.81027667984" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="6.97936210131" />
+	<Vertex p_x="5.92885375494" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="13.5084427767" />
+	<Vertex p_x="5.92885375494" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="19.3621013133" />
+	<Vertex p_x="5.92885375494" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="26.1163227017" />
+	<Vertex p_x="5.92885375494" p_y="27.3545966229" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="32.6454033771" />
+	<Vertex p_x="5.92885375494" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="39.287054409" />
+	<Vertex p_x="5.92885375494" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="46.0412757974" />
+	<Vertex p_x="5.92885375494" p_y="46.7166979362" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="5.92885375494" p_y="53.0206378987" />
+	<Vertex p_x="5.92885375494" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.04743083004" p_y="7.4296435272" />
+	<Vertex p_x="6.04743083004" p_y="12.9455909944" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="6.97936210131" />
+	<Vertex p_x="6.28458498024" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="13.5084427767" />
+	<Vertex p_x="6.28458498024" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="19.3621013133" />
+	<Vertex p_x="6.28458498024" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="26.1163227017" />
+	<Vertex p_x="6.28458498024" p_y="27.3545966229" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="32.6454033771" />
+	<Vertex p_x="6.28458498024" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="39.287054409" />
+	<Vertex p_x="6.28458498024" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="45.703564728" />
+	<Vertex p_x="6.28458498024" p_y="46.7166979362" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.28458498024" p_y="53.0206378987" />
+	<Vertex p_x="6.28458498024" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="6.97936210131" />
+	<Vertex p_x="6.40316205534" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="12.9455909944" />
+	<Vertex p_x="6.40316205534" p_y="14.4090056285" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="19.3621013133" />
+	<Vertex p_x="6.40316205534" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="26.1163227017" />
+	<Vertex p_x="6.40316205534" p_y="27.3545966229" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="32.6454033771" />
+	<Vertex p_x="6.40316205534" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="39.287054409" />
+	<Vertex p_x="6.40316205534" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="45.703564728" />
+	<Vertex p_x="6.40316205534" p_y="46.7166979362" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.40316205534" p_y="53.0206378987" />
+	<Vertex p_x="6.40316205534" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.52173913043" p_y="7.31707317073" />
+	<Vertex p_x="6.52173913043" p_y="8.66791744841" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.87747035573" p_y="15.5347091932" />
+	<Vertex p_x="6.87747035573" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.87747035573" p_y="19.0243902439" />
+	<Vertex p_x="6.87747035573" p_y="22.2889305816" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.87747035573" p_y="23.1894934334" />
+	<Vertex p_x="6.87747035573" p_y="23.6397748593" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.87747035573" p_y="24.5403377111" />
+	<Vertex p_x="6.87747035573" p_y="25.8911819887" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.99604743083" p_y="15.5347091932" />
+	<Vertex p_x="6.99604743083" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.99604743083" p_y="19.0243902439" />
+	<Vertex p_x="6.99604743083" p_y="22.2889305816" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.99604743083" p_y="23.1894934334" />
+	<Vertex p_x="6.99604743083" p_y="23.6397748593" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="6.99604743083" p_y="24.5403377111" />
+	<Vertex p_x="6.99604743083" p_y="26.1163227017" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="7.82608695652" p_y="53.5834896811" />
+	<Vertex p_x="7.82608695652" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="30.0562851782" />
+	<Vertex p_x="8.41897233202" p_y="38.4990619137" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="39.512195122" />
+	<Vertex p_x="8.41897233202" p_y="40.8630393996" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.41897233202" p_y="42.4390243902" />
+	<Vertex p_x="8.41897233202" p_y="45.0281425891" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.53754940711" p_y="30.0562851782" />
+	<Vertex p_x="8.53754940711" p_y="38.4990619137" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.53754940711" p_y="39.512195122" />
+	<Vertex p_x="8.53754940711" p_y="40.8630393996" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="8.53754940711" p_y="42.4390243902" />
+	<Vertex p_x="8.53754940711" p_y="45.0281425891" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.13043478261" p_y="7.09193245779" />
+	<Vertex p_x="9.13043478261" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.13043478261" p_y="53.2457786116" />
+	<Vertex p_x="9.13043478261" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.24901185771" p_y="7.09193245779" />
+	<Vertex p_x="9.24901185771" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="6.97936210131" />
+	<Vertex p_x="9.48616600791" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="11.3696060038" />
+	<Vertex p_x="9.48616600791" p_y="16.5478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="17.6735459662" />
+	<Vertex p_x="9.48616600791" p_y="18.4615384615" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="21.0506566604" />
+	<Vertex p_x="9.48616600791" p_y="28.9305816135" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="32.7579737336" />
+	<Vertex p_x="9.48616600791" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="39.512195122" />
+	<Vertex p_x="9.48616600791" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.48616600791" p_y="53.2457786116" />
+	<Vertex p_x="9.48616600791" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="6.97936210131" />
+	<Vertex p_x="9.604743083" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="13.5084427767" />
+	<Vertex p_x="9.604743083" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="17.8986866792" />
+	<Vertex p_x="9.604743083" p_y="18.4615384615" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="21.0506566604" />
+	<Vertex p_x="9.604743083" p_y="28.9305816135" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="30.6191369606" />
+	<Vertex p_x="9.604743083" p_y="31.7448405253" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="32.7579737336" />
+	<Vertex p_x="9.604743083" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="39.512195122" />
+	<Vertex p_x="9.604743083" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.604743083" p_y="53.2457786116" />
+	<Vertex p_x="9.604743083" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.7233201581" p_y="11.3696060038" />
+	<Vertex p_x="9.7233201581" p_y="13.5084427767" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.7233201581" p_y="13.8461538462" />
+	<Vertex p_x="9.7233201581" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.7233201581" p_y="15.1969981238" />
+	<Vertex p_x="9.7233201581" p_y="16.5478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.7233201581" p_y="28.818011257" />
+	<Vertex p_x="9.7233201581" p_y="31.7448405253" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="6.97936210131" />
+	<Vertex p_x="9.9604743083" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="13.5084427767" />
+	<Vertex p_x="9.9604743083" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="17.8986866792" />
+	<Vertex p_x="9.9604743083" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="22.4015009381" />
+	<Vertex p_x="9.9604743083" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="26.4540337711" />
+	<Vertex p_x="9.9604743083" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="32.7579737336" />
+	<Vertex p_x="9.9604743083" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="39.512195122" />
+	<Vertex p_x="9.9604743083" p_y="40.8630393996" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="9.9604743083" p_y="53.2457786116" />
+	<Vertex p_x="9.9604743083" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.3162055336" p_y="7.09193245779" />
+	<Vertex p_x="10.3162055336" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.4347826087" p_y="6.75422138837" />
+	<Vertex p_x="10.4347826087" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.4347826087" p_y="53.2457786116" />
+	<Vertex p_x="10.4347826087" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="10.5533596838" p_y="31.7448405253" />
+	<Vertex p_x="10.5533596838" p_y="32.3076923077" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.3833992095" p_y="15.1969981238" />
+	<Vertex p_x="11.3833992095" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.6205533597" p_y="21.8386491557" />
+	<Vertex p_x="11.6205533597" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.6205533597" p_y="22.626641651" />
+	<Vertex p_x="11.6205533597" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.7391304348" p_y="21.6135084428" />
+	<Vertex p_x="11.7391304348" p_y="22.4015009381" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="11.7391304348" p_y="22.626641651" />
+	<Vertex p_x="11.7391304348" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.0948616601" p_y="11.3696060038" />
+	<Vertex p_x="12.0948616601" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.3320158103" p_y="11.3696060038" />
+	<Vertex p_x="12.3320158103" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.4505928854" p_y="13.1707317073" />
+	<Vertex p_x="12.4505928854" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.5691699605" p_y="11.3696060038" />
+	<Vertex p_x="12.5691699605" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.6877470356" p_y="13.1707317073" />
+	<Vertex p_x="12.6877470356" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.8063241107" p_y="7.8799249531" />
+	<Vertex p_x="12.8063241107" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.9249011858" p_y="7.8799249531" />
+	<Vertex p_x="12.9249011858" p_y="11.4821763602" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.9249011858" p_y="13.1707317073" />
+	<Vertex p_x="12.9249011858" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="12.9249011858" p_y="15.1969981238" />
+	<Vertex p_x="12.9249011858" p_y="18.1238273921" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.0434782609" p_y="11.3696060038" />
+	<Vertex p_x="13.0434782609" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.0434782609" p_y="14.8592870544" />
+	<Vertex p_x="13.0434782609" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.162055336" p_y="15.4221388368" />
+	<Vertex p_x="13.162055336" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.2806324111" p_y="11.3696060038" />
+	<Vertex p_x="13.2806324111" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.2806324111" p_y="15.7598499062" />
+	<Vertex p_x="13.2806324111" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="11.3696060038" />
+	<Vertex p_x="13.5177865613" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.5177865613" p_y="23.1894934334" />
+	<Vertex p_x="13.5177865613" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.7549407115" p_y="13.1707317073" />
+	<Vertex p_x="13.7549407115" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.7549407115" p_y="23.1894934334" />
+	<Vertex p_x="13.7549407115" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.8735177866" p_y="11.3696060038" />
+	<Vertex p_x="13.8735177866" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.9920948617" p_y="13.1707317073" />
+	<Vertex p_x="13.9920948617" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="13.9920948617" p_y="23.1894934334" />
+	<Vertex p_x="13.9920948617" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.1106719368" p_y="11.3696060038" />
+	<Vertex p_x="14.1106719368" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.2292490119" p_y="13.1707317073" />
+	<Vertex p_x="14.2292490119" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.2292490119" p_y="53.5834896811" />
+	<Vertex p_x="14.2292490119" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.347826087" p_y="11.3696060038" />
+	<Vertex p_x="14.347826087" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.347826087" p_y="23.1894934334" />
+	<Vertex p_x="14.347826087" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.5849802372" p_y="11.3696060038" />
+	<Vertex p_x="14.5849802372" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.5849802372" p_y="23.1894934334" />
+	<Vertex p_x="14.5849802372" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.8221343874" p_y="11.3696060038" />
+	<Vertex p_x="14.8221343874" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.8221343874" p_y="21.2757973734" />
+	<Vertex p_x="14.8221343874" p_y="22.626641651" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="14.8221343874" p_y="23.1894934334" />
+	<Vertex p_x="14.8221343874" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="15.0592885375" p_y="21.2757973734" />
+	<Vertex p_x="15.0592885375" p_y="22.626641651" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="15.1778656126" p_y="23.1894934334" />
+	<Vertex p_x="15.1778656126" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="15.2964426877" p_y="28.818011257" />
+	<Vertex p_x="15.2964426877" p_y="30.5065666041" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="15.4150197628" p_y="23.1894934334" />
+	<Vertex p_x="15.4150197628" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="15.652173913" p_y="23.1894934334" />
+	<Vertex p_x="15.652173913" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="7.09193245779" />
+	<Vertex p_x="16.0079051383" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="9.79362101313" />
+	<Vertex p_x="16.0079051383" p_y="11.4821763602" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="23.1894934334" />
+	<Vertex p_x="16.0079051383" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.0079051383" p_y="52.7954971857" />
+	<Vertex p_x="16.0079051383" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.1264822134" p_y="7.09193245779" />
+	<Vertex p_x="16.1264822134" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.1264822134" p_y="9.79362101313" />
+	<Vertex p_x="16.1264822134" p_y="11.4821763602" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.1264822134" p_y="15.7598499062" />
+	<Vertex p_x="16.1264822134" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.1264822134" p_y="52.7954971857" />
+	<Vertex p_x="16.1264822134" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="23.1894934334" />
+	<Vertex p_x="16.2450592885" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="32.5328330206" />
+	<Vertex p_x="16.2450592885" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="38.9493433396" />
+	<Vertex p_x="16.2450592885" p_y="40.7504690432" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.2450592885" p_y="45.3658536585" />
+	<Vertex p_x="16.2450592885" p_y="47.1669793621" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="6.97936210131" />
+	<Vertex p_x="16.3636363636" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="15.1969981238" />
+	<Vertex p_x="16.3636363636" p_y="15.6472795497" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="22.5140712946" />
+	<Vertex p_x="16.3636363636" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="26.6791744841" />
+	<Vertex p_x="16.3636363636" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="32.5328330206" />
+	<Vertex p_x="16.3636363636" p_y="33.7711069418" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="38.9493433396" />
+	<Vertex p_x="16.3636363636" p_y="40.7504690432" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="45.3658536585" />
+	<Vertex p_x="16.3636363636" p_y="47.1669793621" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.3636363636" p_y="53.2457786116" />
+	<Vertex p_x="16.3636363636" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.4822134387" p_y="11.3696060038" />
+	<Vertex p_x="16.4822134387" p_y="14.9718574109" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.4822134387" p_y="15.6472795497" />
+	<Vertex p_x="16.4822134387" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.4822134387" p_y="24.8780487805" />
+	<Vertex p_x="16.4822134387" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="7.4296435272" />
+	<Vertex p_x="16.6007905138" p_y="8.78048780488" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="9.79362101313" />
+	<Vertex p_x="16.6007905138" p_y="11.3696060038" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="14.8592870544" />
+	<Vertex p_x="16.6007905138" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="27.2420262664" />
+	<Vertex p_x="16.6007905138" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="33.4333958724" />
+	<Vertex p_x="16.6007905138" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="39.9624765478" />
+	<Vertex p_x="16.6007905138" p_y="46.0412757974" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.6007905138" p_y="46.3789868668" />
+	<Vertex p_x="16.6007905138" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.7193675889" p_y="7.4296435272" />
+	<Vertex p_x="16.7193675889" p_y="8.78048780488" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.7193675889" p_y="9.79362101313" />
+	<Vertex p_x="16.7193675889" p_y="14.8592870544" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.7193675889" p_y="15.6472795497" />
+	<Vertex p_x="16.7193675889" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.7193675889" p_y="21.2757973734" />
+	<Vertex p_x="16.7193675889" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.7193675889" p_y="24.8780487805" />
+	<Vertex p_x="16.7193675889" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="6.97936210131" />
+	<Vertex p_x="16.837944664" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="15.1969981238" />
+	<Vertex p_x="16.837944664" p_y="15.6472795497" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="21.2757973734" />
+	<Vertex p_x="16.837944664" p_y="23.3020637899" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="26.7917448405" />
+	<Vertex p_x="16.837944664" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="29.9437148218" />
+	<Vertex p_x="16.837944664" p_y="32.3076923077" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="32.9831144465" />
+	<Vertex p_x="16.837944664" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="34.1088180113" />
+	<Vertex p_x="16.837944664" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="39.512195122" />
+	<Vertex p_x="16.837944664" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="40.6378986867" />
+	<Vertex p_x="16.837944664" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="46.0412757974" />
+	<Vertex p_x="16.837944664" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="47.1669793621" />
+	<Vertex p_x="16.837944664" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.837944664" p_y="53.2457786116" />
+	<Vertex p_x="16.837944664" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="15.7598499062" />
+	<Vertex p_x="16.9565217391" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="22.4015009381" />
+	<Vertex p_x="16.9565217391" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="29.9437148218" />
+	<Vertex p_x="16.9565217391" p_y="32.3076923077" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="34.1088180113" />
+	<Vertex p_x="16.9565217391" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="40.6378986867" />
+	<Vertex p_x="16.9565217391" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="16.9565217391" p_y="47.1669793621" />
+	<Vertex p_x="16.9565217391" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="17.0750988142" p_y="0.337711069418" />
+	<Vertex p_x="17.0750988142" p_y="6.75422138837" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="17.0750988142" p_y="22.5140712946" />
+	<Vertex p_x="17.0750988142" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="17.0750988142" p_y="27.1294559099" />
+	<Vertex p_x="17.0750988142" p_y="59.5497185741" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="17.3122529644" p_y="7.09193245779" />
+	<Vertex p_x="17.3122529644" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.4980237154" p_y="14.7467166979" />
+	<Vertex p_x="18.4980237154" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.6166007905" p_y="14.7467166979" />
+	<Vertex p_x="18.6166007905" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.7351778656" p_y="22.4015009381" />
+	<Vertex p_x="18.7351778656" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="18.8537549407" p_y="22.4015009381" />
+	<Vertex p_x="18.8537549407" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.8023715415" p_y="15.7598499062" />
+	<Vertex p_x="19.8023715415" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="19.9209486166" p_y="15.7598499062" />
+	<Vertex p_x="19.9209486166" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.0395256917" p_y="15.0844277674" />
+	<Vertex p_x="20.0395256917" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.1581027668" p_y="15.0844277674" />
+	<Vertex p_x="20.1581027668" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.1581027668" p_y="22.4015009381" />
+	<Vertex p_x="20.1581027668" p_y="24.0900562852" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.2766798419" p_y="15.7598499062" />
+	<Vertex p_x="20.2766798419" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.395256917" p_y="22.4015009381" />
+	<Vertex p_x="20.395256917" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.5138339921" p_y="24.0900562852" />
+	<Vertex p_x="20.5138339921" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="20.6324110672" p_y="24.0900562852" />
+	<Vertex p_x="20.6324110672" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.4624505929" p_y="22.4015009381" />
+	<Vertex p_x="21.4624505929" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.581027668" p_y="24.0900562852" />
+	<Vertex p_x="21.581027668" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="21.6996047431" p_y="22.4015009381" />
+	<Vertex p_x="21.6996047431" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.2924901186" p_y="24.0900562852" />
+	<Vertex p_x="22.2924901186" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.4110671937" p_y="24.0900562852" />
+	<Vertex p_x="22.4110671937" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.5296442688" p_y="21.2757973734" />
+	<Vertex p_x="22.5296442688" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.6482213439" p_y="21.2757973734" />
+	<Vertex p_x="22.6482213439" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="22.8853754941" p_y="7.09193245779" />
+	<Vertex p_x="22.8853754941" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.0039525692" p_y="7.09193245779" />
+	<Vertex p_x="23.0039525692" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.1225296443" p_y="15.7598499062" />
+	<Vertex p_x="23.1225296443" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.1225296443" p_y="24.0900562852" />
+	<Vertex p_x="23.1225296443" p_y="24.8780487805" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.2411067194" p_y="15.0844277674" />
+	<Vertex p_x="23.2411067194" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.2411067194" p_y="24.0900562852" />
+	<Vertex p_x="23.2411067194" p_y="24.8780487805" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.3596837945" p_y="6.97936210131" />
+	<Vertex p_x="23.3596837945" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.3596837945" p_y="22.4015009381" />
+	<Vertex p_x="23.3596837945" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.3596837945" p_y="26.4540337711" />
+	<Vertex p_x="23.3596837945" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.4782608696" p_y="15.7598499062" />
+	<Vertex p_x="23.4782608696" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.5968379447" p_y="15.7598499062" />
+	<Vertex p_x="23.5968379447" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.7154150198" p_y="22.9643527205" />
+	<Vertex p_x="23.7154150198" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="6.97936210131" />
+	<Vertex p_x="23.8339920949" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="15.0844277674" />
+	<Vertex p_x="23.8339920949" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="22.4015009381" />
+	<Vertex p_x="23.8339920949" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.8339920949" p_y="26.4540337711" />
+	<Vertex p_x="23.8339920949" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="23.95256917" p_y="15.7598499062" />
+	<Vertex p_x="23.95256917" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.0711462451" p_y="7.09193245779" />
+	<Vertex p_x="24.0711462451" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.0711462451" p_y="24.0900562852" />
+	<Vertex p_x="24.0711462451" p_y="24.8780487805" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.1897233202" p_y="7.09193245779" />
+	<Vertex p_x="24.1897233202" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.3083003953" p_y="22.4015009381" />
+	<Vertex p_x="24.3083003953" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.4268774704" p_y="22.4015009381" />
+	<Vertex p_x="24.4268774704" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.9011857708" p_y="22.4015009381" />
+	<Vertex p_x="24.9011857708" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="24.9011857708" p_y="24.0900562852" />
+	<Vertex p_x="24.9011857708" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="25.0197628458" p_y="22.4015009381" />
+	<Vertex p_x="25.0197628458" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="25.0197628458" p_y="24.0900562852" />
+	<Vertex p_x="25.0197628458" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="26.0869565217" p_y="21.2757973734" />
+	<Vertex p_x="26.0869565217" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="26.2055335968" p_y="21.2757973734" />
+	<Vertex p_x="26.2055335968" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="26.442687747" p_y="23.8649155722" />
+	<Vertex p_x="26.442687747" p_y="24.765478424" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="26.442687747" p_y="25.4409005629" />
+	<Vertex p_x="26.442687747" p_y="26.1163227017" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="26.7984189723" p_y="15.7598499062" />
+	<Vertex p_x="26.7984189723" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="26.9169960474" p_y="15.0844277674" />
+	<Vertex p_x="26.9169960474" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.1541501976" p_y="15.0844277674" />
+	<Vertex p_x="27.1541501976" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.2727272727" p_y="15.7598499062" />
+	<Vertex p_x="27.2727272727" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.3913043478" p_y="22.4015009381" />
+	<Vertex p_x="27.3913043478" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="27.5098814229" p_y="22.4015009381" />
+	<Vertex p_x="27.5098814229" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="28.3399209486" p_y="22.4015009381" />
+	<Vertex p_x="28.3399209486" p_y="22.851782364" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="28.4584980237" p_y="22.4015009381" />
+	<Vertex p_x="28.4584980237" p_y="22.851782364" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.5256916996" p_y="21.2757973734" />
+	<Vertex p_x="29.5256916996" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.6442687747" p_y="21.2757973734" />
+	<Vertex p_x="29.6442687747" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.8814229249" p_y="7.09193245779" />
+	<Vertex p_x="29.8814229249" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="29.8814229249" p_y="26.3414634146" />
+	<Vertex p_x="29.8814229249" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.0" p_y="7.09193245779" />
+	<Vertex p_x="30.0" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.0" p_y="26.3414634146" />
+	<Vertex p_x="30.0" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.1185770751" p_y="15.7598499062" />
+	<Vertex p_x="30.1185770751" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.2371541502" p_y="15.0844277674" />
+	<Vertex p_x="30.2371541502" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.2371541502" p_y="22.4015009381" />
+	<Vertex p_x="30.2371541502" p_y="25.1031894934" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.3557312253" p_y="6.97936210131" />
+	<Vertex p_x="30.3557312253" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.3557312253" p_y="22.4015009381" />
+	<Vertex p_x="30.3557312253" p_y="25.1031894934" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.3557312253" p_y="26.1163227017" />
+	<Vertex p_x="30.3557312253" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.4743083004" p_y="15.7598499062" />
+	<Vertex p_x="30.4743083004" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.7114624506" p_y="6.97936210131" />
+	<Vertex p_x="30.7114624506" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.7114624506" p_y="15.7598499062" />
+	<Vertex p_x="30.7114624506" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.7114624506" p_y="22.4015009381" />
+	<Vertex p_x="30.7114624506" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.7114624506" p_y="26.3414634146" />
+	<Vertex p_x="30.7114624506" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.8300395257" p_y="6.97936210131" />
+	<Vertex p_x="30.8300395257" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.8300395257" p_y="15.0844277674" />
+	<Vertex p_x="30.8300395257" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.8300395257" p_y="22.4015009381" />
+	<Vertex p_x="30.8300395257" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.8300395257" p_y="26.3414634146" />
+	<Vertex p_x="30.8300395257" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="30.9486166008" p_y="15.0844277674" />
+	<Vertex p_x="30.9486166008" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="31.185770751" p_y="7.09193245779" />
+	<Vertex p_x="31.185770751" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="31.185770751" p_y="26.3414634146" />
+	<Vertex p_x="31.185770751" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="31.3043478261" p_y="7.09193245779" />
+	<Vertex p_x="31.3043478261" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="31.3043478261" p_y="26.3414634146" />
+	<Vertex p_x="31.3043478261" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.4901185771" p_y="15.0844277674" />
+	<Vertex p_x="32.4901185771" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.4901185771" p_y="21.2757973734" />
+	<Vertex p_x="32.4901185771" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.6086956522" p_y="15.0844277674" />
+	<Vertex p_x="32.6086956522" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.6086956522" p_y="21.2757973734" />
+	<Vertex p_x="32.6086956522" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.7272727273" p_y="6.75422138837" />
+	<Vertex p_x="32.7272727273" p_y="13.6210131332" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="32.8458498024" p_y="6.75422138837" />
+	<Vertex p_x="32.8458498024" p_y="13.6210131332" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="33.9130434783" p_y="22.4015009381" />
+	<Vertex p_x="33.9130434783" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="34.0316205534" p_y="22.4015009381" />
+	<Vertex p_x="34.0316205534" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.2173913043" p_y="6.75422138837" />
+	<Vertex p_x="35.2173913043" p_y="13.1707317073" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.2173913043" p_y="14.296435272" />
+	<Vertex p_x="35.2173913043" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.3359683794" p_y="6.75422138837" />
+	<Vertex p_x="35.3359683794" p_y="13.1707317073" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.3359683794" p_y="15.1969981238" />
+	<Vertex p_x="35.3359683794" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.5731225296" p_y="14.296435272" />
+	<Vertex p_x="35.5731225296" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.6916996047" p_y="21.2757973734" />
+	<Vertex p_x="35.6916996047" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="35.8102766798" p_y="21.2757973734" />
+	<Vertex p_x="35.8102766798" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="36.8774703557" p_y="7.09193245779" />
+	<Vertex p_x="36.8774703557" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="36.8774703557" p_y="26.2288930582" />
+	<Vertex p_x="36.8774703557" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="36.9960474308" p_y="7.09193245779" />
+	<Vertex p_x="36.9960474308" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.1146245059" p_y="15.0844277674" />
+	<Vertex p_x="37.1146245059" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="6.97936210131" />
+	<Vertex p_x="37.233201581" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="15.0844277674" />
+	<Vertex p_x="37.233201581" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="22.4015009381" />
+	<Vertex p_x="37.233201581" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.233201581" p_y="26.2288930582" />
+	<Vertex p_x="37.233201581" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.7075098814" p_y="6.97936210131" />
+	<Vertex p_x="37.7075098814" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.7075098814" p_y="22.4015009381" />
+	<Vertex p_x="37.7075098814" p_y="23.6397748593" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.7075098814" p_y="24.6529080675" />
+	<Vertex p_x="37.7075098814" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.8260869565" p_y="15.0844277674" />
+	<Vertex p_x="37.8260869565" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.8260869565" p_y="22.4015009381" />
+	<Vertex p_x="37.8260869565" p_y="23.6397748593" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.8260869565" p_y="24.6529080675" />
+	<Vertex p_x="37.8260869565" p_y="26.3414634146" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="37.9446640316" p_y="15.7598499062" />
+	<Vertex p_x="37.9446640316" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="38.0632411067" p_y="26.2288930582" />
+	<Vertex p_x="38.0632411067" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="38.1818181818" p_y="7.09193245779" />
+	<Vertex p_x="38.1818181818" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="38.1818181818" p_y="26.2288930582" />
+	<Vertex p_x="38.1818181818" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="38.3003952569" p_y="7.09193245779" />
+	<Vertex p_x="38.3003952569" p_y="7.65478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="39.8418972332" p_y="21.2757973734" />
+	<Vertex p_x="39.8418972332" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="39.9604743083" p_y="21.2757973734" />
+	<Vertex p_x="39.9604743083" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="40.5533596838" p_y="22.4015009381" />
+	<Vertex p_x="40.5533596838" p_y="22.851782364" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="40.5533596838" p_y="23.8649155722" />
+	<Vertex p_x="40.5533596838" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="40.6719367589" p_y="22.4015009381" />
+	<Vertex p_x="40.6719367589" p_y="22.851782364" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="40.6719367589" p_y="23.8649155722" />
+	<Vertex p_x="40.6719367589" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="40.790513834" p_y="15.7598499062" />
+	<Vertex p_x="40.790513834" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="41.1462450593" p_y="15.7598499062" />
+	<Vertex p_x="41.1462450593" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="41.2648221344" p_y="15.7598499062" />
+	<Vertex p_x="41.2648221344" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.0434782609" p_y="22.4015009381" />
+	<Vertex p_x="43.0434782609" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.162055336" p_y="22.4015009381" />
+	<Vertex p_x="43.162055336" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.162055336" p_y="24.0900562852" />
+	<Vertex p_x="43.162055336" p_y="26.7917448405" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.3992094862" p_y="7.4296435272" />
+	<Vertex p_x="43.3992094862" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.3992094862" p_y="14.296435272" />
+	<Vertex p_x="43.3992094862" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.5177865613" p_y="7.4296435272" />
+	<Vertex p_x="43.5177865613" p_y="13.2833020638" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.5177865613" p_y="14.296435272" />
+	<Vertex p_x="43.5177865613" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.5177865613" p_y="22.4015009381" />
+	<Vertex p_x="43.5177865613" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.6363636364" p_y="22.4015009381" />
+	<Vertex p_x="43.6363636364" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.7549407115" p_y="7.09193245779" />
+	<Vertex p_x="43.7549407115" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="43.8735177866" p_y="7.09193245779" />
+	<Vertex p_x="43.8735177866" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.1106719368" p_y="15.0844277674" />
+	<Vertex p_x="44.1106719368" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.1106719368" p_y="22.4015009381" />
+	<Vertex p_x="44.1106719368" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.2292490119" p_y="6.97936210131" />
+	<Vertex p_x="44.2292490119" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.2292490119" p_y="15.0844277674" />
+	<Vertex p_x="44.2292490119" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.2292490119" p_y="22.4015009381" />
+	<Vertex p_x="44.2292490119" p_y="23.0769230769" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.2292490119" p_y="26.4540337711" />
+	<Vertex p_x="44.2292490119" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.347826087" p_y="15.7598499062" />
+	<Vertex p_x="44.347826087" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.5849802372" p_y="15.7598499062" />
+	<Vertex p_x="44.5849802372" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="6.97936210131" />
+	<Vertex p_x="44.7035573123" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="15.0844277674" />
+	<Vertex p_x="44.7035573123" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="22.4015009381" />
+	<Vertex p_x="44.7035573123" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="24.0900562852" />
+	<Vertex p_x="44.7035573123" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.7035573123" p_y="26.4540337711" />
+	<Vertex p_x="44.7035573123" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.8221343874" p_y="15.0844277674" />
+	<Vertex p_x="44.8221343874" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.8221343874" p_y="24.0900562852" />
+	<Vertex p_x="44.8221343874" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.9407114625" p_y="7.09193245779" />
+	<Vertex p_x="44.9407114625" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="44.9407114625" p_y="15.7598499062" />
+	<Vertex p_x="44.9407114625" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="45.0592885375" p_y="7.09193245779" />
+	<Vertex p_x="45.0592885375" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="45.5335968379" p_y="24.0900562852" />
+	<Vertex p_x="45.5335968379" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="45.652173913" p_y="24.0900562852" />
+	<Vertex p_x="45.652173913" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="46.3636363636" p_y="24.0900562852" />
+	<Vertex p_x="46.3636363636" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="46.4822134387" p_y="22.4015009381" />
+	<Vertex p_x="46.4822134387" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="46.6007905138" p_y="22.4015009381" />
+	<Vertex p_x="46.6007905138" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="47.1936758893" p_y="24.0900562852" />
+	<Vertex p_x="47.1936758893" p_y="25.5534709193" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="47.7865612648" p_y="15.7598499062" />
+	<Vertex p_x="47.7865612648" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="47.7865612648" p_y="21.2757973734" />
+	<Vertex p_x="47.7865612648" p_y="23.8649155722" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="47.9051383399" p_y="21.2757973734" />
+	<Vertex p_x="47.9051383399" p_y="24.0900562852" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="48.1422924901" p_y="15.7598499062" />
+	<Vertex p_x="48.1422924901" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="48.2608695652" p_y="15.7598499062" />
+	<Vertex p_x="48.2608695652" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.209486166" p_y="22.9643527205" />
+	<Vertex p_x="49.209486166" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.3280632411" p_y="21.2757973734" />
+	<Vertex p_x="49.3280632411" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.4466403162" p_y="14.6341463415" />
+	<Vertex p_x="49.4466403162" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.4466403162" p_y="21.2757973734" />
+	<Vertex p_x="49.4466403162" p_y="23.1894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="49.5652173913" p_y="14.6341463415" />
+	<Vertex p_x="49.5652173913" p_y="15.4221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.7509881423" p_y="7.09193245779" />
+	<Vertex p_x="50.7509881423" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.8695652174" p_y="7.09193245779" />
+	<Vertex p_x="50.8695652174" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="0.337711069418" />
+	<Vertex p_x="50.9881422925" p_y="6.75422138837" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="15.7598499062" />
+	<Vertex p_x="50.9881422925" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="50.9881422925" p_y="27.1294559099" />
+	<Vertex p_x="50.9881422925" p_y="59.5497185741" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="15.1969981238" />
+	<Vertex p_x="51.1067193676" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="21.2757973734" />
+	<Vertex p_x="51.1067193676" p_y="23.1894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="29.9437148218" />
+	<Vertex p_x="51.1067193676" p_y="32.3076923077" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="34.1088180113" />
+	<Vertex p_x="51.1067193676" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="40.6378986867" />
+	<Vertex p_x="51.1067193676" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.1067193676" p_y="47.1669793621" />
+	<Vertex p_x="51.1067193676" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="6.97936210131" />
+	<Vertex p_x="51.2252964427" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="21.2757973734" />
+	<Vertex p_x="51.2252964427" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="24.8780487805" />
+	<Vertex p_x="51.2252964427" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="29.9437148218" />
+	<Vertex p_x="51.2252964427" p_y="32.3076923077" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="32.9831144465" />
+	<Vertex p_x="51.2252964427" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="34.1088180113" />
+	<Vertex p_x="51.2252964427" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="39.512195122" />
+	<Vertex p_x="51.2252964427" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="40.6378986867" />
+	<Vertex p_x="51.2252964427" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="46.0412757974" />
+	<Vertex p_x="51.2252964427" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="47.1669793621" />
+	<Vertex p_x="51.2252964427" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.2252964427" p_y="53.2457786116" />
+	<Vertex p_x="51.2252964427" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.3438735178" p_y="15.7598499062" />
+	<Vertex p_x="51.3438735178" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="13.2833020638" />
+	<Vertex p_x="51.4624505929" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="27.2420262664" />
+	<Vertex p_x="51.4624505929" p_y="32.9831144465" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="33.4333958724" />
+	<Vertex p_x="51.4624505929" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="39.9624765478" />
+	<Vertex p_x="51.4624505929" p_y="46.0412757974" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.4624505929" p_y="46.3789868668" />
+	<Vertex p_x="51.4624505929" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.581027668" p_y="15.7598499062" />
+	<Vertex p_x="51.581027668" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.581027668" p_y="24.8780487805" />
+	<Vertex p_x="51.581027668" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="6.97936210131" />
+	<Vertex p_x="51.6996047431" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="13.5084427767" />
+	<Vertex p_x="51.6996047431" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="22.5140712946" />
+	<Vertex p_x="51.6996047431" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="26.6791744841" />
+	<Vertex p_x="51.6996047431" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="32.4202626642" />
+	<Vertex p_x="51.6996047431" p_y="33.9962476548" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="39.512195122" />
+	<Vertex p_x="51.6996047431" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="45.3658536585" />
+	<Vertex p_x="51.6996047431" p_y="46.9418386492" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.6996047431" p_y="53.2457786116" />
+	<Vertex p_x="51.6996047431" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="7.4296435272" />
+	<Vertex p_x="51.8181818182" p_y="7.99249530957" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="9.00562851782" />
+	<Vertex p_x="51.8181818182" p_y="10.243902439" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="15.7598499062" />
+	<Vertex p_x="51.8181818182" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="23.1894934334" />
+	<Vertex p_x="51.8181818182" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="32.4202626642" />
+	<Vertex p_x="51.8181818182" p_y="33.9962476548" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="38.9493433396" />
+	<Vertex p_x="51.8181818182" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.8181818182" p_y="45.3658536585" />
+	<Vertex p_x="51.8181818182" p_y="46.9418386492" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.9367588933" p_y="7.4296435272" />
+	<Vertex p_x="51.9367588933" p_y="7.99249530957" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.9367588933" p_y="9.00562851782" />
+	<Vertex p_x="51.9367588933" p_y="10.0187617261" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.9367588933" p_y="38.9493433396" />
+	<Vertex p_x="51.9367588933" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="51.9367588933" p_y="53.0206378987" />
+	<Vertex p_x="51.9367588933" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.0553359684" p_y="23.1894934334" />
+	<Vertex p_x="52.0553359684" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.0553359684" p_y="53.0206378987" />
+	<Vertex p_x="52.0553359684" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.2924901186" p_y="7.09193245779" />
+	<Vertex p_x="52.2924901186" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.2924901186" p_y="23.1894934334" />
+	<Vertex p_x="52.2924901186" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.4110671937" p_y="7.09193245779" />
+	<Vertex p_x="52.4110671937" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.6482213439" p_y="23.1894934334" />
+	<Vertex p_x="52.6482213439" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="52.8853754941" p_y="23.1894934334" />
+	<Vertex p_x="52.8853754941" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.0039525692" p_y="10.1313320826" />
+	<Vertex p_x="53.0039525692" p_y="12.0450281426" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.0039525692" p_y="21.2757973734" />
+	<Vertex p_x="53.0039525692" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.1225296443" p_y="21.2757973734" />
+	<Vertex p_x="53.1225296443" p_y="22.5140712946" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.1225296443" p_y="23.1894934334" />
+	<Vertex p_x="53.1225296443" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.3596837945" p_y="10.1313320826" />
+	<Vertex p_x="53.3596837945" p_y="11.8198874296" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.3596837945" p_y="13.5084427767" />
+	<Vertex p_x="53.3596837945" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.4782608696" p_y="23.1894934334" />
+	<Vertex p_x="53.4782608696" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.4782608696" p_y="53.5834896811" />
+	<Vertex p_x="53.4782608696" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.5968379447" p_y="13.5084427767" />
+	<Vertex p_x="53.5968379447" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.7154150198" p_y="23.1894934334" />
+	<Vertex p_x="53.7154150198" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.95256917" p_y="13.5084427767" />
+	<Vertex p_x="53.95256917" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="53.95256917" p_y="23.1894934334" />
+	<Vertex p_x="53.95256917" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.1897233202" p_y="13.5084427767" />
+	<Vertex p_x="54.1897233202" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.3083003953" p_y="23.1894934334" />
+	<Vertex p_x="54.3083003953" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.4268774704" p_y="13.5084427767" />
+	<Vertex p_x="54.4268774704" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.5454545455" p_y="23.1894934334" />
+	<Vertex p_x="54.5454545455" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.6640316206" p_y="13.5084427767" />
+	<Vertex p_x="54.6640316206" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.6640316206" p_y="15.7598499062" />
+	<Vertex p_x="54.6640316206" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.7826086957" p_y="15.7598499062" />
+	<Vertex p_x="54.7826086957" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="54.9011857708" p_y="15.0844277674" />
+	<Vertex p_x="54.9011857708" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.0197628458" p_y="13.5084427767" />
+	<Vertex p_x="55.0197628458" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.0197628458" p_y="15.4221388368" />
+	<Vertex p_x="55.0197628458" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.1383399209" p_y="6.75422138837" />
+	<Vertex p_x="55.1383399209" p_y="7.20450281426" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.256916996" p_y="6.75422138837" />
+	<Vertex p_x="55.256916996" p_y="10.243902439" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.256916996" p_y="13.5084427767" />
+	<Vertex p_x="55.256916996" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.3754940711" p_y="7.09193245779" />
+	<Vertex p_x="55.3754940711" p_y="10.243902439" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.4940711462" p_y="10.1313320826" />
+	<Vertex p_x="55.4940711462" p_y="11.8198874296" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.4940711462" p_y="13.5084427767" />
+	<Vertex p_x="55.4940711462" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.4940711462" p_y="18.2363977486" />
+	<Vertex p_x="55.4940711462" p_y="18.799249531" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.6126482213" p_y="10.1313320826" />
+	<Vertex p_x="55.6126482213" p_y="11.8198874296" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.8498023715" p_y="13.5084427767" />
+	<Vertex p_x="55.8498023715" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.8498023715" p_y="32.6454033771" />
+	<Vertex p_x="55.8498023715" p_y="34.3339587242" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="55.9683794466" p_y="32.6454033771" />
+	<Vertex p_x="55.9683794466" p_y="34.3339587242" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.0869565217" p_y="13.5084427767" />
+	<Vertex p_x="56.0869565217" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.2055335968" p_y="18.2363977486" />
+	<Vertex p_x="56.2055335968" p_y="18.799249531" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.2055335968" p_y="21.6135084428" />
+	<Vertex p_x="56.2055335968" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.2055335968" p_y="23.1894934334" />
+	<Vertex p_x="56.2055335968" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="56.442687747" p_y="21.8386491557" />
+	<Vertex p_x="56.442687747" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.2727272727" p_y="53.1332082552" />
+	<Vertex p_x="57.2727272727" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.3913043478" p_y="53.1332082552" />
+	<Vertex p_x="57.3913043478" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.7470355731" p_y="7.09193245779" />
+	<Vertex p_x="57.7470355731" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.8656126482" p_y="7.09193245779" />
+	<Vertex p_x="57.8656126482" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="6.97936210131" />
+	<Vertex p_x="57.9841897233" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="15.1969981238" />
+	<Vertex p_x="57.9841897233" p_y="15.7598499062" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="22.4015009381" />
+	<Vertex p_x="57.9841897233" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="26.4540337711" />
+	<Vertex p_x="57.9841897233" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="32.9831144465" />
+	<Vertex p_x="57.9841897233" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="39.1744840525" />
+	<Vertex p_x="57.9841897233" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="57.9841897233" p_y="53.1332082552" />
+	<Vertex p_x="57.9841897233" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="6.97936210131" />
+	<Vertex p_x="58.1027667984" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="22.4015009381" />
+	<Vertex p_x="58.1027667984" p_y="22.9643527205" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="26.4540337711" />
+	<Vertex p_x="58.1027667984" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="32.6454033771" />
+	<Vertex p_x="58.1027667984" p_y="33.8836772983" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="39.512195122" />
+	<Vertex p_x="58.1027667984" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.1027667984" p_y="53.1332082552" />
+	<Vertex p_x="58.1027667984" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.3399209486" p_y="15.7598499062" />
+	<Vertex p_x="58.3399209486" p_y="18.3489681051" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="6.97936210131" />
+	<Vertex p_x="58.4584980237" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="14.7467166979" />
+	<Vertex p_x="58.4584980237" p_y="15.1969981238" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="21.0506566604" />
+	<Vertex p_x="58.4584980237" p_y="30.5065666041" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="31.5196998124" />
+	<Vertex p_x="58.4584980237" p_y="33.8836772983" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="35.234521576" />
+	<Vertex p_x="58.4584980237" p_y="39.1744840525" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="39.512195122" />
+	<Vertex p_x="58.4584980237" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.4584980237" p_y="53.1332082552" />
+	<Vertex p_x="58.4584980237" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="13.2833020638" />
+	<Vertex p_x="58.5770750988" p_y="13.7335834897" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="14.7467166979" />
+	<Vertex p_x="58.5770750988" p_y="18.4615384615" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="21.0506566604" />
+	<Vertex p_x="58.5770750988" p_y="30.5065666041" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="31.5196998124" />
+	<Vertex p_x="58.5770750988" p_y="33.8836772983" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="35.234521576" />
+	<Vertex p_x="58.5770750988" p_y="39.1744840525" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.5770750988" p_y="53.1332082552" />
+	<Vertex p_x="58.5770750988" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.814229249" p_y="7.09193245779" />
+	<Vertex p_x="58.814229249" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.814229249" p_y="39.1744840525" />
+	<Vertex p_x="58.814229249" p_y="40.5253283302" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.814229249" p_y="41.9887429644" />
+	<Vertex p_x="58.814229249" p_y="45.478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.9328063241" p_y="7.09193245779" />
+	<Vertex p_x="58.9328063241" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="58.9328063241" p_y="41.9887429644" />
+	<Vertex p_x="58.9328063241" p_y="45.478424015" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="59.8814229249" p_y="53.5834896811" />
+	<Vertex p_x="59.8814229249" p_y="54.0337711069" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.3557312253" p_y="7.54221388368" />
+	<Vertex p_x="60.3557312253" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.3557312253" p_y="16.3227016886" />
+	<Vertex p_x="60.3557312253" p_y="16.9981238274" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.4743083004" p_y="7.09193245779" />
+	<Vertex p_x="60.4743083004" p_y="15.3095684803" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.4743083004" p_y="16.3227016886" />
+	<Vertex p_x="60.4743083004" p_y="16.9981238274" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.8300395257" p_y="40.0750469043" />
+	<Vertex p_x="60.8300395257" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="60.9486166008" p_y="40.0750469043" />
+	<Vertex p_x="60.9486166008" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.4229249012" p_y="52.7954971857" />
+	<Vertex p_x="61.4229249012" p_y="53.5834896811" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="16.8855534709" />
+	<Vertex p_x="61.5415019763" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="19.2495309568" />
+	<Vertex p_x="61.5415019763" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="22.1763602251" />
+	<Vertex p_x="61.5415019763" p_y="25.3283302064" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="26.4540337711" />
+	<Vertex p_x="61.5415019763" p_y="33.5459662289" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="36.3602251407" />
+	<Vertex p_x="61.5415019763" p_y="37.7110694184" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="38.8367729831" />
+	<Vertex p_x="61.5415019763" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.5415019763" p_y="45.3658536585" />
+	<Vertex p_x="61.5415019763" p_y="46.9418386492" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="6.97936210131" />
+	<Vertex p_x="61.6600790514" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="13.3958724203" />
+	<Vertex p_x="61.6600790514" p_y="14.7467166979" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="16.8855534709" />
+	<Vertex p_x="61.6600790514" p_y="18.2363977486" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="19.2495309568" />
+	<Vertex p_x="61.6600790514" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="22.1763602251" />
+	<Vertex p_x="61.6600790514" p_y="25.3283302064" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="26.4540337711" />
+	<Vertex p_x="61.6600790514" p_y="33.5459662289" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="36.3602251407" />
+	<Vertex p_x="61.6600790514" p_y="37.7110694184" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="38.8367729831" />
+	<Vertex p_x="61.6600790514" p_y="40.6378986867" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="46.0412757974" />
+	<Vertex p_x="61.6600790514" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.6600790514" p_y="53.2457786116" />
+	<Vertex p_x="61.6600790514" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.8972332016" p_y="45.3658536585" />
+	<Vertex p_x="61.8972332016" p_y="46.0412757974" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="61.8972332016" p_y="46.3789868668" />
+	<Vertex p_x="61.8972332016" p_y="53.3583489681" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.0158102767" p_y="19.5872420263" />
+	<Vertex p_x="62.0158102767" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.0158102767" p_y="36.8105065666" />
+	<Vertex p_x="62.0158102767" p_y="39.512195122" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.0158102767" p_y="39.9624765478" />
+	<Vertex p_x="62.0158102767" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="6.97936210131" />
+	<Vertex p_x="62.1343873518" p_y="7.54221388368" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="13.8461538462" />
+	<Vertex p_x="62.1343873518" p_y="14.7467166979" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="19.5872420263" />
+	<Vertex p_x="62.1343873518" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="26.4540337711" />
+	<Vertex p_x="62.1343873518" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="32.9831144465" />
+	<Vertex p_x="62.1343873518" p_y="33.4333958724" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="36.3602251407" />
+	<Vertex p_x="62.1343873518" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="37.7110694184" />
+	<Vertex p_x="62.1343873518" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="39.512195122" />
+	<Vertex p_x="62.1343873518" p_y="39.9624765478" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="40.6378986867" />
+	<Vertex p_x="62.1343873518" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="46.0412757974" />
+	<Vertex p_x="62.1343873518" p_y="46.4915572233" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="47.1669793621" />
+	<Vertex p_x="62.1343873518" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.1343873518" p_y="53.2457786116" />
+	<Vertex p_x="62.1343873518" p_y="53.6960600375" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.2529644269" p_y="13.3958724203" />
+	<Vertex p_x="62.2529644269" p_y="14.7467166979" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.2529644269" p_y="37.7110694184" />
+	<Vertex p_x="62.2529644269" p_y="38.8367729831" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.2529644269" p_y="40.6378986867" />
+	<Vertex p_x="62.2529644269" p_y="45.3658536585" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.2529644269" p_y="47.1669793621" />
+	<Vertex p_x="62.2529644269" p_y="51.894934334" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.371541502" p_y="37.0356472795" />
+	<Vertex p_x="62.371541502" p_y="53.9212007505" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.6086956522" p_y="21.7260787992" />
+	<Vertex p_x="62.6086956522" p_y="22.2889305816" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.6086956522" p_y="34.5590994371" />
+	<Vertex p_x="62.6086956522" p_y="35.234521576" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.6086956522" p_y="36.1350844278" />
+	<Vertex p_x="62.6086956522" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="21.7260787992" />
+	<Vertex p_x="62.8458498024" p_y="22.2889305816" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="34.5590994371" />
+	<Vertex p_x="62.8458498024" p_y="35.234521576" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="62.8458498024" p_y="36.1350844278" />
+	<Vertex p_x="62.8458498024" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="63.2015810277" p_y="36.6979362101" />
+	<Vertex p_x="63.2015810277" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="63.4387351779" p_y="25.2157598499" />
+	<Vertex p_x="63.4387351779" p_y="25.7786116323" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="63.557312253" p_y="25.2157598499" />
+	<Vertex p_x="63.557312253" p_y="25.7786116323" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="21.7260787992" />
+	<Vertex p_x="67.5889328063" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="28.1425891182" />
+	<Vertex p_x="67.5889328063" p_y="29.1557223265" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.5889328063" p_y="30.0562851782" />
+	<Vertex p_x="67.5889328063" p_y="35.009380863" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.7075098814" p_y="21.7260787992" />
+	<Vertex p_x="67.7075098814" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.7075098814" p_y="28.1425891182" />
+	<Vertex p_x="67.7075098814" p_y="29.1557223265" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="67.7075098814" p_y="30.0562851782" />
+	<Vertex p_x="67.7075098814" p_y="35.009380863" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.0632411067" p_y="7.31707317073" />
+	<Vertex p_x="68.0632411067" p_y="7.76735459662" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.1818181818" p_y="19.4746716698" />
+	<Vertex p_x="68.1818181818" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.1818181818" p_y="36.2476547842" />
+	<Vertex p_x="68.1818181818" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.3003952569" p_y="19.4746716698" />
+	<Vertex p_x="68.3003952569" p_y="20.3752345216" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.3003952569" p_y="36.2476547842" />
+	<Vertex p_x="68.3003952569" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="6.86679174484" />
+	<Vertex p_x="68.5375494071" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="13.1707317073" />
+	<Vertex p_x="68.5375494071" p_y="14.4090056285" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="20.0375234522" />
+	<Vertex p_x="68.5375494071" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="25.7786116323" />
+	<Vertex p_x="68.5375494071" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="29.8311444653" />
+	<Vertex p_x="68.5375494071" p_y="30.3939962477" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.5375494071" p_y="36.2476547842" />
+	<Vertex p_x="68.5375494071" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.7747035573" p_y="7.4296435272" />
+	<Vertex p_x="68.7747035573" p_y="13.5084427767" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.7747035573" p_y="13.8461538462" />
+	<Vertex p_x="68.7747035573" p_y="20.0375234522" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="6.86679174484" />
+	<Vertex p_x="68.8932806324" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="13.5084427767" />
+	<Vertex p_x="68.8932806324" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="20.0375234522" />
+	<Vertex p_x="68.8932806324" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="26.4540337711" />
+	<Vertex p_x="68.8932806324" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="29.8311444653" />
+	<Vertex p_x="68.8932806324" p_y="30.3939962477" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="68.8932806324" p_y="36.2476547842" />
+	<Vertex p_x="68.8932806324" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="6.86679174484" />
+	<Vertex p_x="69.0118577075" p_y="7.4296435272" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="8.10506566604" />
+	<Vertex p_x="69.0118577075" p_y="12.8330206379" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="13.5084427767" />
+	<Vertex p_x="69.0118577075" p_y="13.9587242026" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="14.521575985" />
+	<Vertex p_x="69.0118577075" p_y="19.2495309568" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="20.0375234522" />
+	<Vertex p_x="69.0118577075" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="25.7786116323" />
+	<Vertex p_x="69.0118577075" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="29.8311444653" />
+	<Vertex p_x="69.0118577075" p_y="30.3939962477" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.0118577075" p_y="36.2476547842" />
+	<Vertex p_x="69.0118577075" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.1304347826" p_y="0.337711069418" />
+	<Vertex p_x="69.1304347826" p_y="19.8123827392" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.1304347826" p_y="25.7786116323" />
+	<Vertex p_x="69.1304347826" p_y="27.1294559099" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.1304347826" p_y="37.0356472795" />
+	<Vertex p_x="69.1304347826" p_y="59.5497185741" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.2490118577" p_y="7.99249530957" />
+	<Vertex p_x="69.2490118577" p_y="12.8330206379" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.2490118577" p_y="14.521575985" />
+	<Vertex p_x="69.2490118577" p_y="19.3621013133" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.4861660079" p_y="20.1500938086" />
+	<Vertex p_x="69.4861660079" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.604743083" p_y="20.1500938086" />
+	<Vertex p_x="69.604743083" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.604743083" p_y="36.2476547842" />
+	<Vertex p_x="69.604743083" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.7233201581" p_y="36.2476547842" />
+	<Vertex p_x="69.7233201581" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.8418972332" p_y="19.6998123827" />
+	<Vertex p_x="69.8418972332" p_y="20.1500938086" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="69.8418972332" p_y="36.6979362101" />
+	<Vertex p_x="69.8418972332" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="19.6998123827" />
+	<Vertex p_x="74.8221343874" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="26.2288930582" />
+	<Vertex p_x="74.8221343874" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.8221343874" p_y="36.3602251407" />
+	<Vertex p_x="74.8221343874" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="74.9407114625" p_y="26.2288930582" />
+	<Vertex p_x="74.9407114625" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="20.0375234522" />
+	<Vertex p_x="75.1778656126" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="26.4540337711" />
+	<Vertex p_x="75.1778656126" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.1778656126" p_y="36.3602251407" />
+	<Vertex p_x="75.1778656126" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.5335968379" p_y="20.0375234522" />
+	<Vertex p_x="75.5335968379" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.5335968379" p_y="26.4540337711" />
+	<Vertex p_x="75.5335968379" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.5335968379" p_y="36.3602251407" />
+	<Vertex p_x="75.5335968379" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.652173913" p_y="20.0375234522" />
+	<Vertex p_x="75.652173913" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.652173913" p_y="26.2288930582" />
+	<Vertex p_x="75.652173913" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.652173913" p_y="36.3602251407" />
+	<Vertex p_x="75.652173913" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="75.7707509881" p_y="26.2288930582" />
+	<Vertex p_x="75.7707509881" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="76.2450592885" p_y="20.1500938086" />
+	<Vertex p_x="76.2450592885" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="76.3636363636" p_y="19.6998123827" />
+	<Vertex p_x="76.3636363636" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="76.3636363636" p_y="36.6979362101" />
+	<Vertex p_x="76.3636363636" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="78.9723320158" p_y="28.4803001876" />
+	<Vertex p_x="78.9723320158" p_y="29.3808630394" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.0909090909" p_y="28.4803001876" />
+	<Vertex p_x="79.0909090909" p_y="29.3808630394" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.8023715415" p_y="26.3414634146" />
+	<Vertex p_x="79.8023715415" p_y="27.4671669794" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.8023715415" p_y="30.2814258912" />
+	<Vertex p_x="79.8023715415" p_y="35.234521576" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.9209486166" p_y="26.3414634146" />
+	<Vertex p_x="79.9209486166" p_y="27.4671669794" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="79.9209486166" p_y="30.2814258912" />
+	<Vertex p_x="79.9209486166" p_y="35.234521576" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="80.0395256917" p_y="36.4727954972" />
+	<Vertex p_x="80.0395256917" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="80.1581027668" p_y="36.4727954972" />
+	<Vertex p_x="80.1581027668" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="80.6324110672" p_y="22.0637898687" />
+	<Vertex p_x="80.6324110672" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="80.7509881423" p_y="22.0637898687" />
+	<Vertex p_x="80.7509881423" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.3438735178" p_y="19.6998123827" />
+	<Vertex p_x="81.3438735178" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.3438735178" p_y="36.6979362101" />
+	<Vertex p_x="81.3438735178" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.4624505929" p_y="20.1500938086" />
+	<Vertex p_x="81.4624505929" p_y="20.9380863039" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.4624505929" p_y="36.2476547842" />
+	<Vertex p_x="81.4624505929" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.581027668" p_y="20.487804878" />
+	<Vertex p_x="81.581027668" p_y="20.9380863039" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.581027668" p_y="36.2476547842" />
+	<Vertex p_x="81.581027668" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="20.0375234522" />
+	<Vertex p_x="81.9367588933" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="26.3414634146" />
+	<Vertex p_x="81.9367588933" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="81.9367588933" p_y="36.2476547842" />
+	<Vertex p_x="81.9367588933" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.0553359684" p_y="20.0375234522" />
+	<Vertex p_x="82.0553359684" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.0553359684" p_y="26.3414634146" />
+	<Vertex p_x="82.0553359684" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.0553359684" p_y="36.2476547842" />
+	<Vertex p_x="82.0553359684" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.4110671937" p_y="20.0375234522" />
+	<Vertex p_x="82.4110671937" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.4110671937" p_y="26.3414634146" />
+	<Vertex p_x="82.4110671937" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.4110671937" p_y="36.2476547842" />
+	<Vertex p_x="82.4110671937" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.6482213439" p_y="36.2476547842" />
+	<Vertex p_x="82.6482213439" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.766798419" p_y="26.3414634146" />
+	<Vertex p_x="82.766798419" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.766798419" p_y="36.2476547842" />
+	<Vertex p_x="82.766798419" p_y="36.6979362101" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.8853754941" p_y="19.6998123827" />
+	<Vertex p_x="82.8853754941" p_y="20.1500938086" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.8853754941" p_y="26.3414634146" />
+	<Vertex p_x="82.8853754941" p_y="27.0168855535" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="82.8853754941" p_y="36.6979362101" />
+	<Vertex p_x="82.8853754941" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="83.5968379447" p_y="26.3414634146" />
+	<Vertex p_x="83.5968379447" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="83.5968379447" p_y="28.0300187617" />
+	<Vertex p_x="83.5968379447" p_y="31.181988743" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="83.7154150198" p_y="26.3414634146" />
+	<Vertex p_x="83.7154150198" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="83.7154150198" p_y="28.0300187617" />
+	<Vertex p_x="83.7154150198" p_y="31.181988743" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="87.8656126482" p_y="19.6998123827" />
+	<Vertex p_x="87.8656126482" p_y="20.1500938086" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="87.8656126482" p_y="36.6979362101" />
+	<Vertex p_x="87.8656126482" p_y="37.148217636" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="20.1500938086" />
+	<Vertex p_x="88.5770750988" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="26.0037523452" />
+	<Vertex p_x="88.5770750988" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.5770750988" p_y="29.6060037523" />
+	<Vertex p_x="88.5770750988" p_y="30.8442776735" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.6956521739" p_y="20.1500938086" />
+	<Vertex p_x="88.6956521739" p_y="20.6003752345" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.6956521739" p_y="26.0037523452" />
+	<Vertex p_x="88.6956521739" p_y="27.2420262664" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.6956521739" p_y="29.6060037523" />
+	<Vertex p_x="88.6956521739" p_y="30.8442776735" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.6956521739" p_y="35.7973733583" />
+	<Vertex p_x="88.6956521739" p_y="36.3602251407" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.814229249" p_y="20.0375234522" />
+	<Vertex p_x="88.814229249" p_y="21.1632270169" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.814229249" p_y="26.4540337711" />
+	<Vertex p_x="88.814229249" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.814229249" p_y="29.9437148218" />
+	<Vertex p_x="88.814229249" p_y="30.3939962477" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="88.814229249" p_y="35.7973733583" />
+	<Vertex p_x="88.814229249" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.0513833992" p_y="20.3752345216" />
+	<Vertex p_x="89.0513833992" p_y="26.4540337711" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.0513833992" p_y="26.904315197" />
+	<Vertex p_x="89.0513833992" p_y="29.9437148218" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.0513833992" p_y="30.3939962477" />
+	<Vertex p_x="89.0513833992" p_y="36.4727954972" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.2885375494" p_y="20.0375234522" />
+	<Vertex p_x="89.2885375494" p_y="20.487804878" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.2885375494" p_y="22.2889305816" />
+	<Vertex p_x="89.2885375494" p_y="26.0037523452" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.2885375494" p_y="26.4540337711" />
+	<Vertex p_x="89.2885375494" p_y="26.904315197" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.2885375494" p_y="27.1294559099" />
+	<Vertex p_x="89.2885375494" p_y="29.7185741088" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.2885375494" p_y="29.9437148218" />
+	<Vertex p_x="89.2885375494" p_y="30.3939962477" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.2885375494" p_y="30.8442776735" />
+	<Vertex p_x="89.2885375494" p_y="34.5590994371" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.2885375494" p_y="36.3602251407" />
+	<Vertex p_x="89.2885375494" p_y="36.8105065666" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.4071146245" p_y="22.2889305816" />
+	<Vertex p_x="89.4071146245" p_y="26.0037523452" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.4071146245" p_y="27.1294559099" />
+	<Vertex p_x="89.4071146245" p_y="29.7185741088" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.4071146245" p_y="30.8442776735" />
+	<Vertex p_x="89.4071146245" p_y="34.5590994371" />
+	</Obstacle>
+
+	<Obstacle closed="1">
+	<Vertex p_x="89.5256916996" p_y="19.8123827392" />
+	<Vertex p_x="89.5256916996" p_y="37.0356472795" />
+	</Obstacle>
+
+</ObstacleSet>
+</Experiment>
