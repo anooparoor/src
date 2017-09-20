@@ -137,7 +137,7 @@ namespace Menge {
 				graph->destroy();
 				return false;
 			}
-			edge.setDistance( graph->_vertices[ from ].getDistance( graph->_vertices[ to ] ) );
+			edge.setDistance( graph->_vertices[ from ].getDistance( graph->_vertices[ to ] )); 
 			edge.setNeighbor( &graph->_vertices[ to ] );
 			if (!graph->_vertices[from].setEdge(edge, vertNbr[from])) {
 				validEdges = false;
@@ -185,10 +185,21 @@ namespace Menge {
 		size_t endID = getClosestVertex( goalPos, agent->_radius );
 		// Compute the path based on those nodes
 		RoadMapPath * path = getPath( startID, endID );
+
+		//display path
+		//publishPath(path);
 		if ( path ) { 
 			path->setGoalPos( goal );
 		}
 		return path;
+	}
+
+
+	void Graph::publishPath(RoadMapPath *path){
+		for(size_t i = 0; i < path->getWayPointCount(); i++){
+			Vector2 point = path->getWayPoint(i);
+			std::cout << i << " -> " << point._x << " " << point._y << std::endl; 
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////

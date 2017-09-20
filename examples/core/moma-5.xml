@@ -3,7 +3,6 @@
 <Project 
 	scene="moma-5/moma-5S.xml" 
 	behavior="moma-5/moma-5B.xml" 
-	view="moma-5/moma-5V.xml" 
 	model="orca"
 	dumpPath="images/test"
 />

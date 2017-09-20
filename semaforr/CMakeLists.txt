@@ -132,11 +132,11 @@ file(
 )
 
 add_executable(
-	controller
+	semaforr
 	${source_files}
 )
 
-target_link_libraries (controller ${catkin_LIBRARIES})
+target_link_libraries (semaforr ${catkin_LIBRARIES})
 
 #add_definitions(-std=c++11)
 
@@ -164,11 +164,11 @@ target_link_libraries (controller ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS semaforr semaforr_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS semaforr
+   #ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   #LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/

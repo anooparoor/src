@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<BFSM>
+	<GoalSet id="0">
+		<Goal type="AABB" id="0" min_x="2" max_x="4"  min_y="2" max_y="4" weight="1.0"/>
+		<Goal type="AABB" id="1" min_x="10" max_x="13"  min_y="2" max_y="4" weight="1.0"/>
+		<Goal type="AABB" id="2" min_x="2" max_x="4"  min_y="10" max_y="13" weight="1.0"/>
+	</GoalSet>
+
+	<GoalSet id="1">
+		<Goal type="AABB" id="0" min_x="43" max_x="45"  min_y="2" max_y="4" weight="1.0"/>
+		<Goal type="AABB" id="1" min_x="43" max_x="45"  min_y="10" max_y="13" weight="1.0"/>
+		<Goal type="AABB" id="2" min_x="36" max_x="38"  min_y="2" max_y="4" weight="1.0"/>
+	</GoalSet>
+
+	<GoalSet id="2">
+		<Goal type="AABB" id="0" min_x="43" max_x="45"  min_y="33" max_y="35" weight="1.0"/>
+		<Goal type="AABB" id="1" min_x="36" max_x="38"  min_y="33" max_y="35" weight="1.0"/>
+		<Goal type="AABB" id="2" min_x="43" max_x="45"  min_y="24" max_y="26" weight="1.0"/>
+	</GoalSet>
+
+	<GoalSet id="3">
+		<Goal type="AABB" id="0" min_x="2" max_x="4"  min_y="33" max_y="35" weight="1.0"/>
+		<Goal type="AABB" id="1" min_x="2" max_x="4"  min_y="24" max_y="26" weight="1.0"/>
+		<Goal type="AABB" id="2" min_x="10" max_x="13"  min_y="33" max_y="35" weight="1.0"/>
+	</GoalSet>
+
+	<!-- Flow -->
+	<State name="leftDown" final="0" >
+		<GoalSelector type="weighted" goal_set="0"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>	
+	<State name="rightDown" final="0" >
+		<GoalSelector type="weighted" goal_set="1"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+
+	<State name="rightUp" final="0" >
+		<GoalSelector type="weighted" goal_set="2"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+
+	<State name="leftUp" final="0" >
+		<GoalSelector type="weighted" goal_set="3"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+
+	<State name="wait" final="0" >
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
+
+			
+	<Transition from="wait" to="leftDown" >
+		<Condition type="timer" dist="u" min="5" max="5" per_agent="1" />
+	</Transition>
+	
+	<Transition from="leftDown" to="rightUp" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="rightUp" >
+		<Condition type="goal_reached" distance="0.3" />
+		<Target type="prob">
+			<State name="leftDown" weight="0.7"/>
+			<State name="leftUp" weight="0.3"/>
+		</Target>
+	</Transition>
+
+	<Transition from="leftUp" to="rightDown" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="rightDown" to="leftUp" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+
+	
+	<!-- Flow march -->
+	<State name="leftDownLong" final="0" >
+		<GoalSelector type="weighted" goal_set="0"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>	
+	<State name="rightDownLong" final="0" >
+		<GoalSelector type="weighted" goal_set="1"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+
+	<State name="rightUpLong" final="0" >
+		<GoalSelector type="weighted" goal_set="2"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+
+	<State name="leftUpLong" final="0" >
+		<GoalSelector type="weighted" goal_set="3"/>
+		<VelComponent type="nav_mesh" heading_threshold="15" file_name="openOffice.nav" />
+	</State>
+	
+	<State name="waitLong" final="0" >
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
+
+	<State name="enter" final="0" >
+		<Action type="teleport" dist="u" min_x="43" max_x="45"  min_y="2" max_y="4" />
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
+
+	<Transition from="waitLong" to="enter" >
+		<Condition type="timer" dist="u" min="100" max="100" per_agent="1" />
+	</Transition>
+
+	<Transition from="enter" to="leftDownLong" >
+		<Condition type="timer" dist="u" min="1" max="1" per_agent="1" />
+	</Transition>
+
+	<Transition from="leftDownLong" to="rightDownLong" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="rightDownLong" to="rightUpLong" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="rightUpLong" to="leftUpLong" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+	<Transition from="leftUpLong" to="leftDownLong" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+</BFSM>

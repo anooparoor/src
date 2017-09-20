@@ -42,9 +42,10 @@ Tier3Advisor::~Tier3Advisor() {};
 // in advisor 
 // It returns map that maps action to comment strength
 std::map <FORRAction, double> Tier3Advisor::allAdvice(){
+  cout << "IN All advisor t3: " << beliefs->getAgentState()->isMissionComplete() << endl;
   set<FORRAction> *vetoed_actions = beliefs->getAgentState()->getVetoedActions();
   set<FORRAction> *action_set;
-
+  cout << "IN All advisor t3: " << endl;
   bool inRotateMode = beliefs->getAgentState()->getRotateMode();
   cout << "Decision Count : " << beliefs->getAgentState()->getCurrentTask()->getDecisionCount() << endl;
   

@@ -13,7 +13,7 @@
 
     <AgentProfile name="group1" >
 		<OpenSteer tau="3" tauObst="6" />
-        <Common max_angle_vel="180" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.19" class="1" pref_speed="1.04" max_speed="2" max_accel="5" />
+        <Common max_angle_vel="180" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.19" class="4" pref_speed="1.04" max_speed="2" max_accel="5" external="0" />
 		<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
         <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
         <Helbing mass="80" />
@@ -22,6 +22,21 @@
         <ORCA tau="3" tauObst="0.15" />
         <Zanlungo mass="80" orient_weight="0.75" />
 	</AgentProfile>
+
+	<AgentProfile name="robot" inherits="group1" >
+		<ORCA tau="3" tauObst="0.15" />
+		<Common class="3" r="0.3" external="1"/>
+		<Helbing mass="320"/>
+	</AgentProfile>
+
+	<AgentGroup>
+                <ProfileSelector type="const" name="robot" />
+		<StateSelector type="const" name="Walk" />
+		<Generator type="explicit">
+			<Agent p_x="22.00" p_y="-20.00"/>
+			
+		</Generator>
+        </AgentGroup>
 
 	<AgentGroup>
         <ProfileSelector type="const" name="group1" />

@@ -7,11 +7,13 @@
 #include <math.h>
 #include "Map.h"
 #include <assert.h>
+#include <fstream>
 
 class Graph {
 private:
   vector<Node*> nodes; 
-  vector<Edge*> edges; 
+  vector<Edge*> edges;
+  vector< vector <int> > nodeIndex; 
 
   double proximity;           // proximity between 2 nodes ( in cm, 1m = 100cm ) 
 
@@ -61,6 +63,8 @@ public:
   int numEdges() const { return edges.size(); }
 
   void printGraph() ;
+
+  void outputGraph();
 
   vector<Node*> getNodesInRegion( int x, int y, double r);
 

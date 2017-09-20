@@ -36,20 +36,24 @@ private:
   ros::Publisher conveyor_pub_;
   ros::Publisher trails_pub_;
   ros::Publisher plan_pub_;
-  ros::Publisher nodes_pub_;
+  ros::Publisher nodes1_pub_;
+  ros::Publisher nodes2_pub_;
   ros::Publisher edges_pub_;
   ros::Publisher edges_cost_pub_;
   ros::Publisher stats_pub_;
   ros::Publisher doors_pub_;
+  ros::Publisher walls_pub_;
   Controller *con;
   Beliefs *beliefs;
   ros::NodeHandle *nh_;
+  int visualized;
   
 public:
   //! ROS node initialization
   Visualizer(ros::NodeHandle *nh, Controller *c)
   {
     nh_ = nh;
+    visualized = false;
     //set up the publisher for the cmd_vel topic
     target_pub_ = nh_->advertise<geometry_msgs::PointStamped>("target_point", 1);
     waypoint_pub_ = nh_->advertise<geometry_msgs::PointStamped>("waypoint", 1);
@@ -59,13 +63,15 @@ public:
 
     conveyor_pub_ = nh_->advertise<nav_msgs::OccupancyGrid>("conveyor", 1);
     region_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("region", 1);
-    nodes_pub_ = nh_->advertise<visualization_msgs::Marker>("nodes", 1);
+    nodes1_pub_ = nh_->advertise<visualization_msgs::Marker>("nodes1", 1);
+    nodes2_pub_ = nh_->advertise<visualization_msgs::Marker>("nodes2", 1);
     edges_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("edges", 1);
     edges_cost_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("edges_cost", 1);
     //trails_pub_ = nh_->advertise<nav_msgs::Path>("trail", 1);
     trails_pub_ = nh_->advertise<visualization_msgs::Marker>("trail", 1);
     stats_pub_ = nh_->advertise<std_msgs::String>("decision_log", 1);
     doors_pub_ = nh_->advertise<visualization_msgs::Marker>("door", 1);
+    walls_pub_ = nh_->advertise<visualization_msgs::Marker>("walls", 1);
     //declare and create a controller with task, action and advisor configuration
     con = c;
     beliefs = con->getBeliefs();
@@ -79,13 +85,20 @@ public:
 		publish_all_targets();
 		publish_remaining_targets();
 	}
-	//publish_nodes();
-	//publish_edges();
+	publish_nodes();
+	publish_reachable_nodes();
+        /*if(visualized < 5){
+		publish_nodes();
+		publish_reachable_nodes();
+		//publish_edges();
+		visualized++;
+	}*/
 	//publish_edges_cost();
 	publish_conveyor();
 	publish_region();
 	publish_trails();
 	publish_doors();
+	publish_walls();
   }
 
 
@@ -116,15 +129,58 @@ public:
 	vector<Node*> nodes = con->getPlanner()->getGraph()->getNodes();
 	
 	for( int i = 0; i < nodes.size(); i++ ){
-    		float x = nodes[i]->getX()/100;
-		float y = nodes[i]->getY()/100;
-		geometry_msgs::Point point;
-		point.x = x;
-		point.y = y;
-		point.z = 0;
-		marker.points.push_back(point);
+		if(nodes[i]->getInBuffer()){
+			float x = nodes[i]->getX()/100.0;
+			float y = nodes[i]->getY()/100.0;
+			geometry_msgs::Point point;
+			point.x = x;
+			point.y = y;
+			point.z = 0;
+			marker.points.push_back(point);
+		}
 	}
-	nodes_pub_.publish(marker);
+	nodes1_pub_.publish(marker);
+  }
+
+  void publish_reachable_nodes(){
+	cout << "publish nodes" << endl;
+	visualization_msgs::Marker marker;
+	marker.header.frame_id = "map";
+    	marker.header.stamp = ros::Time::now();
+	marker.ns = "basic_shapes";
+	marker.type = visualization_msgs::Marker::POINTS;
+    	marker.pose.position.x = 0;
+    	marker.pose.position.y = 0;
+    	marker.pose.position.z = 0;
+    	marker.pose.orientation.x = 0.0;
+    	marker.pose.orientation.y = 0.0;
+    	marker.pose.orientation.z = 0.0;
+    	marker.pose.orientation.w = 1.0;
+	// Set the scale of the marker -- 1x1x1 here means 1m on a side
+	marker.scale.x = marker.scale.y = 0.15;
+	marker.scale.z = 0.15;
+	// Set the color -- be sure to set alpha to something non-zero!
+	marker.color.r = 0.0f;
+	marker.color.g = 0.0f;
+	marker.color.b = 1.0f;
+	marker.color.a = 0.5;
+	marker.lifetime = ros::Duration();
+
+	vector<Edge*> edges = con->getPlanner()->getGraph()->getEdges();
+	vector<Node*> nodes = con->getPlanner()->getGraph()->getNodes();
+	
+	for( int i = 0; i < nodes.size(); i++ ){
+		if(!nodes[i]->getInBuffer()){
+			float x = nodes[i]->getX()/100.0;
+			float y = nodes[i]->getY()/100.0;
+			geometry_msgs::Point point;
+			point.x = x;
+			point.y = y;
+			point.z = 0;
+			marker.points.push_back(point);
+		}
+	}
+	nodes2_pub_.publish(marker);
   }
 
   void publish_edges_cost(){
@@ -161,16 +217,16 @@ public:
 		Node *from = graph->getNodePtr(edges[i]->getFrom());
 		Node *to = graph->getNodePtr(edges[i]->getTo());
 		geometry_msgs::Point f;
-		f.x = from->getX()/100;
-		f.y = from->getY()/100;
+		f.x = from->getX()/100.0;
+		f.y = from->getY()/100.0;
 		f.z = 0;
 		geometry_msgs::Point t;
-		t.x = to->getX()/100;
-		t.y = to->getY()/100;
+		t.x = to->getX()/100.0;
+		t.y = to->getY()/100.0;
 		t.z = 0;
 
-		costMarker.pose.position.x = (f.x + t.x)/2;
-		costMarker.pose.position.y = (f.y + t.y)/2;
+		costMarker.pose.position.x = (f.x + t.x)/2.0;
+		costMarker.pose.position.y = (f.y + t.y)/2.0;
 		costMarker.pose.position.z = 0;
 		//to_string(edges[i]->getCost(true)) + " " + to_string(edges[i]->getCost(false));
 		costMarker.text = "a"; 
@@ -214,12 +270,12 @@ public:
 		Node *from = graph->getNodePtr(edges[i]->getFrom());
 		Node *to = graph->getNodePtr(edges[i]->getTo());
 		geometry_msgs::Point f;
-		f.x = from->getX()/100;
-		f.y = from->getY()/100;
+		f.x = from->getX()/100.0;
+		f.y = from->getY()/100.0;
 		f.z = 0;
 		geometry_msgs::Point t;
-		t.x = to->getX()/100;
-		t.y = to->getY()/100;
+		t.x = to->getX()/100.0;
+		t.y = to->getY()/100.0;
 		t.z = 0;
 		marker.points.push_back(f);
 		marker.points.push_back(t);
@@ -427,6 +483,37 @@ public:
 	doors_pub_.publish(line_list);
   }
 
+  void publish_walls(){
+	ROS_DEBUG("Inside publish walls");
+	vector<Wall> walls = con->getPlanner()->getMap()->getWalls();
+	cout << "There are currently " << walls.size() << " walls" << endl;
+	visualization_msgs::Marker line_list;	
+	line_list.header.frame_id = "map";
+    	line_list.header.stamp = ros::Time::now();
+	line_list.ns = "basic_shapes";
+	line_list.action = visualization_msgs::Marker::ADD;
+    	line_list.id = 1;
+	line_list.type = visualization_msgs::Marker::LINE_LIST;
+	line_list.pose.orientation.w = 1.0;
+	line_list.scale.x = 0.3;
+	line_list.color.r = 0.5;
+	line_list.color.a = 0.5;
+
+	for(int i = 0 ; i < walls.size(); i++){	
+		geometry_msgs::Point p1, p2;
+		p1.x = walls[i].x1/100.0;
+		p1.y = walls[i].y1/100.0;
+		p1.z = 0;
+		p2.x = walls[i].x2/100.0;
+		p2.y = walls[i].y2/100.0;
+		p2.z = 0;
+		
+		line_list.points.push_back(p1);
+		line_list.points.push_back(p2);
+	}
+	walls_pub_.publish(line_list);
+  }
+
   void publish_all_targets(){
 	ROS_DEBUG("Publish All targets as pose array!!");
 	geometry_msgs::PoseArray targets;
@@ -505,7 +592,8 @@ public:
 	int currentTask = -1;
 	if(!agenda.empty()){
 		currentTask = all_agenda.size() - agenda.size();
-		decisionCount = beliefs->getAgentState()->getCurrentTask()->getDecisionCount();
+  		if(currentTask != 0)
+			decisionCount = beliefs->getAgentState()->getCurrentTask()->getDecisionCount();
 	}
 	ROS_DEBUG("After decisionCount");
 
@@ -556,7 +644,7 @@ public:
 	}
 	ROS_DEBUG("After trails");
 	
-	std::stringstream conveyorStream;
+	/*std::stringstream conveyorStream;
 	for(int j = 0; j < conveyors.size()-1; j++){
 		for(int i = 0; i < conveyors[j].size(); i++){
 			conveyorStream << conveyors[j][i] << " ";
@@ -564,6 +652,7 @@ public:
 		conveyorStream << ";";
 	}
 	ROS_DEBUG("After conveyors");
+	*/
 
 	std::stringstream doorStream;
 	for(int i = 0; i < doors.size(); i++){
@@ -574,11 +663,22 @@ public:
 	}
 
 	ROS_DEBUG("After doors");
+	
+	std::stringstream planStream;
+	if(beliefs->getAgentState()->getCurrentTask() != NULL){
+		vector <CartesianPoint> waypoints = beliefs->getAgentState()->getCurrentTask()->getWaypoints();
 
+		for(int i = 0; i < waypoints.size(); i++){
+			planStream << waypoints[i].get_x() << " " << waypoints[i].get_y();
+			planStream << ";";		
+		}
+	}
 	std::stringstream output;
 
-	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << advisorInfluence << "\t" << regionsstream.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str();// << "\t" << lep.str() << "\t" << ls.str();
+
+	//output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << advisorInfluence << "\t" << regionsstream.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
 	
+	output << currentTask << "\t" << decisionCount << "\t"<< targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
 
 	/*std::stringstream output;
 

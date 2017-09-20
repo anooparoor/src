@@ -66,6 +66,7 @@ bool astar::search(int source, int target)
   return false;
 }
 
+
 double astar::euclidian_h(_VNode* a, _VNode* b)
 {
   // sqrt(a.x-b.x^2 + a.y-b.y^2)

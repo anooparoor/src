@@ -445,14 +445,14 @@ namespace Menge {
 			 *	@brief		ROS node handle
 			 */			
 			ros::NodeHandle *_nh;
-			ros::Subscriber _sub;
+	                ros::Subscriber _sub;
 			ros::Publisher _pub_crowd;
 			ros::Publisher _pub_pose;
 			ros::Publisher _pub_odom;
 			ros::Publisher _pub_scan;
 			ros::Publisher _pub_endpoints;
 			Agents::PrefVelocity prefVelMsg;
-
+			std::vector< size_t > _robotIDList;
 		};
 
 		/////////////////////////////////////////////////////////////////////

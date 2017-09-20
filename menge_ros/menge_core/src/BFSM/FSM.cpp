@@ -60,6 +60,13 @@ namespace Menge {
 
 		FSM::FSM( Agents::SimulatorInterface * sim ):_sim(sim), _agtCount(0), _currNode(0x0) {	
 			setAgentCount( sim->getNumAgents() );
+			int agtCount = (int)this->_sim->getNumAgents();
+			for ( int a = 0; a < agtCount; ++a ) {
+				Agents::BaseAgent * agt = this->_sim->getAgent( a );
+				if(agt->_isExternal){
+					_robotIDList.push_back(agt->_id);		
+				}
+			}
 		}
 
 		/////////////////////////////////////////////////////////////////////
@@ -155,21 +162,39 @@ namespace Menge {
 		void FSM::computePrefVelocity( Agents::BaseAgent * agent ) {
 			const size_t ID = agent->_id;
 			// Evalute the new state's velocity
-
 						
 			//generate a preferred velocity for passing around
 			Agents::PrefVelocity newVel;
-
+	
 			_currNode[ ID ]->getPrefVelocity( agent, newVel);
 
 			//TODO: My velocity modifiers here
-			
-			
 
 			std::vector< VelModifier * >::iterator vItr = _velModifiers.begin();
 			for ( ; vItr != _velModifiers.end(); ++vItr ) {   //TODO: replace global vel mod initalizer
 				(*vItr)->adaptPrefVelocity(agent, newVel);
 			}
+
+			//compute robot effect on crowd
+			if(!agent->_isExternal and _robotIDList.size() == 1){
+				//std::cout << "Velocity of crowd agent " << ID << " : " << newVel.getPreferred()._x << " " << newVel.getPreferred()._y << std::endl;
+				Agents::BaseAgent *rbt = this->_sim->getAgent(_robotIDList[0]);
+				Vector2 agentRobot = rbt->_pos - agent->_pos;
+				double angleToRobot = atan2(agentRobot._y,agentRobot._x);
+				double agent_angle = atan2(agent->_orient._y,agent->_orient._x);
+				double requiredTurn = angleToRobot - agent_angle;
+				if(requiredTurn > M_PI)
+      					requiredTurn = requiredTurn - (2*M_PI);
+    				if(requiredTurn < -M_PI)
+      					requiredTurn = requiredTurn + (2*M_PI);
+
+				double distance = rbt->_pos.distance(agent->_pos);
+				double attraction = agent->_robotAttraction;
+				//std::cout << "Angle towards robot: " << angleToRobot << " Agent angle: " << agent_angle << " Turn: " << requiredTurn << std::endl;
+				double actualTurn = requiredTurn * attraction / (distance + 1);
+				//newVel.turn(actualTurn);
+			}
+
 			if(agent->_isExternal){
 				//std::cout << "External Agent detected : " << ID << std::endl;
 				prefVelMsg.setSpeed(0.0);
@@ -215,23 +240,31 @@ namespace Menge {
 			
 			Vector2 pos = agent->_pos;
 			//In radians to represent a 220 degree scan with 1/3 degree increment for a total of 660 ray scans
-			float start_angle = -1.91986; 
-			float end_angle = 1.918;
-			float increment = 0.005817;
-			float range_max = 25; 
-			//In meters  
-			int i = 0;
-			for(float angle = start_angle; angle <= end_angle ; angle += increment){
+			float start_angle = agent->_start_angle; 
+			float end_angle = agent->_end_angle;
+			float increment = agent->_increment;
+			float range_max = agent->_range_max; 
+			//In meters 
+			float angles[660];			
+
+			for(int i = 0;i < 660;i++){
+				ls.ranges.push_back(0);
+				angles[i] = start_angle + (increment * i);
+			}
+
+			// parallel implementati
+			//std::cout << "Parallelization " << ls.ranges.size() << std::endl; 
+			#pragma omp parallel for
+			for(int i = 0; i < 660; i++){
 				//std::cout << "Generating obstacle distance " << angle; 
 				//for each angle compute the distance from the obstacle
-				float distance =  distanceFromObstacle(angle,range_max, agent);
-				float distance_agent = distanceFromAgent(angle, range_max, agent);
+				float distance =  distanceFromObstacle(angles[i],range_max, agent);
+				float distance_agent = distanceFromAgent(angles[i], range_max, agent);
 				if(distance > distance_agent){
 					distance = distance_agent;
 				}
-				ls.ranges.push_back(distance);
+				ls.ranges[i] = distance;
 				//std::cout << " distance : " << distance << std::endl; 
-				i++;
 			}
 			ls.angle_min = start_angle;
 			ls.angle_max = end_angle;
@@ -256,13 +289,11 @@ namespace Menge {
 			laser_end._y += sin(new_angle) * range_max;
 			return nearAgentDistance(laser_begin, laser_end);
 		}
-
 	
 		float FSM::distanceFromObstacle(float angle, float range_max, Agents::BaseAgent * agent){
 			// find the vector to represent the ray 
 			float min_range = 0.01;
-			float width = 0.0001;
-			
+			float width = 0.0001;			
 			float agent_dir_angle = atan2(agent->_orient._y, agent->_orient._x);
 			//std::cout << "Calculate laser:Agent orient x:" << agent->_orient._x << " y:" << agent->_orient._y << std::endl;
 			//std::cout << "Calculate Agent direction : " << agent_dir_angle << std::endl;
@@ -300,7 +331,8 @@ namespace Menge {
 				if(agt->_isExternal == false){
 					//the agent in question is a crowd agent
 					Vector2 agent_pos = agt->_pos;
-					float current = intersect(start, end, agent_pos, 0.6);
+					float radius = agt->_radius;
+					float current = intersect(start, end, agent_pos, radius);
 					if(current < distance) 
 						distance = current;				
 				}
@@ -453,14 +485,15 @@ namespace Menge {
 			EVENT_SYSTEM->evaluateEvents();
 			int agtCount = (int)this->_sim->getNumAgents();
 			size_t exceptionCount = 0;
-			#pragma omp parallel for reduction(+:exceptionCount)
 			ros::Time current_time;
   			current_time = ros::Time::now();
 			geometry_msgs::PoseArray crowd;
 			Vector2 robot_pos;
 			Vector2 robot_orient;
 			float robot_angle;
-			// Compute preference velocities for each agent and also send the base_scan and robot position estimates
+
+			// Compute preference velocities for each agent
+			#pragma omp parallel for reduction(+:exceptionCount)
 			for ( int a = 0; a < agtCount; ++a ) {
 				Agents::BaseAgent * agt = this->_sim->getAgent( a );
 				try {
@@ -470,18 +503,25 @@ namespace Menge {
 					logger << Logger::ERR_MSG << e.what() << "\n";
 					++exceptionCount;
 				}
-				geometry_msgs::Pose pose;
+			}
+			
+			// Compute the robot laser scan and position  	
+			#pragma omp parallel for reduction(+:exceptionCount)		
+			for(int a = 0; a < agtCount; ++a){
+				Agents::BaseAgent * agt = this->_sim->getAgent( a );
 				
-				pose.position.x = agt->_pos._x;
-				pose.position.y = agt->_pos._y;
-				pose.position.z = 0.0;
-
-				pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 0.0, atan2(agt->_orient._y, agt->_orient._x));
-
-				geometry_msgs::PoseStamped poseStamped;
-				poseStamped.pose = pose;
-
 				if(agt->_isExternal){
+					geometry_msgs::Pose pose;
+				
+					pose.position.x = agt->_pos._x;
+					pose.position.y = agt->_pos._y;
+					pose.position.z = 0.0;
+
+					pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 0.0, atan2(agt->_orient._y, agt->_orient._x));
+
+					geometry_msgs::PoseStamped poseStamped;
+					poseStamped.pose = pose;
+
 					robot_pos = agt->_pos;
 					robot_orient = agt->_orient;
 					robot_angle = atan2(agt->_orient._y, agt->_orient._x);
@@ -522,6 +562,8 @@ namespace Menge {
 
 				}
 			}
+
+
 			// Compute and publish the crowd positions that is visible to the robot via laser scan
 			for ( int a = 0; a < agtCount; ++a ) {
 				Agents::BaseAgent * agt = this->_sim->getAgent( a );

@@ -110,8 +110,8 @@ class Task {
 
 	list<int>::iterator it;
 	for ( it = path.begin(); it != path.end(); it++ ){
-		int x = navGraph->getNode(*it).getX()/100.0;
-		int y = navGraph->getNode(*it).getY()/100.0;
+		double x = navGraph->getNode(*it).getX()/100.0;
+		double y = navGraph->getNode(*it).getY()/100.0;
     		cout << x << " " << y << endl;
 		CartesianPoint waypoint(x,y);
 		waypoints.push_back(waypoint);
@@ -150,7 +150,7 @@ class Task {
    bool isWaypointComplete(Position currentPosition){
 	bool status = false;
 	double dis = currentPosition.getDistance(wx, wy);
-	if (isPlanActive && (dis < 3)){
+	if (isPlanActive && (dis < 2)){
 		status = true;
 	}
 	return status;

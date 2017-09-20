@@ -35,7 +35,7 @@ typedef std::vector<Tier3Advisor*>::iterator advisor3It;
 class Controller {
 public:
 
-  Controller(string, string, string, string);
+  Controller(string, string, string, string, string);
   
   //main sense decide loop, receives the input messages and calls the FORRDecision function
   FORRAction decide();
@@ -77,7 +77,7 @@ private:
   void initialize_advisors(std::string);
   void initialize_tasks(std::string);
   void initialize_params(std::string);
-  void initialize_planner(std::string);
+  void initialize_planner(std::string,std::string, int &l, int &h);
   
   // Knowledge component of robot
   Beliefs *beliefs;
@@ -90,7 +90,7 @@ private:
   // Checks if a given advisor is active
   bool isAdvisorActive(string advisorName);
 
-  double width, height, granularity, initialX, initialY, initialTheta, canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle;
+  double canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle;
   double arrMove[100];
   double arrRotate[100];
   int moveArrMax, rotateArrMax;
@@ -99,6 +99,8 @@ private:
   bool conveyorsOn;
   bool regionsOn;
   bool doorsOn;
+  bool aStarOn;
+  bool firstTaskAssigned;
 };
   
 #endif /* CONTROLLER_H */

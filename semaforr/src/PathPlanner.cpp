@@ -46,6 +46,7 @@ int PathPlanner::calcPath(bool cautious){
 	cout << signature << "Source is not a valid Node in the navigation graph. Getting closest valid node." << endl; 
       s = getClosestNode(source, target);
     }
+    //cout << signature << "Checking if source node is invalid" << endl;
     if ( s.getID() == Node::invalid_node_index )
       return 1;
 
@@ -59,9 +60,11 @@ int PathPlanner::calcPath(bool cautious){
 	cout << signature << "Target is not a valid Node in the navigation graph. Getting closest valid node." << endl; 
       t = getClosestNode(target, source);
     }
+    //cout << signature << "Checking if target node is invalid" << endl;
     if ( t.getID() == Node::invalid_node_index )
       return 2;
 
+    //cout << signature << "Completed finding source and destination nodes" << endl;
     if(PATH_DEBUG) {
       cout << signature << "s:"; 
       s.printNode(); 
@@ -70,7 +73,7 @@ int PathPlanner::calcPath(bool cautious){
       t.printNode();
       cout << endl;
     }
-
+    //cout << signature << "Updating nav graph" << endl;
     // update the nav graph with the latest crowd model to change the edge weights
     updateNavGraph();
     astar newsearch(*navGraph, s, t);
@@ -464,7 +467,7 @@ Node PathPlanner::getClosestNode(Node n, Node ref){
     vector<Node*>::iterator iter;
     for( iter = nodes.begin(); iter != nodes.end(); iter++ ){
       double d = Map::distance( (*iter)->getX(), (*iter)->getY(), n.getX(), n.getY() );
-
+      
       if(PATH_DEBUG){
 	cout << "\tChecking ";
 	(*iter)->printNode();
@@ -482,6 +485,7 @@ Node PathPlanner::getClosestNode(Node n, Node ref){
       if (( d < dist ) &&
 	  !map.isPathObstructed( (*iter)->getX(), (*iter)->getY(), n.getX(), n.getY()) &&
 	  (*iter)->isAccessible()) {
+	//cout << "Checking if node is accesible : " << (*iter)->getX() << " " << (*iter)->getY()  << endl; 
 	dist = d + d_t;
 	temp = (*(*iter));
 	if(PATH_DEBUG) {

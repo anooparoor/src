@@ -1,7 +1,7 @@
 /* \mainpage ROSiffied semaforr Documentation
  * \brief RobotDriver governs low-level actions of a robot.
  *
- * \author Anoop Aroor.
+ * \author Anoop Aroor, Raj Korpan and others.
  *
  * \version SEMAFORR ROS 1.0
  *
@@ -50,7 +50,7 @@ private:
 	// Controller
 	Controller *controller;
 	// Pos received
-	bool init_pos_received;
+	bool init_pos_received, init_laser_received;
 	// Visualization 
 	Visualizer *viz_;
 public:
@@ -66,6 +66,7 @@ public:
 		//declare and create a controller with task, action and advisor configuration
 		controller = con;
 		init_pos_received = false;
+ 		init_laser_received = false;
 		current.setX(0);current.setY(0);current.setTheta(0);
 		previous.setX(0);previous.setY(0);previous.setTheta(0);
 		viz_ = new Visualizer(&nh_, con);
@@ -102,6 +103,7 @@ public:
 	void updateLaserScan(const sensor_msgs::LaserScan & scan){ 
 		//ROS_DEBUG("Inside callback for base_scan message");
 		laserscan = scan; 
+		init_laser_received = true;
 		//ROS_INFO_STREAM("Recieved base_scan message from menge ");
 	}
  
@@ -132,8 +134,8 @@ public:
 		// Run the loop , the input sensing and the output beaming is asynchrounous
 		while(nh_.ok()) {
 			// If pos value is not received from menge wait
-			while(init_pos_received == false){
-				ROS_DEBUG("Waiting for first message");
+			while(init_pos_received == false or init_laser_received == false){
+				ROS_DEBUG("Waiting for first message or laser");
 				//wait for some time
 				rate.sleep();
 				// Sense input 
@@ -280,28 +282,32 @@ public:
 };
 
 
-
-
-
-
 // Main file : Load configuration files and create a controller, Initialize and run robot driver! 
 // Stops when the mission is complete or when a mission aborts
 int main(int argc, char **argv) {
-
 		//init the ROS node
+		ROS_INFO("Starting... semaforr ");
 		ros::init(argc, argv, "semaforr");
 		if( ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug) ) {
 			ros::console::notifyLoggerLevelsChanged();
 		}
 		ros::NodeHandle nh;
 
-		string path = ros::package::getPath("semaforr");
+		std::cout << argc << endl;
+
+		if(argc != 5){
+			ROS_INFO_STREAM("not have all parameters" << argc);
+		}
+
+		string path(argv[1]);
+		string target_set(argv[2]);
+		string map_config(argv[3]);
+		string map_dimensions(argv[4]);
+
 		string advisor_config = path + "/config/advisors.conf";
 		string params_config = path + "/config/params.conf";
-		string tasks_config = path + "/config/target.conf";
-		string planner_config = path;
 
-		Controller *controller = new Controller(advisor_config,tasks_config,params_config,planner_config); 
+		Controller *controller = new Controller(advisor_config, params_config, map_config, target_set, map_dimensions); 
 
 		ROS_INFO("Controller Initialized");
 		RobotDriver driver(nh, controller);

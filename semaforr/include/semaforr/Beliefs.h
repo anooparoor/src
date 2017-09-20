@@ -46,7 +46,10 @@ public:
         spatialModel = new SpatialModel(width, height, granularity);
     }
  
-    AgentState* getAgentState(){return agentState;}
+    AgentState* getAgentState(){
+	//std::cout << "return agent state " << std::endl;
+	return agentState;
+    }
     SpatialModel* getSpatialModel(){return spatialModel;}
 
         

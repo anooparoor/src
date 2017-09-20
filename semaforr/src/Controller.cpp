@@ -91,40 +91,6 @@ void Controller::initialize_params(string filename){
   //cout << "Inside while in tasks" << endl;
     if(fileLine[0] == '#')  // skip comment lines
       continue;
-    else if (fileLine.find("width") != std::string::npos) {
-      std::stringstream ss(fileLine);
-      std::istream_iterator<std::string> begin(ss);
-      std::istream_iterator<std::string> end;
-      std::vector<std::string> vstrings(begin, end);
-      width = atof(vstrings[1].c_str());
-      ROS_DEBUG_STREAM("width " << width);
-    }
-    else if (fileLine.find("height") != std::string::npos) {
-      std::stringstream ss(fileLine);
-      std::istream_iterator<std::string> begin(ss);
-      std::istream_iterator<std::string> end;
-      std::vector<std::string> vstrings(begin, end);
-      height = atof(vstrings[1].c_str());
-      ROS_DEBUG_STREAM("height " << height);
-    }
-    else if (fileLine.find("granularity") != std::string::npos) {
-      std::stringstream ss(fileLine);
-      std::istream_iterator<std::string> begin(ss);
-      std::istream_iterator<std::string> end;
-      std::vector<std::string> vstrings(begin, end);
-      granularity = atof(vstrings[1].c_str());
-      ROS_DEBUG_STREAM("granularity " << granularity);
-    }
-    else if (fileLine.find("initialPosition") != std::string::npos) {
-      std::stringstream ss(fileLine);
-      std::istream_iterator<std::string> begin(ss);
-      std::istream_iterator<std::string> end;
-      std::vector<std::string> vstrings(begin, end);
-      initialX = atof(vstrings[1].c_str());
-      initialY = atof(vstrings[2].c_str());
-      initialTheta = atof(vstrings[3].c_str());
-      ROS_DEBUG_STREAM("initialPosition " << initialX << " " << initialY << " " << initialTheta);
-    }
     else if (fileLine.find("decisionlimit") != std::string::npos) {
       std::stringstream ss(fileLine);
       std::istream_iterator<std::string> begin(ss);
@@ -221,6 +187,14 @@ void Controller::initialize_params(string filename){
       doorsOn = atof(vstrings[1].c_str());
       ROS_DEBUG_STREAM("doorsOn " << doorsOn);
     }
+    else if (fileLine.find("aStarOn") != std::string::npos) {
+      std::stringstream ss(fileLine);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      std::vector<std::string> vstrings(begin, end);
+      aStarOn = atof(vstrings[1].c_str());
+      ROS_DEBUG_STREAM("aStarOn " << aStarOn);
+    }
     else if (fileLine.find("move") != std::string::npos) {
       std::stringstream ss(fileLine);
       std::istream_iterator<std::string> begin(ss);
@@ -261,23 +235,40 @@ void Controller::initialize_params(string filename){
 // Read from the map file and intialize planner
 //
 //
-void Controller::initialize_planner(string filename){
-	//Initialize map in cms 
-	// Need to move them to a config file
-	double length = 4800;//48 meters
-	double height = 3600;//36 meters
-	double bufferSize = 100;//1 meters
-	double proximity = 100;//1 meters
-	Map *map = new Map(length, height, bufferSize);
-	string address = "/home/anooparoor/catkin_ws/src/examples/core/openOffice/openOfficeS.xml";
-	map->readMapFromXML(address);
+void Controller::initialize_planner(string map_config, string map_dimensions, int &l, int &h){
+	string fileLine;
+	double p;
+	std::ifstream file(map_dimensions.c_str());
+  	ROS_DEBUG_STREAM("Reading map dimension file:" << map_dimensions);
+  	if(!file.is_open()){
+    		ROS_DEBUG("Unable to locate or read map dimensions file!");
+  	}
+  	while(getline(file, fileLine)){
+    		//cout << "Inside while in tasks" << endl;
+    		if(fileLine[0] == '#')  // skip comment lines
+      			continue;
+    		else{
+      			std::stringstream ss(fileLine);
+      			std::istream_iterator<std::string> begin(ss);
+      			std::istream_iterator<std::string> end;
+      			std::vector<std::string> vstrings(begin, end);
+			ROS_DEBUG("Unable to locate or read map dimensions file!");
+      			l = atoi(vstrings[0].c_str());
+      			h = atoi(vstrings[1].c_str());
+			p = atof(vstrings[2].c_str());
+     			ROS_DEBUG_STREAM("Map dim:" << l << " " << h << " " << p << endl);
+    		}
+  	}	
+	Map *map = new Map(l*100, h*100);
+	map->readMapFromXML(map_config);
 	cout << "Finished reading map"<< endl;
 	
-	Graph *navGraph = new Graph(map, proximity);
+	Graph *navGraph = new Graph(map,(int)(p*100.0));
 	cout << "initialized nav graph" << endl;
-	navGraph->printGraph();
+	//navGraph->printGraph();
+	//navGraph->outputGraph();
 	Node n;
-  planner = new PathPlanner(navGraph, *map, n,n);
+        planner = new PathPlanner(navGraph, *map, n,n);
 	cout << "initialized planner" << endl;
 }
 
@@ -317,41 +308,45 @@ void Controller::initialize_tasks(string filename){
 // Initialize the controller and setup messaging to ROS
 //
 //
-Controller::Controller(string advisor_config, string task_config, string params_config, string planner_config){
+Controller::Controller(string advisor_config, string params_config, string map_config, string target_set, string map_dimensions){
 
   // Initialize robot parameters from a config file
   initialize_params(params_config);
+  
+  // Initialize planner and map dimensions
+  int l,h;
+  initialize_planner(map_config,map_dimensions,l,h);
 
   // Initialize the agent's 'beliefs' of the world state with the map and nav
   // graph and spatial models
-  //beliefs = new Beliefs(120,120,2);
-  beliefs = new Beliefs(width, height, granularity, arrMove, arrRotate, moveArrMax, rotateArrMax); // Hunter Fourth
-  //beliefs = new Beliefs(32,28,2); // Map A
+  beliefs = new Beliefs(l, h, 2, arrMove, arrRotate, moveArrMax, rotateArrMax); // Hunter Fourth
 
   // Initialize advisors and weights from config file
   initialize_advisors(advisor_config);
 
   // Initialize the tasks from a config file
-  initialize_tasks(task_config);
+  initialize_tasks(target_set);
 
-  // Initialize planner
-  //initialize_planner(planner_config);
-
-  // Initialize current task, and robot initial position
-  // Position initialPosition(initialX, initialY, initialTheta);
+  // Initialize parameters
   beliefs->getAgentState()->setAgentStateParameters(canSeePointEpsilon, laserScanRadianIncrement, robotFootPrint, robotFootPrintBuffer, maxLaserRange, maxForwardActionBuffer, maxForwardActionSweepAngle);
-  beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-  //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(initialPosition, planner);
   tier1 = new Tier1Advisor(beliefs);
+  firstTaskAssigned = false;
 }
 
 
 // Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
 void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
+  cout << "inupdate state" << endl;
   beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
-  //bool waypointReached = beliefs->getAgentState()->getCurrentTask()->isWaypointComplete(current);
+  if(firstTaskAssigned == false){
+      cout << "Set first task" << endl;
+      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
+      firstTaskAssigned = true;
+  }
+  bool waypointReached = beliefs->getAgentState()->getCurrentTask()->isWaypointComplete(current);
   bool taskCompleted = beliefs->getAgentState()->getCurrentTask()->isTaskComplete(current);
 
+  //if task is complete
   if(taskCompleted == true){
     ROS_DEBUG("Target Achieved, moving on to next target!!");
     //Learn spatial model only on tasks completed successfully
@@ -359,23 +354,23 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
     //Clear existing task and associated plans
     beliefs->getAgentState()->finishTask();
     if(beliefs->getAgentState()->getAgenda().size() > 0){
-      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-      //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
+      //Tasks the next task , current position and a planner and generates a sequence of waypoints if astaron is true
+      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
     }
   } 
-  /*else if(waypointReached == true){
+  // else if subtask is complete
+  else if(waypointReached == true and aStarOn){
     ROS_DEBUG("Waypoint reached, but task still incomplete, switching to next waypoint!!");
     beliefs->getAgentState()->getCurrentTask()->setupNextWaypoint();
-  }  */
-  //********************* Task Decision limit reached, skip task ********************
+  } 
+  // otherwise if task Decision limit reached, skip task 
   else if(beliefs->getAgentState()->getCurrentTask()->getDecisionCount() > taskDecisionLimit){
     ROS_DEBUG_STREAM("Controller.cpp decisionCount > " << taskDecisionLimit << " , skipping task");
     //learnSpatialModel(beliefs->getAgentState());
     //beliefs->getAgentState()->skipTask();
     beliefs->getAgentState()->finishTask();
     if(beliefs->getAgentState()->getAgenda().size() > 0){
-      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask());
-      //beliefs->getAgentState()->getCurrentTask()->generateWaypoints(current, planner);
+      beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
     }
   }
 }
@@ -442,12 +437,12 @@ FORRAction Controller::FORRDecision()
   FORRAction *decision = new FORRAction();
   // Basic semaFORR three tier decision making architecture 
   if(!tierOneDecision(decision)){
-  ROS_DEBUG("Decision to be made by t3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-  //decision->type = FORWARD;
-  //decision->parameter = 5;
-  tierThreeDecision(decision);
-  tierThreeAdvisorInfluence();
-  decisionStats->decisionTier = 3;
+  	ROS_DEBUG("Decision to be made by t3!!");
+  	//decision->type = FORWARD;
+  	//decision->parameter = 5;
+  	tierThreeDecision(decision);
+  	tierThreeAdvisorInfluence();
+  	decisionStats->decisionTier = 3;
   }
   //cout << "decisionTier = " << decisionStats->decisionTier << endl;
   //ROS_DEBUG("After decision made");
@@ -496,6 +491,7 @@ bool Controller::tierOneDecision(FORRAction *decision){
   }
   decisionStats->vetoedActions = vetoList.str();
   //cout << "vetoedActions = " << vetoList.str() << endl;
+  
   return decisionMade;
 }
 
