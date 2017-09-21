@@ -66,7 +66,6 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-
 map_name = "moma-5"
 for i in range(1,6):
     target_file_name = "target" + str(i) + ".conf"
