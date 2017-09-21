@@ -8,7 +8,7 @@ import time
 import subprocess
 
 def experiment():
-    project_home = "/home/anooparoor/catkin_ws/src"
+    project_home = "/home/anoop/catkin_ws/src"
     menge_path = project_home+"/examples/core"
     semaforr_path = project_home+"/semaforr"
 
@@ -18,8 +18,7 @@ def experiment():
     #menge files for semaforr
     map_config = map_folder+"/"+map_name+"S.xml"
     map_dimensions = map_folder+"/dimensions.conf"
-    target_set = map_folder+"/target_small.conf"
-    log_name = map_name + ".txt"
+    target_set = map_folder+"/" + target_file_name
 
     print target_set
     print map_config
@@ -42,12 +41,12 @@ def experiment():
     semaforr_process = subprocess.Popen(['rosrun','semaforr','semaforr', semaforr_path, target_set, map_config, map_dimensions])
     print "waiting,,"
 
-    
+   
     # Wait till semaforr completes the process
     while semaforr_process.poll() is None:
         print "Semaforr process still running ..."
         time.sleep(1)
-    
+   
     print "Semaforr process has ended ..."
     print "Terminating the simulator"
 
@@ -67,35 +66,12 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-map_name = "hunter-2"
-experiment()
-map_name = "hunter-3"
-experiment()
-map_name = "hunter-4"
-experiment()
-map_name = "hunter-6"
-experiment()
-map_name = "hunter-7"
-experiment()
-map_name = "hunter-8"
-experiment()
-map_name = "hunter-9"
-experiment()
-map_name = "hunter-10"
-experiment()
-map_name = "hunter-11"
-experiment()
-map_name = "hunter-12"
-experiment()
-map_name = "hunter-13"
-experiment()
-map_name = "hunter-14"
-experiment()
-map_name = "hunter-15"
-experiment()
-map_name = "hunter-16"
-experiment()
 
+map_name = "moma-5"
+for i in range(1,6):
+    target_file_name = "target" + str(i) + ".conf"
+    log_name = map_name + "_" + target_file_name + ".txt"
+    experiment()
 
 
 
