@@ -9,8 +9,8 @@
 		<Goal type="circle" id="4" x="15" y="14" radius="1" />
 		<Goal type="circle" id="5" x="15" y="21" radius="1" />
 		<Goal type="circle" id="6" x="6" y="23" radius="1" />
-		<Goal type="circle" id="7" x="23" y="37" radius="1" />
-		<Goal type="circle" id="8" x="6" y="38" radius="1" />
+		<Goal type="circle" id="7" x="23.5" y="36" radius="1" />
+		<Goal type="circle" id="8" x="6" y="37" radius="1" />
 		<Goal type="circle" id="9" x="15" y="28" radius="1" />
 		<Goal type="circle" id="10" x="22" y="28" radius="1" />
 	</GoalSet>

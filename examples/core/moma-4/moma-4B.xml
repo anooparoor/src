@@ -7,8 +7,8 @@
 		<Goal type="circle" id="2" x="16" y="10" radius="1" />
 		<Goal type="circle" id="3" x="7" y="12" radius="1" />
 		<Goal type="circle" id="4" x="16" y="25" radius="1" />
-		<Goal type="circle" id="5" x="16" y="19" radius="1" />
-		<Goal type="circle" id="6" x="16" y="15" radius="1" />
+		<Goal type="circle" id="5" x="15.5" y="19" radius="1" />
+		<Goal type="circle" id="6" x="15.5" y="14.5" radius="1" />
 		<Goal type="circle" id="7" x="23" y="38" radius="1" />
 		<Goal type="circle" id="8" x="10" y="28" radius="1" />
 		<Goal type="circle" id="9" x="20" y="28" radius="1" />

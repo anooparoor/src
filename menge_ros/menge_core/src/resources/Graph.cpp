@@ -231,6 +231,9 @@ namespace Menge {
 				}
 			}
 		}
+		if (bestID == -1){
+			std::cout << "Not able to find nearest vertex " << std::endl;
+		}
 
 		assert( bestID != -1 && "Roadmap Graph was unable to find a visible vertex" );
 		return bestID;
@@ -295,12 +298,12 @@ namespace Menge {
 		if ( !found ) {
 			logger << Logger::ERR_MSG << "Was unable to find a path from " << startID << " to " << endID << "\n";
 			std::cout << "Found path " << found << std::endl;
-			//std::cout << "Returning dummy path " << std::endl;
-			//RoadMapPath * path = new RoadMapPath( 2 );
-			//path->setWayPoint(0, _vertices[ startID ].getPosition() );
-			//path->setWayPoint(1, _vertices[ startID ].getPosition() );
-			//return path;
-			return 0x0;
+			std::cout << "Returning dummy path " << std::endl;
+			RoadMapPath * path = new RoadMapPath( 2 );
+			path->setWayPoint(0, _vertices[ startID ].getPosition() );
+			path->setWayPoint(1, _vertices[ startID ].getPosition() );
+			return path;
+			//return 0x0;
 		}
 	
 		// Count the number of nodes in the path

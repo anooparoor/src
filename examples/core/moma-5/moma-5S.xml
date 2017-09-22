@@ -13,18 +13,18 @@
 
     <AgentProfile name="robot" >
 	<OpenSteer tau="3" tauObst="6" />
-        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.25" class="1" pref_speed="1" max_speed="2" max_accel="2" priority="0.0" external="1" start_angle="-1.91986" end_angle="1.9194" increment="0.005817" range_max="25"/>
-	<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
+        <Common max_angle_vel="360" max_neighbors="20" obstacleSet="1" neighbor_dist="5" r="0.25" class="1" pref_speed="1" max_speed="2" max_accel="2" priority="0.0" external="1" start_angle="-1.91986" end_angle="1.9194" increment="0.005817" range_max="25"/>
+	<PedVO factor="1.57" buffer="0.9" tau="2" tauObst="3" turningBias="1.0" />
         <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
         <Helbing mass="80" />
         <Johansson fov_weight="0.16" />
         <Karamouzas personal_space="0.69" anticipation="8" />
-        <ORCA tau="3.0" tauObst="0.15" />
+        <ORCA tau="2.0" tauObst="3" />
         <Zanlungo mass="80" />
     </AgentProfile>
 
     <AgentProfile name="visitor" inherits="robot" >
-		<Common class="2" r="0.20" external="0" robotAttraction="0.0"/>
+		<Common class="2" r="0.18" external="0" robotAttraction="0.0"/>
 		<Helbing mass="320"/>
     </AgentProfile>
 
