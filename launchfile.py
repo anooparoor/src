@@ -8,7 +8,7 @@ import time
 import subprocess
 
 def experiment():
-    project_home = "/home/anooparoor/catkin_ws/src"
+    project_home = "/home/anoop/catkin_ws/src"
     menge_path = project_home+"/examples/core"
     semaforr_path = project_home+"/semaforr"
 
@@ -41,12 +41,12 @@ def experiment():
     semaforr_process = subprocess.Popen(['rosrun','semaforr','semaforr', semaforr_path, target_set, map_config, map_dimensions])
     print "waiting,,"
 
-    
+   
     # Wait till semaforr completes the process
     while semaforr_process.poll() is None:
         print "Semaforr process still running ..."
         time.sleep(1)
-    
+   
     print "Semaforr process has ended ..."
     print "Terminating the simulator"
 
@@ -66,11 +66,9 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-
 map_name = "moma-5"
-for i in range(1,2):
+for i in range(1,6):
     target_file_name = "target" + str(i) + ".conf"
-    #target_file_name = "target.conf"
     log_name = map_name + "_" + target_file_name + ".txt"
     experiment()
 
