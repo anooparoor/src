@@ -32,7 +32,7 @@
         <ProfileSelector type="const" name="robot" />
 	<StateSelector type="const" name="a" />
 	<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="1.0" >
-		<Agent p_x="5" p_y="5"/>
+		<Agent p_x="7" p_y="5"/>
 	</Generator>
     </AgentGroup>
 

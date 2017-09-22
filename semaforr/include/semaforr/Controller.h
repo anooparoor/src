@@ -44,7 +44,7 @@ public:
   void clearCurrentDecisionStats() { decisionStats = new FORRActionStats();}
 
   //Update state of the agent using sensor readings 
-  void updateState(Position current, sensor_msgs::LaserScan laserscan);
+  void updateState(Position current, sensor_msgs::LaserScan laserscan, geometry_msgs::PoseArray crowdpose);
 
   //Returns the state of the robots mission (True 
   bool isMissionComplete();

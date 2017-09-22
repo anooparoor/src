@@ -17,10 +17,10 @@ Map::Map(double length, double height) {
   this->length = length;
   this->height = height;
   cout << length  << " " << height << " " << length/50 << " " << height/50 << endl;  
-  factor = 50;
-  for(int j = 0 ; j <= length/factor; j++){
+  occupancySize = 50;
+  for(int j = 0 ; j <= length/occupancySize; j++){
 	vector<bool> column;
-  	for(int i = 0 ; i <= height/factor; i++){
+  	for(int i = 0 ; i <= height/occupancySize; i++){
 		column.push_back(false);
   	}
 	occupancyGrid.push_back(column);
@@ -37,18 +37,18 @@ void Map::addWall(double x1, double y1, double x2, double y2){
   double distance = Map::distance(x1,y1,x2,y2);
   double stepSize = 2; //cms
   cout << "Wall : " << x1 << " " << y1 << " " << x2 << " " << y2 << " " << endl;
-  for(int step = -5; step <= distance+5; step += stepSize ){
+  for(int step = 0; step <= distance; step += stepSize ){
 	double t = step/distance;
   	double xtest = (x1 * t) + ((1-t)*x2);
   	double ytest = (y1 * t) + ((1-t)*y2);
-	int gridx = (int)(xtest / factor);
-	int gridy = (int)(ytest / factor);
-	if(gridx >= 0 && gridy >= 0 && gridx <= length/factor && gridy <= height/factor){
+	int gridx = (int)(xtest / occupancySize);
+	int gridy = (int)(ytest / occupancySize);
+	if(gridx >= 0 && gridy >= 0 && gridx <= length/occupancySize && gridy <= height/occupancySize){
 		//cout << "Test : " << xtest << " " << ytest << " " << gridx << " " << gridy << " " << endl;
 		occupancyGrid[gridx][gridy] = true;
 	}
   }
-  occupancyGrid[(int)(x2/factor)][(int)(y2/factor)] = true;
+  occupancyGrid[(int)(x2/occupancySize)][(int)(y2/occupancySize)] = true;
 }
 
 
@@ -100,20 +100,42 @@ bool Map::isWithinBorders(double x, double y){
 */
 bool Map::isPointInBuffer(double x, double y){ 
   //cout << "is point in buffer " << x << " " << y << endl;
-  int gridx = (int)(x/factor);
-  int gridy = (int)(y/factor);
-  return occupancyGrid[gridx][gridy];
+  int gridx = (int)(x/occupancySize);
+  int gridy = (int)(y/occupancySize);
+
+  int b = 20;
+  double x_l = x - b;
+  double x_r = x + b;
+  double y_l = y - b;
+  double y_r = y + b;
+  if(occupancyGrid[(int)(x_l/occupancySize)][(int)(y/occupancySize)])
+	return true;
+  if(occupancyGrid[(int)(x_r/occupancySize)][(int)(y/occupancySize)])
+	return true;
+  if(occupancyGrid[(int)(x/occupancySize)][(int)(y_r/occupancySize)])
+	return true;
+  if(occupancyGrid[(int)(x/occupancySize)][(int)(y_l/occupancySize)])
+	return true;
+  if(occupancyGrid[(int)(x_l/occupancySize)][(int)(y_l/occupancySize)])
+	return true;
+  if(occupancyGrid[(int)(x_r/occupancySize)][(int)(y_r/occupancySize)])
+	return true;
+  if(occupancyGrid[(int)(x_l/occupancySize)][(int)(y_r/occupancySize)])
+	return true;
+  if(occupancyGrid[(int)(x_r/occupancySize)][(int)(y_l/occupancySize)])
+	return true;
+
   /*for(int i = gridx - 1; i <= gridx + 1; i++){
-	for(int j = gridy - 1; j <= gridx + 1; j++){
-		if(i >= 0 and j >= 0 and i <= height/10 and j <= length/10){
+	for(int j = gridy - 1; j <= gridy + 1; j++){
+		if(i >= 0 and j >= 0 and i <= height/occupancySize and j <= length/occupancySize){
 			if(occupancyGrid[i][j] == true){
 				return true;		
 			}
 		}
 	}
-  }   
-  return false;
-  */
+  } 
+  */  
+  return occupancyGrid[gridx][gridy];
 }
 
 bool Map::isPathObstructed(double x0, double y0, double x1, double y1 ){

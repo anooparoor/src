@@ -90,12 +90,12 @@ SimulatorDB simDB;
 
 void velCallback(const geometry_msgs::Twist& msg)
 {
-   ROS_INFO("I heard: x :[%f]", msg.linear.x);
-   ROS_INFO("I heard: y :[%f]", msg.linear.y);
-   ROS_INFO("I heard: z :[%f]", msg.linear.z);
-   ROS_INFO("I heard: x :[%f]", msg.angular.x);
-   ROS_INFO("I heard: y :[%f]", msg.angular.y);
-   ROS_INFO("I heard: z :[%f]", msg.angular.z);
+   //ROS_INFO("I heard: x :[%f]", msg.linear.x);
+   //ROS_INFO("I heard: y :[%f]", msg.linear.y);
+   //ROS_INFO("I heard: z :[%f]", msg.linear.z);
+   //ROS_INFO("I heard: x :[%f]", msg.angular.x);
+   //ROS_INFO("I heard: y :[%f]", msg.angular.y);
+   //ROS_INFO("I heard: z :[%f]", msg.angular.z);
 }
 
 

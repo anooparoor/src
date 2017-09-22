@@ -26,6 +26,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 #include <sensor_msgs/LaserScan.h>
+#include <geometry_msgs/PoseArray.h>
 
 using namespace std;
 
@@ -193,6 +194,11 @@ public:
   void setRotateMode(bool mode){rotateMode = mode;}
  
   void setAgentStateParameters(double val1, double val2, double val3, double val4, double val5, double val6, double val7);
+  
+  geometry_msgs::PoseArray getCrowdPose(){ return currentCrowd;}
+  void setCrowdPose(geometry_msgs::PoseArray crowdpose){
+	currentCrowd = crowdpose;
+  }
 
  private:
 
@@ -254,6 +260,9 @@ public:
 
   //Converts current laser range scanner to endpoints
   void transformToEndpoints();
+
+  // Nearby crowd positions
+  geometry_msgs::PoseArray currentCrowd;
 
   //Rotate mode tells if the t3 should rotate or move
   bool rotateMode;

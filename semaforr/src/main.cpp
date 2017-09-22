@@ -22,6 +22,7 @@
 #include <ros/console.h>
 #include <geometry_msgs/Twist.h> 
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseArray.h>
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_datatypes.h>
 #include <semaforr/CrowdModel.h>
@@ -37,16 +38,19 @@ private:
 	ros::NodeHandle nh_;
 	//! We will be publishing to the "cmd_vel" topic to issue commands
 	ros::Publisher cmd_vel_pub_;
-	//! We will be listening to \pose, \laserscan and \crowd_model topics
+	//! We will be listening to /pose, /laserscan and /crowd_model and /crowd_pose topics
 	ros::Subscriber sub_pose_;
 	ros::Subscriber sub_laser_;
 	ros::Subscriber sub_crowd_model_;
+	ros::Subscriber sub_crowd_pose_;
 	// Current position and previous stopping position of the robot
 	Position current, previous;
 	// Current and previous laser scan
 	sensor_msgs::LaserScan laserscan;
 	// Current crowd_model
 	semaforr::CrowdModel crowdModel;
+	// Current crowd_pose
+	geometry_msgs::PoseArray crowdPose;
 	// Controller
 	Controller *controller;
 	// Pos received
@@ -63,6 +67,7 @@ public:
 		sub_pose_ = nh_.subscribe("pose", 1000, &RobotDriver::updatePose, this);
 		sub_laser_ = nh_.subscribe("base_scan", 1000, &RobotDriver::updateLaserScan, this);
 		sub_crowd_model_ = nh_.subscribe("crowd_model", 1000, &RobotDriver::updateCrowdModel, this);
+		sub_crowd_pose_ = nh_.subscribe("crowd_pose", 1000, &RobotDriver::updateCrowdPose, this);
 		//declare and create a controller with task, action and advisor configuration
 		controller = con;
 		init_pos_received = false;
@@ -73,8 +78,15 @@ public:
 	}
 
 	// Callback function for pose message
+	void updateCrowdPose(const geometry_msgs::PoseArray &crowd_pose){
+		//ROS_DEBUG("Inside callback for crowd pose");
+		//update the crowd model of the belief
+		crowdPose = crowd_pose;
+	}
+
+	// Callback function for pose message
 	void updateCrowdModel(const semaforr::CrowdModel & crowd_model){
-		ROS_DEBUG("Inside callback for crowd model");
+		//ROS_DEBUG("Inside callback for crowd model");
 		cout << crowd_model.height << " " << crowd_model.width << endl;
 		//update the crowd model of the belief
 		controller->getPlanner()->setCrowdModel(crowd_model);
@@ -150,7 +162,7 @@ public:
 				viz_->publishLog(semaforr_action, overallTimeSec, computationTimeSec);
 				gettimeofday(&cv,NULL);
 				start_timecv = cv.tv_sec + (cv.tv_usec/1000000.0);
-				controller->updateState(current, laserscan);
+				controller->updateState(current, laserscan, crowdPose);
 				viz_->publish();
 				previous = current;
 				ROS_DEBUG("Check if mission is complete");

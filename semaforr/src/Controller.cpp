@@ -335,9 +335,10 @@ Controller::Controller(string advisor_config, string params_config, string map_c
 
 
 // Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
-void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan){
+void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan, geometry_msgs::PoseArray crowdpose){
   cout << "inupdate state" << endl;
   beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
+  beliefs->getAgentState()->setCrowdPose(crowdpose);
   if(firstTaskAssigned == false){
       cout << "Set first task" << endl;
       beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
@@ -360,7 +361,7 @@ void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan
   } 
   // else if subtask is complete
   else if(waypointReached == true and aStarOn){
-    ROS_DEBUG("Waypoint reached, but task still incomplete, switching to next waypoint!!");
+    ROS_DEBUG("Waypoint reached, but task still incomplete, switching to nearest visible waypoint towards target!!");
     beliefs->getAgentState()->getCurrentTask()->setupNextWaypoint();
   } 
   // otherwise if task Decision limit reached, skip task 

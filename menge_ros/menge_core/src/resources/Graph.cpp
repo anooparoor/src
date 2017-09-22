@@ -137,7 +137,8 @@ namespace Menge {
 				graph->destroy();
 				return false;
 			}
-			edge.setDistance( graph->_vertices[ from ].getDistance( graph->_vertices[ to ] )); 
+			float distance = graph->_vertices[ from ].getDistance( graph->_vertices[ to ] );
+			edge.setDistance(distance); 
 			edge.setNeighbor( &graph->_vertices[ to ] );
 			if (!graph->_vertices[from].setEdge(edge, vertNbr[from])) {
 				validEdges = false;
@@ -228,13 +229,13 @@ namespace Menge {
 		}
 
 		assert( bestID != -1 && "Roadmap Graph was unable to find a visible vertex" );
-		
 		return bestID;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////
 
 	RoadMapPath * Graph::getPath( size_t startID, size_t endID ) {
+		std::cout << "In get path " << std::endl;
 		const size_t N = _vCount;
 	#ifdef _OPENMP
 		// Assuming that threadNum \in [0, omp_get_max_threads() )
@@ -267,6 +268,7 @@ namespace Menge {
 				const GraphVertex * nbr = vert.getNeighbor( n );
 				size_t y = nbr->getID();
 				if ( heap.isVisited( (unsigned int)y ) ) continue;
+				
 				float distance = vert.getDistance( n );
 				float tempG = heap.g( x ) + distance;
 				
@@ -284,6 +286,7 @@ namespace Menge {
 				}
 			}
 		}
+		std::cout << "Found path " << found << std::endl;
 		if ( !found ) {
 			logger << Logger::ERR_MSG << "Was unable to find a path from " << startID << " to " << endID << "\n";
 			return 0x0;
@@ -303,7 +306,7 @@ namespace Menge {
 			path->setWayPoint( i - 1, _vertices[ next ].getPosition() );
 			next = heap.getReachedFrom( (unsigned int)next );
 		}
-
+		
 		return path;
 	}
 
