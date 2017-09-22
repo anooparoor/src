@@ -47,6 +47,7 @@ Any questions or comments should be sent to the authors {menge,geom}@cs.unc.edu
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -187,6 +188,9 @@ namespace Menge {
 		// Compute the path based on those nodes
 		RoadMapPath * path = getPath( startID, endID );
 
+		//std::cout << "Agent position : " << agent->_pos._x << " " << agent->_pos._y << std::endl; 
+		//std::cout << "Goal position : " << goalPos._x << " " << goalPos._y << std::endl; 
+
 		//display path
 		//publishPath(path);
 		if ( path ) { 
@@ -235,7 +239,7 @@ namespace Menge {
 	//////////////////////////////////////////////////////////////////////////////////////
 
 	RoadMapPath * Graph::getPath( size_t startID, size_t endID ) {
-		std::cout << "In get path " << std::endl;
+		//std::cout << "In get path " << std::endl;
 		const size_t N = _vCount;
 	#ifdef _OPENMP
 		// Assuming that threadNum \in [0, omp_get_max_threads() )
@@ -270,7 +274,8 @@ namespace Menge {
 				if ( heap.isVisited( (unsigned int)y ) ) continue;
 				
 				float distance = vert.getDistance( n );
-				float tempG = heap.g( x ) + distance;
+				float ran = ((double) std::rand() / (RAND_MAX));
+				float tempG = heap.g( x ) + (distance * (ran + 1));
 				
 				bool inHeap = heap.isInHeap( (unsigned int)y );
 				if ( ! inHeap ) {
@@ -286,12 +291,18 @@ namespace Menge {
 				}
 			}
 		}
-		std::cout << "Found path " << found << std::endl;
+
 		if ( !found ) {
 			logger << Logger::ERR_MSG << "Was unable to find a path from " << startID << " to " << endID << "\n";
+			std::cout << "Found path " << found << std::endl;
+			//std::cout << "Returning dummy path " << std::endl;
+			//RoadMapPath * path = new RoadMapPath( 2 );
+			//path->setWayPoint(0, _vertices[ startID ].getPosition() );
+			//path->setWayPoint(1, _vertices[ startID ].getPosition() );
+			//return path;
 			return 0x0;
 		}
-
+	
 		// Count the number of nodes in the path
 		size_t wayCount = 1;	// for the startID
 		size_t next = endID;
