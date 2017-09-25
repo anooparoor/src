@@ -11,7 +11,7 @@
     <Zanlungo agent_scale="2000" obstacle_scale="4000" reaction_time="0.5" force_distance="0.005" />
     <Dummy stddev="0.05" />
 
-    <AgentProfile name="robot" >
+ <AgentProfile name="robot" >
 	<OpenSteer tau="3" tauObst="6" />
         <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.25" class="1" pref_speed="1" max_speed="2" max_accel="5" priority="0.0" external="1" start_angle="-1.91986" end_angle="1.9194" increment="0.005817" range_max="25"/>
 	<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
@@ -24,15 +24,23 @@
     </AgentProfile>
 
     <AgentProfile name="visitor" inherits="robot" >
-		<Common class="2" r="0.25" external="0" robotAttraction="0.0"/>
+		<Common class="2" r="0.2" external="0" robotAttraction="0.0"/>
 		<Helbing mass="320"/>
     </AgentProfile>
 
     <AgentGroup>
         <ProfileSelector type="const" name="robot" />
-	<StateSelector type="const" name="Reverse1" />
+	<StateSelector type="const" name="a" />
 	<Generator type="explicit" displace_dist="u" displace_min="0.0" displace_max="1.0" >
 		<Agent p_x="5" p_y="5"/>
+	</Generator>
+    </AgentGroup>
+
+    <AgentGroup>
+        <StateSelector type="const" name="start" />
+	<ProfileSelector type="const" name="visitor" />
+	<Generator type="explicit">
+		<Agent p_x="0" p_y="0"/>
 	</Generator>
     </AgentGroup>
 
