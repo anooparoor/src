@@ -42,6 +42,9 @@ public:
   bool isAccessible(double x, double y);
   bool isPointInBuffer(double x, double y); 
 
+  vector< vector <bool> > getOccupancyGrid() {return occupancyGrid;}
+  int getOccupancySize() { return occupancySize; }
+
   bool readMapFromXML(string);
   
   static double distance(double x1, double y1, double x2, double y2);
@@ -51,7 +54,7 @@ public:
 protected:
   vector<Wall> walls;
   vector< vector <bool> > occupancyGrid;
-  int factor;
+  int occupancySize;
   
   double length;
   double height;  

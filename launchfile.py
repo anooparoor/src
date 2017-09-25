@@ -8,15 +8,15 @@ import time
 import subprocess
 
 def experiment():
-    project_home = "/home/anoop/catkin_ws/src"
+    project_home = "/home/anooparoor/catkin_ws/src"
     menge_path = project_home+"/examples/core"
     semaforr_path = project_home+"/semaforr"
 
     map_folder = menge_path+"/"+map_name
-    map_xml = menge_path+"/"+map_name+".xml"
+    map_xml = menge_path+"/"+map_name+"1.xml"
 
     #menge files for semaforr
-    map_config = map_folder+"/"+map_name+"S.xml"
+    map_config = map_folder+"/"+map_name+"1S.xml"
     map_dimensions = map_folder+"/dimensions.conf"
     target_set = map_folder+"/targets/" + target_file_name
 
@@ -33,6 +33,8 @@ def experiment():
     menge_sim_process = subprocess.Popen(['rosrun','menge_sim','menge_sim','-p',map_xml])
     print "waiting,,"
     time.sleep(10)
+
+    crowd_process = subprocess.Popen(['rosrun','crowd_count','learn.py'])
 
     log_file = open(log_name,"w")
     log_process = subprocess.Popen(['rostopic','echo','/decision_log'],stdout=log_file)
@@ -57,8 +59,10 @@ def experiment():
 
     print "Menge terminated!"
 
+    crowd_process.terminate()
     log_process.terminate()
     log_file.close()
+    time.sleep(1)
     #why_process.terminate()
     #print "Why terminated!"
 
@@ -67,9 +71,11 @@ def experiment():
     print "roscore terminated!"
 
 map_name = "moma-5"
-for i in range(1,2):
-    target_file_name = "target" + str(i) + ".conf"
-    log_name = map_name + "_" + target_file_name + ".txt"
+
+for i in range(1,11):
+    #target_file_name = "target.conf"
+    target_file_name = "target" + str(1) + ".conf"
+    log_name = map_name + "_" + str(i) + ".txt"
     experiment()
 
 

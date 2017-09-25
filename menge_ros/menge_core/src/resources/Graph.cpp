@@ -47,6 +47,7 @@ Any questions or comments should be sent to the authors {menge,geom}@cs.unc.edu
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -137,7 +138,8 @@ namespace Menge {
 				graph->destroy();
 				return false;
 			}
-			edge.setDistance( graph->_vertices[ from ].getDistance( graph->_vertices[ to ] )); 
+			float distance = graph->_vertices[ from ].getDistance( graph->_vertices[ to ] );
+			edge.setDistance(distance); 
 			edge.setNeighbor( &graph->_vertices[ to ] );
 			if (!graph->_vertices[from].setEdge(edge, vertNbr[from])) {
 				validEdges = false;
@@ -186,6 +188,9 @@ namespace Menge {
 		// Compute the path based on those nodes
 		RoadMapPath * path = getPath( startID, endID );
 
+		//std::cout << "Agent position : " << agent->_pos._x << " " << agent->_pos._y << std::endl; 
+		//std::cout << "Goal position : " << goalPos._x << " " << goalPos._y << std::endl; 
+
 		//display path
 		//publishPath(path);
 		if ( path ) { 
@@ -226,15 +231,18 @@ namespace Menge {
 				}
 			}
 		}
+		if (bestID == -1){
+			std::cout << "Not able to find nearest vertex " << std::endl;
+		}
 
 		assert( bestID != -1 && "Roadmap Graph was unable to find a visible vertex" );
-		
 		return bestID;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////
 
 	RoadMapPath * Graph::getPath( size_t startID, size_t endID ) {
+		//std::cout << "In get path " << std::endl;
 		const size_t N = _vCount;
 	#ifdef _OPENMP
 		// Assuming that threadNum \in [0, omp_get_max_threads() )
@@ -267,7 +275,9 @@ namespace Menge {
 				const GraphVertex * nbr = vert.getNeighbor( n );
 				size_t y = nbr->getID();
 				if ( heap.isVisited( (unsigned int)y ) ) continue;
+				
 				float distance = vert.getDistance( n );
+<<<<<<< HEAD
 				if (distance > 0.6)  distance = distance * 10;
 		                //Vector2 p1 = vert.getPosition();
 		                //Vector2 p2 = nbr->getPosition();
@@ -277,6 +287,10 @@ namespace Menge {
 
 
 				float tempG = heap.g( x ) + distance;
+=======
+				float ran = ((double) std::rand() / (RAND_MAX));
+				float tempG = heap.g( x ) + (distance * (ran + 1));
+>>>>>>> c4b909dfb1822c8e9db81fdc4928c2fdbc9faabe
 				
 				bool inHeap = heap.isInHeap( (unsigned int)y );
 				if ( ! inHeap ) {
@@ -292,11 +306,18 @@ namespace Menge {
 				}
 			}
 		}
+
 		if ( !found ) {
 			logger << Logger::ERR_MSG << "Was unable to find a path from " << startID << " to " << endID << "\n";
-			return 0x0;
+			std::cout << "Found path " << found << std::endl;
+			std::cout << "Returning dummy path " << std::endl;
+			RoadMapPath * path = new RoadMapPath( 2 );
+			path->setWayPoint(0, _vertices[ startID ].getPosition() );
+			path->setWayPoint(1, _vertices[ startID ].getPosition() );
+			return path;
+			//return 0x0;
 		}
-
+	
 		// Count the number of nodes in the path
 		size_t wayCount = 1;	// for the startID
 		size_t next = endID;
@@ -311,7 +332,7 @@ namespace Menge {
 			path->setWayPoint( i - 1, _vertices[ next ].getPosition() );
 			next = heap.getReachedFrom( (unsigned int)next );
 		}
-
+		
 		return path;
 	}
 

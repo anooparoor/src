@@ -127,10 +127,8 @@ void Graph::generateNavGraph() {
       if ( !isEdge((*e)) ) {
 	double distCost = Map::distance((*iter)->getX(), (*iter)->getY(), getNode(*it).getX(), getNode(*it).getY());
 	int multiplier = 1;
-	if ( (*iter)->getInBuffer() )
+	if ( map->isPathObstructed((*iter)->getX(),(*iter)->getY(),getNode(*it).getX(), getNode(*it).getY()) )
 	 	multiplier += 20;
-	if ( getNode(*it).getInBuffer() )
-		multiplier += 20;
 	e->setDistCost(multiplier * distCost);
 
 	edges.push_back(e);

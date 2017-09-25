@@ -34,6 +34,7 @@ private:
   ros::Publisher remaining_targets_pub_;
   ros::Publisher region_pub_;
   ros::Publisher conveyor_pub_;
+  ros::Publisher occupancy_pub_;
   ros::Publisher trails_pub_;
   ros::Publisher plan_pub_;
   ros::Publisher nodes1_pub_;
@@ -62,6 +63,7 @@ public:
     plan_pub_ = nh_->advertise<nav_msgs::Path>("plan", 1);
 
     conveyor_pub_ = nh_->advertise<nav_msgs::OccupancyGrid>("conveyor", 1);
+    occupancy_pub_ = nh_->advertise<nav_msgs::OccupancyGrid>("occupancy", 1);
     region_pub_ = nh_->advertise<visualization_msgs::MarkerArray>("region", 1);
     nodes1_pub_ = nh_->advertise<visualization_msgs::Marker>("nodes1", 1);
     nodes2_pub_ = nh_->advertise<visualization_msgs::Marker>("nodes2", 1);
@@ -85,8 +87,9 @@ public:
 		publish_all_targets();
 		publish_remaining_targets();
 	}
-	publish_nodes();
-	publish_reachable_nodes();
+	//publish_nodes();
+	//publish_reachable_nodes();
+	//publish_edges();
         /*if(visualized < 5){
 		publish_nodes();
 		publish_reachable_nodes();
@@ -94,11 +97,12 @@ public:
 		visualized++;
 	}*/
 	//publish_edges_cost();
-	publish_conveyor();
-	publish_region();
-	publish_trails();
-	publish_doors();
+	//publish_conveyor();
+	//publish_region();
+	//publish_trails();
+	//publish_doors();
 	publish_walls();
+	publish_occupancy();
   }
 
 
@@ -351,6 +355,36 @@ public:
     	    }
   	}
 	conveyor_pub_.publish(grid);	
+  }
+
+	
+
+  void publish_occupancy(){
+	ROS_DEBUG("Inside publish occupancy");
+	nav_msgs::OccupancyGrid grid;
+
+	grid.header.frame_id = "map";
+	grid.header.stamp = ros::Time::now();
+	grid.info.map_load_time = ros::Time::now();
+
+	grid.info.origin.orientation.w = 0;
+	vector< vector <bool> > occupancyGrid = con->getPlanner()->getMap()->getOccupancyGrid();
+	int gridSize = con->getPlanner()->getMap()->getOccupancySize();
+	grid.info.resolution = gridSize / 100.0;
+	grid.info.width = (int)(beliefs->getSpatialModel()->getConveyors()->getMapWidth() / grid.info.resolution);
+	grid.info.height = (int)(beliefs->getSpatialModel()->getConveyors()->getMapHeight() / grid.info.resolution);
+	
+	for(int j = 0; j < grid.info.height; j++){
+	    for(int i = 0; i < grid.info.width; i++){
+		if(occupancyGrid[i][j]){
+      			grid.data.push_back(50);
+		}
+		else{
+			grid.data.push_back(0);
+		}
+    	    }
+  	}
+	occupancy_pub_.publish(grid);	
   }
 
   void publish_region(){
@@ -673,17 +707,29 @@ public:
 			planStream << ";";		
 		}
 	}
+	ROS_DEBUG("After planStream");
+
+	std::stringstream crowdStream;
+	geometry_msgs::PoseArray crowdpose = beliefs->getAgentState()->getCrowdPose();
+	
+	for(int i = 0; i < crowdpose.poses.size(); i++){
+		crowdStream << crowdpose.poses[i].position.x << " " << crowdpose.poses[i].position.y;
+		crowdStream << ";";
+	}
+	ROS_DEBUG("After crowdStream");
+	
+
 	std::stringstream output;
 
 
 	//output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << advisorInfluence << "\t" << regionsstream.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
 	
-	output << currentTask << "\t" << decisionCount << "\t"<< targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
+	//output << currentTask << "\t" << decisionCount << "\t"<< targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
 
-	/*std::stringstream output;
+	//std::stringstream output;
 
-	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << trailstream.str() << "\t" << conveyorStream.str() << "\t" << min_laser_scan ;
-*/
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << min_laser_scan << "\t" << crowdStream.str() << "\t" << planStream.str();
+
 	log.data = output.str();
 	stats_pub_.publish(log);
 	con->clearCurrentDecisionStats();

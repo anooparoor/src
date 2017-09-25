@@ -3,15 +3,15 @@
 <BFSM>
 	<GoalSet id="0">
 		<Goal type="circle" id="0" x="23" y="10" radius="1" />
-		<Goal type="circle" id="1" x="19" y="5" radius="1" />
+		<Goal type="circle" id="1" x="19" y="2" radius="1" />
 		<Goal type="circle" id="2" x="16" y="10" radius="1" />
-		<Goal type="circle" id="3" x="5" y="5" radius="1" />
-		<Goal type="circle" id="4" x="6" y="11" radius="1" />
-		<Goal type="circle" id="5" x="16" y="25" radius="1" />
-		<Goal type="circle" id="6" x="16" y="19" radius="1" />
-		<Goal type="circle" id="7" x="7" y="38" radius="1" />
+		<Goal type="circle" id="3" x="7" y="12" radius="1" />
+		<Goal type="circle" id="4" x="16" y="25" radius="1" />
+		<Goal type="circle" id="5" x="15.5" y="19" radius="1" />
+		<Goal type="circle" id="6" x="15.5" y="14.5" radius="1" />
+		<Goal type="circle" id="7" x="23" y="38" radius="1" />
 		<Goal type="circle" id="8" x="10" y="28" radius="1" />
-		<Goal type="circle" id="9" x="20" y="38" radius="1" />
+		<Goal type="circle" id="9" x="20" y="28" radius="1" />
 		<Goal type="circle" id="10" x="21" y="28" radius="1" />
 	</GoalSet>
 
@@ -21,7 +21,7 @@
 	</State>
 
 	<State name="enter" final="0" >
-		<Action type="teleport" dist="u" min_x="25" max_x="26"  min_y="10" max_y="11" />
+		<Action type="teleport" dist="u" min_x="7" max_x="8"  min_y="3" max_y="4.5" />
 		<GoalSelector type="identity"/>
 		<VelComponent type="goal"/>
 	</State>
@@ -82,7 +82,7 @@
 	</State>
 
 	<Transition from="start" to="enter" >
-		<Condition type="timer" dist="u" min="0" max="100" per_agent="1" />
+		<Condition type="timer" dist="u" min="0" max="250" per_agent="1" />
 	</Transition>
 
 	<Transition from="enter" to="a" >

@@ -86,28 +86,19 @@ namespace Menge {
 		// TODO: Should I compute this blindly?  Although it is used in potentially three places
 		//		mostly, it won't be used.
 		double radius = agent->_radius;
-		//radius = 0.001;
 		Vector2 target = _goal->getTargetPoint( agent->_pos, agent->_radius );
-		//std::cout << "******************** Target " << target._x << " " << target._y << std::endl;
 		if ( _targetID < _wayPointCount ) {
 			isVisible = Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, _wayPoints[ _targetID ], radius );
 		} else {
 			isVisible = Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, target, radius );
 		}
 		size_t testID = _targetID + 1;
-		//std::cout << "Target id : " << _targetID << " Test ID: " << testID << std::endl;
 		double distance = agent->_pos.distance(_wayPoints[ testID ]);
-		//std::cout << "Distance : " << distance << std::endl;
-		//std::cout << "Test id visible :" << Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, _wayPoints[ testID ], radius ) << std::endl; 
-		while ( testID < _wayPointCount && (Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, _wayPoints[ testID ], radius ))) {
-			//std::cout << "Test id visible :" << Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, _wayPoints[ testID ], radius ) << std::endl; 
+		while ( testID < _wayPointCount && (Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, _wayPoints[ testID ], radius )) && distance <= 1 ) {
 			distance = agent->_pos.distance(_wayPoints[ testID ]);
-			//std::cout << "Distance : " << distance << std::endl;
-			//std::cout << "Agent can see test id : " << testID << std::endl;
 			_targetID = testID;
 			isVisible = true;
 			++testID;
-			//std::cout << "New Target ID : " << _targetID << std::endl;
 		}
 		if ( _targetID == _wayPointCount - 1 ) {
 			if ( Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, target, radius ) ) {
@@ -122,19 +113,9 @@ namespace Menge {
 			Vector2 curr( _targetID < _wayPointCount ? _wayPoints[ _targetID ] : target );
 			dir = norm( curr - agent->_pos );
 			_validPos = agent->_pos;
-			pVel.setTarget(curr);
-			//std::cout << "Agent position : " << agent->_pos._x << " " << agent->_pos._y << std::endl;	 
-			//std::cout << "Current target : " << curr._x << " " << curr._y << std::endl;
-			//std::cout << "Current direction : " << dir._x << " " << dir._y << std::endl;	
+			pVel.setTarget(curr);	
 		} else {
-			//Vector2 curr( _targetID < _wayPointCount ? _wayPoints[ _targetID ] : target );
-			//dir = norm( curr - agent->_pos );
-			//_validPos = agent->_pos;
-			//pVel.setTarget(curr);
-			//std::cout << "Agent position : " << agent->_pos._x << " " << agent->_pos._y << std::endl;	 
-			//std::cout << "Current target : " << curr._x << " " << curr._y << std::endl;
-			//std::cout << "Current direction : " << dir._x << " " << dir._y << std::endl;
-
+			
 			// This should never be the zero vector.
 			//	_validPos is set when the current waypoint is visible
 			//  this code is only achieved when it is NOT visible
@@ -142,16 +123,8 @@ namespace Menge {
 			//		that breaks the earlier assertion.
 			dir = norm( _validPos - agent->_pos );
 			pVel.setTarget( _validPos );
-		}
-		Vector2 dir_left;
-		Vector2 dir_right; 
-		dir_left._x = (dir._x * cos(0.52)) - (dir._y * sin(0.52));
-		dir_left._y = (dir._x * sin(0.52)) + (dir._y * cos(0.52));
-
-		dir_right._x = (dir._x * cos(-0.52)) - (dir._y * sin(-0.52));
-		dir_right._y = (dir._x * sin(-0.52)) + (dir._y * cos(-0.52));
-		 
-		pVel.setSpan( dir_left, dir_right, dir );
+		} 
+		pVel.setSingle(dir);
 	}
 
 	/////////////////////////////////////////////////////////////////////

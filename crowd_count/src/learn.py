@@ -350,5 +350,5 @@ class CountCrowdModel:
 	return ((x1-x2)**2 + (y1-y2)**2) ** 0.5 
 
 
-crowd_model = CountCrowdModel(60,60,20)
+crowd_model = CountCrowdModel(40,40,20)
 crowd_model.listen()

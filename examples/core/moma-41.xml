@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 
 <Project 
-	scene="moma-4/moma-4S.xml" 
-	behavior="moma-4/moma-4B.xml" 
+	scene="moma-4/moma-41S.xml" 
+	behavior="moma-4/moma-41B.xml" 
 	model="orca"
-	view="moma-4/moma-4V.xml"
 	dumpPath="images/test"
 />
 <!---view="moma-4/moma-4V.xml"---> 
