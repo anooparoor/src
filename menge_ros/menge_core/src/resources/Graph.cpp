@@ -277,20 +277,8 @@ namespace Menge {
 				if ( heap.isVisited( (unsigned int)y ) ) continue;
 				
 				float distance = vert.getDistance( n );
-<<<<<<< HEAD
-				if (distance > 0.6)  distance = distance * 10;
-		                //Vector2 p1 = vert.getPosition();
-		                //Vector2 p2 = nbr->getPosition();
-		                //if ( Menge::SPATIAL_QUERY->queryVisibility( p1,p1, distance*1.5 ) == false ) {
-		                 //   distance = distance * 5;
-		                //}
-
-
-				float tempG = heap.g( x ) + distance;
-=======
 				float ran = ((double) std::rand() / (RAND_MAX));
 				float tempG = heap.g( x ) + (distance * (ran + 1));
->>>>>>> c4b909dfb1822c8e9db81fdc4928c2fdbc9faabe
 				
 				bool inHeap = heap.isInHeap( (unsigned int)y );
 				if ( ! inHeap ) {
