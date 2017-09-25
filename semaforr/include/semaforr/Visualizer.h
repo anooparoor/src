@@ -87,9 +87,9 @@ public:
 		publish_all_targets();
 		publish_remaining_targets();
 	}
-	publish_nodes();
-	publish_reachable_nodes();
-	publish_edges();
+	//publish_nodes();
+	//publish_reachable_nodes();
+	//publish_edges();
         /*if(visualized < 5){
 		publish_nodes();
 		publish_reachable_nodes();
@@ -97,10 +97,10 @@ public:
 		visualized++;
 	}*/
 	//publish_edges_cost();
-	publish_conveyor();
-	publish_region();
-	publish_trails();
-	publish_doors();
+	//publish_conveyor();
+	//publish_region();
+	//publish_trails();
+	//publish_doors();
 	publish_walls();
 	publish_occupancy();
   }
@@ -728,7 +728,7 @@ public:
 
 	//std::stringstream output;
 
-	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << min_laser_scan << "\t" << crowdStream.str() ;
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << min_laser_scan << "\t" << crowdStream.str() << "\t" << planStream.str();
 
 	log.data = output.str();
 	stats_pub_.publish(log);
