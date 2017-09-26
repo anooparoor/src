@@ -8,7 +8,7 @@ import time
 import subprocess
 
 def experiment():
-    project_home = "/home/anooparoor/catkin_ws/src"
+    project_home = "/home/anoop/catkin_ws/src"
     menge_path = project_home+"/examples/core"
     semaforr_path = project_home+"/semaforr"
 
@@ -34,7 +34,12 @@ def experiment():
     print "waiting,,"
     time.sleep(10)
 
-    crowd_process = subprocess.Popen(['rosrun','crowd_count','learn.py'])
+    if cusum == 1:
+	print "Starting crowd model with CUSUM... "
+        crowd_process = subprocess.Popen(['rosrun','crowd_cusum','learn.py'])
+    if cusum == 2:
+	print "Starting crowd model without CUSUM... "
+        crowd_process = subprocess.Popen(['rosrun','crowd_count','learn.py'])
 
     log_file = open(log_name,"w")
     log_process = subprocess.Popen(['rostopic','echo','/decision_log'],stdout=log_file)
@@ -58,8 +63,9 @@ def experiment():
     time.sleep(1)
 
     print "Menge terminated!"
-
-    crowd_process.terminate()
+    if cusum == 1 or cusum == 2:
+	print "Terminating crowd model"
+        crowd_process.terminate()
     log_process.terminate()
     log_file.close()
     time.sleep(1)
@@ -72,11 +78,12 @@ def experiment():
 
 map_name = "moma-5"
 
-for i in range(1,11):
-    #target_file_name = "target.conf"
-    target_file_name = "target" + str(1) + ".conf"
-    log_name = map_name + "_" + str(i) + ".txt"
-    experiment()
+for cusum in range(0,3):
+    for i in range(6,21):
+        #target_file_name = "target.conf"
+        target_file_name = "target" + str(1) + ".conf"
+        log_name = map_name + "_" + str(cusum) + "_" + str(i) + ".txt"
+        experiment()
 
 
 

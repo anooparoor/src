@@ -206,11 +206,11 @@ class CountCrowdModel:
 		    up_change = (self.cusum_up[x][y]).detectChange(sample[x][y])
 		    down_change = (self.cusum_down[x][y]).detectChange(sample[x][y])
 		    if up_change != -1:
-		        print "Increase in crowd detected, resetting crowd count"
+		        print "Huge Increase in crowd detected, resetting crowd count"
 			self.change_detected[x][y] += 1
 		        self.reset_grid(x,y)
 		    if down_change != -1:
-		        print "Decrease in crowd detected, resetting crowd count"
+		        print "Huge Decrease in crowd detected, resetting crowd count"
 			self.change_detected[x][y] -= 1
 		        self.reset_grid(x,y)
 	#self.printState()
@@ -330,7 +330,7 @@ class CountCrowdModel:
 
 	density_list = [density[x][y] for x in range(self.division) for y in range(self.division)]
 	#print density_list
-	density_list = self.normalize_float(density_list, 0, 1)
+	#density_list = self.normalize_float(density_list, 0, 1)
 	#print density_list
 	crowd_model.densities = density_list
 	
@@ -406,6 +406,6 @@ class CountCrowdModel:
 	return ((x1-x2)**2 + (y1-y2)**2) ** 0.5 
 
 
-crowd_model = CountCrowdModel(60,60,20)
+crowd_model = CountCrowdModel(40,40,20)
 crowd_model.listen()
 

@@ -3,18 +3,19 @@
 <BFSM>
 	<GoalSet id="0">
 		<Goal type="circle" id="0" x="23" y="10" radius="1" />
-		<Goal type="circle" id="1" x="19" y="10" radius="1" />
-		<Goal type="circle" id="2" x="8" y="15" radius="1" />
-		<Goal type="circle" id="3" x="6" y="23" radius="1" />
+		<Goal type="circle" id="1" x="11" y="9.5" radius="1" />
+		<Goal type="circle" id="2" x="12" y="19" radius="1" />
+		<Goal type="circle" id="3" x="12" y="19" radius="1" />
 		<Goal type="circle" id="4" x="22" y="28" radius="1" />
 	</GoalSet>
 
 	<GoalSet id="1">
 		<Goal type="circle" id="0" x="23" y="2" radius="1" />
 		<Goal type="circle" id="1" x="2.5" y="6" radius="1" />
-		<Goal type="circle" id="2" x="12" y="15" radius="1" />
-		<Goal type="circle" id="3" x="12" y="37" radius="1" />
-		<Goal type="circle" id="4" x="22" y="28" radius="1" />
+		<Goal type="circle" id="2" x="6" y="23" radius="0.5" />
+		<Goal type="circle" id="3" x="6" y="23" radius="0.5" />
+		<Goal type="circle" id="4" x="12" y="37" radius="1" />
+		<Goal type="circle" id="5" x="22" y="28" radius="1" />
 	</GoalSet>
 
 	<State name="dead" final="0" >
@@ -87,8 +88,8 @@
 	<Transition from="e">
 		<Condition type="goal_reached" distance="0.3" />
 		<Target type="prob">
-			<State name="enter" weight="0.85"/>
-			<State name="dead" weight="0.15"/>
+			<State name="enter" weight="0.95"/>
+			<State name="dead" weight="0.05"/>
 		</Target>
 	</Transition>
 	
@@ -129,9 +130,14 @@
 		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
 	</State>
 
+	<State name="f1" final="0" >
+		<GoalSelector type="explicit" goal="5" goal_set="1"/>
+		<VelComponent type="road_map" weight="1.0" file_name="graph.txt" />
+	</State>
+
 	
 	<Transition from="start1" to="enter1" >
-		<Condition type="timer" dist="u" min="2000" max="2250" per_agent="1" />
+		<Condition type="timer" dist="u" min="3500" max="3750" per_agent="1" />
 	</Transition>
 
 	<Transition from="enter1" to="a1" >
@@ -154,7 +160,12 @@
 		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 
-	<Transition from="e1" to="enter1" >
+	<Transition from="e1" to="f1" >
+		<Condition type="goal_reached" distance="0.3" />
+	</Transition>
+
+
+	<Transition from="f1" to="enter1" >
 		<Condition type="goal_reached" distance="0.3" />
 	</Transition>
 	

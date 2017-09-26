@@ -75,6 +75,8 @@ public:
 
   Node getTarget(){ return target; }
 
+  double cellCost(int sx, int sy, int buffer);
+
   void setTarget(Node t){ target = t; }
 
   bool isAccessible(Node s, Node t);

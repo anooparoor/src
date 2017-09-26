@@ -121,20 +121,43 @@ void PathPlanner::updateNavGraph(){
 
 
 double PathPlanner::computeNewEdgeCost(Node s, Node d, bool direction, double oldcost){
-	int s_x_index = (int)((s.getX()/100.0)/crowdModel.resolution);
-	int s_y_index = (int)((s.getY()/100.0)/crowdModel.resolution);
-	int d_x_index = (int)((d.getX()/100.0)/crowdModel.resolution);
-	int d_y_index = (int)((d.getY()/100.0)/crowdModel.resolution);
-	//Assuming crowd densities are normalized between 0 and 1
-	double s_density = crowdModel.densities[(s_y_index * crowdModel.width) + s_x_index] + 1;
-	double d_density = crowdModel.densities[(d_y_index * crowdModel.width) + d_x_index] + 1;
+	int b = 30;
+	double s_cost = cellCost(s.getX(), s.getY(), b);
+	double d_cost = cellCost(d.getX(), d.getY(), b);
+
+	int k = 4;
+
 	//double flowcost = computeCrowdFlow(s,d) + 2;
 	//cout << "Node flow cost " << flowcost << endl;
 	//cout << "Node penalty : " << d_density << " * " << s_density << endl;
-	//double newEdgeCost = (oldcost * flowcost);
-	double newEdgeCost = (oldcost * d_density * s_density);
+	//double newEdgeCost = (oldcost * flowcost); 
+	double newEdgeCost = (oldcost + ((s_cost + d_cost) * 100 * k)/2);
+	//cout << "Old cost : " << oldcost << " new cost : " << newEdgeCost << std::endl; 
 	return newEdgeCost;
-} 
+}
+
+
+double PathPlanner::cellCost(int nodex, int nodey, int buffer){
+	int x = (int)((nodex/100.0)/crowdModel.resolution);
+	int x1 = (int)(((nodex+buffer)/100.0)/crowdModel.resolution);
+	int x2 = (int)(((nodex-buffer)/100.0)/crowdModel.resolution);
+	int y = (int)((nodey/100.0)/crowdModel.resolution);
+	int y1 = (int)(((nodey+buffer)/100.0)/crowdModel.resolution);
+	int y2 = (int)(((nodey-buffer)/100.0)/crowdModel.resolution);
+
+
+	//std::cout << "x " << x << " y " << y;
+	double d = crowdModel.densities[(y * crowdModel.width) + x];
+	double d1 = crowdModel.densities[(y1 * crowdModel.width) + x];
+	double d2 = crowdModel.densities[(y2 * crowdModel.width) + x];
+	double d3 = crowdModel.densities[(y * crowdModel.width) + x1];
+	double d4 = crowdModel.densities[(y * crowdModel.width) + x2];
+	//std::cout << " Cell cost " << d << std::endl;
+	return (d + d1 + d2 + d3 + d4)/5;
+	//return d;
+}
+
+ 
 
 // Projection of crowd flow vectors on vector at s and d and then take the average
 double PathPlanner::computeCrowdFlow(Node s, Node d){
