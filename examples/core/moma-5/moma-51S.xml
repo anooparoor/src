@@ -24,7 +24,7 @@
     </AgentProfile>
 
     <AgentProfile name="visitor" inherits="robot" >
-		<Common class="2" r="0.20" external="0" robotAttraction="0.0"/>
+		<Common class="2" r="0.20" external="0" robot_attraction="1"/>
 		<Helbing mass="320"/>
     </AgentProfile>
 
@@ -60,91 +60,11 @@
 		<Agent p_x="1" p_y="1"/>
 		<Agent p_x="1" p_y="2"/>
 		<Agent p_x="1" p_y="3"/>
-		<Agent p_x="1" p_y="4"/>
-		<Agent p_x="1" p_y="5"/>
-		<Agent p_x="1" p_y="6"/>
-		<Agent p_x="1" p_y="7"/>
-		<Agent p_x="1" p_y="8"/>
-		<Agent p_x="1" p_y="9"/>
-		<Agent p_x="1" p_y="10"/>
-		<Agent p_x="1" p_y="11"/>
-		<Agent p_x="1" p_y="12"/>
-		<Agent p_x="1" p_y="13"/>
-		<Agent p_x="1" p_y="14"/>
-		<Agent p_x="1" p_y="15"/>
-		<Agent p_x="0.5" p_y="0"/>
-		<Agent p_x="0.5" p_y="1"/>
-		<Agent p_x="0.5" p_y="2"/>
-		<Agent p_x="0.5" p_y="3"/>
-		<Agent p_x="0.5" p_y="4"/>
-		<Agent p_x="0.5" p_y="5"/>
-		<Agent p_x="0.5" p_y="6"/>
-		<Agent p_x="0.5" p_y="7"/>
-		<Agent p_x="0.5" p_y="8"/>
-		<Agent p_x="0.5" p_y="9"/>
-		<Agent p_x="0.5" p_y="10"/>
-		<Agent p_x="0.5" p_y="11"/>
-		<Agent p_x="0.5" p_y="12"/>
-		<Agent p_x="0.5" p_y="13"/>
-		<Agent p_x="0.5" p_y="14"/>
-		<Agent p_x="0.5" p_y="15"/>
-		<Agent p_x="1.5" p_y="0"/>
-		<Agent p_x="1.5" p_y="1"/>
-		<Agent p_x="1.5" p_y="2"/>
-		<Agent p_x="1.5" p_y="3"/>
-		<Agent p_x="1.5" p_y="4"/>
-		<Agent p_x="1.5" p_y="5"/>
-		<Agent p_x="1.5" p_y="6"/>
-		<Agent p_x="1.5" p_y="7"/>
-		<Agent p_x="1.5" p_y="8"/>
-		<Agent p_x="1.5" p_y="9"/>
-		<Agent p_x="1.5" p_y="10"/>
-		<Agent p_x="1.5" p_y="11"/>
-		<Agent p_x="1.5" p_y="12"/>
-		<Agent p_x="1.5" p_y="13"/>
-		<Agent p_x="1.5" p_y="14"/>
-		<Agent p_x="1.5" p_y="15"/>
-		<Agent p_x="0" p_y="0.5"/>
-		<Agent p_x="0" p_y="1.5"/>
-		<Agent p_x="0" p_y="2.5"/>
-		<Agent p_x="0" p_y="3.5"/>
-		<Agent p_x="0" p_y="4.5"/>
-		<Agent p_x="0" p_y="5.5"/>
-		<Agent p_x="0" p_y="6.5"/>
-		<Agent p_x="0" p_y="7.5"/>
-		<Agent p_x="0" p_y="8.5"/>
-		<Agent p_x="0" p_y="9.5"/>
-		<Agent p_x="0" p_y="10.5"/>
-		<Agent p_x="0" p_y="11.5"/>
-		<Agent p_x="0" p_y="12.5"/>
-		<Agent p_x="0" p_y="13.5"/>
-		<Agent p_x="0" p_y="14.5"/>
-		<Agent p_x="0" p_y="15.5"/>
-		<Agent p_x="1" p_y="0.5"/>
-		<Agent p_x="1" p_y="1.5"/>
-		<Agent p_x="1" p_y="2.5"/>
-		<Agent p_x="1" p_y="3.5"/>
-		<Agent p_x="1" p_y="4.5"/>
-		<Agent p_x="1" p_y="5.5"/>
-		<Agent p_x="1" p_y="6.5"/>
-		<Agent p_x="1" p_y="7.5"/>
-		<Agent p_x="1" p_y="8.5"/>
-		<Agent p_x="1" p_y="9.5"/>
-		<Agent p_x="1" p_y="10.5"/>
-		<Agent p_x="1" p_y="11.5"/>
-		<Agent p_x="1" p_y="12.5"/>
-		<Agent p_x="1" p_y="13.5"/>
-		<Agent p_x="1" p_y="14.5"/>
-		<Agent p_x="1" p_y="15.5"/>
-		<Agent p_x="1" p_y="16.5"/>
-		<Agent p_x="1" p_y="17.5"/>
-		<Agent p_x="1" p_y="18.5"/>
-		<Agent p_x="1" p_y="19.5"/>
 	</Generator>
     </AgentGroup>
 
     <AgentProfile name="visitor1" inherits="robot" >
-		<Common class="3" r="0.20" external="0" robotAttraction="0.0"/>
+		<Common class="3" r="0.20" external="0" robot_attraction="-1"/>
 		<Helbing mass="320"/>
     </AgentProfile>
 
@@ -172,86 +92,6 @@
 		<Agent p_x="1" p_y="1"/>
 		<Agent p_x="1" p_y="2"/>
 		<Agent p_x="1" p_y="3"/>
-		<Agent p_x="1" p_y="4"/>
-		<Agent p_x="1" p_y="5"/>
-		<Agent p_x="1" p_y="6"/>
-		<Agent p_x="1" p_y="7"/>
-		<Agent p_x="1" p_y="8"/>
-		<Agent p_x="1" p_y="9"/>
-		<Agent p_x="1" p_y="10"/>
-		<Agent p_x="1" p_y="11"/>
-		<Agent p_x="1" p_y="12"/>
-		<Agent p_x="1" p_y="13"/>
-		<Agent p_x="1" p_y="14"/>
-		<Agent p_x="1" p_y="15"/>
-		<Agent p_x="0.5" p_y="0"/>
-		<Agent p_x="0.5" p_y="1"/>
-		<Agent p_x="0.5" p_y="2"/>
-		<Agent p_x="0.5" p_y="3"/>
-		<Agent p_x="0.5" p_y="4"/>
-		<Agent p_x="0.5" p_y="5"/>
-		<Agent p_x="0.5" p_y="6"/>
-		<Agent p_x="0.5" p_y="7"/>
-		<Agent p_x="0.5" p_y="8"/>
-		<Agent p_x="0.5" p_y="9"/>
-		<Agent p_x="0.5" p_y="10"/>
-		<Agent p_x="0.5" p_y="11"/>
-		<Agent p_x="0.5" p_y="12"/>
-		<Agent p_x="0.5" p_y="13"/>
-		<Agent p_x="0.5" p_y="14"/>
-		<Agent p_x="0.5" p_y="15"/>
-		<Agent p_x="1.5" p_y="0"/>
-		<Agent p_x="1.5" p_y="1"/>
-		<Agent p_x="1.5" p_y="2"/>
-		<Agent p_x="1.5" p_y="3"/>
-		<Agent p_x="1.5" p_y="4"/>
-		<Agent p_x="1.5" p_y="5"/>
-		<Agent p_x="1.5" p_y="6"/>
-		<Agent p_x="1.5" p_y="7"/>
-		<Agent p_x="1.5" p_y="8"/>
-		<Agent p_x="1.5" p_y="9"/>
-		<Agent p_x="1.5" p_y="10"/>
-		<Agent p_x="1.5" p_y="11"/>
-		<Agent p_x="1.5" p_y="12"/>
-		<Agent p_x="1.5" p_y="13"/>
-		<Agent p_x="1.5" p_y="14"/>
-		<Agent p_x="1.5" p_y="15"/>
-		<Agent p_x="0" p_y="0.5"/>
-		<Agent p_x="0" p_y="1.5"/>
-		<Agent p_x="0" p_y="2.5"/>
-		<Agent p_x="0" p_y="3.5"/>
-		<Agent p_x="0" p_y="4.5"/>
-		<Agent p_x="0" p_y="5.5"/>
-		<Agent p_x="0" p_y="6.5"/>
-		<Agent p_x="0" p_y="7.5"/>
-		<Agent p_x="0" p_y="8.5"/>
-		<Agent p_x="0" p_y="9.5"/>
-		<Agent p_x="0" p_y="10.5"/>
-		<Agent p_x="0" p_y="11.5"/>
-		<Agent p_x="0" p_y="12.5"/>
-		<Agent p_x="0" p_y="13.5"/>
-		<Agent p_x="0" p_y="14.5"/>
-		<Agent p_x="0" p_y="15.5"/>
-		<Agent p_x="1" p_y="0.5"/>
-		<Agent p_x="1" p_y="1.5"/>
-		<Agent p_x="1" p_y="2.5"/>
-		<Agent p_x="1" p_y="3.5"/>
-		<Agent p_x="1" p_y="4.5"/>
-		<Agent p_x="1" p_y="5.5"/>
-		<Agent p_x="1" p_y="6.5"/>
-		<Agent p_x="1" p_y="7.5"/>
-		<Agent p_x="1" p_y="8.5"/>
-		<Agent p_x="1" p_y="9.5"/>
-		<Agent p_x="1" p_y="10.5"/>
-		<Agent p_x="1" p_y="11.5"/>
-		<Agent p_x="1" p_y="12.5"/>
-		<Agent p_x="1" p_y="13.5"/>
-		<Agent p_x="1" p_y="14.5"/>
-		<Agent p_x="1" p_y="15.5"/>
-		<Agent p_x="1" p_y="16.5"/>
-		<Agent p_x="1" p_y="17.5"/>
-		<Agent p_x="1" p_y="18.5"/>
-		<Agent p_x="1" p_y="19.5"/>
 	</Generator>
     </AgentGroup>
 

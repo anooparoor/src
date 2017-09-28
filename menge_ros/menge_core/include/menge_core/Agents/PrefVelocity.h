@@ -172,6 +172,15 @@ namespace Menge {
 				_target = _left = _right = _preferred;
 			}
 
+			inline void turn1(float angle){
+				//std::cout << angle << " " << atan2(_preferred._y, _preferred._x) << std::endl;
+				float new_angle = angle + atan2(_preferred._y, _preferred._x);
+				_preferred._x = cos(new_angle);
+				_preferred._y = sin(new_angle);
+				//std::cout << new_angle << std::endl;
+				//_target = _left = _right = _preferred;
+			}
+
 			/*!
 			 *	@brief		Gets the target of the preferred velocity.
 			 *

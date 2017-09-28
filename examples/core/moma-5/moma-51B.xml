@@ -88,8 +88,8 @@
 	<Transition from="e">
 		<Condition type="goal_reached" distance="0.3" />
 		<Target type="prob">
-			<State name="enter" weight="0.95"/>
-			<State name="dead" weight="0.05"/>
+			<State name="enter" weight="1"/>
+			<State name="dead" weight="0"/>
 		</Target>
 	</Transition>
 	
@@ -137,7 +137,7 @@
 
 	
 	<Transition from="start1" to="enter1" >
-		<Condition type="timer" dist="u" min="3500" max="3750" per_agent="1" />
+		<Condition type="timer" dist="u" min="0" max="250" per_agent="1" />
 	</Transition>
 
 	<Transition from="enter1" to="a1" >

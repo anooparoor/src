@@ -189,10 +189,21 @@ namespace Menge {
       					requiredTurn = requiredTurn + (2*M_PI);
 
 				double distance = rbt->_pos.distance(agent->_pos);
-				double attraction = agent->_robotAttraction;
+				double attraction = agent->_robot_attraction;
+				//std::cout << "Attraction " << attraction  << std::endl;
 				//std::cout << "Angle towards robot: " << angleToRobot << " Agent angle: " << agent_angle << " Turn: " << requiredTurn << std::endl;
-				double actualTurn = requiredTurn * attraction / (distance + 1);
-				//newVel.turn(actualTurn);
+				//double actualTurn = requiredTurn * attraction / (distance + 1);
+				if(distance < 1 and attraction == 1){
+					newVel.turn(requiredTurn);
+				}
+				//else if(distance < 2 and attraction == -1){
+				//	requiredTurn = M_PI - requiredTurn;
+					//if(requiredTurn > M_PI)
+      					//	requiredTurn = requiredTurn - (2*M_PI);
+    					//if(requiredTurn < -M_PI)
+      					//	requiredTurn = requiredTurn + (2*M_PI);
+				//	newVel.turn1(requiredTurn);
+				//}
 			}
 
 			if(agent->_isExternal){
