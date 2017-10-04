@@ -79,10 +79,10 @@ def experiment():
 map_name = "moma-5"
 
 for cusum in range(0,3):
-    for i in range(6,21):
+    for i in range(1,21):
         #target_file_name = "target.conf"
         target_file_name = "target" + str(1) + ".conf"
-        log_name = map_name + "_" + str(cusum) + "_" + str(i) + ".txt"
+        log_name = map_name + "_" + str(cusum) + "_" + str(i) + "_.txt"
         experiment()
 
 
