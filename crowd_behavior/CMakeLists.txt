@@ -1,15 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(semaforr)
+project(crowd_behavior)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roslib
+  geometry_msgs
+  nav_msgs
   roscpp
   rospy
-  std_msgs
-  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -19,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+#catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -46,10 +45,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-   FILES
-   CrowdModel.msg
-)
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -66,10 +66,10 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-   DEPENDENCIES
-   std_msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   geometry_msgs#   nav_msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -91,9 +91,6 @@ generate_messages(
 #   cfg/DynReconf2.cfg
 # )
 
-
-
-
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -104,9 +101,9 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-#  LIBRARIES semaforr
-  CATKIN_DEPENDS roscpp rospy std_msgs roslib message_runtime
+#  INCLUDE_DIRS include
+#  LIBRARIES test_george
+   CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy
 #  DEPENDS system_lib
 )
 
@@ -118,36 +115,28 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${PROJECT_SOURCE_DIR}/include/semaforr/
   ${catkin_INCLUDE_DIRS}
 )
 
+## Declare a C++ library
+# add_library(test_george
+#   src/${PROJECT_NAME}/test_george.cpp
+# )
+
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+# add_dependencies(test_george ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-file(
-	GLOB_RECURSE
-	source_files
-	${PROJECT_SOURCE_DIR}/src/*.cpp
-	${PROJECT_SOURCE_DIR}/include/semaforr/*.h
-)
-
-add_executable(
-	semaforr
-	${source_files}
-)
-
-
-target_link_libraries (semaforr ${catkin_LIBRARIES})
-
-#add_definitions(-std=c++11)
+# add_executable(test_george_node src/test_george_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-#add_dependencies(semaforr ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(semaforr ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(test_george_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(semaforr_node
+# target_link_libraries(test_george_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -166,11 +155,11 @@ add_dependencies(semaforr ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS semaforr
-   #ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   #LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# install(TARGETS test_george test_george_node
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
@@ -191,7 +180,7 @@ install(TARGETS semaforr
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_semaforr.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_test_george.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

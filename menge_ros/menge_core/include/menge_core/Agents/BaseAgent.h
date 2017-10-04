@@ -319,7 +319,7 @@ namespace Menge {
 			 *
 			 *	At a minimum, it is used to determine sideways clearance.
 			 */
-			float _robotAttraction;
+			float _robot_attraction;
 
 			/*!
 			 *	@brief  a set of velocity modifiers to be set with the agent. Allows for intermediate velocity changes

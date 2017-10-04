@@ -34,13 +34,16 @@ def experiment():
     print "waiting,,"
     time.sleep(10)
 
-    if cusum == 1:
+    if mode == 3:
 	print "Starting crowd model with CUSUM... "
         crowd_process = subprocess.Popen(['rosrun','crowd_cusum','learn.py'])
-    if cusum == 2:
+    if mode == 1:
+	print "Starting crowd model with risk model... "
+        crowd_process = subprocess.Popen(['rosrun','crowd_behavior','learn.py'])	
+    if mode == 2:
 	print "Starting crowd model without CUSUM... "
         crowd_process = subprocess.Popen(['rosrun','crowd_count','learn.py'])
-
+    
     log_file = open(log_name,"w")
     log_process = subprocess.Popen(['rostopic','echo','/decision_log'],stdout=log_file)
 
@@ -63,7 +66,7 @@ def experiment():
     time.sleep(1)
 
     print "Menge terminated!"
-    if cusum == 1 or cusum == 2:
+    if mode == 1 or mode == 2 or mode == 3:
 	print "Terminating crowd model"
         crowd_process.terminate()
     log_process.terminate()
@@ -78,11 +81,11 @@ def experiment():
 
 map_name = "moma-5"
 
-for cusum in range(0,3):
-    for i in range(1,21):
+for mode in range(1,2):
+    for i in range(30,31):
         #target_file_name = "target.conf"
         target_file_name = "target" + str(1) + ".conf"
-        log_name = map_name + "_" + str(cusum) + "_" + str(i) + "_.txt"
+        log_name = map_name + "_" + str(mode) + "_" + str(i) + ".txt"
         experiment()
 
 

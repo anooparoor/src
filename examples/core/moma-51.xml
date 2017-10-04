@@ -4,5 +4,6 @@
 	scene="moma-5/moma-51S.xml" 
 	behavior="moma-5/moma-51B.xml"
 	model="orca"
+	view="moma-5/moma-5V.xml"
 	dumpPath="images/test"
 />

@@ -67,6 +67,7 @@ namespace Menge {
 		const float START_ANGLE = -1.96f;
 		const float END_ANGLE = 1.96f;
 		const float INCREMENT = 0.0005817f; 
+		const float ROBOT_ATTRACTION = 0.0f;
 
 		////////////////////////////////////////////////////////////////
 		
@@ -94,6 +95,7 @@ namespace Menge {
 			_end_angle = END_ANGLE;
 			_increment = INCREMENT;
 			_range_max = RANGE_MAX;
+			_robot_attraction = ROBOT_ATTRACTION;
 		}
 
 		////////////////////////////////////////////////////////////////
@@ -211,6 +213,7 @@ namespace Menge {
 			agent->_increment = _increment;
 			agent->_start_angle = _start_angle;
 			agent->_end_angle = _end_angle;
+			agent->_robot_attraction = _robot_attraction;
 			
 			std::vector< BFSM::VelModifier * >::iterator vItr = _velModifiers.begin();
 			for ( ; vItr != _velModifiers.end(); ++vItr ) {
@@ -262,6 +265,8 @@ namespace Menge {
 				result = constFloat( _priority, value );
 			} else if ( paramName == "external" ) {
 				result = constSizet( _isExternal, value);
+			} else if ( paramName == "robot_attraction" ) {
+				result = constFloat( _robot_attraction, value);
 			}
 
 			if ( result == FAILURE ) {
