@@ -8,7 +8,7 @@ import time
 import subprocess
 
 def experiment():
-    project_home = "/home/anooparoor/catkin_ws/src"
+    project_home = "/home/anoop/catkin_ws/src"
     menge_path = project_home+"/examples/core"
     semaforr_path = project_home+"/semaforr"
 
@@ -34,13 +34,13 @@ def experiment():
     print "waiting,,"
     time.sleep(10)
 
-    if mode == 1:
+    if mode == 3:
 	print "Starting crowd model with CUSUM... "
         crowd_process = subprocess.Popen(['rosrun','crowd_cusum','learn.py'])
-    if mode == 2:
+    if mode == 1:
 	print "Starting crowd model with risk model... "
         crowd_process = subprocess.Popen(['rosrun','crowd_behavior','learn.py'])	
-    if mode == 3:
+    if mode == 2:
 	print "Starting crowd model without CUSUM... "
         crowd_process = subprocess.Popen(['rosrun','crowd_count','learn.py'])
     
@@ -81,8 +81,8 @@ def experiment():
 
 map_name = "moma-5"
 
-for mode in range(2,4):
-    for i in range(1,10):
+for mode in range(1,2):
+    for i in range(30,31):
         #target_file_name = "target.conf"
         target_file_name = "target" + str(1) + ".conf"
         log_name = map_name + "_" + str(mode) + "_" + str(i) + ".txt"

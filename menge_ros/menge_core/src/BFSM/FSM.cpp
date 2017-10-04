@@ -193,7 +193,7 @@ namespace Menge {
 				//std::cout << "Attraction " << attraction  << std::endl;
 				//std::cout << "Angle towards robot: " << angleToRobot << " Agent angle: " << agent_angle << " Turn: " << requiredTurn << std::endl;
 				//double actualTurn = requiredTurn * attraction / (distance + 1);
-				if(distance < 1 and attraction == 1){
+				if(distance < 2 and attraction == 1){
 					newVel.turn(requiredTurn);
 				}
 				//else if(distance < 2 and attraction == -1){

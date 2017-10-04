@@ -6,6 +6,7 @@
 
 #include "PathPlanner.h"
 #include <limits.h>
+#include <algorithm> 
 
 #define PATH_DEBUG true
 
@@ -153,7 +154,10 @@ double PathPlanner::cellCost(int nodex, int nodey, int buffer){
 	double d3 = crowdModel.densities[(y * crowdModel.width) + x1];
 	double d4 = crowdModel.densities[(y * crowdModel.width) + x2];
 	//std::cout << " Cell cost " << d << std::endl;
-	return (d + d1 + d2 + d3 + d4)/5;
+	//return (d + d1 + d2 + d3 + d4)/5;
+	double da = std::max(std::max(d, d1),d2);
+	double db = std::max(d3, d4);
+	return std::max(da,db);
 	//return d;
 }
 

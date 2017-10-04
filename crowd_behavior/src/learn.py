@@ -125,7 +125,7 @@ class CrowdBehaviorModel:
 	    theta = euler[2]
 	    x = i.position.x
 	    y = i.position.y
-	    if self.distance(x,y,rx,ry) < 1:
+	    if self.distance(x,y,rx,ry) < 2:
 	        count += 1
 	rx_index = int(floor(rx / cell_width))
 	ry_index = int(floor(ry / cell_height))
