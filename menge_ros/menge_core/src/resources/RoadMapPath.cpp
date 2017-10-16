@@ -94,7 +94,7 @@ namespace Menge {
 		}
 		size_t testID = _targetID + 1;
 		double distance = agent->_pos.distance(_wayPoints[ testID ]);
-		while ( testID < _wayPointCount && (Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, _wayPoints[ testID ], radius )) && distance <= 1 ) {
+		while ( testID < _wayPointCount && (Menge::SPATIAL_QUERY->queryVisibility( agent->_pos, _wayPoints[ testID ], radius )) && distance <= 3 ) {
 			distance = agent->_pos.distance(_wayPoints[ testID ]);
 			_targetID = testID;
 			isVisible = true;

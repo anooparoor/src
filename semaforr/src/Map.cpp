@@ -17,7 +17,7 @@ Map::Map(double length, double height) {
   this->length = length;
   this->height = height;
   cout << length  << " " << height << " " << length/50 << " " << height/50 << endl;  
-  occupancySize = 50;
+  occupancySize = 20;
   for(int j = 0 ; j <= length/occupancySize; j++){
 	vector<bool> column;
   	for(int i = 0 ; i <= height/occupancySize; i++){
@@ -96,14 +96,17 @@ bool Map::isWithinBorders(double x, double y){
 
 
 /*! 
-  \brief This function returns true if a point is within a Wall buffer, meaning too close to a wall.
+  \brief This function returns true if a point is within a Wall buffer, meaning too close to a wall. -ve values not allowed
 */
-bool Map::isPointInBuffer(double x, double y){ 
+bool Map::isPointInBuffer(double x, double y){
+  if( x <= 0 or x >= length or y <= 0 or y >= height){
+	return true;
+  }  
   //cout << "is point in buffer " << x << " " << y << endl;
   int gridx = (int)(x/occupancySize);
   int gridy = (int)(y/occupancySize);
 
-  int b = 20;
+  int b = 10;
   double x_l = x - b;
   double x_r = x + b;
   double y_l = y - b;

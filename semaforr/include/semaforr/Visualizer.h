@@ -87,8 +87,8 @@ public:
 		publish_all_targets();
 		publish_remaining_targets();
 	}
-	//publish_nodes();
-	//publish_reachable_nodes();
+	publish_nodes();
+	publish_reachable_nodes();
 	//publish_edges();
         /*if(visualized < 5){
 		publish_nodes();

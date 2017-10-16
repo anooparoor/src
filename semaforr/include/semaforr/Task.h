@@ -119,16 +119,25 @@ class Task {
 		cout << "Plan active is true" << endl;
 		isPlanActive = true;
   	}
-	setupNextWaypoint();
+	setupNextWaypoint(source);
 	planner->resetPath();
 	cout << "plan generation complete" << endl;
    } 
 
-   void setupNextWaypoint(){
-	if(waypoints.size() > 0){
+   void setupNextWaypoint(Position currentPosition){
+	double dis;
+	while(waypoints.size() > 1){
 		wx = waypoints[0].get_x();
 		wy = waypoints[0].get_y();
-		waypoints.erase(waypoints.begin());
+		dis = currentPosition.getDistance(wx, wy);
+		if(dis < 0.75){
+			waypoints.erase(waypoints.begin());
+		}
+		else{
+			break;
+		} 	
+	}	
+	if(waypoints.size() > 0){
 		isPlanActive = true;
 	}
 	else{
@@ -150,7 +159,7 @@ class Task {
    bool isWaypointComplete(Position currentPosition){
 	bool status = false;
 	double dis = currentPosition.getDistance(wx, wy);
-	if (isPlanActive && (dis < 2)){
+	if (isPlanActive && (dis < 0.75)){
 		status = true;
 	}
 	return status;

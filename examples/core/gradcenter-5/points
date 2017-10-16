@@ -1,0 +1,10 @@
+	<Goal type="circle" id="0" x="80" y="10" radius="0.5" />
+
+		<Goal type="circle" id="1" x="59" y="59" radius="0.5" />
+		<Goal type="circle" id="2" x="45" y="10" radius="0.5" />
+		
+		<Goal type="circle" id="3" x="20" y="10" radius="0.5" />
+		<Goal type="circle" id="5" x="20" y="57" radius="0.5" />
+
+		<Goal type="circle" id="4" x="55" y="32" radius="0.5" />
+		<Goal type="circle" id="6" x="8" y="37" radius="0.5" />

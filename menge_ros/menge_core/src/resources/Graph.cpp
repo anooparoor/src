@@ -221,6 +221,8 @@ namespace Menge {
 		// TODO: Make this faster
 
 		float bestDistSq = INFTY;
+		// Hack to make this function faster
+		bestDistSq = 5;
 		size_t bestID = -1;
 		for ( size_t i = 0; i < _vCount; ++i ) {
 			float testDistSq = absSq( _vertices[i].getPosition() - point );
@@ -279,6 +281,7 @@ namespace Menge {
 				float distance = vert.getDistance( n );
 				float ran = ((double) std::rand() / (RAND_MAX));
 				float tempG = heap.g( x ) + (distance * (ran + 1));
+				//float tempG = heap.g( x ) + vert.getDistance( n );
 				
 				bool inHeap = heap.isInHeap( (unsigned int)y );
 				if ( ! inHeap ) {

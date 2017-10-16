@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+
+<BFSM>
+
+	<GoalSet id="0">
+		<Goal type="circle" id="0" x="80" y="10" radius="0.5" />
+		<Goal type="circle" id="1" x="59" y="59" radius="0.5" />
+		<Goal type="circle" id="2" x="45" y="10" radius="0.5" />
+		<Goal type="circle" id="3" x="20" y="10" radius="0.5" />
+		<Goal type="circle" id="4" x="55" y="32" radius="0.5" />
+		<Goal type="circle" id="5" x="20" y="57" radius="0.5" />
+		<Goal type="circle" id="6" x="8" y="37" radius="0.5" />
+	</GoalSet>
+
+	<State name="robot" final="0" >
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
+
+
+	<State name="start" final="0" >
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
+
+	<State name="enter" final="0" >
+		<Action type="teleport" dist="u" min_x="20" max_x="30"  min_y="34.5" max_y="35.5" />
+		<GoalSelector type="identity"/>
+		<VelComponent type="goal"/>
+	</State>
+
+
+	<State name="zero" final="0" > 
+		<GoalSelector type="explicit" goal="0" goal_set="0"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="one" final="0" >
+		<GoalSelector type="explicit" goal="1" goal_set="0"/>
+	        <VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="two" final="0" > 
+		<GoalSelector type="explicit" goal="2" goal_set="0"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="three" final="0" > 
+		<GoalSelector type="explicit" goal="3" goal_set="0"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="four" final="0" > 
+		<GoalSelector type="explicit" goal="4" goal_set="0"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="five" final="0" > 
+		<GoalSelector type="explicit" goal="5" goal_set="0"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+	<State name="six" final="0" > 
+		<GoalSelector type="explicit" goal="6" goal_set="0"/>
+		<VelComponent type="road_map" weight="0.1" file_name="graph.txt" />
+	</State>
+
+
+	<Transition from="start" to="enter" >
+		<Condition type="timer" dist="u" min="0" max="250" per_agent="1" />
+	</Transition>
+
+	<Transition from="enter" to="zero" >
+		<Condition type="timer" dist="u" min="0" max="1" per_agent="1" />
+	</Transition>
+
+
+	<Transition from="zero" to="one" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+	
+	<Transition from="one" to="two" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+	<Transition from="two" to="three" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+	<Transition from="three" to="four" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+	<Transition from="four" to="five" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+	<Transition from="five" to="six" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+	<Transition from="six" to="zero" >
+		<Condition type="goal_reached" distance="0.5" />
+	</Transition>
+
+
+
+</BFSM>

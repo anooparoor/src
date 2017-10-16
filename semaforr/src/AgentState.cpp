@@ -1,4 +1,3 @@
-
 #include <AgentState.h>
 #include <iostream>
 

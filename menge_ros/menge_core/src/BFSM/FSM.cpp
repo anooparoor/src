@@ -270,7 +270,7 @@ namespace Menge {
 				//std::cout << "Generating obstacle distance " << angle; 
 				//for each angle compute the distance from the obstacle
 				float distance =  distanceFromObstacle(angles[i],range_max, agent);
-				float distance_agent = distanceFromAgent(angles[i], range_max, agent);
+				float distance_agent = distanceFromAgent(angles[i],range_max, agent);
 				if(distance > distance_agent){
 					distance = distance_agent;
 				}

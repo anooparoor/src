@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<Project 
+	scene="gradcenter-4/gradcenter-4S.xml" 
+	behavior="gradcenter-4/gradcenter-4B.xml"
+	model="orca"
+	dumpPath="images/test"
+/>

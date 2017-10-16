@@ -13,10 +13,10 @@ def experiment():
     semaforr_path = project_home+"/semaforr"
 
     map_folder = menge_path+"/"+map_name
-    map_xml = menge_path+"/"+map_name+"1.xml"
+    map_xml = menge_path+"/"+map_name+".xml"
 
     #menge files for semaforr
-    map_config = map_folder+"/"+map_name+"1S.xml"
+    map_config = map_folder+"/"+map_name+"S.xml"
     map_dimensions = map_folder+"/dimensions.conf"
     target_set = map_folder+"/targets/" + target_file_name
 
@@ -33,16 +33,16 @@ def experiment():
     menge_sim_process = subprocess.Popen(['rosrun','menge_sim','menge_sim','-p',map_xml])
     print "waiting,,"
     time.sleep(10)
-
-    if mode == 3:
-	print "Starting crowd model with CUSUM... "
-        crowd_process = subprocess.Popen(['rosrun','crowd_cusum','learn.py'])
     if mode == 1:
-	print "Starting crowd model with risk model... "
-        crowd_process = subprocess.Popen(['rosrun','crowd_behavior','learn.py'])	
-    if mode == 2:
-	print "Starting crowd model without CUSUM... "
+	print "Starting crowd model with CSA* "
         crowd_process = subprocess.Popen(['rosrun','crowd_count','learn.py'])
+    if mode == 2:
+	print "Starting crowd model with CUSUM-A* "
+        crowd_process = subprocess.Popen(['rosrun','crowd_cusum','learn.py'])
+    if mode == 3:
+	print "Starting crowd model with Risk-A* "
+        crowd_process = subprocess.Popen(['rosrun','crowd_behavior','learn.py'])	
+    
     
     log_file = open(log_name,"w")
     log_process = subprocess.Popen(['rostopic','echo','/decision_log'],stdout=log_file)
@@ -79,10 +79,11 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-map_name = "moma-5"
+map_name = "gradcenter-4"
 
-for mode in range(1,2):
-    for i in range(30,31):
+
+for i in range(0,10):
+    for mode in range(0,3):
         #target_file_name = "target.conf"
         target_file_name = "target" + str(1) + ".conf"
         log_name = map_name + "_" + str(mode) + "_" + str(i) + ".txt"
