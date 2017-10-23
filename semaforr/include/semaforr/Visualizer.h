@@ -20,6 +20,7 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <std_msgs/String.h>
 #include <string>
+#include <semaforr/CrowdModel.h>
 
 using namespace std;
 
@@ -717,6 +718,28 @@ public:
 		crowdStream << ";";
 	}
 	ROS_DEBUG("After crowdStream");
+
+	std::stringstream allCrowdStream;
+	geometry_msgs::PoseArray crowdposeall = beliefs->getAgentState()->getCrowdPoseAll();
+	
+	for(int i = 0; i < crowdposeall.poses.size(); i++){
+		allCrowdStream << crowdposeall.poses[i].position.x << " " << crowdposeall.poses[i].position.y;
+		allCrowdStream << ";";
+	}
+	ROS_DEBUG("After all crowdStream");
+
+	std::stringstream crowdModel;
+	semaforr::CrowdModel model = con->getPlanner()->getCrowdModel();
+	int resolution = model.resolution;
+	int height = model.height;
+	int width = model.width;
+	std::vector<double> densities = model.densities;
+	crowdModel << height << " " << width << " " << resolution << " "; 
+	for(int i = 0; i < densities.size() ; i++){
+		crowdModel << densities[i] << " ";
+	}
+	
+	ROS_DEBUG("After all crowd model");
 	
 
 	std::stringstream output;
@@ -728,7 +751,7 @@ public:
 
 	//std::stringstream output;
 
-	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << min_laser_scan << "\t" << crowdStream.str() << "\t" << planStream.str();
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << min_laser_scan << "\t" << crowdStream.str() << "\t" << allCrowdStream.str() << "\t" << crowdModel.str() << "\t" << planStream.str();
 
 	log.data = output.str();
 	stats_pub_.publish(log);

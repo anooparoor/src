@@ -499,6 +499,7 @@ namespace Menge {
 			ros::Time current_time;
   			current_time = ros::Time::now();
 			geometry_msgs::PoseArray crowd;
+			geometry_msgs::PoseArray crowd_all;
 			Vector2 robot_pos;
 			Vector2 robot_orient;
 			float robot_angle;
@@ -580,6 +581,13 @@ namespace Menge {
 				Agents::BaseAgent * agt = this->_sim->getAgent( a );
 				Vector2 agent_pos = agt->_pos;
 				Vector2 agent_orient = agt->_orient;
+				geometry_msgs::Pose pose;
+				pose.position.x = agent_pos._x;
+				pose.position.y = agent_pos._y;
+				pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 0.0, atan2(agt->_orient._y, agt->_orient._x));
+				if(!agt->_isExternal){
+					crowd_all.poses.push_back(pose);
+				}
 				if(_sim->queryVisibility(agent_pos,robot_pos, 0.1) and !agt->_isExternal){
 					double dx = agent_pos._x - robot_pos._x;
 					double dy = agent_pos._y - robot_pos._y;
@@ -601,12 +609,7 @@ namespace Menge {
 					else if(difference < -6.283){
 						difference = difference + 6.283;
 					}
-					 
 					if(distance < 25 and abs(difference) < 1.9198){
-						geometry_msgs::Pose pose;
-						pose.position.x = agent_pos._x;
-						pose.position.y = agent_pos._y;
-						pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 0.0, atan2(agt->_orient._y, agt->_orient._x));
 						crowd.poses.push_back(pose);
 					}
 				}
@@ -615,6 +618,10 @@ namespace Menge {
 			crowd.header.stamp = current_time;
 			crowd.header.frame_id = "map";
 			_pub_crowd.publish(crowd);
+
+			crowd_all.header.stamp = current_time;
+			crowd_all.header.frame_id = "map";
+			_pub_crowd_all.publish(crowd_all);
 
 			if ( exceptionCount > 0 ) {
 				throw FSMFatalException();

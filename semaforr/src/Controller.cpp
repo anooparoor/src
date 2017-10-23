@@ -335,10 +335,11 @@ Controller::Controller(string advisor_config, string params_config, string map_c
 
 
 // Function which takes sensor inputs and updates it for semaforr to use for decision making, and updates task status
-void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan, geometry_msgs::PoseArray crowdpose){
+void Controller::updateState(Position current, sensor_msgs::LaserScan laser_scan, geometry_msgs::PoseArray crowdpose, geometry_msgs::PoseArray crowdposeall){
   cout << "inupdate state" << endl;
   beliefs->getAgentState()->setCurrentSensor(current, laser_scan);
   beliefs->getAgentState()->setCrowdPose(crowdpose);
+  beliefs->getAgentState()->setCrowdPoseAll(crowdposeall);
   if(firstTaskAssigned == false){
       cout << "Set first task" << endl;
       beliefs->getAgentState()->setCurrentTask(beliefs->getAgentState()->getNextTask(),current,planner,aStarOn);
