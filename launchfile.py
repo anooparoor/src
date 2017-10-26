@@ -18,7 +18,7 @@ def experiment():
     #menge files for semaforr
     map_config = map_folder+"/"+map_name+"S.xml"
     map_dimensions = map_folder+"/dimensions.conf"
-    target_set = map_folder+"/targets/" + target_file_name
+    target_set = map_folder+"/" + target_file_name
 
     print target_set
     print map_config
@@ -79,13 +79,13 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-map_name = "gradcenter-4"
+map_name = "gradcenter-5"
 
 
-for i in range(0,15):
-    for mode in [0]:
-        #target_file_name = "target.conf"
-        target_file_name = "target" + str(1) + ".conf"
+for i in range(0,1):
+    for mode in [1]:
+        target_file_name = "target.conf"
+        #target_file_name = "target" + str(1) + ".conf"
         log_name = map_name + "_" + str(mode) + "_" + str(i) + ".txt"
         experiment()
 

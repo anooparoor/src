@@ -43,6 +43,7 @@ private:
 	ros::Subscriber sub_laser_;
 	ros::Subscriber sub_crowd_model_;
 	ros::Subscriber sub_crowd_pose_;
+	ros::Subscriber sub_crowd_pose_all_;
 	// Current position and previous stopping position of the robot
 	Position current, previous;
 	// Current and previous laser scan
@@ -50,7 +51,7 @@ private:
 	// Current crowd_model
 	semaforr::CrowdModel crowdModel;
 	// Current crowd_pose
-	geometry_msgs::PoseArray crowdPose;
+	geometry_msgs::PoseArray crowdPose, crowdPoseAll;
 	// Controller
 	Controller *controller;
 	// Pos received
@@ -68,6 +69,7 @@ public:
 		sub_laser_ = nh_.subscribe("base_scan", 1000, &RobotDriver::updateLaserScan, this);
 		sub_crowd_model_ = nh_.subscribe("crowd_model", 1000, &RobotDriver::updateCrowdModel, this);
 		sub_crowd_pose_ = nh_.subscribe("crowd_pose", 1000, &RobotDriver::updateCrowdPose, this);
+		sub_crowd_pose_all_ = nh_.subscribe("crowd_pose_all", 1000, &RobotDriver::updateCrowdPoseAll, this);
 		//declare and create a controller with task, action and advisor configuration
 		controller = con;
 		init_pos_received = false;
@@ -82,6 +84,14 @@ public:
 		//ROS_DEBUG("Inside callback for crowd pose");
 		//update the crowd model of the belief
 		crowdPose = crowd_pose;
+	}
+
+
+	// Callback function for pose message
+	void updateCrowdPoseAll(const geometry_msgs::PoseArray &crowd_pose_all){
+		//ROS_DEBUG("Inside callback for crowd pose");
+		//update the crowd model of the belief
+		crowdPoseAll = crowd_pose_all;
 	}
 
 	// Callback function for pose message
@@ -162,7 +172,7 @@ public:
 				viz_->publishLog(semaforr_action, overallTimeSec, computationTimeSec);
 				gettimeofday(&cv,NULL);
 				start_timecv = cv.tv_sec + (cv.tv_usec/1000000.0);
-				controller->updateState(current, laserscan, crowdPose);
+				controller->updateState(current, laserscan, crowdPose, crowdPoseAll);
 				viz_->publish();
 				previous = current;
 				ROS_DEBUG("Check if mission is complete");

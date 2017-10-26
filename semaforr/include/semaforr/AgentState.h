@@ -200,6 +200,11 @@ public:
 	currentCrowd = crowdpose;
   }
 
+  geometry_msgs::PoseArray getCrowdPoseAll(){ return allCrowd;}
+  void setCrowdPoseAll(geometry_msgs::PoseArray crowdposeall){
+	allCrowd = crowdposeall;
+  }
+
  private:
 
   // Stores the move and rotate action values
@@ -263,6 +268,9 @@ public:
 
   // Nearby crowd positions
   geometry_msgs::PoseArray currentCrowd;
+
+  // All crowd positions
+  geometry_msgs::PoseArray allCrowd;
 
   //Rotate mode tells if the t3 should rotate or move
   bool rotateMode;

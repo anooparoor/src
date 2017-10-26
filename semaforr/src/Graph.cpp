@@ -137,28 +137,56 @@ void Graph::generateNavGraph() {
 	if ( map->isPathObstructed(x1,y1,x2,y2)){
 	 	multiplier += 20;
 	}
-	if ( map->isPointInBuffer( x1, y1+proximity ) ){
+	if ( map->isPointInBuffer( x1, y1+(proximity*1.5) ) ){
 	 	multiplier += 5;
 	}
-	if ( map->isPointInBuffer( x1, y1-proximity ) ){
+	if ( map->isPointInBuffer( x1, y1-(proximity*1.5) ) ){
 	 	multiplier += 5;
 	}
-	if ( map->isPointInBuffer( x1+proximity, y1 ) ){
+	if ( map->isPointInBuffer( x1+(proximity*1.5), y1 ) ){
 	 	multiplier += 5;
 	}
-	if ( map->isPointInBuffer( x1-proximity, y1 ) ){
+	if ( map->isPointInBuffer( x1-(proximity*1.5), y1 ) ){
 	 	multiplier += 5;
 	}
-	if ( map->isPointInBuffer( x2, y2+proximity ) ){
+	/*
+	if ( map->isPointInBuffer( x1+(proximity*1.5), y1+(proximity*1.5) ) ){
 	 	multiplier += 5;
 	}
-	if ( map->isPointInBuffer( x2, y2-proximity ) ){
+	if ( map->isPointInBuffer( x1-(proximity*1.5), y1-(proximity*1.5) ) ){
 	 	multiplier += 5;
 	}
-	if ( map->isPointInBuffer( x2+proximity, y2 ) ){
+	if ( map->isPointInBuffer( x1+(proximity*1.5), y1-(proximity*1.5) ) ){
 	 	multiplier += 5;
 	}
-	if ( map->isPointInBuffer( x2-proximity, y2 ) ){
+	if ( map->isPointInBuffer( x1-(proximity*1.5), y1+(proximity*1.5) ) ){
+	 	multiplier += 5;
+	}
+
+	if ( map->isPointInBuffer( x2+(proximity*1.5), y2+(proximity*1.5) ) ){
+	 	multiplier += 5;
+	}
+	if ( map->isPointInBuffer( x2-(proximity*1.5), y2-(proximity*1.5) ) ){
+	 	multiplier += 5;
+	}
+	if ( map->isPointInBuffer( x2+(proximity*1.5), y2-(proximity*1.5) ) ){
+	 	multiplier += 5;
+	}
+	if ( map->isPointInBuffer( x2-(proximity*1.5), y2+(proximity*1.5) ) ){
+	 	multiplier += 5;
+	}
+	*/
+
+	if ( map->isPointInBuffer( x2, y2+(proximity*1.5) ) ){
+	 	multiplier += 5;
+	}
+	if ( map->isPointInBuffer( x2, y2-(proximity*1.5) ) ){
+	 	multiplier += 5;
+	}
+	if ( map->isPointInBuffer( x2+(proximity*1.5), y2 ) ){
+	 	multiplier += 5;
+	}
+	if ( map->isPointInBuffer( x2-(proximity*1.5), y2 ) ){
 	 	multiplier += 5;
 	}
 	
