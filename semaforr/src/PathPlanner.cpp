@@ -126,13 +126,13 @@ double PathPlanner::computeNewEdgeCost(Node s, Node d, bool direction, double ol
 	double s_cost = cellCost(s.getX(), s.getY(), b);
 	double d_cost = cellCost(d.getX(), d.getY(), b);
 
-	int k = 4;
+	int k = 1;
 
 	//double flowcost = computeCrowdFlow(s,d) + 2;
 	//cout << "Node flow cost " << flowcost << endl;
 	//cout << "Node penalty : " << d_density << " * " << s_density << endl;
 	//double newEdgeCost = (oldcost * flowcost); 
-	double newEdgeCost = (oldcost + ((s_cost + d_cost) * 100 * k)/2);
+	double newEdgeCost = (oldcost + ((s_cost + d_cost) * 50 * k)/2);
 	//cout << "Old cost : " << oldcost << " new cost : " << newEdgeCost << std::endl; 
 	return newEdgeCost;
 }

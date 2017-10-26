@@ -65,10 +65,6 @@
 
 	<Transition from="two" to="enter" >
 		<Condition type="goal_reached" distance="0.5" />
-		<Target type="prob">
-			<State name="enter" weight="0.85"/>
-			<State name="dead" weight="0.15"/>
-		</Target>
 	</Transition>
 
 
@@ -101,7 +97,7 @@
 	</State>
 
 	<Transition from="start1" to="enter1" >
-		<Condition type="timer" dist="u" min="2000" max="2250" per_agent="1" />
+		<Condition type="timer" dist="u" min="0" max="250" per_agent="1" />
 	</Transition>
 
 	<Transition from="enter1" to="zero1" >

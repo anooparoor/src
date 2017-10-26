@@ -82,8 +82,8 @@ def experiment():
 map_name = "gradcenter-4"
 
 
-for i in range(0,10):
-    for mode in range(0,3):
+for i in range(0,15):
+    for mode in [0]:
         #target_file_name = "target.conf"
         target_file_name = "target" + str(1) + ".conf"
         log_name = map_name + "_" + str(mode) + "_" + str(i) + ".txt"
