@@ -52,7 +52,7 @@ class CountCrowdModel:
 	self.crowd_d = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_l = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_r = [[0 for x in range(division)] for y in range(division)]
-
+60
 	self.crowd_ul = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_ur = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_dl = [[0 for x in range(division)] for y in range(division)]
