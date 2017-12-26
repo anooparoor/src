@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="menge_sim" type="menge_sim" name="menge_sim">
+  	<param name="-p" value="examples/core/swap.xml"/>
+  </node>
+  <node pkg="robot_setup_tf" type="tf_broadcaster" name="tf_broadcaster"/>
+</launch>

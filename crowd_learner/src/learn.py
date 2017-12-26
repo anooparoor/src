@@ -12,9 +12,11 @@ from std_msgs.msg import String, Header
 import itertools
 import tf
 from math import floor, sin, cos, atan2
+import sys
+from cusum import Cusum
 
 class CountCrowdModel:
-    def __init__(self, width, height, division):
+    def __init__(self, width, height, division, density, flow, risk, cusum, discount, explore):
 	# set up this python class as ros node and initialize publisher and subscriber
 	rospy.init_node('crowd_model')
 	rospy.Subscriber("crowd_pose", PoseArray, self.crowd_data)
@@ -31,6 +33,13 @@ class CountCrowdModel:
 	self.pub_crowd_dl = rospy.Publisher('crowd_dl', MarkerArray, queue_size=1)
 	self.pub_crowd_model = rospy.Publisher('crowd_model', CrowdModel, queue_size=1)
 	self.pub_visibility_grid = rospy.Publisher('visibility_grid', OccupancyGrid, queue_size=1)
+	self.pub_risk_grid = rospy.Publisher('risk_grid', OccupancyGrid, queue_size=1)
+	self.cusum = cusum
+	self.flow = flow
+	self.risk = risk
+	self.discount = discount
+	self.explore = explore
+	self.density = density
 
 	# intialize time
         self.prev_message_time = rospy.Time.now()
@@ -46,6 +55,11 @@ class CountCrowdModel:
 	# indicates if the robot has access to the crowd information in that grid
 	self.is_grid_active = [[False for x in range(division)] for y in range(division)]
 	self.crowd_count = [[0 for x in range(division)] for y in range(division)]
+	self.crowd_risk_count = [[0 for x in range(division)] for y in range(division)]
+
+	self.crowd_observations = [[1 for x in range(division)] for y in range(division)]
+	self.crowd_experiences = [[1 for x in range(division)] for y in range(division)]
+
 	self.crowd_u = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_d = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_l = [[0 for x in range(division)] for y in range(division)]
@@ -55,14 +69,20 @@ class CountCrowdModel:
 	self.crowd_ur = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_dl = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_dr = [[0 for x in range(division)] for y in range(division)]
-	
-	self.crowd_observations = [[1 for x in range(division)] for y in range(division)]
-	
+
+	# change detection
+	self.cusum_up = [[Cusum(4,10) for x in range(division)] for y in range(division)]
+	self.change_detected = [[2 for x in range(division)] for y in range(division)]
+	self.cusum_down = [[Cusum(-3,10) for x in range(division)] for y in range(division)] 	
+
 	# map details	
 	self.width = width # width of the map
 	self.height = height # height of the map
 	self.division = division # number of positions in the map where the model has to predict
-	self.alpha = 0.7
+	if self.discount == "on":
+	    self.alpha = 0.7
+	else:
+	    self.alpha = 1.0
         
     # calls the callback for each of the subscriber
     def listen(self):
@@ -141,7 +161,7 @@ class CountCrowdModel:
 	h_cells = self.division
 	cell_width = self.width/self.division
 	cell_height = self.height/self.division
-	#self.density_grid = [[0 for x in range(h_cells)] for y in range(v_cells)]
+	current_sample = [[0 for x in range(self.division)] for y in range(self.division)]
 	#for every grid position compute the density
 	for i in poses:
 	    quaternion = (i.orientation.x, i.orientation.y, i.orientation.z, i.orientation.w)
@@ -154,41 +174,80 @@ class CountCrowdModel:
 	    y_index = int(floor(y / cell_height))
 	    if(self.is_grid_active[x_index][y_index] == True):
 	        self.crowd_count[x_index][y_index] = (self.crowd_count[x_index][y_index] * self.alpha) + 1
-		print "->", x, y, theta
+		current_sample[x_index][y_index] += 1
+		#print "->", x, y, theta
 		if((theta < (pi/8)) and (theta >= (-pi/8))):
 		    #print "right"
-		    self.crowd_r[x_index][y_index] += 1
+		    self.crowd_r[x_index][y_index] = (self.crowd_r[x_index][y_index]*self.alpha) + 1
 		if((theta < ((3*pi)/8)) and (theta >= (pi/8))):
 		    #print "up-right"
-		    self.crowd_ur[x_index][y_index] += 1
+		    self.crowd_ur[x_index][y_index] = (self.crowd_ur[x_index][y_index]*self.alpha) + 1
 		if((theta < ((5*pi)/8)) and (theta >= ((3*pi)/8))):
 		    #print "up"
-		    self.crowd_u[x_index][y_index] += 1
+		    self.crowd_u[x_index][y_index] = (self.crowd_u[x_index][y_index]*self.alpha) + 1
 		if((theta < ((7*pi)/8)) and (theta >= ((5*pi)/8))):
 		    #print "up-left"
-		    self.crowd_ul[x_index][y_index] += 1
+		    self.crowd_ul[x_index][y_index] = (self.crowd_ul[x_index][y_index]*self.alpha) + 1
 		if( ((theta < (-(7*pi)/8)) and theta >= -pi) or (theta >= (7*pi/8) and theta <= pi)):
 		    #print "left"
-		    self.crowd_l[x_index][y_index] += 1
+		    self.crowd_l[x_index][y_index] = (self.crowd_l[x_index][y_index]*self.alpha) + 1
 		if((theta < (-(5*pi)/8)) and (theta >= (-(7*pi)/8))):
 		    #print "down-left"
-		    self.crowd_dl[x_index][y_index] += 1
+		    self.crowd_dl[x_index][y_index] = (self.crowd_dl[x_index][y_index]*self.alpha) + 1
 		if((theta < (-(3*pi)/8)) and (theta >= (-(5*pi)/8))):
 		    #print "down"
-		    self.crowd_d[x_index][y_index] += 1
+		    self.crowd_d[x_index][y_index] = (self.crowd_d[x_index][y_index]*self.alpha) + 1
 		if((theta < (-pi/8)) and (theta >= (-(3*pi)/8))):
 		    #print "down-right"
-		    self.crowd_dr[x_index][y_index] += 1
-	print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" 
-	print "finished counting crowd:" 
-	print self.crowd_count
+		    self.crowd_dr[x_index][y_index] = (self.crowd_dr[x_index][y_index]*self.alpha) + 1
+	#print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" 
+	#print "finished counting crowd:" 
+	#print self.crowd_count
 	for x in range(h_cells):
 	    for y in range(v_cells):
                 if self.is_grid_active[x][y]:
 	            self.crowd_observations[x][y] = (self.crowd_observations[x][y]*self.alpha) + 1   
-	print "finished counting observations:"
-	print self.crowd_observations
-	print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" 
+	#print "finished counting observations:"
+	#print self.crowd_observations
+	#print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" 
+	if self.cusum == "on":
+	    self.detectChange(current_sample)
+
+    # this function detects change by making use of CUSUM and resets all count values
+    def detectChange(self, sample):
+	for x in range(self.division):
+	    for y in range(self.division):
+		if self.is_grid_active[x][y]:
+		    up_change = (self.cusum_up[x][y]).detectChange(sample[x][y])
+		    down_change = (self.cusum_down[x][y]).detectChange(sample[x][y])
+		    if up_change != -1:
+		        #print "Huge Increase in crowd detected, resetting crowd count"
+			self.change_detected[x][y] += 1
+		        self.reset_grid(x,y)
+		    if down_change != -1:
+		        #print "Huge Decrease in crowd detected, resetting crowd count"
+			self.change_detected[x][y] -= 1
+		        self.reset_grid(x,y)
+	#self.printState()
+
+    def printState(self):
+        for x in range(self.division):
+	    for y in range(self.division):
+		print x,y,self.is_grid_active[x][y], self.crowd_observations[x][y], self.crowd_count[x][y], self.change_detected[x][y]
+
+    def reset_grid(self, x, y):
+	self.cusum_up[x][y].reset()
+	self.cusum_down[x][y].reset()
+	self.crowd_count[x][y] = 0
+	self.crowd_u[x][y] = 0
+	self.crowd_d[x][y] = 0
+	self.crowd_l[x][y] = 0
+	self.crowd_r[x][y] = 0
+	self.crowd_ul[x][y] = 0
+	self.crowd_ur[x][y] = 0
+	self.crowd_dl[x][y] = 0
+	self.crowd_dr[x][y] = 0
+	self.crowd_observations[x][y] = 1
 		
     def sample(self, alpha, beta):
 	if(alpha == 0):
@@ -199,15 +258,39 @@ class CountCrowdModel:
 	
 
     def predict(self):
-        crowd_count_model = [[self.sample(self.crowd_count[x][y],float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	u_model = [[(self.crowd_u[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	d_model = [[(self.crowd_d[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	r_model = [[(self.crowd_r[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	l_model = [[(self.crowd_l[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	ul_model = [[(self.crowd_ul[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	ur_model = [[(self.crowd_ur[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	dl_model = [[(self.crowd_dl[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
-	dr_model = [[(self.crowd_dr[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	# if density is tracked
+	if self.density == "on":
+            crowd_count_model = [[(self.crowd_count[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	else:
+	    crowd_count_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	# if risk is tracked
+	if self.risk == "on":
+	    crowd_count_model = [[((self.crowd_risk_count[x][y]+crowd_count_model[y][x])/float(self.crowd_experiences[x][y])) for x in range(self.division)] for y in range(self.division)]
+	# if flow is tracked
+	if self.flow == "on":	
+	    u_model = [[(self.crowd_u[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	    d_model = [[(self.crowd_d[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	    r_model = [[(self.crowd_r[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	    l_model = [[(self.crowd_l[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+ 	    ul_model = [[(self.crowd_ul[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	    ur_model = [[(self.crowd_ur[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	    dl_model = [[(self.crowd_dl[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	    dr_model = [[(self.crowd_dr[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	else:
+	    u_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	    d_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	    r_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	    l_model = [[0 for x in range(self.division)] for y in range(self.division)]
+ 	    ul_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	    ur_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	    dl_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	    dr_model = [[0 for x in range(self.division)] for y in range(self.division)]
+	if self.explore == "on":
+ 	    if self.density == "on" and self.risk == "off":
+	        crowd_count_model = [[self.sample(self.crowd_count[x][y],float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
+	    if self.density == "on" and self.risk == "on":
+	        crowd_count_model = [[self.sample(self.crowd_risk_count[x][y]+crowd_count_model[y][x],float(self.crowd_experiences[x][y])) for x in range(self.division)] for y in range(self.division)]
+	        
 	self.publish_visibility_grid()
 	self.publish_crowd_model(crowd_count_model, u_model, d_model, r_model, l_model, ul_model, ur_model, dl_model, dr_model)
 	pi = 3.1416
@@ -359,5 +442,5 @@ class CountCrowdModel:
 	return ((x1-x2)**2 + (y1-y2)**2) ** 0.5 
 
 
-crowd_model = CountCrowdModel(120,120,60)
+crowd_model = CountCrowdModel(60,60,30, str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5]), str(sys.argv[6]) )
 crowd_model.listen()

@@ -14,7 +14,7 @@
 
     <AgentProfile name="group1" >
 		<OpenSteer tau="3" tauObst="6" />
-        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.01" class="1" pref_speed="1.04" max_speed="2" max_accel="5" priority="0.0" external="1" start_angle="-1.91986" end_angle="1.9194" increment="0.005817" range_max="25"/>
+        <Common max_angle_vel="360" max_neighbors="10" obstacleSet="1" neighbor_dist="5" r="0.1" class="1" pref_speed="1.04" max_speed="2" max_accel="5" priority="0.0" external="1" start_angle="-1.91986" end_angle="1.9194" increment="0.005817" range_max="25"/>
 		<PedVO factor="1.57" buffer="0.9" tau="3" tauObst="0.1" turningBias="1.0" />
         <GCF stand_depth="0.18" move_scale="0.53" slow_width="0.25" sway_change="0.05" orient_weight="0.75" />
         <Helbing mass="80" />
@@ -25,12 +25,12 @@
 	</AgentProfile>
 
 	<AgentProfile name="group2" inherits="group1" >
-		<Common class="2" r="0.18" external="0" pref_speed="0.8" max_speed="2" max_accel="5"/>
+		<Common class="2" r="0.18" external="0" pref_speed="0.8" max_speed="2" max_accel="5" robot_attraction="0.0"/>
 		<Helbing mass="320"/>
 	</AgentProfile>
 
 	<AgentProfile name="group3" inherits="group1" >
-		<Common class="3" r="0.18" external="0" pref_speed="0.8" max_speed="2" max_accel="3"/>
+		<Common class="3" r="0.18" external="0" pref_speed="0.8" max_speed="2" max_accel="3" robot_attraction="0.0"/>
 		<Helbing mass="320"/>
 	</AgentProfile>
 

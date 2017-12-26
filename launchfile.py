@@ -19,11 +19,17 @@ def experiment():
     map_config = map_folder+"/"+map_name+"S.xml"
     map_dimensions = map_folder+"/dimensions.conf"
     target_set = map_folder+"/" + target_file_name
+    density = "on"
+    flow = "on"
+    risk = "off"
+    cusum = "off"
+    discount = "off"
+    explore = "on"
 
     print target_set
     print map_config
     print map_xml
-    print map_dimensions
+    print map_dimensions 
     print log_name
     #start roscore
     roscore = subprocess.Popen(['roscore'])
@@ -41,8 +47,12 @@ def experiment():
         crowd_process = subprocess.Popen(['rosrun','crowd_cusum','learn.py'])
     if mode == 3:
 	print "Starting crowd model with Risk-A* "
-        crowd_process = subprocess.Popen(['rosrun','crowd_behavior','learn.py'])	
-    
+        crowd_process = subprocess.Popen(['rosrun','crowd_behavior','learn.py'])
+    if mode == 4:
+	print "Starting crowd model with Thompson-A* "
+        crowd_process = subprocess.Popen(['rosrun','crowd_count_thompson','learn.py'])	
+    if mode == 5:
+        crowd_process = subprocess.Popen(['rosrun','crowd_learner','learn.py',density, flow, risk, cusum, discount, explore])
     
     log_file = open(log_name,"w")
     log_process = subprocess.Popen(['rostopic','echo','/decision_log'],stdout=log_file)
@@ -63,10 +73,10 @@ def experiment():
     menge_sim_process.terminate()
     while menge_sim_process.poll() is None:
         print "Menge process still running ..."
-    time.sleep(1)
+    	time.sleep(1)
 
     print "Menge terminated!"
-    if mode == 1 or mode == 2 or mode == 3:
+    if mode == 1 or mode == 2 or mode == 3 or mode == 4:
 	print "Terminating crowd model"
         crowd_process.terminate()
     log_process.terminate()
@@ -79,14 +89,13 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-map_name = "gradcenter-5"
+map_name = "openOfficeFlow"
 
 
-for i in range(0,15):
-    for mode in [1]:
+for i in range(0,1):
+    for mode in [5]:
         target_file_name = "target.conf"
-        #target_file_name = "target" + str(1) + ".conf"
-        log_name = map_name + "_" + str(mode) + "_" + str(i) + "07.txt"
+        log_name = map_name + "_" + str(mode) + "_" + str(i) + ".txt"
         experiment()
 
 

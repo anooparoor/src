@@ -25,7 +25,7 @@
 	</AgentProfile>
 
 	<AgentProfile name="group2" inherits="group1" >
-		<Common class="2" r="0.18" external="0" pref_speed="0.8" max_speed="2" max_accel="5" robot_attraction="1.0"/>
+		<Common class="2" r="0.18" external="0" pref_speed="0.8" max_speed="2" max_accel="5" robot_attraction="0.0"/>
 		<Helbing mass="320"/>
 	</AgentProfile>
 

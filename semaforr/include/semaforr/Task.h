@@ -126,7 +126,7 @@ class Task {
 
    void setupNextWaypoint(Position currentPosition){
 	double dis;
-	while(waypoints.size() > 1){
+	while(waypoints.size() >= 1){
 		wx = waypoints[0].get_x();
 		wy = waypoints[0].get_y();
 		dis = currentPosition.getDistance(wx, wy);

@@ -4,5 +4,6 @@
 	scene="gradcenter-5/gradcenter-5S.xml" 
 	behavior="gradcenter-5/gradcenter-5B.xml"
 	model="orca"
+	view="gradcenter-5/gradcenter-5V.xml"
 	dumpPath="images/test"
 />

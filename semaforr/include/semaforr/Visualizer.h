@@ -90,14 +90,14 @@ public:
 	}
 	publish_nodes();
 	publish_reachable_nodes();
-	//publish_edges();
+	publish_edges();
         /*if(visualized < 5){
 		publish_nodes();
 		publish_reachable_nodes();
 		//publish_edges();
 		visualized++;
 	}*/
-	//publish_edges_cost();
+	publish_edges_cost();
 	//publish_conveyor();
 	//publish_region();
 	//publish_trails();

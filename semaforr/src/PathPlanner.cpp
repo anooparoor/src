@@ -115,7 +115,7 @@ void PathPlanner::updateNavGraph(){
 			double newEdgeCostft = computeNewEdgeCost(fromNode, toNode, true, oldcost);
 			double newEdgeCosttf = computeNewEdgeCost(fromNode, toNode, false, oldcost); 
 			navGraph->updateEdgeCost(i, newEdgeCostft, newEdgeCosttf);
-			//cout << "Edge Cost " << oldcost << " -> " << newEdgeCostft << " -> " << newEdgeCosttf << endl;  
+			cout << "Edge Cost " << oldcost << " -> " << newEdgeCostft << " -> " << newEdgeCosttf << endl;  
 		}
 	}
 }
@@ -125,14 +125,20 @@ double PathPlanner::computeNewEdgeCost(Node s, Node d, bool direction, double ol
 	int b = 30;
 	double s_cost = cellCost(s.getX(), s.getY(), b);
 	double d_cost = cellCost(d.getX(), d.getY(), b);
+	// weights that balance distance, crowd density and crowd flow
+	int w1 = 1;
+	int w2 = 50;
+	int w3 = 50;
 
-	int k = 1;
-
-	//double flowcost = computeCrowdFlow(s,d) + 2;
-	//cout << "Node flow cost " << flowcost << endl;
+	double flowcost = computeCrowdFlow(s,d);
+	if(direction == false){
+		flowcost = flowcost * (-1);
+	}
+	cout << "Flow cost --------- " << endl;
+	cout << "Flow cost    :" << flowcost << endl;
 	//cout << "Node penalty : " << d_density << " * " << s_density << endl;
 	//double newEdgeCost = (oldcost * flowcost); 
-	double newEdgeCost = (oldcost + ((s_cost + d_cost) * 50 * k)/2);
+	double newEdgeCost = (w1 * oldcost) + (w2 * (s_cost+d_cost)/2) + (w3 * flowcost);
 	//cout << "Old cost : " << oldcost << " new cost : " << newEdgeCost << std::endl; 
 	return newEdgeCost;
 }
@@ -145,7 +151,6 @@ double PathPlanner::cellCost(int nodex, int nodey, int buffer){
 	int y = (int)((nodey/100.0)/crowdModel.resolution);
 	int y1 = (int)(((nodey+buffer)/100.0)/crowdModel.resolution);
 	int y2 = (int)(((nodey-buffer)/100.0)/crowdModel.resolution);
-
 
 	//std::cout << "x " << x << " y " << y;
 	double d = crowdModel.densities[(y * crowdModel.width) + x];
@@ -161,7 +166,6 @@ double PathPlanner::cellCost(int nodex, int nodey, int buffer){
 	//return d;
 }
 
- 
 
 // Projection of crowd flow vectors on vector at s and d and then take the average
 double PathPlanner::computeCrowdFlow(Node s, Node d){
@@ -197,31 +201,28 @@ double PathPlanner::computeCrowdFlow(Node s, Node d){
 	//cout << "Down-right : " << d_dr << " * " << s_dr << endl;
 	//cout << "Down-left : " << d_dl << " * " << s_dl << endl;
 
+
+	double l_avg = (s_l + d_l) / 2;
+	double r_avg = (s_r + d_r) / 2;
+	double u_avg = (s_u + d_u) / 2;
+	double d_avg = (s_d + d_d) / 2;
+	double ul_avg = (s_ul + d_ul) / 2;
+	double dl_avg = (s_dl + d_dl) / 2;
+	double ur_avg = (s_ur + d_ur) / 2;
+	double dr_avg = (s_dr + d_dr) / 2;
+
 	double pi = 3.145;
-	double u1 = projection(pi/2, d_u, s.getX(), s.getY(), d.getX(), d.getY()); 
-	double d1 = projection(3*pi/2, d_d, s.getX(), s.getY(), d.getX(), d.getY()); 
-	double r1 = projection(0, d_r, s.getX(), s.getY(), d.getX(), d.getY()); 
-	double l1 = projection(pi, d_l, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_u = projection(pi/2, u_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_d = projection(3*pi/2, d_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_r = projection(0, r_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_l = projection(pi, l_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
 
-	double ur1 = projection(pi/4, d_ur, s.getX(), s.getY(), d.getX(), d.getY()); 
-	double ul1 = projection(3*pi/4, d_ul, s.getX(), s.getY(), d.getX(), d.getY()); 
-	double dr1 = projection(7*pi/4, d_dr, s.getX(), s.getY(), d.getX(), d.getY()); 
-	double dl1 = projection(5*pi/4, d_dl, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_ur = projection(pi/4, ur_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_ul = projection(3*pi/4, ul_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_dr = projection(7*pi/4, dr_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
+	double cost_dl = projection(5*pi/4, dl_avg, s.getX(), s.getY(), d.getX(), d.getY()); 
 
-	double final1 = u1 + d1 + r1 + l1 + ur1 + ul1 + dr1 + dl1;
-	
-	double u2 = projection(pi/2, d_u, d.getX(), d.getY(), s.getX(), s.getY()); 
-	double d2 = projection(3*pi/2, d_d, d.getX(), d.getY(), s.getX(), s.getY()); 
-	double r2 = projection(0, d_r, d.getX(), d.getY(), s.getX(), s.getY()); 
-	double l2 = projection(pi, d_l, d.getX(), d.getY(), s.getX(), s.getY()); 
-
-	double ur2 = projection(pi/4, d_ur, d.getX(), d.getY(), s.getX(), s.getY()); 
-	double ul2 = projection(3*pi/3, d_ul, d.getX(), d.getY(), s.getX(), s.getY()); 
-	double dr2 = projection(7*pi/4, d_dr, d.getX(), d.getY(), s.getX(), s.getY()); 
-	double dl2 = projection(5*pi/4, d_dl, d.getX(), d.getY(), s.getX(), s.getY());
-
-	double final2 = u2 + d2 + r2 + l2 + ur2 + ul2 + dr2 + dl2;
-	double cost = (final1 + final2)/2;
+	double cost = cost_u + cost_d + cost_r + cost_l + cost_ur + cost_ul + cost_dr + cost_dl;
 	return cost;
 }
 
