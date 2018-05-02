@@ -24,12 +24,12 @@ def experiment():
     risk = "off"
     cusum = "off"
     discount = "off"
-    explore = "on"
+    explore = "off"
 
     print target_set
     print map_config
     print map_xml
-    print map_dimensions 
+    print map_dimensions
     print log_name
     #start roscore
     roscore = subprocess.Popen(['roscore'])
@@ -50,10 +50,10 @@ def experiment():
         crowd_process = subprocess.Popen(['rosrun','crowd_behavior','learn.py'])
     if mode == 4:
 	print "Starting crowd model with Thompson-A* "
-        crowd_process = subprocess.Popen(['rosrun','crowd_count_thompson','learn.py'])	
+        crowd_process = subprocess.Popen(['rosrun','crowd_count_thompson','learn.py'])
     if mode == 5:
         crowd_process = subprocess.Popen(['rosrun','crowd_learner','learn.py',density, flow, risk, cusum, discount, explore])
-    
+
     log_file = open(log_name,"w")
     log_process = subprocess.Popen(['rostopic','echo','/decision_log'],stdout=log_file)
 
@@ -61,12 +61,12 @@ def experiment():
     semaforr_process = subprocess.Popen(['rosrun','semaforr','semaforr', semaforr_path, target_set, map_config, map_dimensions])
     print "waiting,,"
 
-   
+
     # Wait till semaforr completes the process
     while semaforr_process.poll() is None:
         print "Semaforr process still running ..."
         time.sleep(1)
-   
+
     print "Semaforr process has ended ..."
     print "Terminating the simulator"
 
@@ -89,16 +89,10 @@ def experiment():
     time.sleep(10)
     print "roscore terminated!"
 
-map_name = "openOfficeFlow"
+map_name = "gradcenter-4-static"
+mode = 5
 
-
-for i in range(0,1):
-    for mode in [5]:
-        target_file_name = "target.conf"
-        log_name = map_name + "_" + str(mode) + "_" + str(i) + ".txt"
-        experiment()
-
-
-
-
-
+for i in range(10,20):
+    target_file_name = "target.conf"
+    log_name = map_name + "_" + "flow-csastar" + "_" + "orca" + "_" + "crowdsize60" + "_" + "trial" + str(i) + ".txt"
+    experiment()

@@ -70,12 +70,12 @@ class CountCrowdModel:
 	self.crowd_dl = [[0 for x in range(division)] for y in range(division)]
 	self.crowd_dr = [[0 for x in range(division)] for y in range(division)]
 
-	# change detection
+	# change detection for crowd count
 	self.cusum_up = [[Cusum(4,10) for x in range(division)] for y in range(division)]
 	self.change_detected = [[2 for x in range(division)] for y in range(division)]
-	self.cusum_down = [[Cusum(-3,10) for x in range(division)] for y in range(division)] 	
+	self.cusum_down = [[Cusum(-3,10) for x in range(division)] for y in range(division)]
 
-	# map details	
+	# map details
 	self.width = width # width of the map
 	self.height = height # height of the map
 	self.division = division # number of positions in the map where the model has to predict
@@ -83,11 +83,11 @@ class CountCrowdModel:
 	    self.alpha = 0.7
 	else:
 	    self.alpha = 1.0
-        
+
     # calls the callback for each of the subscriber
     def listen(self):
         rospy.spin()
-    
+
     # receive the laser data in standard format and save as a sequence of endpoints
     def laser_data(self, data):
 	#print "receiveing laser_scan data message"
@@ -99,7 +99,7 @@ class CountCrowdModel:
 	    y = self.robot_pose[1] + laser_distance * sin(self.robot_pose[2] + angle)
 	    angle += increment
 	    self.laser_scan_endpoints.append([x,y])
-	
+
 
     # receive and save the robot pose data
     def pose_data(self, data):
@@ -112,7 +112,7 @@ class CountCrowdModel:
 	self.robot_pose[0] = data.pose.position.x
 	self.robot_pose[1] = data.pose.position.y
 	self.robot_pose[2] = yaw
-    
+
     # recieve and save the crowd data, update the dataset, publish the new crowd model
     def crowd_data(self, data):
 	#print "receiveing crowd data message"
@@ -125,7 +125,7 @@ class CountCrowdModel:
 	    # time in seconds since the begin of program, used as a feature in the GP
 	    self.time = (self.message_time - self.init_time).to_sec()
 	    self.crowd_pose_to_density_grid(data.poses)
-	    # save the current time as previous time	
+	    # save the current time as previous time
 	    self.prev_message_time = self.message_time
 	    self.predict()
 
@@ -140,7 +140,7 @@ class CountCrowdModel:
         for endpoint in self.laser_scan_endpoints:
 	    laser_distance = self.distance(endpoint[0],endpoint[1],self.robot_pose[0],self.robot_pose[1])
 	    # walk along the laser scan and mark grid points as visible
-	    test_x = self.robot_pose[0] 
+	    test_x = self.robot_pose[0]
 	    test_y = self.robot_pose[1]
 	    x_diff = (endpoint[0] - self.robot_pose[0])
 	    y_diff = (endpoint[1] - self.robot_pose[1])
@@ -200,16 +200,16 @@ class CountCrowdModel:
 		if((theta < (-pi/8)) and (theta >= (-(3*pi)/8))):
 		    #print "down-right"
 		    self.crowd_dr[x_index][y_index] = (self.crowd_dr[x_index][y_index]*self.alpha) + 1
-	#print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" 
-	#print "finished counting crowd:" 
+	#print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	#print "finished counting crowd:"
 	#print self.crowd_count
 	for x in range(h_cells):
 	    for y in range(v_cells):
                 if self.is_grid_active[x][y]:
-	            self.crowd_observations[x][y] = (self.crowd_observations[x][y]*self.alpha) + 1   
+	            self.crowd_observations[x][y] = (self.crowd_observations[x][y]*self.alpha) + 1
 	#print "finished counting observations:"
 	#print self.crowd_observations
-	#print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" 
+	#print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	if self.cusum == "on":
 	    self.detectChange(current_sample)
 
@@ -248,14 +248,14 @@ class CountCrowdModel:
 	self.crowd_dl[x][y] = 0
 	self.crowd_dr[x][y] = 0
 	self.crowd_observations[x][y] = 1
-		
+
     def sample(self, alpha, beta):
 	if(alpha == 0):
 	    alpha = 1
 	if(beta == 0):
 	    beta = 1
 	return np.random.gamma(alpha,(1.0/beta),1)[0]
-	
+
 
     def predict(self):
 	# if density is tracked
@@ -267,7 +267,7 @@ class CountCrowdModel:
 	if self.risk == "on":
 	    crowd_count_model = [[((self.crowd_risk_count[x][y]+crowd_count_model[y][x])/float(self.crowd_experiences[x][y])) for x in range(self.division)] for y in range(self.division)]
 	# if flow is tracked
-	if self.flow == "on":	
+	if self.flow == "on":
 	    u_model = [[(self.crowd_u[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
 	    d_model = [[(self.crowd_d[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
 	    r_model = [[(self.crowd_r[x][y]/float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
@@ -290,7 +290,7 @@ class CountCrowdModel:
 	        crowd_count_model = [[self.sample(self.crowd_count[x][y],float(self.crowd_observations[x][y])) for x in range(self.division)] for y in range(self.division)]
 	    if self.density == "on" and self.risk == "on":
 	        crowd_count_model = [[self.sample(self.crowd_risk_count[x][y]+crowd_count_model[y][x],float(self.crowd_experiences[x][y])) for x in range(self.division)] for y in range(self.division)]
-	        
+
 	self.publish_visibility_grid()
 	self.publish_crowd_model(crowd_count_model, u_model, d_model, r_model, l_model, ul_model, ur_model, dl_model, dr_model)
 	pi = 3.1416
@@ -302,13 +302,13 @@ class CountCrowdModel:
 	self.publish_crowd_flow(ul_model, 3*pi/4, self.pub_crowd_ul)
 	self.publish_crowd_flow(dr_model, -pi/4, self.pub_crowd_dr)
 	self.publish_crowd_flow(dl_model, -3*pi/4, self.pub_crowd_dl)
-    
+
     def publish_crowd_flow(self, u, angle, publisher):
 	markerArray = MarkerArray();
 	for x in range(self.division):
 	    for y in range(self.division):
 		offset = 1.5
-	        marker = Marker()	
+	        marker = Marker()
 	        marker.header.frame_id = "map"
     	        marker.header.stamp = rospy.Time.now()
 	        marker.ns = "basic_shapes"
@@ -334,11 +334,11 @@ class CountCrowdModel:
     	        marker.color.g = 1.0
     	        marker.color.b = 0.0
     	        marker.color.a = 0.5
-		markerArray.markers.append(marker)		
+		markerArray.markers.append(marker)
 	publisher.publish(markerArray);
 
-	
-        
+
+
     def publish_visibility_grid(self):
 	visible_grid = OccupancyGrid()
 	visible_grid.header.stamp = rospy.Time.now()
@@ -369,7 +369,7 @@ class CountCrowdModel:
 	#density_list = self.normalize_float(density_list, 0, 1)
 	#print density_list
 	crowd_model.densities = density_list
-	
+
 	u_list = [u[x][y] for x in range(self.division) for y in range(self.division)]
 	u_list = self.normalize_float(u_list, 0, 1)
 	crowd_model.up = u_list
@@ -401,10 +401,10 @@ class CountCrowdModel:
 	ur_list = [ur[x][y] for x in range(self.division) for y in range(self.division)]
 	ur_list = self.normalize_float(ur_list, 0, 1)
 	crowd_model.up_right = ur_list
-	
+
 	self.pub_crowd_model.publish(crowd_model)
 
-        # send message for rviz display unsampled data
+    # send message for rviz display unsampled data
 	crowd_rviz = OccupancyGrid()
 	crowd_rviz.header.stamp = rospy.Time.now()
 	crowd_rviz.header.frame_id = "map"
@@ -413,11 +413,11 @@ class CountCrowdModel:
 	crowd_rviz.info.height = self.division
 	crowd_rviz.info.origin.orientation.w = 1
 	density_rviz = [density[x][y] for x in range(self.division) for y in range(self.division)]
-	crowd_rviz.data = self.normalize(density_rviz, 0, 100)  
+	crowd_rviz.data = self.normalize(density_rviz, 0, 100)
 	print "Normalized Crowd model sent for rviz:"
-	print crowd_rviz.data 
+	print crowd_rviz.data
 	self.pub_crowd_density.publish(crowd_rviz)
-	
+
 
     def normalize(self, list_of_floats, minimum, maximum):
 	max_number = max(list_of_floats)
@@ -427,9 +427,9 @@ class CountCrowdModel:
 	else:
 	    return [int((x/max_number)*maximum) for x in list_of_floats]
 
-    
+
     def normalize_float(self, list_of_floats, minimum, maximum):
-	print "in normalization function" 
+	print "in normalization function"
 	max_number = max(list_of_floats)
 	print max_number
 	if max_number == 0:
@@ -437,10 +437,9 @@ class CountCrowdModel:
 	else:
 	    return [(x/max_number)*maximum for x in list_of_floats]
 
-
     def distance(self, x1,y1,x2,y2):
-	return ((x1-x2)**2 + (y1-y2)**2) ** 0.5 
+	return ((x1-x2)**2 + (y1-y2)**2) ** 0.5
 
 
-crowd_model = CountCrowdModel(60,60,30, str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5]), str(sys.argv[6]) )
+crowd_model = CountCrowdModel(80,80,40, str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5]), str(sys.argv[6]) )
 crowd_model.listen()

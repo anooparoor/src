@@ -8,7 +8,7 @@
 
 #include <ros/ros.h>
 #include <ros/console.h>
-#include <geometry_msgs/Twist.h> 
+#include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/PointStamped.h>
@@ -49,7 +49,7 @@ private:
   Beliefs *beliefs;
   ros::NodeHandle *nh_;
   int visualized;
-  
+
 public:
   //! ROS node initialization
   Visualizer(ros::NodeHandle *nh, Controller *c)
@@ -88,22 +88,22 @@ public:
 		publish_all_targets();
 		publish_remaining_targets();
 	}
-	publish_nodes();
-	publish_reachable_nodes();
-	publish_edges();
+	//publish_nodes();
+	//publish_reachable_nodes();
+	//publish_edges();
         /*if(visualized < 5){
 		publish_nodes();
 		publish_reachable_nodes();
 		//publish_edges();
 		visualized++;
 	}*/
-	publish_edges_cost();
+	//publish_edges_cost();
 	//publish_conveyor();
 	//publish_region();
 	//publish_trails();
 	//publish_doors();
 	publish_walls();
-	publish_occupancy();
+	//publish_occupancy();
   }
 
 
@@ -132,7 +132,7 @@ public:
 
 	vector<Edge*> edges = con->getPlanner()->getGraph()->getEdges();
 	vector<Node*> nodes = con->getPlanner()->getGraph()->getNodes();
-	
+
 	for( int i = 0; i < nodes.size(); i++ ){
 		if(nodes[i]->getInBuffer()){
 			float x = nodes[i]->getX()/100.0;
@@ -173,7 +173,7 @@ public:
 
 	vector<Edge*> edges = con->getPlanner()->getGraph()->getEdges();
 	vector<Node*> nodes = con->getPlanner()->getGraph()->getNodes();
-	
+
 	for( int i = 0; i < nodes.size(); i++ ){
 		if(!nodes[i]->getInBuffer()){
 			float x = nodes[i]->getX()/100.0;
@@ -190,11 +190,11 @@ public:
 
   void publish_edges_cost(){
 	visualization_msgs::MarkerArray markerArrayCost;
-	
+
 	Graph *graph = con->getPlanner()->getGraph();
 	vector<Edge*> edges = graph->getEdges();
 	vector<Node*> nodes = graph->getNodes();
-	
+
 	for( int i = 0; i < edges.size(); i++ ){
 		visualization_msgs::Marker costMarker;
 
@@ -234,7 +234,7 @@ public:
 		costMarker.pose.position.y = (f.y + t.y)/2.0;
 		costMarker.pose.position.z = 0;
 		//to_string(edges[i]->getCost(true)) + " " + to_string(edges[i]->getCost(false));
-		costMarker.text = "a"; 
+		costMarker.text = "a";
 
 		markerArrayCost.markers.push_back(costMarker);
 	}
@@ -247,7 +247,7 @@ public:
 	Graph *graph = con->getPlanner()->getGraph();
 	vector<Edge*> edges = graph->getEdges();
 	vector<Node*> nodes = graph->getNodes();
-	
+
 	for( int i = 0; i < edges.size(); i++ ){
 		visualization_msgs::Marker marker;
 		marker.header.frame_id = "map";
@@ -348,17 +348,17 @@ public:
 	grid.info.resolution = beliefs->getSpatialModel()->getConveyors()->getGranularity();
 	grid.info.width = beliefs->getSpatialModel()->getConveyors()->getBoxWidth();
 	grid.info.height = beliefs->getSpatialModel()->getConveyors()->getBoxHeight();
-	
+
 	vector< vector<int> > conveyors = beliefs->getSpatialModel()->getConveyors()->getConveyors();
 	for(int j = 0; j < grid.info.height; j++){
 	    for(int i = 0; i < grid.info.width; i++){
       		grid.data.push_back(conveyors[i][j]);
     	    }
   	}
-	conveyor_pub_.publish(grid);	
+	conveyor_pub_.publish(grid);
   }
 
-	
+
 
   void publish_occupancy(){
 	ROS_DEBUG("Inside publish occupancy");
@@ -374,7 +374,7 @@ public:
 	grid.info.resolution = gridSize / 100.0;
 	grid.info.width = (int)(beliefs->getSpatialModel()->getConveyors()->getMapWidth() / grid.info.resolution);
 	grid.info.height = (int)(beliefs->getSpatialModel()->getConveyors()->getMapHeight() / grid.info.resolution);
-	
+
 	for(int j = 0; j < grid.info.height; j++){
 	    for(int i = 0; i < grid.info.width; i++){
 		if(occupancyGrid[i][j]){
@@ -385,7 +385,7 @@ public:
 		}
     	    }
   	}
-	occupancy_pub_.publish(grid);	
+	occupancy_pub_.publish(grid);
   }
 
   void publish_region(){
@@ -394,15 +394,15 @@ public:
 	visualization_msgs::MarkerArray markerArray;
 	vector<FORRRegion> regions = beliefs->getSpatialModel()->getRegionList()->getRegions();
 	cout << "There are currently " << regions.size() << " regions" << endl;
-	for(int i = 0 ; i < regions.size(); i++){	
+	for(int i = 0 ; i < regions.size(); i++){
 		//regions[i].print();
-		visualization_msgs::Marker marker;	
+		visualization_msgs::Marker marker;
 		marker.header.frame_id = "map";
     		marker.header.stamp = ros::Time::now();
 		marker.ns = "basic_shapes";
     		marker.id = i;
 		marker.type = visualization_msgs::Marker::CYLINDER;
-    	
+
 		marker.pose.position.x = regions[i].getCenter().get_x();
     		marker.pose.position.y = regions[i].getCenter().get_y();
     		marker.pose.position.z = 0;
@@ -422,7 +422,7 @@ public:
     		marker.color.a = 0.5;
 
     		marker.lifetime = ros::Duration();
-		markerArray.markers.push_back(marker);		
+		markerArray.markers.push_back(marker);
 
 	}
 	region_pub_.publish(markerArray);
@@ -430,7 +430,7 @@ public:
   void publish_trails(){
 	ROS_DEBUG("Inside publish trail");
 	//Goal here is to publish all trails
-	
+
 	FORRTrails *trails = beliefs->getSpatialModel()->getTrails();
 	/*nav_msgs::Path path;
 	path.header.frame_id = "map";
@@ -451,7 +451,7 @@ public:
 		}
 	}*/
 
-	visualization_msgs::Marker line_list;	
+	visualization_msgs::Marker line_list;
 	line_list.header.frame_id = "map";
 	line_list.header.stamp = ros::Time::now();
 	line_list.ns = "basic_shapes";
@@ -474,7 +474,7 @@ public:
 			p2.x = trail[j+1].coordinates.get_x();
 			p2.y = trail[j+1].coordinates.get_y();
 			p2.z = 0;
-		
+
 			line_list.points.push_back(p1);
 			line_list.points.push_back(p2);
 		}
@@ -488,7 +488,7 @@ public:
 
 	std::vector< std::vector<Door> > doors = beliefs->getSpatialModel()->getDoors()->getDoors();
 	cout << "There are currently " << doors.size() << " regions" << endl;
-	visualization_msgs::Marker line_list;	
+	visualization_msgs::Marker line_list;
 	line_list.header.frame_id = "map";
 	line_list.header.stamp = ros::Time::now();
 	line_list.ns = "basic_shapes";
@@ -500,7 +500,7 @@ public:
 	line_list.color.r = 1.0;
 	line_list.color.a = 1.0;
 
-	for(int i = 0 ; i < doors.size(); i++){	
+	for(int i = 0 ; i < doors.size(); i++){
 		for(int j = 0; j < doors[i].size(); j++){
 			geometry_msgs::Point p1, p2;
 			p1.x = doors[i][j].startPoint.getExitPoint().get_x();
@@ -510,7 +510,7 @@ public:
 			p2.x = doors[i][j].endPoint.getExitPoint().get_x();
 			p2.y = doors[i][j].endPoint.getExitPoint().get_y();
 			p2.z = 0;
-		
+
 			line_list.points.push_back(p1);
 			line_list.points.push_back(p2);
 		}
@@ -522,7 +522,7 @@ public:
 	ROS_DEBUG("Inside publish walls");
 	vector<Wall> walls = con->getPlanner()->getMap()->getWalls();
 	cout << "There are currently " << walls.size() << " walls" << endl;
-	visualization_msgs::Marker line_list;	
+	visualization_msgs::Marker line_list;
 	line_list.header.frame_id = "map";
     	line_list.header.stamp = ros::Time::now();
 	line_list.ns = "basic_shapes";
@@ -534,7 +534,7 @@ public:
 	line_list.color.r = 0.5;
 	line_list.color.a = 0.5;
 
-	for(int i = 0 ; i < walls.size(); i++){	
+	for(int i = 0 ; i < walls.size(); i++){
 		geometry_msgs::Point p1, p2;
 		p1.x = walls[i].x1/100.0;
 		p1.y = walls[i].y1/100.0;
@@ -542,7 +542,7 @@ public:
 		p2.x = walls[i].x2/100.0;
 		p2.y = walls[i].y2/100.0;
 		p2.z = 0;
-		
+
 		line_list.points.push_back(p1);
 		line_list.points.push_back(p2);
 	}
@@ -632,7 +632,7 @@ public:
 	}
 	ROS_DEBUG("After decisionCount");
 
-	
+
 	std::stringstream lep;
 	for(int i = 0; i < laserEndpoints.size(); i++){
 		double x = laserEndpoints[i].get_x();
@@ -640,7 +640,7 @@ public:
 		lep << x << "," << y << ";";
 	}
 	ROS_DEBUG("After laserEndpoints");
-	
+
 
 	std::stringstream ls;
 	double min_laser_scan = 25; //meters
@@ -657,7 +657,7 @@ public:
 		totalSize += allTrace[i].size();
 	}*/
 
-	
+
 	std::stringstream regionsstream;
 	for(int i = 0; i < regions.size(); i++){
 		regionsstream << regions[i].getCenter().get_x() << " " << regions[i].getCenter().get_y() << " " << regions[i].getRadius();
@@ -669,7 +669,7 @@ public:
 	}
 	ROS_DEBUG("After regions");
 
-	
+
 	std::stringstream trailstream;
 	for(int i = 0; i < trails.size(); i++){
 		for(int j = 0; j < trails[i].size(); j++){
@@ -678,7 +678,7 @@ public:
 		trailstream << ";";
 	}
 	ROS_DEBUG("After trails");
-	
+
 	/*std::stringstream conveyorStream;
 	for(int j = 0; j < conveyors.size()-1; j++){
 		for(int i = 0; i < conveyors[j].size(); i++){
@@ -698,32 +698,34 @@ public:
 	}
 
 	ROS_DEBUG("After doors");
-	
+
 	std::stringstream planStream;
 	if(beliefs->getAgentState()->getCurrentTask() != NULL){
 		vector <CartesianPoint> waypoints = beliefs->getAgentState()->getCurrentTask()->getWaypoints();
 
 		for(int i = 0; i < waypoints.size(); i++){
 			planStream << waypoints[i].get_x() << " " << waypoints[i].get_y();
-			planStream << ";";		
+			planStream << ";";
 		}
 	}
 	ROS_DEBUG("After planStream");
 
 	std::stringstream crowdStream;
 	geometry_msgs::PoseArray crowdpose = beliefs->getAgentState()->getCrowdPose();
-	
+
 	for(int i = 0; i < crowdpose.poses.size(); i++){
-		crowdStream << crowdpose.poses[i].position.x << " " << crowdpose.poses[i].position.y;
+		crowdStream << crowdpose.poses[i].position.x << " " << crowdpose.poses[i].position.y << " " << crowdpose.poses[i].orientation.x 
+		<< " " << crowdpose.poses[i].orientation.y << " " << crowdpose.poses[i].orientation.z << " " << crowdpose.poses[i].orientation.w;
 		crowdStream << ";";
 	}
 	ROS_DEBUG("After crowdStream");
 
 	std::stringstream allCrowdStream;
 	geometry_msgs::PoseArray crowdposeall = beliefs->getAgentState()->getCrowdPoseAll();
-	
+
 	for(int i = 0; i < crowdposeall.poses.size(); i++){
-		allCrowdStream << crowdposeall.poses[i].position.x << " " << crowdposeall.poses[i].position.y;
+		allCrowdStream << crowdposeall.poses[i].position.x << " " << crowdposeall.poses[i].position.y << " " << crowdposeall.poses[i].orientation.x
+		<< " " << crowdposeall.poses[i].orientation.y << " " << crowdposeall.poses[i].orientation.z << " " << crowdposeall.poses[i].orientation.w;
 		allCrowdStream << ";";
 	}
 	ROS_DEBUG("After all crowdStream");
@@ -734,29 +736,25 @@ public:
 	int height = model.height;
 	int width = model.width;
 	std::vector<double> densities = model.densities;
-	crowdModel << height << " " << width << " " << resolution << " "; 
+	crowdModel << height << " " << width << " " << resolution << " ";
 	for(int i = 0; i < densities.size() ; i++){
 		crowdModel << densities[i] << " ";
 	}
-	
+
 	ROS_DEBUG("After all crowd model");
-	
 
 	std::stringstream output;
 
-
 	//output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << advisorInfluence << "\t" << regionsstream.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
-	
+
 	//output << currentTask << "\t" << decisionCount << "\t"<< targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
 
 	//std::stringstream output;
 
-	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << min_laser_scan << "\t" << crowdStream.str() << "\t" << allCrowdStream.str() << "\t" << crowdModel.str() << "\t" << planStream.str();
+	output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << lep.str() << "\t" << ls.str() << "\t" << crowdStream.str() << "\t" << allCrowdStream.str() << "\t" << crowdModel.str() << "\t" << planStream.str();
 
 	log.data = output.str();
 	stats_pub_.publish(log);
 	con->clearCurrentDecisionStats();
   }
-
 };
-
