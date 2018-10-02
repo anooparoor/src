@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<Project
+	scene="gradcenter-5-risk/gradcenter-5-riskS.xml"
+	behavior="gradcenter-5-risk/gradcenter-5-riskB.xml"
+	view="gradcenter-5-risk/gradcenter-5-riskV.xml"
+	model="pedvo"
+	dumpPath="images/test"
+/>

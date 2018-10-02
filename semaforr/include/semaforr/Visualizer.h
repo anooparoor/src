@@ -98,10 +98,10 @@ public:
 		visualized++;
 	}*/
 	//publish_edges_cost();
-	//publish_conveyor();
-	//publish_region();
-	//publish_trails();
-	//publish_doors();
+	publish_conveyor();
+	publish_region();
+	publish_trails();
+	publish_doors();
 	publish_walls();
 	//publish_occupancy();
   }
@@ -679,7 +679,7 @@ public:
 	}
 	ROS_DEBUG("After trails");
 
-	/*std::stringstream conveyorStream;
+	std::stringstream conveyorStream;
 	for(int j = 0; j < conveyors.size()-1; j++){
 		for(int i = 0; i < conveyors[j].size(); i++){
 			conveyorStream << conveyors[j][i] << " ";
@@ -687,7 +687,7 @@ public:
 		conveyorStream << ";";
 	}
 	ROS_DEBUG("After conveyors");
-	*/
+	
 
 	std::stringstream doorStream;
 	for(int i = 0; i < doors.size(); i++){
@@ -745,7 +745,7 @@ public:
 
 	std::stringstream output;
 
-	//output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << advisorInfluence << "\t" << regionsstream.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
+	//output << currentTask << "\t" << decisionCount << "\t" << overallTimeSec << "\t" << computationTimeSec << "\t" << targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << max_forward.parameter << "\t" << decisionTier << "\t" << vetoedActions << "\t" << chosenActionType << "\t" << chosenActionParameter << "\t" << advisors << "\t" << advisorComments << "\t" << advisorInfluence << "\t" << regionsstream.str() << "\t" << trailstream.str() << "\t" << doorStream.str() << "\t" << conveyorStream.str() << "\t" << planStream.str() << "\t" << lep.str() << "\t" << ls.str();
 
 	//output << currentTask << "\t" << decisionCount << "\t"<< targetX << "\t" << targetY << "\t" << robotX << "\t" << robotY << "\t" << robotTheta << "\t" << planStream.str();// << "\t" << lep.str() << "\t" << ls.str();
 

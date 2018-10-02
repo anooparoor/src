@@ -203,8 +203,8 @@ int main(int argc, char* argv[]) {
 	ros::init(argc,argv,"menge_sim");
 	ros::NodeHandle nh;
 
-	/*ROS_INFO_STREAM(" argument count " << argc << "," << argv[0] << "," << argv[1] << "," << argv[2]);
-	
+	//ROS_INFO_STREAM(" argument count " << argc << "," << argv[0] << "," << argv[1] << "," << argv[2]);
+	/*
 	std::string map_xml;
 	bool ok = nh.getParam("_map_xml",map_xml);
         if(!ok){
@@ -243,7 +243,7 @@ int main(int argc, char* argv[]) {
 #endif	// _WIN32
 	logger.line();
 	logger << Logger::INFO_MSG << "Plugin path: " << pluginPath;
-	pluginPath = "/home/anooparoor/catkin_ws/devel/lib";
+	pluginPath = "/home/anoop/catkin_ws/devel/lib";
 	plugins.loadPlugins( pluginPath );
 	if ( simDB.modelCount() == 0 ) {
 		logger << Logger::INFO_MSG << "There were no pedestrian models in the plugins folder\n";

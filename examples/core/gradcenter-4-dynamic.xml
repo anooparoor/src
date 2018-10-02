@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<Project
+	scene="gradcenter-4-dynamic/gradcenter-4-dynamicS.xml"
+	behavior="gradcenter-4-dynamic/gradcenter-4-dynamicB.xml"
+	view="gradcenter-4-dynamic/gradcenter-4-dynamicS.xml"
+	model="orca"
+	dumpPath="images/test"
+/>

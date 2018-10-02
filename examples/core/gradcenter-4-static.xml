@@ -3,6 +3,7 @@
 <Project
 	scene="gradcenter-4-static/gradcenter-4-staticS.xml"
 	behavior="gradcenter-4-static/gradcenter-4-staticB.xml"
-	model="orca"
+	view="gradcenter-4-static/gradcenter-4-staticV.xml"
+	model="pedvo"
 	dumpPath="images/test"
 />

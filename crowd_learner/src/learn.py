@@ -16,7 +16,7 @@ import sys
 from cusum import Cusum
 
 class CountCrowdModel:
-    def __init__(self, width, height, division, density, flow, risk, cusum, discount, explore):
+    def __init__(self, width, height, division, density, flow, risk, cusum, explore, discount):
 	# set up this python class as ros node and initialize publisher and subscriber
 	rospy.init_node('crowd_model')
 	rospy.Subscriber("crowd_pose", PoseArray, self.crowd_data)
@@ -37,7 +37,7 @@ class CountCrowdModel:
 	self.cusum = cusum
 	self.flow = flow
 	self.risk = risk
-	self.discount = discount
+	self.alpha = discount
 	self.explore = explore
 	self.density = density
 
@@ -79,10 +79,7 @@ class CountCrowdModel:
 	self.width = width # width of the map
 	self.height = height # height of the map
 	self.division = division # number of positions in the map where the model has to predict
-	if self.discount == "on":
-	    self.alpha = 0.7
-	else:
-	    self.alpha = 1.0
+	
 
     # calls the callback for each of the subscriber
     def listen(self):
@@ -441,5 +438,5 @@ class CountCrowdModel:
 	return ((x1-x2)**2 + (y1-y2)**2) ** 0.5
 
 
-crowd_model = CountCrowdModel(80,80,40, str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5]), str(sys.argv[6]) )
+crowd_model = CountCrowdModel(100,100,50, str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5]), str(sys.argv[6]) )
 crowd_model.listen()
